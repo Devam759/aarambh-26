@@ -76,6 +76,11 @@ export default function Home() {
                 Volunteer Access
               </Button>
             </Link>
+            <Link href="/admin">
+              <Button variant="glass" className="flex items-center gap-2 border-orange-500/30 text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/10">
+                Admin Portal
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </section>

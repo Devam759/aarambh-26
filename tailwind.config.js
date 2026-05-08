@@ -20,7 +20,19 @@ export default {
         dark: {
           DEFAULT: '#0f172a',
           lighter: '#1e293b',
+        },
+        admin: {
+          bg: '#0f172a',
+          surface: '#1e293b',
+          accent: '#f59e0b',
+          text: '#f8fafc',
+          muted: '#94a3b8',
+          border: '#334155'
         }
+      },
+      fontFamily: {
+        adminHeading: ['"DM Serif Display"', 'serif'],
+        adminBody: ['"DM Sans"', 'sans-serif'],
       },
       backgroundImage: {
         'glass-gradient': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',

@@ -1,144 +1,166 @@
 'use client';
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Download, TrendingUp, Smile, MessageSquare, Filter } from 'lucide-react';
 
-export default function AdminAnalytics() {
+import React, { useEffect, useState } from 'react';
+import { collection, onSnapshot, query, orderBy, limit, where } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { SkeletonCard, SkeletonTable, SkeletonRow } from '../../components/admin/SkeletonLoader';
+import { Users, CheckCircle, Smartphone, Calendar as CalendarIcon } from 'lucide-react';
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState({
+    totalRegistrations: 0,
+    totalEntriesToday: 0,
+    activeScanners: 0,
+    loading: true
+  });
+
+  const [upcomingEvent, setUpcomingEvent] = useState<any>(null);
+  const [recentAnnouncements, setRecentAnnouncements] = useState<any[]>([]);
+  const [recentLogs, setRecentLogs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const unsubRegs = onSnapshot(collection(db, 'registrations'), (snap) => {
+      setStats(s => ({ ...s, totalRegistrations: snap.size, loading: false }));
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const unsubScans = onSnapshot(query(collection(db, 'scanLogs'), where('timestamp', '>=', today), where('result', '==', 'accepted')), (snap) => {
+      setStats(s => ({ ...s, totalEntriesToday: snap.size }));
+    });
+
+    const unsubScanners = onSnapshot(query(collection(db, 'scannerAccounts')), (snap) => {
+      // active scanners - let's say lastActiveAt within 1 hour
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      let activeCount = 0;
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (data.lastActiveAt && data.lastActiveAt.toDate() > oneHourAgo) {
+          activeCount++;
+        }
+      });
+      setStats(s => ({ ...s, activeScanners: activeCount }));
+    });
+
+    const unsubEvents = onSnapshot(query(collection(db, 'events'), where('date', '>=', new Date()), orderBy('date', 'asc'), limit(1)), (snap) => {
+      if (!snap.empty) {
+        setUpcomingEvent({ id: snap.docs[0].id, ...snap.docs[0].data() });
+      } else {
+        setUpcomingEvent(null);
+      }
+    });
+
+    const unsubAnnouncements = onSnapshot(query(collection(db, 'announcements'), orderBy('postedAt', 'desc'), limit(2)), (snap) => {
+      setRecentAnnouncements(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    const unsubLogs = onSnapshot(query(collection(db, 'auditLogs'), orderBy('timestamp', 'desc'), limit(5)), (snap) => {
+      setRecentLogs(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    return () => {
+      unsubRegs();
+      unsubScans();
+      unsubScanners();
+      unsubEvents();
+      unsubAnnouncements();
+      unsubLogs();
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen p-8 max-w-7xl mx-auto">
-      <header className="flex justify-between items-center mb-12">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Feedback & Analytics</h1>
-          <p className="text-gray-400">Measure the impact of Aarambh 2026</p>
-        </div>
-        <button className="btn-primary flex items-center gap-2">
-          <Download size={20} /> Export CSV
-        </button>
-      </header>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <KPICard title="Total Feedback" value="842" trend="+12%" icon={<MessageSquare className="text-primary" />} />
-        <KPICard title="Avg. Rating" value="4.8/5" trend="+0.2" icon={<Smile className="text-secondary" />} />
-        <KPICard title="Participation" value="88%" trend="+5%" icon={<TrendingUp className="text-orange-500" />} />
-        <KPICard title="NPS Score" value="74" trend="+8" icon={<Smile className="text-blue-500" />} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Sentiment Analysis Chart Placeholder */}
-        <div className="lg:col-span-2 glass-card p-8">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-xl font-bold">Event-wise Satisfaction</h3>
-            <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-white">
-              <Filter size={16} /> Filter
-            </button>
-          </div>
-          <div className="space-y-8">
-            <SatisfactionBar label="Tech Expo" value={95} color="bg-secondary" />
-            <SatisfactionBar label="Cultural Night" value={88} color="bg-primary" />
-            <SatisfactionBar label="RoboWars" value={92} color="bg-orange-500" />
-            <SatisfactionBar label="Gaming Summit" value={78} color="bg-blue-500" />
-          </div>
-        </div>
-
-        {/* Recent Feedback Feed */}
-        <div className="glass-card p-6 overflow-hidden">
-          <h3 className="text-xl font-bold mb-6">Recent Responses</h3>
-          <div className="space-y-6">
-            <FeedbackItem 
-              name="Anonymous" 
-              rating={5} 
-              comment="The registration process was so smooth! Great job." 
-              time="10m ago"
-            />
-            <FeedbackItem 
-              name="Sarah J." 
-              rating={4} 
-              comment="Amazing speakers, but the main hall was a bit crowded." 
-              time="45m ago"
-            />
-            <FeedbackItem 
-              name="Mike Ross" 
-              rating={5} 
-              comment="Best university event I've attended in years." 
-              time="1h ago"
-            />
-          </div>
-          <button className="w-full mt-8 py-3 text-sm text-primary font-bold hover:bg-white/5 rounded-lg transition-colors">
-            View All Responses
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface KPICardProps {
-  title: string;
-  value: string;
-  trend: string;
-  icon: React.ReactElement;
-}
-
-function KPICard({ title, value, trend, icon }: KPICardProps) {
-  return (
-    <div className="glass-card p-6 flex flex-col gap-4">
-      <div className="flex justify-between items-start">
-        <div className="p-2 bg-white/5 rounded-lg">{icon}</div>
-        <span className="text-xs font-bold text-secondary">{trend}</span>
-      </div>
+    <div className="space-y-8">
       <div>
-        <h4 className="text-gray-500 text-sm font-medium uppercase tracking-wider">{title}</h4>
-        <p className="text-3xl font-black">{value}</p>
+        <h1 className="font-adminHeading text-3xl font-bold mb-2">Overview</h1>
+        <p className="text-admin-muted">Live snapshot of Aarambh 2026</p>
       </div>
-    </div>
-  );
-}
 
-interface SatisfactionBarProps {
-  label: string;
-  value: number;
-  color: string;
-}
+      {stats.loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-admin-muted">Total Registrations</h3>
+              <Users className="text-admin-accent" size={20} />
+            </div>
+            <p className="font-adminHeading text-4xl">{stats.totalRegistrations}</p>
+          </div>
+          
+          <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-admin-muted">Entries Today</h3>
+              <CheckCircle className="text-green-500" size={20} />
+            </div>
+            <p className="font-adminHeading text-4xl">{stats.totalEntriesToday}</p>
+          </div>
 
-function SatisfactionBar({ label, value, color }: SatisfactionBarProps) {
-  return (
-    <div>
-      <div className="flex justify-between mb-2 text-sm font-medium">
-        <span>{label}</span>
-        <span>{value}%</span>
-      </div>
-      <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          className={`h-full ${color} shadow-[0_0_15px_rgba(0,0,0,0.5)]`}
-        />
-      </div>
-    </div>
-  );
-}
+          <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-admin-muted">Active Scanners</h3>
+              <Smartphone className="text-blue-500" size={20} />
+            </div>
+            <p className="font-adminHeading text-4xl">{stats.activeScanners}</p>
+          </div>
+        </div>
+      )}
 
-interface FeedbackItemProps {
-  name: string;
-  rating: number;
-  comment: string;
-  time: string;
-}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column */}
+        <div className="space-y-8">
+          <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+            <h2 className="font-bold mb-4 flex items-center gap-2">
+              <CalendarIcon size={18} className="text-admin-accent" /> Upcoming Event
+            </h2>
+            {stats.loading ? <SkeletonRow className="h-16" /> : upcomingEvent ? (
+              <div>
+                <h3 className="font-adminHeading text-xl">{upcomingEvent.title}</h3>
+                <p className="text-sm text-admin-muted mt-1">{upcomingEvent.date?.toDate().toLocaleDateString()} at {upcomingEvent.time}</p>
+                <p className="text-sm mt-2">{upcomingEvent.venue}</p>
+              </div>
+            ) : (
+              <p className="text-admin-muted text-sm">No upcoming events.</p>
+            )}
+          </div>
 
-function FeedbackItem({ name, rating, comment, time }: FeedbackItemProps) {
-  return (
-    <div className="border-b border-white/5 pb-4 last:border-0 last:pb-0">
-      <div className="flex justify-between items-center mb-1">
-        <span className="font-bold text-sm">{name}</span>
-        <span className="text-[10px] text-gray-500 uppercase">{time}</span>
+          <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+            <h2 className="font-bold mb-4 flex items-center gap-2">Recent Announcements</h2>
+            {stats.loading ? <SkeletonTable rows={2} /> : (
+              <div className="space-y-4">
+                {recentAnnouncements.map(ann => (
+                  <div key={ann.id} className="border-b border-admin-border last:border-0 pb-4 last:pb-0">
+                    <h3 className="font-medium">{ann.title}</h3>
+                    <p className="text-xs text-admin-muted mt-1">{ann.postedAt?.toDate().toLocaleString()}</p>
+                  </div>
+                ))}
+                {recentAnnouncements.length === 0 && <p className="text-sm text-admin-muted">No announcements.</p>}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="bg-admin-surface border border-admin-border p-6 rounded-xl">
+          <h2 className="font-bold mb-4 flex items-center gap-2">Recent Audit Logs</h2>
+          {stats.loading ? <SkeletonTable rows={5} /> : (
+            <div className="space-y-4">
+              {recentLogs.map(log => (
+                <div key={log.id} className="text-sm border-b border-admin-border last:border-0 pb-3 last:pb-0">
+                  <p className="font-medium text-admin-accent">{log.action}</p>
+                  <p className="text-admin-muted text-xs mt-1">
+                    {log.performedBy} &middot; {log.targetEntity} &middot; {log.timestamp?.toDate().toLocaleString()}
+                  </p>
+                </div>
+              ))}
+              {recentLogs.length === 0 && <p className="text-sm text-admin-muted">No audit logs found.</p>}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="flex gap-1 mb-2">
-        {[...Array(5)].map((_, i) => (
-          <Smile key={i} size={12} className={i < rating ? "text-secondary" : "text-gray-700"} />
-        ))}
-      </div>
-      <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">"{comment}"</p>
     </div>
   );
 }
