@@ -21,11 +21,8 @@ import {
 const navItems = [
   { name: 'Overview', href: '/admin', icon: LayoutDashboard },
   { name: 'Scanner Accounts', href: '/admin/scanners', icon: Users },
-  { name: 'Event Management', href: '/admin/events', icon: Calendar },
-  { name: 'Announcements', href: '/admin/announcements', icon: Bell },
   { name: 'Feedback Analytics', href: '/admin/analytics', icon: BarChart2 },
   { name: 'Registration', href: '/admin/registrations', icon: ClipboardList },
-  { name: 'Audit Logs', href: '/admin/audit', icon: FileText },
   { name: 'Search', href: '/admin/search', icon: Search },
 ];
 
@@ -43,7 +40,10 @@ export default function Sidebar() {
     <>
       {/* Mobile Hamburger */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-admin-surface border-b border-admin-border flex items-center justify-between px-4 z-50">
-        <span className="font-adminHeading text-xl font-bold text-admin-text">Aarambh Admin</span>
+        <Link href="/admin" className="flex items-center gap-2">
+          <img src="/logo.png" alt="Aarambh Logo" className="h-10 w-auto object-contain mix-blend-multiply contrast-[1.1] brightness-[1.1]" />
+          <span className="font-adminHeading text-lg font-bold text-admin-text hidden xs:block">Admin</span>
+        </Link>
         <button onClick={() => setIsOpen(!isOpen)} className="text-admin-text p-2">
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -64,7 +64,9 @@ export default function Sidebar() {
         }`}
       >
         <div className="h-16 flex items-center px-6 border-b border-admin-border hidden md:flex">
-          <span className="font-adminHeading text-xl font-bold text-admin-text">Aarambh Admin</span>
+          <Link href="/admin" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Aarambh Logo" className="h-12 w-auto object-contain mix-blend-multiply contrast-[1.1] brightness-[1.1]" />
+          </Link>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">

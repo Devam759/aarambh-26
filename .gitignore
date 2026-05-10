@@ -60,3 +60,5 @@ credentials.txt
 users_test.json
 /scratch/
 /graphify-out/
+tsc-errors.txt
+.gemini/

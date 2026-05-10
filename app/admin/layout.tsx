@@ -45,8 +45,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-admin-bg text-admin-text font-adminBody">
       <Sidebar />
-      <main className="flex-1 w-full md:w-[calc(100%-16rem)] pt-16 md:pt-0 p-4 md:p-8 overflow-y-auto">
-        <div className="max-w-6xl mx-auto">
+      <main className="flex-1 w-full md:w-[calc(100%-16rem)] pt-16 md:pt-0 overflow-y-auto relative">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-admin-accent/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+        
+        <header className="sticky top-0 z-30 bg-admin-bg/60 backdrop-blur-md px-4 md:px-8 h-16 flex items-center justify-end border-b border-admin-border/50">
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-medium text-admin-muted uppercase tracking-widest hidden sm:block">Admin Portal</span>
+            <div className="h-4 w-px bg-admin-border hidden sm:block" />
+            <img src="/logo.png" alt="Aarambh Logo" className="h-8 w-auto mix-blend-multiply contrast-[1.1] brightness-[1.1]" />
+          </div>
+        </header>
+
+        <div className="p-4 md:p-8 max-w-6xl mx-auto">
           {children}
         </div>
       </main>

@@ -17,7 +17,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       <div className="relative bg-admin-surface border border-admin-border rounded-xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex justify-between items-center p-6 border-b border-admin-border">
           <h2 className="font-adminHeading text-xl font-bold">{title}</h2>
-          <button onClick={onClose} className="text-admin-muted hover:text-white transition-colors">
+          <button onClick={onClose} className="text-admin-muted hover:text-admin-text transition-colors">
             <X size={20} />
           </button>
         </div>

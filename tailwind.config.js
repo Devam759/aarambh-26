@@ -22,12 +22,12 @@ export default {
           lighter: '#1e293b',
         },
         admin: {
-          bg: '#0f172a',
-          surface: '#1e293b',
+          bg: '#f8fafc',
+          surface: '#ffffff',
           accent: '#f59e0b',
-          text: '#f8fafc',
-          muted: '#94a3b8',
-          border: '#334155'
+          text: '#0f172a',
+          muted: '#64748b',
+          border: '#e2e8f0'
         }
       },
       fontFamily: {

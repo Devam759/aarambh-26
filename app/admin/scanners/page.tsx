@@ -6,7 +6,10 @@ import { db } from '../../../lib/firebase';
 import { SkeletonTable } from '../../../components/admin/SkeletonLoader';
 import { Modal } from '../../../components/admin/Modal';
 import { logAdminAction } from '../../../lib/audit';
-import { Plus, Trash2, ShieldAlert, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, Power, PowerOff, AlertCircle } from 'lucide-react';
+import { initializeApp, deleteApp, getApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { firebaseConfig } from '../../../lib/firebase';
 // Note: In a real production app, creating users and deleting users should be done via Cloud Functions Admin SDK.
 // For demonstration on the client side, we manipulate the Firestore documents.
 
@@ -34,41 +37,52 @@ export default function ScannerAccounts() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!volunteerName) return;
+    if (scanners.length >= 5) {
+      alert('Maximum of 5 scanner accounts allowed.');
+      return;
+    }
     setIsSubmitting(true);
     
+    let secondaryApp;
     try {
-      // Simulate generating credentials
       const generatedEmail = `scanner_${Date.now()}@aarambh.com`;
       const generatedPassword = Math.random().toString(36).slice(-8);
       
+      // Initialize a secondary app to create a user without signing out the admin
+      const secondaryAppName = `secondary_${Date.now()}`;
+      secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+      const secondaryAuth = getAuth(secondaryApp);
+      
+      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, generatedEmail, generatedPassword);
+      const uid = userCredential.user.uid;
+      
       const newScannerId = `SCAN-${Math.floor(Math.random() * 10000)}`;
       
-      // In a real app, you'd call a Cloud Function here to create the Auth user.
-      // Here we just write to Firestore to demonstrate the UI flow.
-      const docId = `dummy_uid_${Date.now()}`;
-      
-      await setDoc(doc(db, 'scannerAccounts', docId), {
+      await setDoc(doc(db, 'scannerAccounts', uid), {
         scannerId: newScannerId,
         volunteerName,
-        email: generatedEmail, // stored just for admin view reference
+        email: generatedEmail,
         createdAt: new Date(),
         lastActiveAt: null,
         status: 'Active'
       });
       
-      await setDoc(doc(db, 'roles', docId), {
+      await setDoc(doc(db, 'roles', uid), {
         role: 'scanner'
       });
 
-      await logAdminAction('CREATE_SCANNER', `scannerAccounts/${docId}`, `Created scanner for ${volunteerName}`);
+      await logAdminAction('CREATE_SCANNER', `scannerAccounts/${uid}`, `Created scanner for ${volunteerName}`);
       
       setIsCreateOpen(false);
       setVolunteerName('');
-      alert(`Account created!\\nEmail: ${generatedEmail}\\nPassword: ${generatedPassword}\\nPlease copy these credentials.`);
-    } catch (err) {
+      alert(`Account created!\nEmail: ${generatedEmail}\nPassword: ${generatedPassword}\nPlease copy these credentials.`);
+    } catch (err: any) {
       console.error(err);
-      alert('Error creating scanner');
+      alert(`Error creating scanner: ${err.message}`);
     } finally {
+      if (secondaryApp) {
+        await deleteApp(secondaryApp);
+      }
       setIsSubmitting(false);
     }
   };
@@ -101,11 +115,23 @@ export default function ScannerAccounts() {
         </div>
         <button 
           onClick={() => setIsCreateOpen(true)}
-          className="bg-admin-accent hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors"
+          disabled={scanners.length >= 5}
+          className={`font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors ${
+            scanners.length >= 5 
+              ? 'bg-admin-muted/20 text-admin-muted cursor-not-allowed' 
+              : 'bg-admin-accent hover:bg-yellow-500 text-black'
+          }`}
         >
           <Plus size={20} /> Add Scanner
         </button>
       </div>
+
+      {scanners.length >= 5 && (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg flex items-center gap-3">
+          <AlertCircle size={20} />
+          <p className="text-sm font-medium">Scanner limit reached (5/5 accounts). Delete an account to add a new one.</p>
+        </div>
+      )}
 
       {loading ? (
         <SkeletonTable rows={5} />
@@ -140,7 +166,7 @@ export default function ScannerAccounts() {
                     <td className="p-4 flex items-center justify-end gap-3">
                       <button 
                         onClick={() => handleToggleStatus(scanner)}
-                        className="text-admin-muted hover:text-white transition-colors"
+                        className="text-admin-muted hover:text-admin-text transition-colors"
                         title={scanner.status === 'Active' ? 'Deactivate' : 'Reactivate'}
                       >
                         {scanner.status === 'Active' ? <PowerOff size={18} /> : <Power size={18} />}

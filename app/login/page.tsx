@@ -61,7 +61,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-admin-bg text-admin-text font-adminBody flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-admin-surface border border-admin-border rounded-xl p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <h1 className="font-adminHeading text-3xl font-bold mb-2">Aarambh Portal</h1>
+          <img src="/logo.png" alt="Aarambh Logo" className="h-20 w-auto mx-auto mb-6 object-contain mix-blend-multiply contrast-[1.1] brightness-[1.1]" />
+          <h1 className="font-adminHeading text-2xl font-bold mb-2 text-admin-text">Admin Portal</h1>
           <p className="text-admin-muted text-sm">Sign in to access your dashboard</p>
         </div>
 
