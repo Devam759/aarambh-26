@@ -70,9 +70,9 @@ export default function FeedbackPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="glass-card p-12 text-center w-full"
         >
-          <CheckCircle size={64} className="text-secondary mx-auto mb-6" />
-          <h1 className="text-3xl font-black mb-4 text-white">Thank you!</h1>
-          <p className="text-gray-400 text-lg mb-8">
+          <CheckCircle size={64} className="text-brand-orange mx-auto mb-6" />
+          <h1 className="text-3xl font-display font-extrabold mb-4 text-brand-cloud">Thank you!</h1>
+          <p className="text-brand-cloud/60 text-lg mb-8">
             Your feedback helps us make Aarambh 2026 even better for everyone.
           </p>
           <Button
@@ -93,23 +93,24 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="py-24 px-6 max-w-3xl mx-auto min-h-screen">
-      <header className="text-center mb-16">
-        <div className="inline-flex items-center gap-2 text-primary mb-4">
+    <div className="py-28 px-6 max-w-3xl mx-auto min-h-screen relative">
+      <div className="hero-glow w-80 h-80 bg-brand-pink/10 top-0 right-0" />
+      <header className="text-center mb-16 relative z-10">
+        <div className="inline-flex items-center gap-2 text-brand-pink mb-4">
           <MessageSquare size={24} />
-          <span className="text-sm font-bold uppercase tracking-widest">Event Feedback</span>
+          <span className="text-sm font-bold uppercase tracking-[0.2em]">Event Feedback</span>
         </div>
-        <h1 className="text-5xl md:text-6xl font-black mb-4 uppercase tracking-wider text-white">
+        <h1 className="page-title mb-4">
           Share Your Experience
         </h1>
-        <p className="text-gray-400 text-lg font-medium max-w-xl mx-auto">
+        <p className="page-subtitle mx-auto">
           Tell us how the session went. Your honest feedback shapes future Aarambh events.
         </p>
       </header>
 
       {!firebaseReady && (
         <div
-          className="mb-8 p-4 rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-200 text-sm"
+          className="mb-8 p-4 rounded-xl border border-brand-orange/40 bg-brand-orange/10 text-brand-orange text-sm"
           role="alert"
         >
           {FIREBASE_SETUP_MESSAGE}
@@ -118,12 +119,12 @@ export default function FeedbackPage() {
 
       <form onSubmit={handleSubmit} className="space-y-10">
         <section>
-          <h2 className="text-2xl font-bold text-white mb-2">Rating questions</h2>
-          <p className="text-gray-500 text-sm mb-6">Select a score from 1 (lowest) to 5 (highest).</p>
+          <h2 className="text-2xl font-display font-bold text-brand-cloud mb-2">Rating questions</h2>
+          <p className="text-brand-cloud/50 text-sm mb-6">Select a score from 1 (lowest) to 5 (highest).</p>
           <div className="space-y-6">
             {RATING_QUESTIONS.map((q) => (
               <Card key={q.key} className="p-6">
-                <p className="text-white font-medium mb-4">{q.label}</p>
+                <p className="text-brand-cloud font-medium mb-4">{q.label}</p>
                 <StarRating
                   value={ratings[q.key]}
                   onChange={(v) => setRating(q.key, v)}
@@ -134,8 +135,8 @@ export default function FeedbackPage() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-white mb-2">Open-ended questions</h2>
-          <p className="text-gray-500 text-sm mb-6">Optional, but greatly appreciated.</p>
+          <h2 className="text-2xl font-display font-bold text-brand-cloud mb-2">Open-ended questions</h2>
+          <p className="text-brand-cloud/50 text-sm mb-6">Optional, but greatly appreciated.</p>
           <div className="space-y-6">
             {OPEN_QUESTIONS.map((q) => {
               const value =
@@ -153,7 +154,7 @@ export default function FeedbackPage() {
 
               return (
                 <Card key={q.key} className="p-6">
-                  <label htmlFor={q.key} className="block text-white font-medium mb-3">
+                  <label htmlFor={q.key} className="block text-brand-cloud font-medium mb-3">
                     {q.label}
                   </label>
                   <textarea
@@ -161,7 +162,7 @@ export default function FeedbackPage() {
                     rows={3}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 resize-y min-h-[88px]"
+                    className="input-field w-full resize-y min-h-[88px]"
                     placeholder="Your thoughts..."
                   />
                 </Card>
@@ -206,7 +207,7 @@ function StarRating({
             onClick={() => onChange(n)}
             onMouseEnter={() => setHover(n)}
             onMouseLeave={() => setHover(0)}
-            className="p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+            className="p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink rounded"
             aria-label={`${n} star${n > 1 ? 's' : ''}`}
             aria-pressed={value === n}
           >
@@ -214,14 +215,14 @@ function StarRating({
               size={32}
               className={
                 n <= display
-                  ? 'text-primary fill-primary'
-                  : 'text-gray-600'
+                  ? 'text-brand-orange fill-brand-orange'
+                  : 'text-brand-cloud/25'
               }
             />
           </button>
         ))}
       </div>
-      <span className="text-sm text-gray-500 ml-2 tabular-nums">
+      <span className="text-sm text-brand-cloud/50 ml-2 tabular-nums">
         {display > 0 ? `${display} / 5` : 'Not rated'}
       </span>
     </div>

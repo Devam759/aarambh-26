@@ -7,22 +7,21 @@ function cn(...inputs: ClassValue[]) {
 }
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'glass';
+  variant?: 'primary' | 'secondary' | 'accent' | 'glass';
   children: React.ReactNode;
 }
 
 export function Button({ variant = 'primary', children, className, ...props }: ButtonProps) {
   const variants = {
     primary: 'btn-primary',
-    secondary: 'bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-6 rounded-lg transition-all',
-    glass: 'glass-card px-6 py-2 hover:bg-white/10 transition-all',
+    secondary: 'btn-blue',
+    accent: 'btn-accent',
+    glass:
+      'glass-card px-6 py-2.5 rounded-full text-brand-cloud font-semibold hover:bg-brand-cloud/10 hover:border-brand-pink/30 transition-all',
   };
 
   return (
-    <button 
-      className={cn(variants[variant], className)} 
-      {...props}
-    >
+    <button className={cn(variants[variant], className)} {...props}>
       {children}
     </button>
   );

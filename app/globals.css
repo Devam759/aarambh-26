@@ -2,29 +2,73 @@
 @config "../tailwind.config.js";
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 15, 23, 42;
-  --background-end-rgb: 2, 6, 23;
+  --brand-orange: #FF9A00;
+  --brand-pink: #FF188C;
+  --brand-blue: #0D21DD;
+  --brand-ink: #030404;
+  --brand-cloud: #F5F1E5;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  color: var(--brand-cloud);
+  background-color: var(--brand-ink);
   min-height: 100vh;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl;
+    @apply bg-brand-cloud/5 backdrop-blur-md border border-brand-cloud/15 rounded-2xl shadow-xl;
   }
 
   .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95;
+    @apply bg-brand-pink hover:bg-primary-dark text-brand-cloud font-bold py-2.5 px-6 rounded-full transition-all duration-300 shadow-brand-pink hover:shadow-lg hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-accent {
+    @apply bg-brand-orange hover:bg-accent-dark text-brand-ink font-bold py-2.5 px-6 rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-blue {
+    @apply bg-brand-blue hover:bg-secondary-dark text-brand-cloud font-bold py-2.5 px-6 rounded-full transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .input-field {
-    @apply bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all;
+    @apply bg-brand-cloud/5 border border-brand-cloud/20 rounded-xl px-4 py-2.5 text-brand-cloud placeholder:text-brand-cloud/40 focus:outline-none focus:ring-2 focus:ring-brand-pink/50 focus:border-brand-pink/50 transition-all;
+  }
+
+  .brand-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-orange via-brand-pink to-brand-blue;
+  }
+
+  .page-eyebrow {
+    @apply text-brand-orange font-bold tracking-[0.2em] uppercase text-xs mb-3 block;
+  }
+
+  .page-title {
+    @apply font-display text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-brand-cloud;
+  }
+
+  .page-subtitle {
+    @apply text-brand-cloud/60 text-lg md:text-xl max-w-2xl;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl md:text-4xl font-bold text-brand-cloud uppercase tracking-wide;
+  }
+
+  .nav-link {
+    @apply text-sm font-semibold text-brand-cloud/70 hover:text-brand-pink transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-brand-pink;
+  }
+
+  .hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
   }
 }

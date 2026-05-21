@@ -121,45 +121,49 @@ function RegisterContent() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-admin-bg">
-        <Card className="max-w-md w-full p-12 text-center flex flex-col items-center">
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <Card className="max-w-md w-full p-12 text-center flex flex-col items-center border-brand-orange/30">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}>
-            <CheckCircle2 size={80} className="text-green-500 mb-6" />
+            <CheckCircle2 size={80} className="text-brand-orange mb-6" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-white mb-2">Registration Successful!</h1>
-          <p className="text-gray-400 mb-8">
+          <h1 className="text-3xl font-display font-extrabold text-brand-cloud mb-2">Registration Successful!</h1>
+          <p className="text-brand-cloud/60 mb-8">
             Your payment has been processed. A copy of your details has been mailed to <strong>{formData.email}</strong>.
           </p>
-          <p className="text-sm text-gray-500 mb-8">Registration ID: {regId}</p>
-          <Button onClick={() => router.push('/')} className="w-full">Back to Home</Button>
+          <p className="text-sm text-brand-cloud/50 mb-8">Registration ID: {regId}</p>
+          <Button variant="accent" onClick={() => router.push('/')} className="w-full">Back to Home</Button>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-20 px-4 bg-admin-bg flex flex-col items-center">
-      <div className="w-full max-w-3xl">
-        <button onClick={() => router.push('/')} className="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors">
+    <div className="min-h-screen py-24 px-4 flex flex-col items-center relative">
+      <div className="hero-glow w-96 h-96 bg-brand-pink/15 -top-20 -right-20 absolute" />
+      <div className="w-full max-w-3xl relative z-10">
+        <button onClick={() => router.push('/')} className="flex items-center gap-2 text-brand-cloud/60 hover:text-brand-pink mb-8 transition-colors">
           <ArrowLeft size={20} /> Back to Home
         </button>
 
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-black mb-4 text-white uppercase tracking-tight">Aarambh'26 Registration</h1>
-          <p className="text-gray-400">Join the ultimate convergence of tech and culture.</p>
+          <span className="page-eyebrow">Secure Your Spot</span>
+          <h1 className="text-4xl md:text-5xl font-display font-extrabold mb-4 text-brand-cloud uppercase tracking-tight brand-gradient-text">
+            AARAMBH&apos;26 Registration
+          </h1>
+          <p className="text-brand-cloud/60">Join the ultimate convergence of tech and culture.</p>
         </div>
 
         <div className="flex gap-2 mb-8 justify-center">
           {[1, 2, 3].map((s) => (
-            <div key={s} className={`h-1.5 w-24 rounded-full transition-all duration-300 ${step >= s ? 'bg-primary' : 'bg-white/10'}`} />
+            <div key={s} className={`h-1.5 w-24 rounded-full transition-all duration-300 ${step >= s ? 'bg-brand-pink' : 'bg-brand-cloud/10'}`} />
           ))}
         </div>
 
-        <Card className="p-8 md:p-12 border-admin-border bg-admin-surface/50 backdrop-blur-md">
+        <Card className="p-8 md:p-12 border-brand-pink/20">
           {isProcessing ? (
             <div className="py-20 text-center flex flex-col items-center gap-4">
-              <Loader2 size={48} className="text-primary animate-spin" />
-              <p className="text-gray-400 animate-pulse">Processing your registration...</p>
+              <Loader2 size={48} className="text-brand-pink animate-spin" />
+              <p className="text-brand-cloud/60 animate-pulse">Processing your registration...</p>
             </div>
           ) : (
             <>
@@ -169,26 +173,26 @@ function RegisterContent() {
                   <div className="hidden" aria-hidden="true">
                     <input id="hp_field" type="text" name="hp_field" tabIndex={-1} autoComplete="off" />
                   </div>
-                  <div className="flex items-center gap-3 text-primary border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-3 text-brand-pink border-b border-brand-cloud/10 pb-4">
                     <User size={24} />
                     <h2 className="text-xl font-bold uppercase tracking-wider">Student Details</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-400">Full Name *</label>
-                      <input required name="name" value={formData.name} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none transition-all" placeholder="John Doe" suppressHydrationWarning />
+                      <label className="text-sm font-medium text-brand-cloud/60">Full Name *</label>
+                      <input required name="name" value={formData.name} onChange={handleChange} className="input-field w-full py-3" placeholder="John Doe" suppressHydrationWarning />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-400">Registration Number *</label>
-                      <input required name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none transition-all" placeholder="20230001" suppressHydrationWarning />
+                      <label className="text-sm font-medium text-brand-cloud/60">Registration Number *</label>
+                      <input required name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} className="input-field w-full py-3" placeholder="20230001" suppressHydrationWarning />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-400">Mobile Number *</label>
-                      <input required type="tel" name="mobile" value={formData.mobile} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none transition-all" placeholder="+91 98765 43210" suppressHydrationWarning />
+                      <label className="text-sm font-medium text-brand-cloud/60">Mobile Number *</label>
+                      <input required type="tel" name="mobile" value={formData.mobile} onChange={handleChange} className="input-field w-full py-3" placeholder="+91 98765 43210" suppressHydrationWarning />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-400">Email ID *</label>
-                      <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none transition-all" placeholder="john@example.com" suppressHydrationWarning />
+                      <label className="text-sm font-medium text-brand-cloud/60">Email ID *</label>
+                      <input required type="email" name="email" value={formData.email} onChange={handleChange} className="input-field w-full py-3" placeholder="john@example.com" suppressHydrationWarning />
                     </div>
                   </div>
                   <div className="flex justify-end pt-4">
@@ -199,37 +203,37 @@ function RegisterContent() {
 
               {step === 2 && (
                 <form onSubmit={handleNext} className="space-y-8">
-                  <div className="flex items-center gap-3 text-secondary border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-3 text-brand-blue border-b border-brand-cloud/10 pb-4">
                     <ShieldCheck size={24} />
                     <h2 className="text-xl font-bold uppercase tracking-wider">Parents Details</h2>
                   </div>
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="md:col-span-1 space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Father's Name *</label>
-                        <input required name="fatherName" value={formData.fatherName} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Name *</label>
+                        <input required name="fatherName" value={formData.fatherName} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Father's Mobile *</label>
-                        <input required name="fatherMobile" value={formData.fatherMobile} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Mobile *</label>
+                        <input required name="fatherMobile" value={formData.fatherMobile} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Father's Email</label>
-                        <input name="fatherEmail" value={formData.fatherEmail} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Father&apos;s Email</label>
+                        <input name="fatherEmail" value={formData.fatherEmail} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="md:col-span-1 space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Mother's Name *</label>
-                        <input required name="motherName" value={formData.motherName} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Name *</label>
+                        <input required name="motherName" value={formData.motherName} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Mother's Mobile *</label>
-                        <input required name="motherMobile" value={formData.motherMobile} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Mobile *</label>
+                        <input required name="motherMobile" value={formData.motherMobile} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-400">Mother's Email</label>
-                        <input name="motherEmail" value={formData.motherEmail} onChange={handleChange} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-secondary focus:outline-none transition-all" suppressHydrationWarning />
+                        <label className="text-sm font-medium text-brand-cloud/60">Mother&apos;s Email</label>
+                        <input name="motherEmail" value={formData.motherEmail} onChange={handleChange} className="input-field w-full py-3" suppressHydrationWarning />
                       </div>
                     </div>
                   </div>
@@ -242,22 +246,22 @@ function RegisterContent() {
 
               {step === 3 && (
                 <div className="space-y-8">
-                  <div className="flex items-center gap-3 text-orange-500 border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-3 text-brand-orange border-b border-brand-cloud/10 pb-4">
                     <HomeIcon size={24} />
                     <h2 className="text-xl font-bold uppercase tracking-wider">Address & Payment</h2>
                   </div>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-400">Full Address *</label>
-                      <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="w-full bg-black/30 border border-admin-border rounded-lg px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all resize-none" placeholder="House No, Street, Landmark, City, Pincode" suppressHydrationWarning />
+                      <label className="text-sm font-medium text-brand-cloud/60">Full Address *</label>
+                      <textarea required name="address" value={formData.address} onChange={handleChange} rows={3} className="input-field w-full resize-none py-3" placeholder="House No, Street, Landmark, City, Pincode" suppressHydrationWarning />
                     </div>
 
-                    <div className="bg-white/5 border border-white/10 p-6 rounded-2xl flex justify-between items-center">
+                    <div className="bg-brand-orange/10 border border-brand-orange/30 p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
                       <div>
-                        <p className="text-sm text-gray-400 uppercase tracking-widest mb-1">Registration Fee</p>
-                        <p className="text-3xl font-black text-white">₹ 1,500</p>
+                        <p className="text-sm text-brand-cloud/60 uppercase tracking-widest mb-1">Registration Fee</p>
+                        <p className="text-3xl font-display font-extrabold text-brand-orange">₹ 1,500</p>
                       </div>
-                      <Button onClick={handlePayment} className="bg-green-600 hover:bg-green-500 text-white px-10 py-6 flex items-center gap-2 text-lg">
+                      <Button variant="accent" onClick={handlePayment} className="px-10 py-6 flex items-center gap-2 text-lg">
                         <CreditCard size={24} /> Pay Now
                       </Button>
                     </div>
@@ -277,7 +281,7 @@ function RegisterContent() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-admin-bg flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={48} /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-brand-pink" size={48} /></div>}>
       <RegisterContent />
     </Suspense>
   );

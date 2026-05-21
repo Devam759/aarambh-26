@@ -5,30 +5,57 @@ import { Card } from '@/components/ui/Card';
 
 export default function SpeakersPage() {
   return (
-    <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      <header className="text-center mb-20">
-        <h1 className="text-6xl font-black mb-4 text-white">Distinguished Speakers</h1>
-        <p className="text-gray-400 text-xl font-medium">Learn from the visionaries shaping our future.</p>
+    <div className="py-28 px-6 max-w-7xl mx-auto min-h-screen relative">
+      <div className="hero-glow w-96 h-96 bg-brand-pink/15 -top-10 right-0" />
+
+      <header className="text-center mb-20 relative z-10">
+        <span className="page-eyebrow">Meet the Minds</span>
+        <h1 className="page-title mb-4">Distinguished Speakers</h1>
+        <p className="page-subtitle mx-auto">
+          Learn from the visionaries shaping our future.
+        </p>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {SPEAKERS_DATA.map((speaker) => (
-          <SpeakerCard key={speaker.name} {...speaker} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+        {SPEAKERS_DATA.map((speaker, idx) => (
+          <SpeakerCard key={speaker.name} {...speaker} accentIndex={idx % 3} />
         ))}
       </div>
     </div>
   );
 }
 
-function SpeakerCard({ name, role }: { name: string; role: string }) {
+const ringColors = [
+  'group-hover:border-brand-orange group-hover:shadow-brand-orange',
+  'group-hover:border-brand-pink group-hover:shadow-brand-pink',
+  'group-hover:border-brand-blue group-hover:shadow-brand-blue',
+];
+const iconColors = [
+  'group-hover:text-brand-orange',
+  'group-hover:text-brand-pink',
+  'group-hover:text-brand-blue',
+];
+
+function SpeakerCard({
+  name,
+  role,
+  accentIndex,
+}: {
+  name: string;
+  role: string;
+  accentIndex: number;
+}) {
   return (
-    <Card className="p-10 flex flex-col items-center text-center group hover:border-primary/50 transition-all duration-500">
-      <div className="w-32 h-32 rounded-full bg-white/5 mb-8 overflow-hidden flex items-center justify-center border border-white/10 group-hover:border-primary transition-all duration-300">
-        <Users className="text-gray-600 group-hover:text-primary transition-colors" size={56} />
+    <Card
+      className={`p-10 flex flex-col items-center text-center group transition-all duration-500 hover:scale-[1.02] ${ringColors[accentIndex]}`}
+    >
+      <div
+        className={`w-32 h-32 rounded-full bg-brand-cloud/5 mb-8 overflow-hidden flex items-center justify-center border-2 border-brand-cloud/15 transition-all duration-300 ${ringColors[accentIndex]}`}
+      >
+        <Users className={`text-brand-cloud/30 transition-colors ${iconColors[accentIndex]}`} size={56} />
       </div>
-      <h4 className="text-2xl font-bold mb-2 text-white">{name}</h4>
-      <p className="text-sm text-gray-500 uppercase tracking-widest font-semibold">{role}</p>
+      <h4 className="text-2xl font-display font-bold mb-2 text-brand-cloud">{name}</h4>
+      <p className="text-sm text-brand-pink uppercase tracking-widest font-semibold">{role}</p>
     </Card>
   );
 }
-

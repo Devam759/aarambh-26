@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, PieChart, Users, Lock, Unlock } from 'lucide-react';
+import { ArrowRight, ShieldCheck, PieChart, Users, Lock, Unlock, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -18,24 +19,19 @@ export default function Home() {
   const [hasRegistered, setHasRegistered] = useState(false);
 
   useEffect(() => {
-    // Check if user has already registered in this session
     if (typeof window !== 'undefined') {
       const regStatus = localStorage.getItem('aarambh_registered');
-      if (regStatus === 'true') {
-        setHasRegistered(true);
-      }
+      if (regStatus === 'true') setHasRegistered(true);
     }
 
     const targetDate = new Date('2026-03-15T09:00:00').getTime();
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const difference = targetDate - now;
-      
       if (difference < 0) {
         clearInterval(interval);
         return;
       }
-
       setTimeLeft({
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -46,39 +42,51 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleRegistrationSuccess = () => {
-    setHasRegistered(true);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('aarambh_registered', 'true');
-    }
-  };
-
   return (
-    <main className="flex flex-col items-center">
-      {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-20 px-4 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-20 pointer-events-none" />
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+    <main className="flex flex-col items-center overflow-x-hidden">
+      {/* Hero */}
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-28 px-4">
+        <div className="hero-glow w-[500px] h-[500px] bg-brand-pink/25 -top-40 -left-40" />
+        <div className="hero-glow w-[400px] h-[400px] bg-brand-orange/20 top-20 -right-32" />
+        <div className="hero-glow w-[350px] h-[350px] bg-brand-blue/20 bottom-0 left-1/3" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="z-10 text-center max-w-4xl"
+          transition={{ duration: 0.6 }}
+          className="z-10 text-center max-w-4xl flex flex-col items-center"
         >
-          <span className="text-primary font-bold tracking-widest uppercase mb-4 block">University of Excellence Presents</span>
-          <h1 className="text-6xl md:text-8xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-secondary">
-            AARAMBH 2026
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto">
-            The ultimate convergence of technology, culture, and innovation. 
-            Join us for a 3-day extravaganza that defines the future.
+          <span className="page-eyebrow flex items-center justify-center gap-2">
+            <Sparkles size={14} className="text-brand-orange" />
+            University of Excellence Presents
+          </span>
+
+          <Image
+            src="/logo.svg"
+            alt="AARAMBH'26"
+            width={520}
+            height={120}
+            className="w-full max-w-md md:max-w-xl h-auto mb-8"
+            priority
+          />
+
+          <p className="page-subtitle mx-auto mb-12">
+            The ultimate convergence of technology, culture, and innovation. Three days of energy,
+            boldness, and limitless possibilities.
           </p>
 
-          {/* Countdown Timer */}
-          <div className="grid grid-cols-4 gap-4 mb-12">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-lg">
             {(['Days', 'Hours', 'Mins', 'Secs'] as const).map((label) => (
-              <Card key={label} className="p-4 flex flex-col items-center min-w-[80px]">
-                <span className="text-3xl font-bold">{timeLeft[label.toLowerCase() as keyof TimeLeft]}</span>
-                <span className="text-xs text-gray-500 uppercase">{label}</span>
+              <Card
+                key={label}
+                className="p-4 sm:p-5 flex flex-col items-center border-brand-pink/20 bg-brand-pink/5"
+              >
+                <span className="text-2xl sm:text-4xl font-display font-extrabold text-brand-cloud tabular-nums">
+                  {String(timeLeft[label.toLowerCase() as keyof TimeLeft]).padStart(2, '0')}
+                </span>
+                <span className="text-[10px] sm:text-xs text-brand-cloud/50 uppercase tracking-widest mt-1">
+                  {label}
+                </span>
               </Card>
             ))}
           </div>
@@ -86,108 +94,156 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-4">
             {!hasRegistered ? (
               <Link href="/register">
-                <Button className="flex items-center gap-2">
+                <Button variant="accent" className="flex items-center gap-2 text-base px-8">
                   Register Now <ArrowRight size={20} />
                 </Button>
               </Link>
             ) : (
-              <div className="bg-green-500/20 text-green-400 border border-green-500/50 px-6 py-3 rounded-xl font-bold flex items-center gap-2">
-                <ShieldCheck size={20} /> You are Registered!
+              <div className="bg-brand-blue/20 text-brand-cloud border border-brand-blue/40 px-6 py-3 rounded-full font-bold flex items-center gap-2">
+                <ShieldCheck size={20} className="text-brand-orange" /> You are Registered!
               </div>
             )}
-            
             <Link href="/check-in">
               <Button variant="glass" className="flex items-center gap-2">
                 Volunteer Access
               </Button>
             </Link>
             <Link href="/admin">
-              <Button variant="glass" className="flex items-center gap-2 border-orange-500/30 text-orange-400 hover:border-orange-500/50 hover:bg-orange-500/10">
+              <Button
+                variant="glass"
+                className="flex items-center gap-2 border-brand-orange/30 text-brand-orange hover:border-brand-orange/60 hover:bg-brand-orange/10"
+              >
                 Admin Portal
               </Button>
             </Link>
           </div>
         </motion.div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark to-transparent pointer-events-none" />
       </section>
 
-      {/* Quick Links Section */}
-      <section className="py-20 px-4 w-full max-w-7xl">
-        <h2 className="text-3xl font-bold mb-12 text-center uppercase tracking-widest text-white">Platform Modules</h2>
+      {/* Brand strip */}
+      <section className="w-full py-6 border-y border-brand-cloud/10 bg-brand-gradient-soft">
+        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-8 md:gap-16 text-center">
+          {[
+            { label: 'Energy', color: 'text-brand-orange' },
+            { label: 'Boldness', color: 'text-brand-pink' },
+            { label: 'Possibility', color: 'text-brand-blue' },
+          ].map((item) => (
+            <span key={item.label} className={`font-display font-bold text-lg uppercase tracking-widest ${item.color}`}>
+              {item.label}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* Modules */}
+      <section className="py-24 px-4 w-full max-w-7xl">
+        <div className="text-center mb-14">
+          <span className="page-eyebrow">Explore</span>
+          <h2 className="section-heading">Platform Modules</h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <ModuleCard 
-            title="Digital Check-in" 
+          <ModuleCard
+            title="Digital Check-in"
             desc="Seamless entry with QR verification for participants."
-            icon={<ShieldCheck className="text-primary" />}
+            accent="pink"
+            icon={<ShieldCheck size={32} />}
             link="/check-in"
           />
-          <ModuleCard 
-            title="Volunteer Portal" 
+          <ModuleCard
+            title="Volunteer Portal"
             desc="Coordinate tasks, roles, and duty rosters in real-time."
-            icon={<Users className="text-secondary" />}
+            accent="blue"
+            icon={<Users size={32} />}
             link="/volunteer"
           />
-          <ModuleCard 
-            title="Feedback & Analytics" 
+          <ModuleCard
+            title="Feedback & Analytics"
             desc="Post-event insights and real-time satisfaction tracking."
-            icon={<PieChart className="text-orange-500" />}
-            link="/admin"
+            accent="orange"
+            icon={<PieChart size={32} />}
+            link="/feedback"
           />
         </div>
       </section>
 
-      {/* Locked Content Area */}
-      <section className="py-20 px-4 w-full max-w-7xl relative">
-        <h2 className="text-3xl font-bold mb-12 text-center uppercase tracking-widest text-white flex items-center justify-center gap-3">
-          {hasRegistered ? <Unlock className="text-green-500" /> : <Lock className="text-gray-500" />} 
-          Exclusive Student Content
-        </h2>
-        
+      {/* Exclusive content */}
+      <section className="py-24 px-4 w-full max-w-7xl">
+        <div className="text-center mb-14">
+          <h2 className="section-heading flex items-center justify-center gap-3">
+            {hasRegistered ? (
+              <Unlock className="text-brand-orange" size={32} />
+            ) : (
+              <Lock className="text-brand-cloud/40" size={32} />
+            )}
+            Exclusive Student Content
+          </h2>
+        </div>
+
         {!hasRegistered ? (
-          <Card className="p-12 text-center flex flex-col items-center justify-center border-dashed border-admin-border/50 bg-black/20 relative overflow-hidden backdrop-blur-sm">
-            <Lock size={64} className="text-gray-600 mb-6" />
-            <h3 className="text-2xl font-bold text-gray-400 mb-4">Content Locked</h3>
-            <p className="text-gray-500 max-w-md">Register for Aarambh'26 to unlock exclusive event schedules, speaker details, and access to the student community discord.</p>
-            <Link href="/register">
-              <Button className="mt-8">Register to Unlock</Button>
+          <Card className="p-12 text-center flex flex-col items-center border-dashed border-brand-pink/30 bg-brand-pink/5">
+            <Lock size={56} className="text-brand-pink/50 mb-6" />
+            <h3 className="text-2xl font-display font-bold text-brand-cloud mb-4">Content Locked</h3>
+            <p className="text-brand-cloud/50 max-w-md">
+              Register for AARAMBH&apos;26 to unlock exclusive schedules, speaker details, and community access.
+            </p>
+            <Link href="/register" className="mt-8">
+              <Button variant="accent">Register to Unlock</Button>
             </Link>
           </Card>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
-            <Card className="p-8 border-green-500/20 bg-green-500/5">
-              <h3 className="text-2xl font-bold text-white mb-4">Student Community</h3>
-              <p className="text-gray-400 mb-6">Join your cohort's WhatsApp and Discord groups to start networking!</p>
-              <Button variant="glass" className="w-full text-green-400 border-green-500/30">Join Discord Server</Button>
+            <Card className="p-8 border-brand-blue/30 bg-brand-blue/10">
+              <h3 className="text-2xl font-display font-bold text-brand-cloud mb-4">Student Community</h3>
+              <p className="text-brand-cloud/60 mb-6">
+                Join your cohort&apos;s WhatsApp and Discord groups to start networking!
+              </p>
+              <Button variant="secondary" className="w-full">
+                Join Discord Server
+              </Button>
             </Card>
-            <Card className="p-8 border-primary/20 bg-primary/5">
-              <h3 className="text-2xl font-bold text-white mb-4">Event Schedule</h3>
-              <p className="text-gray-400 mb-6">View your personalized itinerary based on your cohort assignment.</p>
-              <Button variant="glass" className="w-full text-primary border-primary/30">Download Schedule PDF</Button>
+            <Card className="p-8 border-brand-orange/30 bg-brand-orange/10">
+              <h3 className="text-2xl font-display font-bold text-brand-cloud mb-4">Event Schedule</h3>
+              <p className="text-brand-cloud/60 mb-6">
+                View your personalized itinerary based on your cohort assignment.
+              </p>
+              <Link href="/schedule">
+                <Button variant="accent" className="w-full">
+                  View Full Schedule
+                </Button>
+              </Link>
             </Card>
           </motion.div>
         )}
       </section>
 
-      {/* Lead Capture Form */}
-      <section className="py-32 px-6 w-full max-w-5xl pb-60">
-        <Card className="p-12 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
-          <h2 className="text-4xl font-bold mb-6 relative z-10 text-white">Don't Miss Any Update</h2>
-          <p className="text-gray-400 mb-10 relative z-10 max-w-lg mx-auto">
-            Subscribe to our newsletter to get real-time alerts about registrations, speaker announcements, and event highlights.
+      {/* Newsletter */}
+      <section className="py-24 px-6 w-full max-w-5xl pb-32">
+        <Card className="p-10 md:p-14 text-center relative overflow-hidden border-brand-blue/20">
+          <div className="hero-glow w-64 h-64 bg-brand-pink/20 -mr-32 -mt-32 top-0 right-0" />
+          <span className="page-eyebrow relative z-10">Stay Updated</span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 relative z-10 text-brand-cloud">
+            Don&apos;t Miss Any Update
+          </h2>
+          <p className="text-brand-cloud/60 mb-10 relative z-10 max-w-lg mx-auto">
+            Subscribe for real-time alerts about registrations, speaker announcements, and event highlights.
           </p>
           <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto relative z-10">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
+            <input
+              type="email"
+              placeholder="Enter your email"
               className="input-field flex-grow py-3"
               required
               suppressHydrationWarning
             />
-            <Button className="py-3 px-8">Subscribe</Button>
+            <Button variant="primary" className="py-3 px-8 shrink-0">
+              Subscribe
+            </Button>
           </form>
         </Card>
       </section>
@@ -200,22 +256,32 @@ interface ModuleCardProps {
   desc: string;
   icon: React.ReactElement;
   link: string;
+  accent: 'pink' | 'blue' | 'orange';
 }
 
-function ModuleCard({ title, desc, icon, link }: ModuleCardProps) {
+const accentCard: Record<ModuleCardProps['accent'], string> = {
+  pink: 'hover:border-brand-pink/50',
+  blue: 'hover:border-brand-blue/50',
+  orange: 'hover:border-brand-orange/50',
+};
+const accentIcon: Record<ModuleCardProps['accent'], string> = {
+  pink: 'text-brand-pink group-hover:bg-brand-pink/15',
+  blue: 'text-brand-blue group-hover:bg-brand-blue/15',
+  orange: 'text-brand-orange group-hover:bg-brand-orange/15',
+};
+
+function ModuleCard({ title, desc, icon, link, accent }: ModuleCardProps) {
   return (
     <Link href={link}>
-      <Card 
-        className="p-8 h-full flex flex-col items-start gap-4 cursor-pointer hover:border-primary/50 transition-colors group"
-      >
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="p-3 bg-white/5 rounded-xl group-hover:bg-primary/10 transition-colors"
+      <Card className={`p-8 h-full flex flex-col items-start gap-4 cursor-pointer transition-all duration-300 group hover:scale-[1.02] ${accentCard[accent]}`}>
+        <motion.div
+          whileHover={{ y: -4 }}
+          className={`p-4 rounded-2xl bg-brand-cloud/5 transition-colors ${accentIcon[accent]}`}
         >
-          {React.cloneElement(icon, { size: 32 } as any)}
+          {icon}
         </motion.div>
-        <h3 className="text-2xl font-bold text-white">{title}</h3>
-        <p className="text-gray-400 leading-relaxed">{desc}</p>
+        <h3 className="text-2xl font-display font-bold text-brand-cloud">{title}</h3>
+        <p className="text-brand-cloud/60 leading-relaxed">{desc}</p>
       </Card>
     </Link>
   );
