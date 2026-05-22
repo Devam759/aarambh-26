@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { auth } from '../../lib/firebase';
+import { auth, isFirebaseConfigured } from '../../lib/firebase';
 import { 
   LayoutDashboard, 
   Users, 
@@ -32,7 +32,9 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
-    await auth.signOut();
+    if (isFirebaseConfigured() && auth) {
+      await auth.signOut();
+    }
     router.push('/login');
   };
 

@@ -34,14 +34,12 @@ const app: FirebaseApp | null = isFirebaseConfigured()
   : null;
 
 // Only initialize Auth/Firestore when config is valid — avoids auth/invalid-api-key on load
-export const auth: Auth = app ? getAuth(app) : (undefined as unknown as Auth);
-export const db: Firestore = app
+export const auth: Auth | null = app ? getAuth(app) : null;
+export const db: Firestore | null = app
   ? initializeFirestore(app, {
       localCache: typeof window !== 'undefined' ? persistentLocalCache() : undefined,
     })
-  : (undefined as unknown as Firestore);
-export const storage: FirebaseStorage = app
-  ? getStorage(app)
-  : (undefined as unknown as FirebaseStorage);
+  : null;
+export const storage: FirebaseStorage | null = app ? getStorage(app) : null;
 
 export default app;

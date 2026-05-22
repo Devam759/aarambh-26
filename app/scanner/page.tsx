@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, collection, addDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../../lib/firebase';
+import { auth, db, isFirebaseConfigured, FIREBASE_SETUP_MESSAGE } from '../../lib/firebase';
 import { Html5Qrcode } from 'html5-qrcode';
 import { Loader2, LogOut, Camera, Check, X, User, AlertCircle, Mail, Phone, ShieldCheck, MapPin } from 'lucide-react';
 
@@ -20,6 +20,11 @@ export default function ScannerView() {
   const isScanning = useRef(true);
 
   useEffect(() => {
+    if (!isFirebaseConfigured() || !auth || !db) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         router.push('/login');
@@ -140,9 +145,17 @@ export default function ScannerView() {
   };
 
   const handleLogout = async () => {
-    await auth.signOut();
+    if (auth) await auth.signOut();
     router.push('/login');
   };
+
+  if (!isFirebaseConfigured()) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <p className="max-w-md text-sm text-gray-600 text-center">{FIREBASE_SETUP_MESSAGE}</p>
+      </div>
+    );
+  }
 
   if (loading) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><Loader2 className="animate-spin text-yellow-500" size={32} /></div>;

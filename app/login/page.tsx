@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../lib/firebase';
+import { auth, db, isFirebaseConfigured, FIREBASE_SETUP_MESSAGE } from '../../lib/firebase';
 import { Lock, Mail, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -16,6 +16,10 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFirebaseConfigured() || !auth || !db) {
+      setError(FIREBASE_SETUP_MESSAGE);
+      return;
+    }
     if (!email || !password) {
       setError('Please fill in all fields.');
       return;
@@ -59,6 +63,11 @@ export default function LoginPage() {
 
         {/* Simple Light Card */}
         <div className="bg-white border-2 border-gray-200 p-8">
+          {!isFirebaseConfigured() && (
+            <div className="mb-6 p-3 bg-amber-50 text-amber-900 text-xs border border-amber-200 leading-relaxed">
+              {FIREBASE_SETUP_MESSAGE}
+            </div>
+          )}
           {error && (
             <div className="mb-6 p-3 bg-red-50 text-red-700 text-xs font-bold border border-red-100 text-center uppercase">
               {error}
