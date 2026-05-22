@@ -39,6 +39,13 @@ export default {
           text: '#030404',
           muted: '#64748b',
           border: '#e2e8f0'
+        },
+        brand: {
+          orange: '#FF9A00',
+          pink: '#FF188C',
+          blue: '#0D21DD',
+          black: '#030404',
+          white: '#F5F1E5',
         }
       },
       fontFamily: {

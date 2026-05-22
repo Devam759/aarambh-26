@@ -21,9 +21,27 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === '/') {
+      if (href.startsWith('/#')) {
+        e.preventDefault();
+        const targetId = href.replace('/#', '');
+        const element = document.getElementById(targetId);
+        if (element) {
+          const y = element.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      } else if (href === '/') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
+    { name: 'About', href: '/#about' },
     { name: 'Schedule', href: '/schedule' },
     { name: 'Speakers', href: '/speakers' },
     { name: 'FAQ', href: '/faq' },
@@ -56,6 +74,7 @@ export default function Navbar() {
               key={link.name}
               href={link.href}
               className={`nav-link ${pathname === link.href ? 'nav-link-active' : ''}`}
+              onClick={(e) => handleNavClick(e, link.href)}
             >
               {link.name}
             </Link>
@@ -84,6 +103,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
               className={`text-lg font-semibold ${
                 pathname === link.href ? 'text-brand-pink' : 'text-brand-cloud/80'
               }`}

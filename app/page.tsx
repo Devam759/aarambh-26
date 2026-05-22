@@ -6,6 +6,7 @@ import { ArrowRight, ShieldCheck, Lock, Unlock, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import AboutSection from '@/components/about';
 
 interface TimeLeft {
   days: number;
@@ -137,7 +138,7 @@ export default function Home() {
         </div>
       </section>
 
-
+      <AboutSection />
 
       {/* Exclusive content */}
       <section className="py-24 px-4 w-full max-w-7xl">
