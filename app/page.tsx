@@ -13,6 +13,17 @@ interface TimeLeft {
   secs: number;
 }
 
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  color: string;
+  size: number;
+  angle: number;
+  distance: number;
+  isSquare: boolean;
+}
+
 function TornPaperDivider({ color = "fill-brand-ink", flip = false }: { color?: string; flip?: boolean }) {
   return (
     <div className={`w-full overflow-hidden leading-[0] select-none pointer-events-none ${flip ? 'rotate-180' : ''}`}>
@@ -37,10 +48,93 @@ const marqueeVariants: Variants = {
   },
 };
 
+// Web Audio API Retro sound effects synthesizer
+const playSynthSound = (type: 'boom' | 'pow' | 'bang' | 'stamp' | 'click') => {
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    const now = ctx.currentTime;
+    
+    if (type === 'boom') {
+      // Deep explosion rumble sliding down
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(25, now + 0.65);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+      osc.start(now);
+      osc.stop(now + 0.65);
+    } else if (type === 'pow') {
+      // Punchy laser slide down
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(750, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.35);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'bang') {
+      // Retro coin jump slide
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(350, now);
+      osc.frequency.setValueAtTime(580, now + 0.08);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.4);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+      osc.start(now);
+      osc.stop(now + 0.4);
+    } else if (type === 'stamp') {
+      // Thumping press sound
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(110, now);
+      osc.frequency.exponentialRampToValueAtTime(15, now + 0.25);
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else {
+      // Subtle click bleep
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(500, now);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    }
+  } catch (e) {
+    // Audio context may be blocked by browser policy until user click, which is normal
+  }
+};
+
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [hasRegistered, setHasRegistered] = useState(false);
   const [activeSpectrum, setActiveSpectrum] = useState<number | null>(null);
+  const [particles, setParticles] = useState<Particle[]>([]);
+
+  // Function to create comic dot explosion particles
+  const spawnParticles = (x: number, y: number) => {
+    const colors = ['#FF9A00', '#FF188C', '#0D21DD', '#030404', '#F5F1E5'];
+    const newParticles = Array.from({ length: 12 }).map((_, i) => ({
+      id: Math.random() + Date.now() + i,
+      x,
+      y,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 12 + 6,
+      angle: Math.random() * Math.PI * 2,
+      distance: Math.random() * 70 + 30,
+      isSquare: Math.random() > 0.5
+    }));
+    setParticles((prev) => [...prev, ...newParticles].slice(-40)); // Keep max 40 in DOM
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -63,14 +157,28 @@ export default function Home() {
         secs: Math.floor((difference / 1000) % 60),
       });
     }, 1000);
-    return () => clearInterval(interval);
+
+    // Global listener for screen clicks to synthesis clicks and pop comic dots
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'BUTTON' || target.closest('a')) return;
+      spawnParticles(e.clientX, e.clientY);
+      playSynthSound('click');
+    };
+
+    window.addEventListener('click', handleGlobalClick);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('click', handleGlobalClick);
+    };
   }, []);
 
   const stickers = [
-    { text: "ISSUE #26", color: "bg-brand-pink text-brand-cloud border-comic-thin shadow-comic-sm", top: "12%", left: "6%", rotate: "-8deg" },
-    { text: "JULY 14-16", color: "bg-brand-orange text-brand-ink font-extrabold border-comic-thin shadow-comic-sm", top: "15%", right: "8%", rotate: "6deg" },
-    { text: "KAPOW!", color: "bg-brand-blue text-brand-cloud", bottom: "25%", left: "8%", starburst: true, rotate: "-12deg" },
-    { text: "APPROVED", subtext: "BY THE SQUAD", color: "bg-brand-cloud text-brand-pink border-4 border-dashed border-brand-pink", bottom: "22%", right: "8%", stamp: true, rotate: "15deg" },
+    { text: "BOOM!", type: "boom", color: "bg-brand-pink text-brand-cloud", top: "12%", left: "6%", starburst: true, rotate: "-8deg" },
+    { text: "POW!", type: "pow", color: "bg-brand-orange text-brand-ink font-extrabold", top: "15%", right: "8%", starburst: true, rotate: "6deg" },
+    { text: "BANG!", type: "bang", color: "bg-brand-blue text-brand-cloud", bottom: "25%", left: "8%", starburst: true, rotate: "-12deg" },
+    { text: "APPROVED", type: "stamp", subtext: "BY THE SQUAD", color: "bg-brand-cloud text-brand-pink border-4 border-dashed border-brand-pink", bottom: "22%", right: "8%", stamp: true, rotate: "15deg" },
   ];
 
   const countdownBlocks = [
@@ -149,7 +257,39 @@ export default function Home() {
       {/* Noise/Grain Overlay */}
       <div className="noise-overlay" />
 
-      {/* Fresh Comic Magazine Cover Hero (No Video) */}
+      {/* Particle Overlay for click explosions */}
+      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+        <AnimatePresence>
+          {particles.map((p) => (
+            <motion.div
+              key={p.id}
+              initial={{ x: p.x - p.size/2, y: p.y - p.size/2, scale: 1, opacity: 1, rotate: 0 }}
+              animate={{ 
+                x: p.x - p.size/2 + Math.cos(p.angle) * p.distance,
+                y: p.y - p.size/2 + Math.sin(p.angle) * p.distance,
+                scale: 0.1,
+                opacity: 0,
+                rotate: 180
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              style={{
+                position: 'fixed',
+                left: 0,
+                top: 0,
+                width: p.size,
+                height: p.size,
+                backgroundColor: p.color,
+                borderRadius: p.isSquare ? '0%' : '50%',
+                border: '2px solid #030404',
+                boxShadow: '1.5px 1.5px 0px #030404',
+              }}
+            />
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Comic Magazine Cover Hero */}
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
         
         {/* Comic Pattern Backdrop */}
@@ -159,7 +299,7 @@ export default function Home() {
         <div className="absolute top-12 left-12 w-64 h-64 bg-brand-pink/15 rounded-full blur-[80px] pointer-events-none" />
         <div className="absolute bottom-20 right-20 w-[450px] h-[450px] bg-brand-orange/15 rounded-full blur-[100px] pointer-events-none" />
         
-        {/* Draggable Pop-Art Stickers */}
+        {/* Draggable Pop-Art Stickers with synthesized audio triggers */}
         <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
           {stickers.map((sticker, idx) => (
             <motion.div
@@ -169,6 +309,15 @@ export default function Home() {
               dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
               whileHover={{ scale: 1.15, zIndex: 50, rotate: "0deg" }}
               whileDrag={{ scale: 1.2, zIndex: 100, cursor: "grabbing" }}
+              onDragStart={(e) => {
+                // Synthesizes retro sounds when dragging begins
+                playSynthSound(sticker.type as any);
+              }}
+              onClick={(e) => {
+                // Spawn click explosion right at stamp/sticker location
+                spawnParticles(e.clientX, e.clientY);
+                playSynthSound(sticker.type as any);
+              }}
               style={{
                 top: sticker.top,
                 left: sticker.left,
@@ -237,7 +386,7 @@ export default function Home() {
           {/* Narrative Dialogue Box */}
           <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-2xl shadow-comic rotate-1 bg-halftone-cloud mb-10">
             <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase">
-              “SQUAD REPORT: A FRESH BEGINNING IS INITIATED! PREPARE YOUR PASSES FOR THREE DAYS OF UNFILTERED CREATIVITY AND INNOVATION!”
+              “SQUAD REPORT: A FRESH BEGINNING IS INITIATED! CLICK ANYWHERE TO UNLEASH HALFTONE PARTICLES AND SYNTH SOUNDS!”
             </p>
           </div>
 
@@ -320,7 +469,7 @@ export default function Home() {
       {/* Torn paper visual separation */}
       <TornPaperDivider color="fill-brand-ink" flip={true} />
 
-      {/* Comic Book Panels Grid (Fresh Addition) */}
+      {/* Comic Book Panels Grid */}
       <section className="py-24 px-6 w-full max-w-7xl relative z-10 flex flex-col items-center">
         <span className="px-4 py-1.5 border-comic-thin bg-brand-pink text-brand-cloud font-display text-xs font-black tracking-widest uppercase rotate-2 mb-4">
           EVENT BRIEFINGS
