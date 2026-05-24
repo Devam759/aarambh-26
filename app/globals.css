@@ -36,21 +36,18 @@
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
 }
 
-<<<<<<< HEAD
-html { background-color: var(--color-brand-cloud); }
+html {
+  background-color: var(--color-brand-cloud);
+}
 
 body {
   margin: 0;
-=======
-html,
-body {
   max-width: 100%;
   overflow-x: hidden;
-  color: var(--color-brand-cloud);
-  background-color: var(--color-brand-ink);
+  color: var(--color-brand-ink);
+  background-color: var(--color-brand-cloud);
   min-height: 100vh;
   font-family: var(--font-sans);
->>>>>>> 17db9d1c7ca11a67aa271b0593cb8bd1bace9ed4
 }
 
 
