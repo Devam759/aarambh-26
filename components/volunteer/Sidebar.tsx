@@ -124,6 +124,24 @@ export default function VolunteerSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
+    let performer = 'Volunteer';
+    try {
+      const sessionStr = localStorage.getItem('aarambh_session');
+      if (sessionStr) {
+        const session = JSON.parse(sessionStr);
+        performer = session.email || session.name || session.uid || 'Volunteer';
+      } else if (isFirebaseConfigured() && auth && auth.currentUser) {
+        performer = auth.currentUser.email || auth.currentUser.uid || 'Volunteer';
+      }
+    } catch (e) {
+      console.error("Failed to parse local session:", e);
+    }
+    try {
+      const { logAdminAction } = await import('../../lib/audit');
+      await logAdminAction('LOGOUT', 'sessions', `Volunteer ${performer} signed out successfully`, performer);
+    } catch (err) {
+      console.error("Failed to log logout action:", err);
+    }
     if (isFirebaseConfigured() && auth) {
       await auth.signOut();
     }

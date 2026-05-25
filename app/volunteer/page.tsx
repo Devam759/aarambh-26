@@ -125,6 +125,13 @@ export default function VolunteerDashboard() {
       await updateDoc(doc(db, 'notifications', notifId), {
         read: true
       });
+      const performer = profile?.email || profile?.name || profile?.uid || 'Volunteer';
+      try {
+        const { logAdminAction } = await import('../../lib/audit');
+        await logAdminAction('VOLUNTEER_READ_NOTIFICATION', `notifications/${notifId}`, `Marked notification as read`, performer);
+      } catch (err) {
+        console.error("Failed to log notification read:", err);
+      }
     } catch (err) {
       console.error("Failed to update notification:", err);
     }
@@ -138,6 +145,13 @@ export default function VolunteerDashboard() {
         batch.delete(doc(db, 'notifications', notif.id));
       });
       await batch.commit();
+      const performer = profile?.email || profile?.name || profile?.uid || 'Volunteer';
+      try {
+        const { logAdminAction } = await import('../../lib/audit');
+        await logAdminAction('VOLUNTEER_CLEAR_NOTIFICATIONS', 'notifications', `Cleared all ${notifications.length} notifications`, performer);
+      } catch (err) {
+        console.error("Failed to log notifications clear:", err);
+      }
     } catch (err) {
       console.error("Failed to clear notifications:", err);
     }
@@ -227,6 +241,12 @@ export default function VolunteerDashboard() {
                       Live Today
                     </div>
                     
+                    {duty.eventTitle && (
+                      <div className="mb-2 bg-brand-ink text-white inline-block px-2.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider">
+                        Event: {duty.eventTitle}
+                      </div>
+                    )}
+                    
                     <div className="flex items-center gap-2 mb-2">
                       <MapPin size={18} className="text-brand-ink" />
                       <span className="text-xl font-black uppercase tracking-wide">{duty.venue}</span>
@@ -255,8 +275,7 @@ export default function VolunteerDashboard() {
                       </div>
                     )}
                     
-                    <div className="mt-4 flex justify-between items-center text-[10px] font-black uppercase text-brand-ink/65 tracking-wider">
-                      <span>Assigned By: {duty.assignedBy || 'System'}</span>
+                    <div className="mt-4 flex justify-end items-center text-[10px] font-black uppercase text-brand-ink/65 tracking-wider">
                       <span className="bg-white border-2 border-brand-ink px-2.5 py-1 rounded-md text-brand-ink shadow-[2px_2px_0px_0px_#030404]">
                         Status: {duty.status}
                       </span>
@@ -304,7 +323,12 @@ export default function VolunteerDashboard() {
                             <span className="text-[10px] font-black uppercase tracking-widest text-brand-pink">
                               {formatDateFriendly(duty.dutyDate)}
                             </span>
-                            <h3 className="text-base font-black uppercase tracking-wide text-brand-ink flex items-center gap-1.5 mt-0.5">
+                            {duty.eventTitle && (
+                              <div className="text-[9px] font-black uppercase tracking-widest text-brand-blue mt-0.5">
+                                Event: {duty.eventTitle}
+                              </div>
+                            )}
+                            <h3 className="text-base font-black uppercase tracking-wide text-brand-ink flex items-center gap-1.5 mt-1">
                               <MapPin size={14} className="text-brand-orange" />
                               {duty.venue}
                             </h3>
@@ -333,7 +357,6 @@ export default function VolunteerDashboard() {
                         
                         <div className="mt-3.5 pt-3 border-t border-brand-ink/10 flex justify-between items-center text-[9px] font-black uppercase text-admin-muted tracking-wider">
                           <span>Team: {duty.team}</span>
-                          <span>Assigned By: {duty.assignedBy || 'System'}</span>
                         </div>
                       </div>
                     </div>

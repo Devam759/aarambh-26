@@ -277,6 +277,12 @@ export default function VolunteerSchedule() {
                     </span>
                   </div>
 
+                  {duty.eventTitle && (
+                    <div className="text-[9px] font-black uppercase tracking-widest text-brand-blue mb-1.5">
+                      Event: {duty.eventTitle}
+                    </div>
+                  )}
+
                   <h3 className="font-black uppercase text-sm text-brand-ink flex items-center gap-1">
                     <MapPin size={12} className="text-brand-orange shrink-0" />
                     {duty.venue}
@@ -294,9 +300,7 @@ export default function VolunteerSchedule() {
                     </div>
                   )}
 
-                  <span className="text-[9px] font-black uppercase text-admin-muted/65 block mt-3 text-right">
-                    Assigned By: {duty.assignedBy || 'System'}
-                  </span>
+
                 </div>
               ))
             ) : (
