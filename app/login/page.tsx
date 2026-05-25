@@ -343,6 +343,7 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
+                  suppressHydrationWarning
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-brand-ink/40 hover:text-brand-ink focus:outline-none cursor-pointer transition-colors"
                 >
@@ -355,6 +356,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
+              suppressHydrationWarning
               className="w-full bg-brand-orange hover:bg-[#E68A00] text-brand-ink font-black py-4 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
             >
               {loading ? (
