@@ -166,9 +166,14 @@ function DraggableDossierCard({ speaker, theme, onThrow }: { speaker: any, theme
   const [showBio, setShowBio] = useState(false);
   const controls = useAnimation();
 
-  // Handle entry animation on mount
-  React.useEffect(() => {
-    controls.start({ scale: 1, opacity: 1, rotate: 0 });
+  // Handle entry animation when component mounts
+  useEffect(() => {
+    controls.start({ 
+      scale: 1, 
+      opacity: 1, 
+      rotate: 0, 
+      transition: { type: "spring", stiffness: 200, damping: 20 } 
+    });
   }, [controls]);
 
   // Handles the physics of throwing the card
