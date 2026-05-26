@@ -2,13 +2,13 @@ import React from 'react';
 
 export function SkeletonRow({ className = '' }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-admin-border rounded ${className}`}></div>
+    <div className={`animate-pulse bg-[#e2e8f0] rounded-sm ${className}`}></div>
   );
 }
 
 export function SkeletonCard() {
   return (
-    <div className="bg-admin-surface border border-admin-border p-6 rounded-xl flex flex-col gap-4">
+    <div className="bg-admin-surface border-4 border-brand-ink p-6 rounded-md shadow-[4px_4px_0px_0px_#030404] flex flex-col gap-4">
       <SkeletonRow className="h-4 w-1/3" />
       <SkeletonRow className="h-10 w-1/2" />
     </div>
@@ -17,8 +17,8 @@ export function SkeletonCard() {
 
 export function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="bg-admin-surface border border-admin-border rounded-xl overflow-hidden">
-      <div className="bg-admin-bg/50 p-4 border-b border-admin-border">
+    <div className="bg-admin-surface border-4 border-brand-ink rounded-md shadow-[6px_6px_0px_0px_#030404] overflow-hidden">
+      <div className="bg-admin-bg p-4 border-b-2 border-brand-ink">
         <SkeletonRow className="h-6 w-1/4" />
       </div>
       <div className="p-4 space-y-4">

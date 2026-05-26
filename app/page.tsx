@@ -725,6 +725,7 @@ export default function Home() {
               placeholder="ENTER.YOUR.EMAIL@HERE.COM"
               className="bg-brand-cloud border-comic text-brand-ink placeholder:text-brand-ink/40 font-mono text-sm font-bold focus:outline-none focus:bg-white transition-colors flex-grow shadow-inner uppercase tracking-wider p-3 rounded-lg"
               required
+              suppressHydrationWarning={true}
             />
             <button
               type="submit"

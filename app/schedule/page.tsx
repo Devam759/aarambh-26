@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Calendar, Utensils, Sparkles, Smile, Compass, Navigation } from 'lucide-react';
+import { MapPin, Compass } from 'lucide-react';
 import { SCHEDULE_DATA, DaySchedule, ScheduleItem } from '@/constants/events';
 
 const dayColors = [
@@ -17,57 +17,26 @@ export default function SchedulePage() {
   const [activeDayIdx, setActiveDayIdx] = useState(0);
   const activeDay = SCHEDULE_DATA[activeDayIdx];
 
-  // Check if title represents a meal to style it subtler
-  const isMeal = (title: string) => {
-    const t = title.toUpperCase();
-    return t === 'BREAKFAST' || t === 'LUNCH' || t === 'SNACKS' || t === 'DINNER' || t === 'REST';
-  };
 
-  // Get corresponding icon for event
-  const getEventIcon = (title: string) => {
-    const t = title.toUpperCase();
-    if (t === 'BREAKFAST' || t === 'LUNCH' || t === 'SNACKS' || t === 'DINNER') {
-      return <Utensils className="w-5 h-5" />;
-    }
-    if (t.includes('SPORT') || t.includes('RUN')) {
-      return <Compass className="w-5 h-5 animate-pulse" />;
-    }
-    if (t.includes('WORKSHOP') || t.includes('SESSION') || t.includes('HACKS') || t.includes('CYBER')) {
-      return <Sparkles className="w-5 h-5" />;
-    }
-    if (t.includes('DANCE') || t.includes('LATENT') || t.includes('DRAMA') || t.includes('BAND') || t.includes('CULTURAL')) {
-      return <Smile className="w-5 h-5 text-brand-pink" />;
-    }
-    return <Navigation className="w-5 h-5" />;
-  };
+
+
 
   return (
-    <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen relative overflow-hidden bg-brand-ink text-brand-cloud">
+    <div className="bg-brand-cloud text-brand-ink min-h-screen relative overflow-hidden">
+      <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen overflow-hidden">
       {/* Halftone dot pattern background */}
-      <div className="absolute inset-0 bg-halftone-cloud opacity-[0.03] pointer-events-none" />
+      
 
       {/* Retro comic header panel */}
-      <header className="text-center mb-16 relative z-10 flex flex-col items-center">
-        <div className="border-comic bg-brand-orange text-brand-ink px-5 py-2 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-8 bg-halftone-black">
-          SQUAD DEPLOYMENT TIMELINES
-        </div>
-
-        {/* Comic Speech Bubble */}
-        <div className="relative mb-6 comic-bubble px-6 py-2.5 font-display text-xs sm:text-sm font-black uppercase text-brand-ink rotate-1 shadow-comic-sm animate-bounce">
-          “PLAN YOUR DAYS, DOMINATE THE SQUAD!” ⚡
-        </div>
-
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter mb-4 text-brand-cloud text-center drop-shadow-[4px_4px_0px_#FF188C]">
+      <header className="text-center mb-12 relative z-10 flex flex-col items-center">
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C]">
           AARAMBH SCHEDULE
         </h1>
-        <p className="text-brand-cloud/60 font-bold uppercase text-xs sm:text-sm tracking-widest max-w-2xl mt-2">
-          Eight days of epic learning, community squads, and non-stop action.
-        </p>
       </header>
 
       {/* Horizontal Scrollable Neo-Brutalist Tabs */}
       <div className="relative z-20 mb-12 w-full">
-        <div className="flex overflow-x-auto gap-4 pb-4 px-2 scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-ink justify-start md:justify-center">
+        <div className="grid grid-cols-4 gap-2.5 px-1 py-4 md:flex md:overflow-x-auto md:gap-4 md:py-5 md:px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud">
           {SCHEDULE_DATA.map((day, idx) => {
             const isActive = activeDayIdx === idx;
             const rotation = idx % 2 === 0 ? 'rotate-1' : '-rotate-1';
@@ -76,14 +45,14 @@ export default function SchedulePage() {
               <button
                 key={day.day}
                 onClick={() => setActiveDayIdx(idx)}
-                className={`comic-interactive border-comic-thin px-5 py-3 rounded-lg font-display shrink-0 transition-all select-none ${
+                className={`comic-interactive border-comic-thin px-1 py-2 md:px-5 md:py-3 rounded-lg font-display shrink-0 transition-all select-none ${
                   isActive
-                    ? 'bg-brand-pink text-brand-cloud shadow-solid-pink scale-105 -rotate-2 font-black'
-                    : 'bg-brand-cloud text-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink font-bold ' + rotation
+                    ? 'bg-brand-pink text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black'
+                    : 'bg-white text-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink font-bold ' + rotation
                 }`}
               >
-                <div className="text-sm tracking-tighter">{day.day}</div>
-                <div className="text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
+                <div className="text-xs md:text-sm tracking-tighter">{day.day}</div>
+                <div className="text-[9px] md:text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
               </button>
             );
           })}
@@ -102,7 +71,6 @@ export default function SchedulePage() {
             className="space-y-6"
           >
             {activeDay.events.map((event, idx) => {
-              const isEventMeal = isMeal(event.title);
               const accentColor = accentBgs[idx % 3];
               
               // Special Layout for All Day Outing (Day 5)
@@ -113,7 +81,7 @@ export default function SchedulePage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.4 }}
                     key={idx}
-                    className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic bg-halftone-black text-center relative overflow-hidden my-8"
+                    className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic text-center relative overflow-hidden my-8"
                   >
                     <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-brand-pink/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
                       LEVEL 5 • COHORT EXCURSION
@@ -142,50 +110,26 @@ export default function SchedulePage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.4) }}
                   key={idx}
-                  className={`border-comic p-5 rounded-xl transition-all duration-300 flex flex-col sm:flex-row gap-5 items-start sm:items-center ${
-                    isEventMeal
-                      ? 'bg-brand-cloud/5 border-brand-cloud/15 text-brand-cloud/60'
-                      : 'bg-brand-cloud text-brand-ink shadow-comic hover:-translate-y-0.5 cursor-pointer'
-                  }`}
+                  className="border-comic p-5 rounded-xl transition-all duration-300 flex flex-col sm:flex-row gap-5 items-start sm:items-center bg-white text-brand-ink shadow-comic hover:-translate-y-0.5 cursor-pointer"
                 >
                   {/* Time Badge */}
                   <div
-                    className={`border-2 border-brand-ink px-4 py-2 font-display font-black text-xs shadow-comic-sm shrink-0 w-full sm:w-44 text-center rounded-md ${
-                      isEventMeal 
-                        ? 'bg-brand-ink/30 border-brand-cloud/20 text-brand-cloud/50 shadow-none' 
-                        : accentColor + ' text-brand-ink ' + (idx % 2 === 0 ? '-rotate-1' : 'rotate-1')
-                    }`}
+                    className={`border-2 border-brand-ink px-4 py-2 font-display font-black text-xs shadow-comic-sm shrink-0 w-full sm:w-48 text-center rounded-md whitespace-nowrap ${accentColor} text-brand-ink ${idx % 2 === 0 ? '-rotate-1' : 'rotate-1'}`}
                   >
-                    <div className="flex items-center justify-center gap-1.5">
-                      <Clock size={13} />
-                      <span className="tracking-wide uppercase font-mono">{event.time}</span>
+                    <div className="flex items-center justify-center whitespace-nowrap">
+                      <span className="tracking-wide uppercase font-mono whitespace-nowrap">{event.time}</span>
                     </div>
                   </div>
 
-                  {/* Icon & Event details */}
+                  {/* Event details */}
                   <div className="flex gap-4 items-center flex-grow">
-                    {!isEventMeal && (
-                      <div className={`p-2.5 rounded-lg border-2 border-brand-ink shrink-0 hidden sm:block ${accentColor} text-brand-ink shadow-comic-sm`}>
-                        {getEventIcon(event.title)}
-                      </div>
-                    )}
                     <div className="space-y-1.5">
-                      <h3
-                        className={`font-display text-lg sm:text-xl font-black uppercase leading-tight tracking-tight ${
-                          isEventMeal ? 'text-brand-cloud/50 font-bold' : 'text-brand-ink hover:text-brand-pink transition-colors'
-                        }`}
-                      >
+                      <h3 className="font-display text-lg sm:text-xl font-black uppercase leading-tight tracking-tight text-brand-ink hover:text-brand-pink transition-colors">
                         {event.title}
                       </h3>
                       {event.location && (
-                        <div
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
-                            isEventMeal
-                              ? 'bg-brand-ink/10 border-brand-cloud/10 text-brand-cloud/45'
-                              : 'bg-brand-blue/15 border-brand-blue/30 text-brand-blue'
-                          }`}
-                        >
-                          <MapPin size={10} />
+                        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider border-2 border-brand-ink bg-brand-cloud text-brand-ink shadow-[2px_2px_0px_0px_#030404]">
+                          <MapPin size={10} className="text-brand-ink" />
                           <span>{event.location}</span>
                         </div>
                       )}
@@ -200,7 +144,7 @@ export default function SchedulePage() {
 
       {/* CTA Footer Section */}
       <section className="mt-20 text-center relative z-10">
-        <div className="border-comic bg-brand-pink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic bg-halftone-black -rotate-1">
+        <div className="border-comic bg-brand-pink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic -rotate-1">
           <h3 className="font-display font-black text-lg uppercase mb-2">DOWNLOAD RULES & INSTRUCTIONS</h3>
           <p className="text-xs uppercase tracking-wide opacity-90 mb-4 font-bold">
             Make sure to download and review the official rule book before check-in.
@@ -215,6 +159,7 @@ export default function SchedulePage() {
           </a>
         </div>
       </section>
+    </div>
     </div>
   );
 }

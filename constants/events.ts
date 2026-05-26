@@ -13,7 +13,7 @@ export interface DaySchedule {
 export const SCHEDULE_DATA: DaySchedule[] = [
   {
     day: 'Day 01',
-    date: 'July 25',
+    date: 'July 14',
     events: [
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
       { time: '9:30 AM - 10:45 AM', title: 'Registrations', location: 'Respective Institutes' },
@@ -30,7 +30,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 02',
-    date: 'July 26',
+    date: 'July 15',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'Sports Activities' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
@@ -46,7 +46,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 03',
-    date: 'July 27',
+    date: 'July 16',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'Sports Activities' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
@@ -67,7 +67,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 04',
-    date: 'July 28',
+    date: 'July 17',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'Sports Activities' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
@@ -92,14 +92,14 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 05',
-    date: 'July 29',
+    date: 'July 18',
     events: [
       { time: 'All Day', title: 'Outing Day', location: 'Off Campus' }
     ]
   },
   {
     day: 'Day 06',
-    date: 'July 30',
+    date: 'July 19',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'Sports Activities' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
@@ -118,7 +118,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 07',
-    date: 'July 31',
+    date: 'July 20',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'Sports Activities' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },
@@ -140,7 +140,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
   },
   {
     day: 'Day 08',
-    date: 'August 01',
+    date: 'July 21',
     events: [
       { time: '6:30 AM - 7:30 AM', title: 'REST' },
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', location: 'Students Mess' },

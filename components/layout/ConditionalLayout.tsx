@@ -8,7 +8,11 @@ import CustomCursor from '../ui/CustomCursor';
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdminOrScanner = pathname?.startsWith('/admin') || pathname?.startsWith('/scanner') || pathname?.startsWith('/login');
+  const isAdminOrScanner = 
+    pathname?.startsWith('/admin') || 
+    pathname?.startsWith('/scanner') || 
+    pathname?.startsWith('/login') || 
+    pathname?.startsWith('/feedback');
 
   if (isAdminOrScanner) {
     return <>{children}</>;

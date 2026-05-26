@@ -1,12 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Vanilla Extract";
+  src: url("/fonts/Vanillaextract-1GZ84.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vanilla Extract";
+  src: url("/fonts/Vanillaextractital-Rpdel.ttf") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
   --color-brand-orange: #FF9A00;
   --color-brand-pink: #FF188C;
   --color-brand-blue: #0D21DD;
   --color-brand-ink: #030404;
   --color-brand-cloud: #F5F1E5;
+
+  --color-admin-bg: #F5F1E5;
+  --color-admin-surface: #ffffff;
+  --color-admin-accent: #FF9A00;
+  --color-admin-text: #030404;
+  --color-admin-muted: #64748b;
+  --color-admin-border: #e2e8f0;
 
   --color-primary: #FF188C;
   --color-primary-dark: #E0107A;
@@ -20,22 +43,34 @@
   --color-dark: #030404;
   --color-dark-lighter: #1a1a1a;
 
-  --font-display: Syne, system-ui, sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
   --font-sans: "Google Sans", Roboto, system-ui, sans-serif;
   --font-adminHeading: "DM Serif Display", serif;
   --font-adminBody: "DM Sans", sans-serif;
+  --font-vanilla: "Vanilla Extract", sans-serif;
 
   --shadow-brand-pink: 0 0 40px rgba(255, 24, 140, 0.25);
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
 }
 
+html {
+  background-color: var(--color-brand-cloud);
+  scroll-behavior: smooth;
+}
+
 body {
-  color: var(--color-brand-cloud);
-  background-color: var(--color-brand-ink);
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  color: var(--color-brand-ink);
+  background-color: var(--color-brand-cloud);
   min-height: 100vh;
   font-family: var(--font-sans);
 }
+
+
+
 
 .glass-card {
   @apply bg-brand-cloud/5 backdrop-blur-md border border-brand-cloud/15 rounded-md shadow-xl;
