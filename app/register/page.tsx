@@ -134,17 +134,34 @@ function RegisterContent() {
   };
 
   // Section validation logic
+  const studentStarted = 
+    formData.name.trim() !== '' ||
+    formData.registrationNumber.trim() !== '' ||
+    formData.mobile.trim() !== '' ||
+    formData.email.trim() !== '';
+
   const isStudentValid = 
     formData.name.trim() !== '' &&
     formData.registrationNumber.trim() !== '' &&
     formData.mobile.trim() !== '' &&
     formData.email.trim() !== '';
 
+  const parentsStarted = 
+    formData.fatherName.trim() !== '' ||
+    formData.fatherMobile.trim() !== '' ||
+    formData.fatherEmail.trim() !== '' ||
+    formData.motherName.trim() !== '' ||
+    formData.motherMobile.trim() !== '' ||
+    formData.motherEmail.trim() !== '';
+
   const isParentsValid = 
     formData.fatherName.trim() !== '' &&
     formData.fatherMobile.trim() !== '' &&
     formData.motherName.trim() !== '' &&
     formData.motherMobile.trim() !== '';
+
+  const isAddressValid = 
+    formData.address.trim().length >= 10;
 
   if (isSuccess) {
     return (
@@ -307,9 +324,13 @@ function RegisterContent() {
                         <span>Fulfilled</span>
                       </span>
                     </span>
-                  ) : (
+                  ) : studentStarted ? (
                     <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
                       IN PROGRESS
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      ACTIVE
                     </span>
                   )}
                 </div>
@@ -382,6 +403,10 @@ function RegisterContent() {
                           <span>Requirement</span>
                           <span>Fulfilled</span>
                         </span>
+                      </span>
+                    ) : parentsStarted ? (
+                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                        IN PROGRESS
                       </span>
                     ) : (
                       <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
@@ -493,9 +518,23 @@ function RegisterContent() {
                     <h2 className="text-2xl font-display font-black uppercase tracking-wider text-brand-ink">Address & Verification</h2>
                   </div>
                   {isStudentValid && isParentsValid ? (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-orange text-brand-ink font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2 animate-pulse">
-                      ACTIVE PASS
-                    </span>
+                    isAddressValid ? (
+                      <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
+                        <Check size={12} className="stroke-[4] shrink-0" />
+                        <span className="flex flex-col text-left leading-tight">
+                          <span>Requirement</span>
+                          <span>Fulfilled</span>
+                        </span>
+                      </span>
+                    ) : formData.address.trim().length > 0 ? (
+                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                        IN PROGRESS
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                        ACTIVE
+                      </span>
+                    )
                   ) : (
                     <span className="px-3 py-1 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[9px] font-black uppercase rounded shadow-comic-sm">
                       🔒 LOCKED
@@ -561,11 +600,19 @@ function RegisterContent() {
                           <div className="flex items-center gap-3">
                             {formData.coupon.toUpperCase() === 'TESTTEST' ? (
                               <>
-                                <p className="text-lg font-display font-black text-brand-ink/30 line-through">₹ 1,500</p>
+                                <p className="text-lg font-display font-black text-brand-ink/30 line-through">₹ 3,500</p>
                                 <p className="text-4xl font-display font-black text-brand-pink drop-shadow-[2px_2px_0px_#030404]">₹ 1</p>
                               </>
                             ) : (
-                              <p className="text-4xl font-display font-black text-brand-pink drop-shadow-[2px_2px_0px_#030404]">₹ 1,500</p>
+                              <div className="flex flex-col">
+                                <div className="flex items-center gap-3">
+                                  <p className="text-lg font-display font-black text-brand-ink/30 line-through">₹ 3,500</p>
+                                  <p className="text-4xl font-display font-black text-brand-pink drop-shadow-[2px_2px_0px_#030404]">₹ 2,500</p>
+                                </div>
+                                <p className="text-[9px] font-black uppercase text-brand-ink/40 tracking-wider mt-1.5">
+                                  * Excludes 2% Cashfree transaction fee
+                                </p>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -575,6 +622,16 @@ function RegisterContent() {
                         >
                           <CreditCard size={24} className="stroke-[3]" /> Pay Now
                         </button>
+                      </div>
+
+                      <div className="mt-4 border-2 border-brand-ink bg-white p-4 rounded-xl text-center shadow-comic-sm space-y-2">
+                        <p className="text-xs font-black uppercase tracking-wider text-brand-pink">
+                          Important Note: The registration fee is strictly non-refundable under any circumstances.
+                        </p>
+                        <div className="h-[2px] bg-brand-ink/10 w-12 mx-auto" />
+                        <p className="text-[9px] font-black uppercase tracking-wider text-brand-ink/50 leading-relaxed">
+                          Please note: A 2% gateway transaction fee charged by Cashfree Payments will be added at checkout and is to be paid by the participant.
+                        </p>
                       </div>
                     </motion.div>
                   )}

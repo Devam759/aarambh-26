@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, MapPin, Calendar, Utensils, Sparkles, Smile, Compass, Navigation } from 'lucide-react';
+import { MapPin, Compass } from 'lucide-react';
 import { SCHEDULE_DATA, DaySchedule, ScheduleItem } from '@/constants/events';
 
 const dayColors = [
@@ -19,23 +19,7 @@ export default function SchedulePage() {
 
 
 
-  // Get corresponding icon for event
-  const getEventIcon = (title: string) => {
-    const t = title.toUpperCase();
-    if (t === 'BREAKFAST' || t === 'LUNCH' || t === 'SNACKS' || t === 'DINNER') {
-      return <Utensils className="w-5 h-5" />;
-    }
-    if (t.includes('SPORT') || t.includes('RUN')) {
-      return <Compass className="w-5 h-5 animate-pulse" />;
-    }
-    if (t.includes('WORKSHOP') || t.includes('SESSION') || t.includes('HACKS') || t.includes('CYBER')) {
-      return <Sparkles className="w-5 h-5" />;
-    }
-    if (t.includes('DANCE') || t.includes('LATENT') || t.includes('DRAMA') || t.includes('BAND') || t.includes('CULTURAL')) {
-      return <Smile className="w-5 h-5 text-brand-pink" />;
-    }
-    return <Navigation className="w-5 h-5" />;
-  };
+
 
   return (
     <div className="bg-brand-cloud text-brand-ink min-h-screen relative overflow-hidden">
@@ -44,27 +28,15 @@ export default function SchedulePage() {
       
 
       {/* Retro comic header panel */}
-      <header className="text-center mb-16 relative z-10 flex flex-col items-center">
-        <div className="border-comic bg-brand-orange text-brand-ink px-5 py-2 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-8">
-          SQUAD DEPLOYMENT TIMELINES
-        </div>
-
-        {/* Comic Speech Bubble */}
-        <div className="relative mb-6 comic-bubble px-6 py-2.5 font-display text-xs sm:text-sm font-black uppercase text-brand-ink rotate-1 shadow-comic-sm animate-bounce bg-white">
-          “PLAN YOUR DAYS, DOMINATE THE SQUAD!”
-        </div>
-
-        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter mb-4 text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C]">
+      <header className="text-center mb-12 relative z-10 flex flex-col items-center">
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C]">
           AARAMBH SCHEDULE
         </h1>
-        <p className="text-brand-ink/60 font-bold uppercase text-xs sm:text-sm tracking-widest max-w-2xl mt-2">
-          Eight days of epic learning, community squads, and non-stop action.
-        </p>
       </header>
 
       {/* Horizontal Scrollable Neo-Brutalist Tabs */}
       <div className="relative z-20 mb-12 w-full">
-        <div className="flex overflow-x-auto gap-4 pb-4 px-2 scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud justify-start md:justify-center">
+        <div className="grid grid-cols-4 gap-2.5 px-1 py-4 md:flex md:overflow-x-auto md:gap-4 md:py-5 md:px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud">
           {SCHEDULE_DATA.map((day, idx) => {
             const isActive = activeDayIdx === idx;
             const rotation = idx % 2 === 0 ? 'rotate-1' : '-rotate-1';
@@ -73,14 +45,14 @@ export default function SchedulePage() {
               <button
                 key={day.day}
                 onClick={() => setActiveDayIdx(idx)}
-                className={`comic-interactive border-comic-thin px-5 py-3 rounded-lg font-display shrink-0 transition-all select-none ${
+                className={`comic-interactive border-comic-thin px-1 py-2 md:px-5 md:py-3 rounded-lg font-display shrink-0 transition-all select-none ${
                   isActive
-                    ? 'bg-brand-pink text-brand-cloud shadow-solid-pink scale-105 -rotate-2 font-black'
+                    ? 'bg-brand-pink text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black'
                     : 'bg-white text-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink font-bold ' + rotation
                 }`}
               >
-                <div className="text-sm tracking-tighter">{day.day}</div>
-                <div className="text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
+                <div className="text-xs md:text-sm tracking-tighter">{day.day}</div>
+                <div className="text-[9px] md:text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
               </button>
             );
           })}
@@ -142,26 +114,22 @@ export default function SchedulePage() {
                 >
                   {/* Time Badge */}
                   <div
-                    className={`border-2 border-brand-ink px-4 py-2 font-display font-black text-xs shadow-comic-sm shrink-0 w-full sm:w-44 text-center rounded-md ${accentColor} text-brand-ink ${idx % 2 === 0 ? '-rotate-1' : 'rotate-1'}`}
+                    className={`border-2 border-brand-ink px-4 py-2 font-display font-black text-xs shadow-comic-sm shrink-0 w-full sm:w-48 text-center rounded-md whitespace-nowrap ${accentColor} text-brand-ink ${idx % 2 === 0 ? '-rotate-1' : 'rotate-1'}`}
                   >
-                    <div className="flex items-center justify-center gap-1.5">
-                      <Clock size={13} />
-                      <span className="tracking-wide uppercase font-mono">{event.time}</span>
+                    <div className="flex items-center justify-center whitespace-nowrap">
+                      <span className="tracking-wide uppercase font-mono whitespace-nowrap">{event.time}</span>
                     </div>
                   </div>
 
-                  {/* Icon & Event details */}
+                  {/* Event details */}
                   <div className="flex gap-4 items-center flex-grow">
-                    <div className={`p-2.5 rounded-lg border-2 border-brand-ink shrink-0 hidden sm:block ${accentColor} text-brand-ink shadow-comic-sm`}>
-                      {getEventIcon(event.title)}
-                    </div>
                     <div className="space-y-1.5">
                       <h3 className="font-display text-lg sm:text-xl font-black uppercase leading-tight tracking-tight text-brand-ink hover:text-brand-pink transition-colors">
                         {event.title}
                       </h3>
                       {event.location && (
-                        <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border bg-brand-blue/15 border-brand-blue/30 text-brand-blue">
-                          <MapPin size={10} />
+                        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider border-2 border-brand-ink bg-brand-cloud text-brand-ink shadow-[2px_2px_0px_0px_#030404]">
+                          <MapPin size={10} className="text-brand-ink" />
                           <span>{event.location}</span>
                         </div>
                       )}
