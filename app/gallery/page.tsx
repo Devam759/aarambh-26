@@ -228,6 +228,38 @@ export default function GalleryLanding() {
           </div>
         </motion.div>
 
+        {/* Massive Background Typography (Matching Registration Page) */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%) rotate(-15deg)',
+          zIndex: 0,
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          display: 'flex',
+          gap: '3vw',
+          alignItems: 'baseline'
+        }}>
+          <span style={{ 
+            fontFamily: "'Tiro Devanagari Hindi', serif", 
+            fontSize: 'clamp(8rem, 24vw, 22rem)', 
+            fontWeight: 700, 
+            color: '#030404', 
+            textShadow: '8px 8px 0px #FF9A00',
+            lineHeight: 0.8
+          }}>आरम्भ</span>
+          <span style={{ 
+            fontFamily: "'Syne', sans-serif", 
+            fontSize: 'clamp(8rem, 24vw, 22rem)', 
+            fontWeight: 900, 
+            color: '#030404', 
+            textShadow: '8px 8px 0px #FF9A00',
+            lineHeight: 0.8
+          }}>26</span>
+        </div>
+
         {/* Main Neo-Brutalism Card */}
         {mounted && (
           <motion.div

@@ -353,9 +353,9 @@ const WALL_POSITIONS = [
 ]
 
 const SPEED_MAP = { slow: 2.5, normal: 4.5, fast: 8.0 }
-const CARD_COUNT = 12
-const BASE_Z_FAR = -3600
-const BASE_Z_STEP = 300
+const CARD_COUNT = 32
+const BASE_Z_FAR = -5120
+const BASE_Z_STEP = 160
 
 
 
@@ -384,7 +384,8 @@ export default function GalleryPage() {
 
     // Create cards
     for (let i = 0; i < CARD_COUNT; i++) {
-      const wallIdx = i
+      // Reverted to sequential indexing for the smooth circular tunnel effect
+      const wallIdx = i % WALL_POSITIONS.length
       const baseZ = BASE_Z_FAR + (i * BASE_Z_STEP)
       const photoIdx = i % PHOTOS.length
       const photo = PHOTOS[photoIdx]
@@ -476,7 +477,7 @@ export default function GalleryPage() {
           let z = baseZ + zOffsetRef.current
 
           // When card passes viewer, wrap around to far end
-          if (z > -80) {
+          if (z > 300) {
             const newBaseZ = baseZ - (CARD_COUNT * BASE_Z_STEP)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
@@ -486,10 +487,15 @@ export default function GalleryPage() {
             const newWallPos = (oldWallPos + 3) % WALL_POSITIONS.length
             card.dataset.wallIdx = String(newWallPos)
 
-            // Cycle photo defensively
+            // Randomly select next photo to prevent recognizable repeating patterns!
             if (PHOTOS.length > 0) {
-              const oldPhotoIdx = parseInt(card.dataset.photoIdx || '0')
-              const newPhotoIdx = (oldPhotoIdx + 7) % PHOTOS.length
+              const currentlyUsed = new Set(
+                Array.from(tunnelRef.current?.querySelectorAll('[data-photo-idx]') || [])
+                  .map(c => parseInt((c as HTMLElement).dataset.photoIdx || '-1'))
+              )
+              let available = Array.from({length: PHOTOS.length}, (_, i) => i).filter(i => !currentlyUsed.has(i))
+              if (available.length === 0) available = Array.from({length: PHOTOS.length}, (_, i) => i)
+              const newPhotoIdx = available[Math.floor(Math.random() * available.length)]
               card.dataset.photoIdx = String(newPhotoIdx)
               const img = card.querySelector('img') as HTMLImageElement | null
               if (img && PHOTOS[newPhotoIdx]) {
@@ -508,8 +514,13 @@ export default function GalleryPage() {
             card.dataset.wallIdx = String(newWallPos)
 
             if (PHOTOS.length > 0) {
-              const oldPhotoIdx = parseInt(card.dataset.photoIdx || '0')
-              const newPhotoIdx = (oldPhotoIdx - 7 + PHOTOS.length) % PHOTOS.length
+              const currentlyUsed = new Set(
+                Array.from(tunnelRef.current?.querySelectorAll('[data-photo-idx]') || [])
+                  .map(c => parseInt((c as HTMLElement).dataset.photoIdx || '-1'))
+              )
+              let available = Array.from({length: PHOTOS.length}, (_, i) => i).filter(i => !currentlyUsed.has(i))
+              if (available.length === 0) available = Array.from({length: PHOTOS.length}, (_, i) => i)
+              const newPhotoIdx = available[Math.floor(Math.random() * available.length)]
               card.dataset.photoIdx = String(newPhotoIdx)
               const img = card.querySelector('img') as HTMLImageElement | null
               if (img && PHOTOS[newPhotoIdx]) {
@@ -532,9 +543,9 @@ export default function GalleryPage() {
           const startLeft = parseFloat(wallPos.left)
           const startTop = parseFloat(wallPos.top)
           
-          // Interpolate from edge (startLeft) towards center (50)
+          // Interpolate from edge towards center (Left 50%, Top 55% to accommodate Navbar)
           const currentLeft = startLeft + (50 - startLeft) * easeInCubic
-          const currentTop = startTop + (50 - startTop) * easeInCubic
+          const currentTop = startTop + (55 - startTop) * easeInCubic
           
           card.style.left = `${currentLeft}%`
           card.style.top = `${currentTop}%`
@@ -551,14 +562,15 @@ export default function GalleryPage() {
 
           // Calculate opacity based on depth
           let opacity = 0.02
-          if (z < -3400) {
-            opacity = 0.02
-          } else if (z < -1400) {
-            opacity = 0.04 + ((z + 3400) / 2000) * 0.50
-          } else if (z < -300) {
-            opacity = 0.54 + ((z + 1400) / 1100) * 0.46
-          } else if (z < -50) {
-            opacity = Math.max(0, (Math.abs(z) - 50) / 200)
+          if (z < -3600) {
+            opacity = 0.12
+          } else if (z < -1600) {
+            opacity = 0.12 + ((z + 3600) / 2000) * 0.65
+          } else if (z < -400) {
+            opacity = 0.77 + ((z + 1600) / 1200) * 0.23
+          } else if (z < 200) {
+            // Keep at 100% visibility in the center (Fixes "blurred" fade out)
+            opacity = 1
           } else {
             opacity = 0
           }
@@ -606,7 +618,7 @@ export default function GalleryPage() {
     return () => window.removeEventListener('keydown', handler)
   }, [lightboxId])
 
-  // Lock page scroll & drive animation via wheel
+  // Lock page scroll & drive animation via wheel & touch
   useEffect(() => {
     // Prevent body from scrolling so the page never shifts
     document.body.style.overflow = 'hidden'
@@ -617,11 +629,28 @@ export default function GalleryPage() {
       targetZOffsetRef.current += e.deltaY * 2.0
     }
 
+    // Mobile Swipe Support
+    let touchStartY = 0
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY
+    }
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault()
+      const touchY = e.touches[0].clientY
+      const deltaY = touchStartY - touchY
+      targetZOffsetRef.current += deltaY * 3.5 // Boost sensitivity for mobile
+      touchStartY = touchY
+    }
+
     // Must be non-passive so preventDefault works
     window.addEventListener('wheel', handleWheel, { passive: false })
+    window.addEventListener('touchstart', handleTouchStart, { passive: false })
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
 
     return () => {
       window.removeEventListener('wheel', handleWheel)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
     }
@@ -1123,7 +1152,7 @@ export default function GalleryPage() {
 
 .tunnel-card {
   position: absolute;
-  width: clamp(260px, 40vw, 550px);
+  width: clamp(160px, 20vw, 300px);
   aspect-ratio: 3 / 2;
   border-radius: 8px;
   overflow: hidden;
@@ -1238,7 +1267,7 @@ export default function GalleryPage() {
 /* Floating Controls Pill Styling */
 .tunnel-controls-pill {
   position: absolute;
-  top: 90px;
+  top: 110px;
   right: 24px;
   z-index: 10;
   display: flex;
@@ -1247,6 +1276,14 @@ export default function GalleryPage() {
   background: rgba(3, 4, 4, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 24, 140, 0.35);
+}
+
+.tunnel-exit-btn {
+  position: absolute;
+  top: 110px;
+  left: 24px;
+  z-index: 20;
+}
   border-radius: 999px;
   padding: 6px 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 24, 140, 0.1);
@@ -1340,10 +1377,12 @@ export default function GalleryPage() {
     width: 85%;
   }
   .tunnel-controls-pill {
+    display: none !important; /* Hide on mobile to save space */
+  }
+  .tunnel-exit-btn {
     top: 90px;
-    right: 16px;
-    left: 16px;
-    justify-content: space-between;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 ` }} />
@@ -1371,10 +1410,11 @@ export default function GalleryPage() {
             {/* Background Theme */}
             <ThemeBackground />
 
-            {/* Debug Panel */}
+            {/* Debug Panel - Hidden by default to make room for Exit button */}
             <div id="tunnel-debug" style={{
+              display: 'none',
               position: 'absolute',
-              top: '90px',
+              top: '110px',
               left: '40px',
               background: 'rgba(245, 241, 229, 0.6)',
               color: 'rgba(3, 4, 4, 0.7)',
@@ -1394,20 +1434,38 @@ export default function GalleryPage() {
               zIndex: 10,
             }} />
 
-            {/* Floating Control Pill */}
-            <div className="tunnel-controls-pill" style={{ background: '#030404', border: '1px solid rgba(255,154,0,0.5)', zIndex: 20 }}>
+            {/* Left Side: EXIT THE MAGIC button */}
+            <button 
+              onClick={() => { window.location.href = '/gallery' }}
+              className="tunnel-exit-btn"
+              style={{ 
+                background: '#030404', 
+                border: '1px solid rgba(255,154,0,0.5)', 
+                padding: '12px 24px',
+                borderRadius: '30px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(255,154,0,0.1)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)'
+                e.currentTarget.style.boxShadow = '0 4px 20px rgba(255,154,0,0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255,154,0,0.1)'
+              }}
+            >
+              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: '10px', color: '#FF9A00', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700 }}>
+                Exit the magic
+              </span>
+            </button>
+
+            {/* Right Side: Floating Control Pill (Scroll indicator only now) */}
+            <div className="tunnel-controls-pill" style={{ background: '#030404', border: '1px solid rgba(255,154,0,0.3)', zIndex: 20 }}>
               <span style={{ fontFamily: "'Syne', sans-serif", fontSize: '9px', color: '#F5F1E5', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
                 Scroll to explore
               </span>
-              <div className="controls-divider" />
-              <button
-                className="controls-exit-btn"
-                onClick={() => {
-                  window.location.href = '/gallery'
-                }}
-              >
-                Exit
-              </button>
             </div>
 
             {/* Vignette behind photos */}

@@ -100,3 +100,4 @@ public/photos/*.JPG
 raw_gallery*.html
 compress.cjs
 photos_temp.json
+**/*.JPG
