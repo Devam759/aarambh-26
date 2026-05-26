@@ -187,9 +187,9 @@ export default function DutyManagement() {
   const [notes, setNotes] = useState('');
   const [selectedEventTitle, setSelectedEventTitle] = useState('');
   
-  // Volunteer Multi-select Search State
-  const [searchVolQuery, setSearchVolQuery] = useState('');
-  const [showVolDropdown, setShowVolDropdown] = useState(false);
+  // Volunteer Selection Search States
+  const [searchLeaderQuery, setSearchLeaderQuery] = useState('');
+  const [searchMemberQuery, setSearchMemberQuery] = useState('');
 
   // Table Filters State
   const [searchQuery, setSearchQuery] = useState('');
@@ -293,23 +293,23 @@ export default function DutyManagement() {
         const snap = await getDocs(collection(db, 'volunteers'));
         if (snap.empty) {
           const mockVolunteers = [
-            { name: 'Aman Sharma', team: 'Registration Team', email: 'aman@aarambh.com' },
-            { name: 'Tanya Saxena', team: 'Registration Team', email: 'tanya@aarambh.com' },
-            { name: 'Devam', team: 'Technical Team', email: 'devam@aarambh.com' },
-            { name: 'Manant Srivastava', team: 'Technical Team', email: 'manant@aarambh.com' },
-            { name: 'Rohan Gupta', team: 'Technical Team', email: 'rohan@aarambh.com' },
-            { name: 'Vikram Singh', team: 'Discipline Team', email: 'vikram@aarambh.com' },
-            { name: 'Aditi Rao', team: 'Discipline Team', email: 'aditi@aarambh.com' },
-            { name: 'Neha Sharma', team: 'Hospitality Team', email: 'neha@aarambh.com' },
-            { name: 'Rahul Kapoor', team: 'Hospitality Team', email: 'rahul@aarambh.com' },
-            { name: 'Sanya Mehta', team: 'Decoration Team', email: 'sanya@aarambh.com' },
-            { name: 'Karan Johar', team: 'Decoration Team', email: 'karan@aarambh.com' },
-            { name: 'Priya Malhotra', team: 'Anchoring Team', email: 'priya@aarambh.com' },
-            { name: 'Kabir Sen', team: 'Anchoring Team', email: 'kabir@aarambh.com' },
-            { name: 'Arjun Reddy', team: 'Photography Team', email: 'arjun@aarambh.com' },
-            { name: 'Meera Nair', team: 'Photography Team', email: 'meera@aarambh.com' },
-            { name: 'Riya Sen', team: 'Social Media Team', email: 'riya@aarambh.com' },
-            { name: 'Yash Vardhan', team: 'Social Media Team', email: 'yash@aarambh.com' },
+            { name: 'Aman Sharma', team: 'Registration Team', email: 'aman@aarambh.com', role: 'Team Leader' },
+            { name: 'Tanya Saxena', team: 'Registration Team', email: 'tanya@aarambh.com', role: 'Volunteer' },
+            { name: 'Devam', team: 'Technical Team', email: 'devam@aarambh.com', role: 'Team Leader' },
+            { name: 'Manant Srivastava', team: 'Technical Team', email: 'manant@aarambh.com', role: 'Volunteer' },
+            { name: 'Rohan Gupta', team: 'Technical Team', email: 'rohan@aarambh.com', role: 'Volunteer' },
+            { name: 'Vikram Singh', team: 'Discipline Team', email: 'vikram@aarambh.com', role: 'Team Leader' },
+            { name: 'Aditi Rao', team: 'Discipline Team', email: 'aditi@aarambh.com', role: 'Volunteer' },
+            { name: 'Neha Sharma', team: 'Hospitality Team', email: 'neha@aarambh.com', role: 'Team Leader' },
+            { name: 'Rahul Kapoor', team: 'Hospitality Team', email: 'rahul@aarambh.com', role: 'Volunteer' },
+            { name: 'Sanya Mehta', team: 'Decoration Team', email: 'sanya@aarambh.com', role: 'Team Leader' },
+            { name: 'Karan Johar', team: 'Decoration Team', email: 'karan@aarambh.com', role: 'Volunteer' },
+            { name: 'Priya Malhotra', team: 'Anchoring Team', email: 'priya@aarambh.com', role: 'Team Leader' },
+            { name: 'Kabir Sen', team: 'Anchoring Team', email: 'kabir@aarambh.com', role: 'Volunteer' },
+            { name: 'Arjun Reddy', team: 'Photography Team', email: 'arjun@aarambh.com', role: 'Team Leader' },
+            { name: 'Meera Nair', team: 'Photography Team', email: 'meera@aarambh.com', role: 'Volunteer' },
+            { name: 'Riya Sen', team: 'Social Media Team', email: 'riya@aarambh.com', role: 'Team Leader' },
+            { name: 'Yash Vardhan', team: 'Social Media Team', email: 'yash@aarambh.com', role: 'Volunteer' },
           ];
           
           const batch = writeBatch(db);
@@ -441,7 +441,8 @@ export default function DutyManagement() {
       // Reset form fields
       setSelectedVolunteers([]);
       setNotes('');
-      setSearchVolQuery('');
+      setSearchLeaderQuery('');
+      setSearchMemberQuery('');
     } catch (err: any) {
       console.error(err);
       setFormWarning(`Failed to assign duties: ${err.message}`);
@@ -456,7 +457,8 @@ export default function DutyManagement() {
     setTimeTo('13:00');
     setSelectedVenue('');
     setNotes('');
-    setSearchVolQuery('');
+    setSearchLeaderQuery('');
+    setSearchMemberQuery('');
     setSelectedEventTitle('');
     setFormWarning(null);
   };
@@ -566,25 +568,70 @@ export default function DutyManagement() {
   };
 
   // --------------------------------------------------------------------------
-  // VOLUNTEER DROPDOWN FILTER & MULTISELECT
+  // VOLUNTEER SELECTION FILTER & MULTISELECT
   // --------------------------------------------------------------------------
   const availableVolunteers = useMemo(() => {
     if (!selectedTeam) return [];
     return volunteers.filter(v => v.team === selectedTeam);
   }, [volunteers, selectedTeam]);
 
-  const filteredVolunteersForSelection = useMemo(() => {
-    return availableVolunteers.filter((v) => {
-      const isAlreadySelected = selectedVolunteers.some(sel => sel.id === v.id);
-      const matchesSearch = v.name.toLowerCase().includes(searchVolQuery.toLowerCase());
-      return !isAlreadySelected && matchesSearch;
-    });
-  }, [availableVolunteers, selectedVolunteers, searchVolQuery]);
+  // Separate Leaders and Members (de-duplicated by name)
+  const teamLeaders = useMemo(() => {
+    const seen = new Set();
+    const unique = [];
+    const list = availableVolunteers.filter(v => v.role?.toLowerCase() === 'team leader');
+    for (const v of list) {
+      const key = v.name.trim().toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(v);
+      }
+    }
+    return unique;
+  }, [availableVolunteers]);
 
-  const handleAddVolunteer = (vol: any) => {
-    setSelectedVolunteers([...selectedVolunteers, vol]);
-    setSearchVolQuery('');
-    setShowVolDropdown(false);
+  const teamMembers = useMemo(() => {
+    const seen = new Set();
+    const unique = [];
+    const list = availableVolunteers.filter(v => v.role?.toLowerCase() !== 'team leader');
+    for (const v of list) {
+      const key = v.name.trim().toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(v);
+      }
+    }
+    return unique;
+  }, [availableVolunteers]);
+
+  // Filtered by Search Queries
+  const filteredLeaders = useMemo(() => {
+    return teamLeaders.filter(v => 
+      v.name.toLowerCase().includes(searchLeaderQuery.toLowerCase())
+    );
+  }, [teamLeaders, searchLeaderQuery]);
+
+  const filteredMembers = useMemo(() => {
+    return teamMembers.filter(v => 
+      v.name.toLowerCase().includes(searchMemberQuery.toLowerCase())
+    );
+  }, [teamMembers, searchMemberQuery]);
+
+  const selectedLeadersCount = useMemo(() => {
+    return selectedVolunteers.filter(sv => sv.role?.toLowerCase() === 'team leader').length;
+  }, [selectedVolunteers]);
+
+  const selectedMembersCount = useMemo(() => {
+    return selectedVolunteers.filter(sv => sv.role?.toLowerCase() !== 'team leader').length;
+  }, [selectedVolunteers]);
+
+  const toggleVolunteerSelection = (vol: any) => {
+    const isSelected = selectedVolunteers.some(v => v.id === vol.id);
+    if (isSelected) {
+      setSelectedVolunteers(selectedVolunteers.filter(v => v.id !== vol.id));
+    } else {
+      setSelectedVolunteers([...selectedVolunteers, vol]);
+    }
   };
 
   const handleRemoveVolunteer = (volId: string) => {
@@ -736,6 +783,8 @@ export default function DutyManagement() {
                   onChange={(e) => {
                     setSelectedTeam(e.target.value);
                     setSelectedVolunteers([]); // clear selected list on team swap
+                    setSearchLeaderQuery('');
+                    setSearchMemberQuery('');
                   }}
                   className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
@@ -747,15 +796,15 @@ export default function DutyManagement() {
               </div>
             </div>
 
-            {/* STEP 3: Select Team Member */}
-            <div className="col-span-1 md:col-span-2 space-y-2 relative">
+            {/* STEP 3: Select Team Member & Leader Side-by-Side */}
+            <div className="col-span-1 md:col-span-2 space-y-3">
               <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider">
                 Step 3 — Select Volunteer(s)
               </label>
-              
+
               {/* Pills Container for Selected Volunteers */}
               {selectedVolunteers.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3 bg-brand-cloud/25 p-3 border-2 border-brand-ink border-dashed rounded-md">
+                <div className="flex flex-wrap gap-2 mb-2 bg-brand-cloud/25 p-3 border-2 border-brand-ink border-dashed rounded-md">
                   {selectedVolunteers.map((vol) => (
                     <div 
                       key={vol.id}
@@ -763,6 +812,9 @@ export default function DutyManagement() {
                     >
                       <User size={12} className="text-brand-pink" />
                       <span>{vol.name}</span>
+                      <span className="text-[9px] px-1 bg-brand-cloud border border-brand-ink/30 rounded uppercase font-black text-admin-muted scale-90">
+                        {vol.role === 'Team Leader' ? 'Ldr' : 'Mbr'}
+                      </span>
                       <button 
                         type="button" 
                         onClick={() => handleRemoveVolunteer(vol.id)}
@@ -775,55 +827,130 @@ export default function DutyManagement() {
                 </div>
               )}
 
-              {/* Searchable input box */}
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={16} />
-                <input
-                  type="text"
-                  placeholder={
-                    !selectedTeam 
-                      ? "Select a Team first to view volunteers..." 
-                      : "Search volunteer name..."
-                  }
-                  disabled={!selectedTeam}
-                  value={searchVolQuery}
-                  onFocus={() => setShowVolDropdown(true)}
-                  onChange={(e) => setSearchVolQuery(e.target.value)}
-                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                />
-                {searchVolQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchVolQuery('')}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-admin-muted hover:text-brand-ink focus:outline-none"
-                  >
-                    <X size={16} />
-                  </button>
-                )}
-              </div>
+              {!selectedTeam ? (
+                <div className="p-8 text-center text-xs font-black uppercase tracking-wider text-admin-muted border-2 border-dashed border-brand-ink/15 rounded-md bg-brand-cloud/10">
+                  Please select a Team first in Step 2 to view and assign volunteers.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column: Team Leaders */}
+                  <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-4 flex flex-col h-[350px]">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="text-xs font-black uppercase text-brand-pink tracking-widest flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-brand-pink border border-brand-ink inline-block" />
+                        Team Leaders
+                      </h3>
+                      <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
+                        {selectedLeadersCount} Selected
+                      </span>
+                    </div>
 
-              {/* Selection Dropdown List */}
-              {showVolDropdown && selectedTeam && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setShowVolDropdown(false)} />
-                  <div className="absolute left-0 right-0 mt-1 bg-white border-2 border-brand-ink rounded-md shadow-[4px_4px_0px_0px_#030404] max-h-56 overflow-y-auto z-20 divide-y divide-brand-ink/10">
-                    {filteredVolunteersForSelection.map((vol) => (
-                      <div
-                        key={vol.id}
-                        onClick={() => handleAddVolunteer(vol)}
-                        className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-brand-cloud/60 text-xs font-bold text-brand-ink transition-colors"
-                      >
-                        <span>{vol.name}</span>
-                        <span className="text-[10px] uppercase font-black tracking-wider text-admin-muted">{vol.email}</span>
-                      </div>
-                    ))}
-                    {filteredVolunteersForSelection.length === 0 && (
-                      <div className="p-4 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
-                        No available volunteers found
-                      </div>
-                    )}
+                    {/* Search box for Leaders */}
+                    <div className="relative mb-3">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={13} />
+                      <input
+                        type="text"
+                        placeholder="Search leader..."
+                        value={searchLeaderQuery}
+                        onChange={(e) => setSearchLeaderQuery(e.target.value)}
+                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                      />
+                    </div>
+
+                    {/* Table / List */}
+                    <div className="flex-1 overflow-y-auto border-2 border-brand-ink rounded-md divide-y divide-brand-ink/10 bg-brand-cloud/10">
+                      {filteredLeaders.length > 0 ? (
+                        filteredLeaders.map((vol) => {
+                          const isAssigned = selectedVolunteers.some(v => v.id === vol.id);
+                          return (
+                            <div 
+                              key={vol.id} 
+                              className={`flex items-center justify-between p-2.5 transition-colors ${
+                                isAssigned ? 'bg-brand-pink/5' : 'hover:bg-brand-cloud/40'
+                              }`}
+                            >
+                              <span className="text-xs font-black text-brand-ink">{vol.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => toggleVolunteerSelection(vol)}
+                                className={`px-2.5 py-1 text-[10px] font-black uppercase rounded border-2 border-brand-ink transition-all cursor-pointer ${
+                                  isAssigned 
+                                    ? 'bg-brand-pink text-white shadow-none translate-x-[1px] translate-y-[1px]'
+                                    : 'bg-white hover:bg-brand-cloud text-brand-ink shadow-[1px_1px_0px_0px_#030404]'
+                                }`}
+                              >
+                                {isAssigned ? '✓ Added' : '+ Add'}
+                              </button>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="p-6 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
+                          No leaders found
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </>
+
+                  {/* Right Column: Team Members */}
+                  <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-4 flex flex-col h-[350px]">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="text-xs font-black uppercase text-brand-blue tracking-widest flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-brand-blue border border-brand-ink inline-block" />
+                        Team Members
+                      </h3>
+                      <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
+                        {selectedMembersCount} Selected
+                      </span>
+                    </div>
+
+                    {/* Search box for Members */}
+                    <div className="relative mb-3">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={13} />
+                      <input
+                        type="text"
+                        placeholder="Search member..."
+                        value={searchMemberQuery}
+                        onChange={(e) => setSearchMemberQuery(e.target.value)}
+                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                      />
+                    </div>
+
+                    {/* Table / List */}
+                    <div className="flex-1 overflow-y-auto border-2 border-brand-ink rounded-md divide-y divide-brand-ink/10 bg-brand-cloud/10">
+                      {filteredMembers.length > 0 ? (
+                        filteredMembers.map((vol) => {
+                          const isAssigned = selectedVolunteers.some(v => v.id === vol.id);
+                          return (
+                            <div 
+                              key={vol.id} 
+                              className={`flex items-center justify-between p-2.5 transition-colors ${
+                                isAssigned ? 'bg-brand-blue/5' : 'hover:bg-brand-cloud/40'
+                              }`}
+                            >
+                              <span className="text-xs font-black text-brand-ink">{vol.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => toggleVolunteerSelection(vol)}
+                                className={`px-2.5 py-1 text-[10px] font-black uppercase rounded border-2 border-brand-ink transition-all cursor-pointer ${
+                                  isAssigned 
+                                    ? 'bg-brand-blue text-white shadow-none translate-x-[1px] translate-y-[1px]'
+                                    : 'bg-white hover:bg-brand-cloud text-brand-ink shadow-[1px_1px_0px_0px_#030404]'
+                                }`}
+                              >
+                                {isAssigned ? '✓ Added' : '+ Add'}
+                              </button>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="p-6 text-center text-xs font-bold text-admin-muted uppercase tracking-wider">
+                          No members found
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
