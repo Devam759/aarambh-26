@@ -15,17 +15,168 @@ const accentBgs = ['bg-brand-orange', 'bg-brand-pink', 'bg-brand-blue'];
 
 export default function SchedulePage() {
   const [activeDayIdx, setActiveDayIdx] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const activeDay = SCHEDULE_DATA[activeDayIdx];
 
-
-
-
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (typeof window === 'undefined') return;
+    const { clientX, clientY } = e;
+    // Calculate distance from center of screen in a normalized range
+    const x = (clientX - window.innerWidth / 2) / 25;
+    const y = (clientY - window.innerHeight / 2) / 25;
+    setMousePos({ x, y });
+  };
 
   return (
-    <div className="bg-brand-cloud text-brand-ink min-h-screen relative overflow-hidden">
-      <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen overflow-hidden">
+    <div 
+      onMouseMove={handleMouseMove}
+      className="bg-brand-cloud text-brand-ink min-h-screen relative overflow-hidden transition-colors duration-300"
+    >
       {/* Halftone dot pattern background */}
+      <div className="absolute inset-0 bg-halftone-black opacity-[0.08] pointer-events-none z-0" />
       
+      {/* Retro sketchbook grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
+
+      {/* Dynamic Ambient Gradient Spotlights (Rich Color Depths) */}
+      <div className="absolute top-0 left-0 w-[450px] h-[450px] rounded-full bg-brand-pink/15 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[550px] h-[550px] rounded-full bg-brand-orange/15 blur-[145px] pointer-events-none z-0" />
+      <div className="absolute top-[40%] left-[-100px] w-[400px] h-[400px] rounded-full bg-brand-blue/10 blur-[110px] pointer-events-none z-0" />
+
+      {/* Floating Dynamic Comic Props */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+        {/* Floating Star 1 - Top Left */}
+        <motion.div
+          animate={{
+            y: [0, -15, 0],
+            rotate: [0, 10, -5, 0],
+            scale: [1, 1.05, 0.95, 1],
+          }}
+          style={{
+            x: mousePos.x * -1.2,
+            y: mousePos.y * -1.2,
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[10%] left-[5%] text-brand-pink/25 text-6xl hidden md:block"
+        >
+          ★
+        </motion.div>
+
+        {/* Floating Star 2 - Bottom Right */}
+        <motion.div
+          animate={{
+            y: [0, 20, 0],
+            rotate: [0, -15, 10, 0],
+            scale: [1, 0.95, 1.08, 1],
+          }}
+          style={{
+            x: mousePos.x * 1.5,
+            y: mousePos.y * 1.5,
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+          className="absolute bottom-[15%] right-[8%] text-brand-orange/25 text-8xl hidden md:block"
+        >
+          ★
+        </motion.div>
+
+        {/* Floating Starburst Shape - Top Right */}
+        <motion.div
+          animate={{
+            y: [0, -25, 0],
+            rotate: [0, 360],
+          }}
+          style={{
+            x: mousePos.x * -0.8,
+            y: mousePos.y * -0.8,
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="absolute top-[15%] right-[10%] w-16 h-16 border-4 border-brand-blue/20 bg-brand-blue/8 comic-starburst hidden md:block"
+        />
+
+        {/* Floating Circle Badge - Bottom Left */}
+        <motion.div
+          animate={{
+            y: [0, 15, 0],
+            x: [0, 10, 0],
+            scale: [1, 1.03, 0.97, 1],
+          }}
+          style={{
+            x: mousePos.x * 2.0,
+            y: mousePos.y * 2.0,
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5,
+          }}
+          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-pink/20 bg-brand-pink/8 flex items-center justify-center font-display font-black text-brand-pink/25 text-lg hidden md:block"
+        >
+          !
+        </motion.div>
+
+        {/* Floating Lightning Bolt ⚡ - Middle Right */}
+        <motion.div
+          animate={{
+            y: [0, -18, 0],
+            rotate: [0, 8, -8, 0],
+            scale: [1, 1.05, 0.95, 1],
+          }}
+          style={{
+            x: mousePos.x * -1.5,
+            y: mousePos.y * -1.5,
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1.5,
+          }}
+          className="absolute top-[45%] right-[6%] text-brand-orange/20 text-7xl font-black hidden md:block"
+        >
+          ⚡
+        </motion.div>
+
+        {/* Floating Cross ✕ - Middle Left */}
+        <motion.div
+          animate={{
+            y: [0, 22, 0],
+            rotate: [0, -25, 25, 0],
+          }}
+          style={{
+            x: mousePos.x * 1.8,
+            y: mousePos.y * 1.8,
+          }}
+          transition={{
+            duration: 11,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2.2,
+          }}
+          className="absolute top-[55%] left-[6%] text-brand-blue/20 text-6xl font-black hidden md:block"
+        >
+          ✕
+        </motion.div>
+
+        {/* Dynamic Graphic Lines crossing the edges */}
+        <div className="absolute top-0 left-1/4 w-[1px] h-32 bg-brand-ink/5 hidden lg:block" />
+        <div className="absolute bottom-0 right-1/4 w-[1px] h-48 bg-brand-ink/5 hidden lg:block" />
+      </div>
+
+      <div className="py-28 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen overflow-hidden relative z-10">
 
       {/* Retro comic header panel */}
       <header className="text-center mb-12 relative z-10 flex flex-col items-center">
