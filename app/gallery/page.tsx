@@ -407,7 +407,7 @@ export default function GalleryLanding() {
   }
 
   const handleExitMagic = () => {
-    router.push('/')
+    router.push('/#gallery-showcase')
   }
 
   // ── Tunnel Setup and Animation Loop ──
@@ -1027,58 +1027,73 @@ export default function GalleryLanding() {
               className="tunnel-exit-btn"
             >
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: '#030404', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 800 }}>
-                Exit the magic
+                Go Back
               </span>
             </button>
 
 
 
-            {/* Scroll to see the magic badge */}
+            {/* Translucent overlay with clean floating text */}
             <AnimatePresence>
               {showScrollHint && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: -30 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
                   style={{
-                    position: 'absolute',
-                    top: '46%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 100,
-                    background: '#F5F1E5',
-                    border: '3.5px solid #030404',
-                    borderRadius: '20px',
-                    padding: '24px 36px',
-                    boxShadow: '12px 12px 0px 0px #030404',
+                    position: 'fixed',
+                    inset: 0,
+                    backgroundColor: 'rgba(3, 4, 4, 0.75)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    zIndex: 1000,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     pointerEvents: 'none',
                     textAlign: 'center',
-                    transformStyle: 'preserve-3d',
-                    perspective: '1000px'
                   }}
                 >
-                  <div style={{ 
-                    fontFamily: "'Syne', sans-serif",
-                    fontSize: '11px', 
-                    color: '#FF188C', 
-                    fontWeight: 800, 
-                    letterSpacing: '0.25em', 
-                    textTransform: 'uppercase', 
-                    marginBottom: '8px',
-                    transform: 'translateZ(15px)'
-                  }}>
-                    Aarambh Gallery
-                  </div>
-                  <div style={{ 
-                    fontFamily: "'Syne', sans-serif", 
-                    fontSize: '22px', 
-                    color: '#030404', 
-                    fontWeight: 900, 
-                    textTransform: 'uppercase', 
-                    transform: 'translateZ(30px)'
-                  }}>
-                    Scroll to see the magic
-                  </div>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+                    style={{
+                      maxWidth: '90%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}
+                  >
+                    <span style={{ 
+                      fontFamily: "'Syne', sans-serif",
+                      fontSize: '13px', 
+                      color: '#FF188C', 
+                      fontWeight: 800, 
+                      letterSpacing: '0.3em', 
+                      textTransform: 'uppercase', 
+                      textShadow: '0 2px 10px rgba(255, 24, 140, 0.3)'
+                    }}>
+                      Aarambh Gallery
+                    </span>
+                    <h2 style={{ 
+                      fontFamily: "'Syne', sans-serif", 
+                      fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', 
+                      color: '#F5F1E5', 
+                      fontWeight: 900, 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.05em',
+                      lineHeight: 1.2,
+                      margin: 0,
+                      textShadow: '0 4px 20px rgba(0,0,0,0.6)'
+                    }}>
+                      Scroll down to experience
+                    </h2>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -325,7 +325,7 @@ export default function Footer() {
 
         <div className="w-full border-4 border-brand-ink shadow-[8px_8px_0px_0px_#030404] rounded-lg overflow-hidden h-80 mb-10 transform hover:scale-[1.002] transition-transform duration-250">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.1083984920677!2d75.6471644761405!3d26.836545163148123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c59ea11e5491b%3A0x2f90a9caad95e1e1!2sJK%20Lakshmipat%20University!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.1068800262106!2d75.64717947625807!3d26.836594263152028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c59ea11e5491b%3A0x2f90a9caad95e1e1!2sJK%20Lakshmipat%20University!5e0!3m2!1sen!2sin!4v1716808795908!5m2!1sen!2sin"
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -358,15 +358,33 @@ export default function Footer() {
         </div>
         
         <div className="flex items-center gap-6">
-          <Image
-            src="/jklu_logo.svg"
-            alt="JK Lakshmipat University Logo"
-            width={120}
-            height={40}
-            className="h-10 w-auto opacity-95 object-contain"
-            style={{ width: 'auto', height: 'auto' }}
-            priority
-          />
+          <Link href="/" className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex">
+            <Image
+              src="/logo.svg"
+              alt="Aarambh '26 Logo"
+              width={834}
+              height={193}
+              className="h-10 w-auto opacity-95 object-contain"
+              style={{ width: 'auto', height: '40px' }}
+              priority
+            />
+          </Link>
+          <a 
+            href="https://jklu.edu.in" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex"
+          >
+            <Image
+              src="/jklu_logo.svg"
+              alt="JK Lakshmipat University Logo"
+              width={120}
+              height={40}
+              className="h-12 w-auto opacity-95 object-contain"
+              style={{ width: 'auto', height: '48px' }}
+              priority
+            />
+          </a>
           <button
             onClick={scrollToTop}
             className="w-10 h-10 bg-brand-pink text-white border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-orange active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#030404] transition-all rounded-md flex justify-center items-center cursor-pointer"

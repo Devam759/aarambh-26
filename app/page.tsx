@@ -728,422 +728,374 @@ export default function Home() {
       <TornPaperDivider color="fill-brand-ink" flip={true} />
 
 
-      {/* Memories of 2025 Gallery Showcase Section */}
-      <section className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
-        <style dangerouslySetInnerHTML={{ __html: `
-
-
-          .gl-root {
-            width: 100%;
-            height: 980px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            background: #F5F1E5;
-            perspective: 1200px;
-          }
-
-          /* ── ENTER MAGIC CARD ── */
-          .gl-card {
-            position: relative;
-            z-index: 10;
-            width: clamp(280px, 82vw, 390px);
-            background: #F5F1E5;
-            border: 3.5px solid #030404;
-            border-radius: 20px;
-            padding: 32px 28px;
-            text-align: center;
-            box-shadow: 12px 12px 0px 0px #030404;
-            overflow: visible;
-            transform-style: flat;
-            will-change: transform;
-          }
-
-          /* sliding photo columns */
-          .gl-slider-column {
-            position: absolute;
-            top: -10%;
-            width: 145px;
-            height: 120%;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            z-index: 2;
-            pointer-events: none;
-            opacity: 0.85;
-          }
-
-          .gl-slider-img-container {
-            width: 100%;
-            height: 195px;
-            position: relative;
-            border: 3px solid #030404;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 5px 5px 0px 0px #030404;
-            background: #030404;
-          }
-
-          .gl-slider-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-
-          @keyframes slideUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
-          }
-
-          @keyframes slideDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0); }
-          }
-
-          .gl-slider-track-up {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            animation: slideUp 24s linear infinite;
-          }
-
-          .gl-slider-track-down {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            animation: slideDown 24s linear infinite;
-          }
-
-          @media (max-width: 1200px) {
-            .gl-slider-column.inner {
-              display: none !important;
-            }
-          }
-
-          @media (max-width: 768px) {
-            .gl-slider-column {
-              display: none !important;
-            }
-          }
-
-          /* Starburst badge */
-          .gl-starburst {
-            position: absolute;
-            width: 72px;
-            height: 72px;
-            background: #FF9A00;
-            border: 2px solid #030404;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: starSpin 10s linear infinite;
-          }
-          @keyframes starSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-
-          .gl-starburst-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-weight: 900;
-            font-size: 10px;
-            color: #030404;
-            letter-spacing: 0.05em;
-            text-align: center;
-            line-height: 1.1;
-            animation: starSpin 10s linear infinite reverse;
-          }
-
-          .gl-devanagari {
-            font-family: 'Tiro Devanagari Hindi', serif;
-            font-size: 1.1rem;
-            color: #030404;
-            margin-bottom: 6px;
-            letter-spacing: 0.05em;
-            font-weight: 700;
-          }
-
-          .gl-eyebrow {
-            font-family: var(--font-display);
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: #FF188C;
-            margin-bottom: 18px;
-          }
-
-          .gl-heading {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 7vw, 3rem);
-            font-weight: 900;
-            color: #030404;
-            line-height: 1.0;
-            letter-spacing: -0.03em;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-          }
-          
-          .gl-heading-highlight {
-            color: #F5F1E5;
-            text-shadow: 
-              2px 2px 0 #FF188C,
-              -2px -2px 0 #FF188C,
-              2px -2px 0 #FF188C,
-              -2px 2px 0 #FF188C,
-              4px 4px 0 #030404;
-          }
-
-          .gl-divider {
-            width: 50px;
-            height: 4px;
-            background: #030404;
-            border-radius: 99px;
-            margin: 18px auto 18px;
-          }
-
-          .gl-sub {
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #030404;
-            letter-spacing: 0.02em;
-            line-height: 1.5;
-            margin-bottom: 24px;
-          }
-
-          /* Begin Experience button */
-          .gl-cta {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 900;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: #F5F1E5;
-            background: #FF188C;
-            border: 3.5px solid #030404;
-            border-radius: 12px;
-            padding: 14px 28px;
-            text-decoration: none;
-            cursor: pointer;
-            box-shadow: 5px 5px 0px 0px #030404;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
-          }
-          .gl-cta:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 8px 8px 0px 0px #030404;
-            background: #FF9A00;
-            color: #030404;
-          }
-          .gl-cta:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px 0px #030404;
-          }
-
-          .gl-corner-tag {
-            position: absolute;
-            font-family: var(--font-display);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #030404;
-            pointer-events: none;
-            z-index: 5;
-          }
-
-          .gl-card-topbar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 10px;
-            background: #FF9A00;
-            border-bottom: 3.5px solid #030404;
-          }
-        `}} />
-
-        <div className="gl-root">
-          {/* Column 1: Left Outer (Slides Up) */}
-          <div className="gl-slider-column left" style={{ left: '1.5%' }}>
-            <div className="gl-slider-track-up">
-              {[...col1Images, ...col1Images].map((src, i) => (
-                <div key={`col1-${i}`} className="gl-slider-img-container">
-                  <img src={src} className="gl-slider-image" alt="Aarambh" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 2: Left Inner (Slides Down) */}
-          <div className="gl-slider-column left inner" style={{ left: '12.5%' }}>
-            <div className="gl-slider-track-down">
-              {[...col2Images, ...col2Images].map((src, i) => (
-                <div key={`col2-${i}`} className="gl-slider-img-container">
-                  <img src={src} className="gl-slider-image" alt="Aarambh" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 3: Right Inner (Slides Up) */}
-          <div className="gl-slider-column right inner" style={{ right: '12.5%' }}>
-            <div className="gl-slider-track-up">
-              {[...col3Images, ...col3Images].map((src, i) => (
-                <div key={`col3-${i}`} className="gl-slider-img-container">
-                  <img src={src} className="gl-slider-image" alt="Aarambh" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Column 4: Right Outer (Slides Down) */}
-          <div className="gl-slider-column right" style={{ right: '1.5%' }}>
-            <div className="gl-slider-track-down">
-              {[...col4Images, ...col4Images].map((src, i) => (
-                <div key={`col4-${i}`} className="gl-slider-img-container">
-                  <img src={src} className="gl-slider-image" alt="Aarambh" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Starburst top-right */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0, rotate: 20 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.34,1.56,0.64,1] }}
-            style={{ position: 'absolute', top: '20%', right: '23%', zIndex: 15 }}
-          >
-            <div style={{ position: 'relative', width: 80, height: 80 }}>
-              <div className="gl-starburst" />
-              <div className="gl-starburst-text">NEW<br/>PICS!</div>
-            </div>
-          </motion.div>
-
-          {/* Main Content Container */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10, padding: '0 20px', textAlign: 'center' }}>
-            
-            {/* Title Section */}
-            {galleryMounted && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  maxWidth: '650px',
-                  marginBottom: '32px'
-                }}
-              >
-                <h2 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 'clamp(2.0rem, 5vw, 3rem)',
-                  fontWeight: 800,
-                  color: '#FF9A00',
-                  marginBottom: '16px',
-                  textShadow: '2px 2px 0px #030404',
-                  letterSpacing: '-0.02em'
-                }}>
-                  Memories of 2025
-                </h2>
-                <p style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
-                  fontWeight: 600,
-                  color: '#030404',
-                  lineHeight: 1.6
-                }}>
-                  Experience the best moments of Aarambh 2025 with our curated memories. From engaging workshops to inspiring guest lectures, relive the magic that made this event unforgettable!
-                </p>
-              </motion.div>
-            )}
-
-            {/* Main Neo-Brutalism Card */}
-            {galleryMounted && (
-              <motion.div
-                className="gl-card"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              >
-              <div className="gl-card-topbar" />
-
-                {/* Content Container */}
-                <div style={{ position: 'relative', zIndex: 10 }}>
-                  {/* Devanagari */}
-                  <div className="gl-devanagari">आरम्भ '२६</div>
-
-                  {/* Main heading */}
-                  <h1 className="gl-heading" style={{ marginBottom: '32px' }}>
-                    ENTER THE <br />
-                    <span className="gl-heading-highlight">GALLERY</span>
-                  </h1>
-
-                  {/* CTA - Navigates to /gallery */}
-                  <div style={{ display: 'inline-block', position: 'relative', zIndex: 100, marginTop: '8px' }}>
-                    <Link href="/gallery" className="gl-cta">
-                      Begin Experience →
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </section>
-
       {/* About Section wrapper */}
       <section className="w-full z-10 bg-brand-ink">
         <AboutSection />
       </section>
+{/* Memories of 2025 Gallery Showcase Section */}
+<section id="gallery-showcase" className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
+  <style dangerouslySetInnerHTML={{ __html: `
+    .gl-root {
+      width: 100%;
+      height: 980px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: #F5F1E5;
+      perspective: 1200px;
+    }
 
-      {/* Comic Book Ad Banner Style Newsletter */}
-      <section className="py-24 px-6 w-full max-w-5xl pb-32 relative z-10">
-        <div className="border-comic bg-brand-orange text-brand-ink shadow-comic-lg bg-halftone-black p-8 sm:p-12 md:p-16 rounded-xl text-center relative overflow-hidden">
-          {/* Action starburst backing design */}
-          <div className="absolute top-2 left-2 w-16 h-16 border-comic-thin bg-brand-pink text-brand-cloud font-display font-black text-[10px] uppercase tracking-tighter flex items-center justify-center rotate-[-12deg] shadow-comic-sm">
-            NEWS!
+    /* ── ENTER MAGIC CARD ── */
+    .gl-card {
+      position: relative;
+      z-index: 10;
+      width: clamp(280px, 82vw, 390px);
+      background: #F5F1E5;
+      border: 3.5px solid #030404;
+      border-radius: 20px;
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: 12px 12px 0px 0px #030404;
+      overflow: visible;
+      transform-style: flat;
+      will-change: transform;
+    }
+
+    /* sliding photo columns */
+    .gl-slider-column {
+      position: absolute;
+      top: -10%;
+      width: 145px;
+      height: 120%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .gl-slider-img-container {
+      width: 100%;
+      height: 195px;
+      position: relative;
+      border: 3px solid #030404;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 5px 5px 0px 0px #030404;
+      background: #030404;
+    }
+
+    .gl-slider-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    @keyframes slideDown {
+      0% { transform: translateY(-50%); }
+      100% { transform: translateY(0); }
+    }
+
+    .gl-slider-track-up {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      animation: slideUp 24s linear infinite;
+    }
+
+    .gl-slider-track-down {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      animation: slideDown 24s linear infinite;
+    }
+
+    @media (max-width: 1200px) {
+      .gl-slider-column.inner {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .gl-slider-column {
+        display: none !important;
+      }
+    }
+
+    /* Starburst badge */
+    .gl-starburst {
+      position: absolute;
+      width: 72px;
+      height: 72px;
+      background: #FF9A00;
+      border: 2px solid #030404;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: starSpin 10s linear infinite;
+    }
+    @keyframes starSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .gl-starburst-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 10px;
+      color: #030404;
+      letter-spacing: 0.05em;
+      text-align: center;
+      line-height: 1.1;
+      animation: starSpin 10s linear infinite reverse;
+    }
+
+    .gl-devanagari {
+      font-family: 'Tiro Devanagari Hindi', serif;
+      font-size: 1.1rem;
+      color: #030404;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .gl-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #FF188C;
+      margin-bottom: 18px;
+    }
+
+    .gl-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 900;
+      color: #030404;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .gl-heading-highlight {
+      color: #F5F1E5;
+      text-shadow: 
+        2px 2px 0 #FF188C,
+        -2px -2px 0 #FF188C,
+        2px -2px 0 #FF188C,
+        -2px 2px 0 #FF188C,
+        4px 4px 0 #030404;
+    }
+
+    .gl-divider {
+      width: 50px;
+      height: 4px;
+      background: #030404;
+      border-radius: 99px;
+      margin: 18px auto 18px;
+    }
+
+    .gl-sub {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #030404;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Begin Experience button */
+    .gl-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #F5F1E5;
+      background: #FF188C;
+      border: 3.5px solid #030404;
+      border-radius: 12px;
+      padding: 14px 28px;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 5px 5px 0px 0px #030404;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+    .gl-cta:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 8px 8px 0px 0px #030404;
+      background: #FF9A00;
+      color: #030404;
+    }
+    .gl-cta:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px 0px #030404;
+    }
+
+    .gl-corner-tag {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #030404;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .gl-card-topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: #FF9A00;
+      border-bottom: 3.5px solid #030404;
+    }
+  `}} />
+  <div className="gl-root">
+    {/* Column 1: Left Outer (Slides Up) */}
+    <div className="gl-slider-column left" style={{ left: '1.5%' }}>
+      <div className="gl-slider-track-up">
+        {[...col1Images, ...col1Images].map((src, i) => (
+          <div key={`col1-${i}`} className="gl-slider-img-container">
+            <img src={src} className="gl-slider-image" alt="Aarambh" />
           </div>
+        ))}
+      </div>
+    </div>
 
-          <span className="relative z-10 px-3 py-1 bg-brand-ink text-brand-cloud font-display text-[10px] font-black uppercase tracking-widest">
-            AARAMBH DISPATCH
-          </span>
-          <h2 className="text-3xl md:text-5xl font-display font-black uppercase mb-4 tracking-tight mt-6">
-            SUBSCRIBE & STAY TUNED!
+    {/* Column 2: Left Inner (Slides Down) */}
+    <div className="gl-slider-column left inner" style={{ left: '12.5%' }}>
+      <div className="gl-slider-track-down">
+        {[...col2Images, ...col2Images].map((src, i) => (
+          <div key={`col2-${i}`} className="gl-slider-img-container">
+            <img src={src} className="gl-slider-image" alt="Aarambh" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Column 3: Right Inner (Slides Up) */}
+    <div className="gl-slider-column right inner" style={{ right: '12.5%' }}>
+      <div className="gl-slider-track-up">
+        {[...col3Images, ...col3Images].map((src, i) => (
+          <div key={`col3-${i}`} className="gl-slider-img-container">
+            <img src={src} className="gl-slider-image" alt="Aarambh" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Column 4: Right Outer (Slides Down) */}
+    <div className="gl-slider-column right" style={{ right: '1.5%' }}>
+      <div className="gl-slider-track-down">
+        {[...col4Images, ...col4Images].map((src, i) => (
+          <div key={`col4-${i}`} className="gl-slider-img-container">
+            <img src={src} className="gl-slider-image" alt="Aarambh" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+
+
+    {/* Main Content Container */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10, padding: '0 20px', textAlign: 'center' }}>
+      
+      {/* Title Section */}
+      {galleryMounted && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            maxWidth: '650px',
+            marginBottom: '32px'
+          }}
+        >
+          <h2 style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 'clamp(2.0rem, 5vw, 3rem)',
+            fontWeight: 800,
+            color: '#FF9A00',
+            marginBottom: '16px',
+            textShadow: '2px 2px 0px #030404',
+            letterSpacing: '-0.02em'
+          }}>
+            Memories of 2025
           </h2>
-          <p className="text-brand-ink/80 text-xs sm:text-sm mb-10 max-w-md mx-auto leading-relaxed font-bold uppercase">
-            GET THE OFFICIAL BROADCASTS DELIVERED TO YOUR INBOX. ANNOUNCEMENTS, KEYNOTE SCHEDULES, AND VENUE ASSIGNMENTS!
+          <p style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+            fontWeight: 600,
+            color: '#030404',
+            lineHeight: 1.6
+          }}>
+            Experience the best moments of Aarambh 2025 with our curated memories.
           </p>
-          
-          <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto relative z-10">
-            <input
-              type="email"
-              placeholder="ENTER.YOUR.EMAIL@HERE.COM"
-              className="bg-brand-cloud border-comic text-brand-ink placeholder:text-brand-ink/40 font-mono text-sm font-bold focus:outline-none focus:bg-white transition-colors flex-grow shadow-inner uppercase tracking-wider p-3 rounded-lg"
-              required
-              suppressHydrationWarning={true}
-            />
-            <button
-              type="submit"
-              className="py-3.5 px-8 bg-brand-ink text-brand-cloud font-display font-black text-xs uppercase tracking-widest rounded-lg comic-interactive border-2 border-brand-cloud shadow-comic-sm"
-            >
-              SUBSCRIBE NOW
-            </button>
-          </form>
-        </div>
-      </section>
+        </motion.div>
+      )}
+
+      {/* Main Neo-Brutalism Card */}
+      {galleryMounted && (
+        <motion.div
+          className="gl-card"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="gl-card-topbar" />
+
+          {/* Content Container */}
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            {/* Devanagari */}
+            <div className="gl-devanagari">आरम्भ '२६</div>
+
+            {/* Main heading */}
+            <h1 className="gl-heading" style={{ marginBottom: '32px' }}>
+              ENTER THE <br />
+              <span className="gl-heading-highlight">GALLERY</span>
+            </h1>
+
+            {/* CTA - Navigates to /gallery */}
+            <div style={{ display: 'inline-block', position: 'relative', zIndex: 100, marginTop: '8px' }}>
+              <Link href="/gallery" className="gl-cta">
+                Begin Experience →
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  </div>
+</section>
+
+
+
     </main>
   );
 }
