@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, getCountFromServer } from 'firebase/firestore';
 import { PDFDocument, rgb } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs/promises';
@@ -342,9 +342,9 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   const motherMobile = formData.motherMobile || '';
   const motherEmail = formData.motherEmail || '';
 
-  const parentName = `Father: ${fatherName} | Mother: ${motherName}`;
-  const parentPhone = `Father: ${fatherMobile} | Mother: ${motherMobile}`;
-  const parentEmail = `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
+  const parentName = formData.parentName || `Father: ${fatherName} | Mother: ${motherName}`;
+  const parentPhone = formData.parentPhone || `Father: ${fatherMobile} | Mother: ${motherMobile}`;
+  const parentEmail = formData.parentEmail || `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
   
   // 1. Save data to Firestore Registration Collection
   const registrationsRef = collection(db, 'registrations');
@@ -371,115 +371,124 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   });
   console.log("Registration saved. Firestore ID:", docRef.id);
 
-  // 1.5 Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
-  const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
-  if (excelWebhook) {
-    console.log("Syncing registration details to Microsoft Excel...");
+  // Run slow operations (Excel sync, PDF generation, email notification, audit logs)
+  // in the background asynchronously so the client HTTP request completes instantly.
+  (async () => {
     try {
-      let lastDate = "";
-      try {
-        const q = query(collection(db, 'registrations'), orderBy('registeredAt', 'desc'), limit(2));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.docs.length > 1) {
-          const lastDoc = querySnapshot.docs[1].data();
-          lastDate = lastDoc.dateOfPayment || "";
+      // 1.5 Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
+      const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
+      if (excelWebhook) {
+        console.log("Background Task: Syncing registration details to Microsoft Excel...");
+        try {
+          let lastDate = "";
+          try {
+            const q = query(collection(db, 'registrations'), orderBy('registeredAt', 'desc'), limit(2));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.docs.length > 1) {
+              const lastDoc = querySnapshot.docs[1].data();
+              lastDate = lastDoc.dateOfPayment || "";
+            }
+          } catch (err) {
+            console.warn("Could not query last registration date:", err);
+          }
+
+          let studentIndex = 1;
+          try {
+            const countSnapshot = await getCountFromServer(collection(db, 'registrations'));
+            studentIndex = countSnapshot.data().count;
+          } catch (err) {
+            console.warn("Could not count registrations:", err);
+          }
+
+          if (lastDate && lastDate !== dateOfPayment) {
+            console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
+            await fetch(excelWebhook, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: dateGroup,
+                name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
+                gender: '', course: '',
+                parentName: '', parentPhone: '', parentEmail: '',
+                address: '', pincode: '',
+                paymentAmount: 0, receivedAmount: 0,
+                dateOfPayment: '', dateGroup: dateGroup,
+                paymentId: '', orderId: ''
+              })
+            });
+          }
+
+          await fetch(excelWebhook, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              id: studentIndex.toString(),
+              name: formData.name,
+              email: formData.email,
+              phone: formData.mobile,
+              rollNumber: formData.registrationNumber,
+              registeredAt: new Date().toISOString(),
+              gender: formData.gender || 'N/A',
+              course: formData.course || 'N/A',
+              parentName: parentName,
+              parentPhone: parentPhone,
+              parentEmail: parentEmail,
+              fatherName: fatherName || formData.parentName || 'N/A',
+              fatherMobile: fatherMobile || formData.parentPhone || 'N/A',
+              fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
+              motherName: motherName || 'N/A',
+              motherMobile: motherMobile || 'N/A',
+              motherEmail: motherEmail || 'N/A',
+              address: formData.address || 'N/A',
+              pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
+              paymentAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
+              receivedAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
+              dateOfPayment: dateOfPayment,
+              dateGroup: dateGroup,
+              paymentId: paymentId,
+              orderId: orderId
+            })
+          });
+          console.log("Background Task: Excel sync webhook fired successfully.");
+        } catch (excelError) {
+          console.error("Background Task: Excel sync webhook failed:", excelError);
         }
-      } catch (err) {
-        console.warn("Could not query last registration date:", err);
       }
 
-      let studentIndex = 1;
+      // 2. Generate PDF Receipt
+      console.log("Background Task: Generating PDF receipt...");
+      const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
+      console.log("Background Task: PDF receipt generated.");
+
+      // 3. Send Email using SMTP
+      console.log("Background Task: Attempting to send confirmation email to:", formData.email);
       try {
-        const countSnapshot = await getDocs(collection(db, 'registrations'));
-        studentIndex = countSnapshot.size;
-      } catch (err) {
-        console.warn("Could not count registrations:", err);
+        await sendEmail(formData.email, formData.name, pdfBytes);
+        console.log("Background Task: Email sent successfully.");
+      } catch (emailError) {
+        console.error("Background Task: Email delivery failed:", emailError);
       }
 
-      if (lastDate && lastDate !== dateOfPayment) {
-        console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
-        await fetch(excelWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: dateGroup,
-            name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
-            gender: '', course: '',
-            parentName: '', parentPhone: '', parentEmail: '',
-            address: '', pincode: '',
-            paymentAmount: 0, receivedAmount: 0,
-            dateOfPayment: '', dateGroup: dateGroup,
-            paymentId: '', orderId: ''
-          })
+      // 4. Create Audit Log
+      console.log("Background Task: Recording audit log...");
+      try {
+        await addDoc(collection(db, 'auditLogs'), {
+          timestamp: serverTimestamp(),
+          action: 'REGISTRATION_COMPLETE',
+          performedBy: formData.email,
+          targetEntity: `registration/${docRef.id}`,
+          details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
         });
+        console.log("Background Task: Audit log recorded.");
+      } catch (auditError) {
+        console.error("Background Task: Audit logging failed:", auditError);
       }
-
-      await fetch(excelWebhook, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: studentIndex.toString(),
-          name: formData.name,
-          email: formData.email,
-          phone: formData.mobile,
-          rollNumber: formData.registrationNumber,
-          registeredAt: new Date().toISOString(),
-          gender: formData.gender || 'N/A',
-          course: formData.course || 'N/A',
-          parentName: parentName,
-          parentPhone: parentPhone,
-          parentEmail: parentEmail,
-          fatherName: fatherName || 'N/A',
-          fatherMobile: fatherMobile || 'N/A',
-          fatherEmail: fatherEmail || 'N/A',
-          motherName: motherName || 'N/A',
-          motherMobile: motherMobile || 'N/A',
-          motherEmail: motherEmail || 'N/A',
-          address: formData.address || 'N/A',
-          pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
-          paymentAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
-          receivedAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
-          dateOfPayment: dateOfPayment,
-          dateGroup: dateGroup,
-          paymentId: paymentId,
-          orderId: orderId
-        })
-      });
-      console.log("Excel sync webhook fired successfully.");
-    } catch (excelError) {
-      console.error("Excel sync webhook failed (non-blocking):", excelError);
+    } catch (bgError) {
+      console.error("Background Task Manager encountered critical error:", bgError);
     }
-  }
-
-  // 2. Generate PDF Receipt
-  console.log("Generating PDF receipt...");
-  const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
-  console.log("PDF receipt generated.");
-
-  // 3. Send Email using SMTP
-  console.log("Attempting to send confirmation email to:", formData.email);
-  try {
-    await sendEmail(formData.email, formData.name, pdfBytes);
-    console.log("Email sent successfully.");
-  } catch (emailError) {
-    console.error("Email delivery failed (non-blocking):", emailError);
-  }
-
-  // 4. Create Audit Log
-  console.log("Recording audit log...");
-  try {
-    await addDoc(collection(db, 'auditLogs'), {
-      timestamp: serverTimestamp(),
-      action: 'REGISTRATION_COMPLETE',
-      performedBy: formData.email,
-      targetEntity: `registration/${docRef.id}`,
-      details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
-    });
-  } catch (auditError) {
-    console.error("Audit logging failed:", auditError);
-  }
+  })().catch(err => console.error("Background wrapper runtime failure:", err));
 
   return docRef.id;
 }
