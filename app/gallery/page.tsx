@@ -632,6 +632,13 @@ export default function GalleryLanding() {
         } else {
           router.push('/')
         }
+      } else if (lightboxId !== null) {
+        const currentIdx = PHOTOS.findIndex(p => p.id === lightboxId)
+        if (e.key === 'ArrowLeft' && currentIdx > 0) {
+          setLightboxId(PHOTOS[currentIdx - 1].id)
+        } else if (e.key === 'ArrowRight' && currentIdx >= 0 && currentIdx < PHOTOS.length - 1) {
+          setLightboxId(PHOTOS[currentIdx + 1].id)
+        }
       }
     }
     window.addEventListener('keydown', handler)
