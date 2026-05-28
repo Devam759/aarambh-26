@@ -8,10 +8,9 @@ import { SCHEDULE_DATA, DaySchedule, ScheduleItem } from '@/constants/events';
 const dayColors = [
   'border-brand-orange hover:shadow-solid-orange',
   'border-brand-pink hover:shadow-solid-pink',
-  'border-brand-blue hover:shadow-solid-blue',
 ];
 
-const accentBgs = ['bg-brand-orange', 'bg-brand-pink', 'bg-brand-blue'];
+const accentBgs = ['bg-brand-orange', 'bg-brand-pink'];
 
 export default function SchedulePage() {
   const [activeDayIdx, setActiveDayIdx] = useState(0);
@@ -230,7 +229,7 @@ export default function SchedulePage() {
             className="space-y-6"
           >
             {activeDay.events.map((event, idx) => {
-              const accentColor = accentBgs[idx % 3];
+              const accentColor = accentBgs[idx % accentBgs.length];
               
               // Special Layout for All Day Outing (Day 5)
               if (event.time.toLowerCase() === 'all day') {
