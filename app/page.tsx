@@ -2,8 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, Variants, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
-
+import { Sparkles, Users, Mic, Laptop, Music, Gamepad2, Map } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AboutSection from '@/components/about';
@@ -1494,6 +1493,89 @@ export default function Home() {
                 </div>
               </motion.div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Aerial View Section */}
+      <section className="w-full relative z-10 bg-brand-cloud py-20 px-4 md:px-8 border-t-4 border-brand-ink">
+        <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
+          <div className="inline-block bg-brand-pink text-brand-cloud border-comic px-6 py-2 rounded-full mb-8 rotate-[-2deg] shadow-comic-sm">
+            <h2 className="font-display font-black text-2xl md:text-4xl uppercase tracking-wider">Aerial View of JKLU Campus</h2>
+          </div>
+          <div className="w-full relative border-comic rounded-2xl shadow-comic overflow-hidden bg-brand-ink">
+             <Image 
+                src="/images/jklu_map.webp" 
+                alt="JKLU Campus Aerial View" 
+                width={1920}
+                height={1080}
+                className="w-full h-auto hover:scale-105 transition-transform duration-700" 
+             />
+          </div>
+        </div>
+      </section>
+
+      {/* Torn paper visual separation */}
+      <TornPaperDivider color="fill-brand-ink" flip={true} />
+
+      {/* Events & Activities Section */}
+      <section className="w-full relative z-10 bg-brand-cloud py-20 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="flex justify-center mb-16">
+            <div className="inline-block bg-brand-ink text-brand-cloud border-comic px-8 py-3 rounded-xl rotate-[1deg] shadow-comic">
+              <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider">Events & Activities</h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {/* Card 1 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-pink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
+                <Users size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Ice Breaking Session</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Get ready to break the ice and make squads! Fun games and chill vibes to help freshers vibe and connect.</p>
+            </div>
+            {/* Card 2 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-blue rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
+                <Mic size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Expert Talks</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Real talk from industry pros and top academics — get inspired, motivated, and ready to boss up your journey.</p>
+            </div>
+            {/* Card 3 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-orange rounded-full border-comic flex items-center justify-center mb-6 text-brand-ink shadow-comic-sm">
+                <Laptop size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Workshops</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Engage in interactive sessions led by experts to kickstart your academic journey. Learn essential skills and gain insights.</p>
+            </div>
+            {/* Card 4 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-ink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
+                <Music size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Cultural Night</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Showcase your unique talents or enjoy captivating performances by fellow students and professionals in a vibrant evening.</p>
+            </div>
+            {/* Card 5 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-pink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
+                <Gamepad2 size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Sports & Games</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Get moving with fun activities and friendly matches that bring out your team spirit and good vibes.</p>
+            </div>
+            {/* Card 6 */}
+            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-brand-blue rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
+                <Map size={28} />
+              </div>
+              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Campus Tour</h3>
+              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Explore the heart of our campus with guided tours. Discover key landmarks, student hubs, and your new second home.</p>
+            </div>
           </div>
         </div>
       </section>
