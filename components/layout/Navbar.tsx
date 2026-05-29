@@ -10,6 +10,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -53,7 +54,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 transition-all duration-300 rounded-full border ${isScrolled
+        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-7xl z-50 transition-all duration-300 rounded-full border ${isScrolled
           ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
           : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
           }`}
@@ -95,24 +96,50 @@ export default function Navbar() {
           </div>
 
           {/* Links for Desktop */}
-          <div className="hidden md:flex items-center gap-6 bg-brand-ink/40 py-1.5 px-5 rounded-full border border-brand-cloud/5">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`relative py-1 px-3 text-xs font-bold tracking-widest uppercase transition-colors duration-200 ${pathname === link.href ? 'text-brand-pink' : 'text-brand-cloud/70 hover:text-brand-pink'
+          <div 
+            className="hidden md:flex items-center gap-6 bg-brand-ink/40 py-1.5 px-5 rounded-full border border-brand-cloud/5"
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            {navLinks.map((link, index) => {
+              const isActive = pathname === link.href;
+              const isHovered = hoveredIndex === index;
+              const shouldShowHoverPill = isHovered || (hoveredIndex === null && isActive);
+
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  className={`relative py-1.5 px-4 text-xs font-bold tracking-widest uppercase transition-colors duration-200 z-10 rounded-full ${
+                    isActive 
+                      ? 'text-brand-cloud' 
+                      : isHovered 
+                        ? 'text-brand-cloud' 
+                        : 'text-brand-cloud/70'
                   }`}
-              >
-                {link.name}
-                {pathname === link.href && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-pink rounded-full shadow-[0_0_8px_var(--color-brand-pink)]"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </Link>
-            ))}
+                >
+                  {link.name}
+                  
+                  {/* Stationary Solid Active Page Pill */}
+                  {isActive && (
+                    <div className="absolute inset-0 bg-brand-pink rounded-full -z-10 shadow-[0_2px_12px_rgba(255,24,140,0.4)]" />
+                  )}
+
+                  {/* Translucent Traveling Hover Pill */}
+                  {shouldShowHoverPill && (
+                    <motion.div
+                      layoutId="hoverNav"
+                      className="absolute inset-0 bg-brand-pink/50 border border-brand-pink/70 rounded-full -z-10"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: hoveredIndex === null ? 0 : 1
+                      }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Actions (CTA) */}
