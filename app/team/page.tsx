@@ -95,7 +95,10 @@ export default function TeamPage() {
       { heading: "Technical Committee", items: [] },
       { heading: "Design Committee", items: [] },
       { heading: "Photography Committee", items: [] },
-      { heading: "Media & Social Media Committee", items: [] },
+      { heading: "Media Committee", items: [] },
+      { heading: "Social Media Committee", items: [] },
+      { heading: "Hospitality Committee", items: [] },
+      { heading: "Event & Venue Committee", items: [] },
       { heading: "Food & Accommodation Committee", items: [] },
       { heading: "Discipline Committee", items: [] },
       { heading: "Internal Arrangements Committee", items: [] },
@@ -104,24 +107,23 @@ export default function TeamPage() {
 
     TEAM_DATA.teamLeaders.forEach(member => {
       const dept = member.department || "";
-      if (dept === "Cluster Head") {
-        groups[0].items.push(member);
-      } else if (dept === "Technical") {
-        groups[1].items.push(member);
-      } else if (dept === "Design") {
-        groups[2].items.push(member);
-      } else if (dept === "Photography") {
-        groups[3].items.push(member);
-      } else if (dept === "Media" || dept === "Social Media") {
-        groups[4].items.push(member);
-      } else if (dept === "Food & Accommodation") {
-        groups[5].items.push(member);
-      } else if (dept === "Discipline") {
-        groups[6].items.push(member);
-      } else if (dept === "Internal Arrangements") {
-        groups[7].items.push(member);
-      } else if (dept === "Feedback & Registration") {
-        groups[8].items.push(member);
+      let groupName = "";
+      if (dept === "Cluster Head") groupName = "Cluster Heads";
+      else if (dept === "Technical") groupName = "Technical Committee";
+      else if (dept === "Design") groupName = "Design Committee";
+      else if (dept === "Photography") groupName = "Photography Committee";
+      else if (dept === "Media") groupName = "Media Committee";
+      else if (dept === "Social Media") groupName = "Social Media Committee";
+      else if (dept === "Hospitality") groupName = "Hospitality Committee";
+      else if (dept === "Event & Venue") groupName = "Event & Venue Committee";
+      else if (dept === "Food & Accommodation") groupName = "Food & Accommodation Committee";
+      else if (dept === "Discipline") groupName = "Discipline Committee";
+      else if (dept === "Internal Arrangements") groupName = "Internal Arrangements Committee";
+      else if (dept === "Feedback & Registration") groupName = "Feedback & Registration Committee";
+
+      const targetGroup = groups.find(g => g.heading === groupName);
+      if (targetGroup) {
+        targetGroup.items.push(member);
       }
     });
 
@@ -347,7 +349,7 @@ export default function TeamPage() {
 
               {/* Photo */}
               <div className="absolute bottom-0 left-0 right-0 top-10 flex items-end justify-center">
-                <div className="relative w-[105%] sm:w-[95%] h-[110%] sm:h-[105%] transition-transform duration-500 group-hover:scale-105 origin-bottom -translate-x-[15%]">
+                <div className="relative w-[105%] sm:w-[95%] h-[110%] sm:h-[105%] transition-transform duration-500 group-hover:scale-105 origin-bottom -translate-x-[15%] -translate-y-6">
                   <Image
                     src="/images/PNG/Aman Pratap Singh.png"
                     alt="Aman Pratap Singh"
@@ -382,7 +384,7 @@ export default function TeamPage() {
 
               {/* Photo */}
               <div className="absolute bottom-0 left-0 right-0 top-10 flex items-end justify-center">
-                <div className="relative w-[105%] sm:w-[95%] h-[110%] sm:h-[105%] transition-transform duration-500 group-hover:scale-105 origin-bottom translate-x-[15%]">
+                <div className="relative w-[105%] sm:w-[95%] h-[110%] sm:h-[105%] transition-transform duration-500 group-hover:scale-105 origin-bottom translate-x-[15%] -translate-y-6">
                   <Image
                     src="/images/PNG/Tanik Gupta.png"
                     alt="Tanik Gupta"
