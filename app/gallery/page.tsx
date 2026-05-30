@@ -472,11 +472,8 @@ export default function GalleryLanding() {
 
     const tick = () => {
       try {
-        // Auto-scroll continuously if no image is open in the lightbox
-        const isLightboxOpen = document.querySelector('.gp-lb-overlay') !== null
-        if (!isLightboxOpen) {
-          targetZOffsetRef.current += 1.8 // Auto forward speed
-        }
+        // Auto-scroll removed to make gallery scrolling entirely manual
+
 
         const diff = targetZOffsetRef.current - zOffsetRef.current
         zOffsetRef.current += diff * 0.08
@@ -990,6 +987,15 @@ export default function GalleryLanding() {
           border: 4px solid #030404;
           border-radius: 20px;
           box-shadow: 16px 16px 0px 0px #030404;
+        }
+
+        @media (max-width: 768px) {
+          .gp-lb-img {
+            max-width: 96vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 8px 8px 0px 0px #030404;
+          }
         }
 
         .gp-lb-close {

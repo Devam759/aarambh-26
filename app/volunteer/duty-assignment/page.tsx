@@ -36,6 +36,7 @@ import {
   RotateCcw 
 } from 'lucide-react';
 import { SCHEDULE_DATA } from '@/constants/events';
+import { SearchableVenueSelect } from '@/components/ui/SearchableVenueSelect';
 
 // ============================================================================
 // CONSTANTS, CONFIGURATION & HELPERS
@@ -139,11 +140,12 @@ const getOverlappingEventLocations = (events: any[], start: string, end: string)
 };
 
 const VENUES = [
-  'Main Gate',
-  'Auditorium',
-  'Seminar Hall',
-  'Registration Desk',
-  'Campus Ground'
+  'Tech Lawn',
+  'Tech Block',
+  'Sabrang Ground',
+  'IET Amphitheatre',
+  'IM Amphiitheatre',
+  'LRC Stairs'
 ];
 
 const DUTY_DATES = [
@@ -936,34 +938,15 @@ export default function TeamLeaderDutyAssignment() {
               </label>
               <div className="space-y-1">
                 <span className="hidden md:block text-[10px] font-black text-transparent uppercase select-none">Spacer</span>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-ink/40" size={14} />
-                  <select
-                    required
-                    value={selectedVenue}
-                    onChange={(e) => setSelectedVenue(e.target.value)}
-                    className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-4 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
-                  >
-                    <option value="">Choose Venue...</option>
-                    {suggestedVenues.length > 0 && (
-                      <optgroup label="Suggested (Events in this Time Slot)">
-                        {suggestedVenues.map((ven) => (
-                          <option key={ven} value={ven}>{ven}</option>
-                        ))}
-                      </optgroup>
-                    )}
-                    <optgroup label="Standard Venues">
-                      {standardVenues.map((ven) => (
-                        <option key={ven} value={ven}>{ven}</option>
-                      ))}
-                    </optgroup>
-                    {isCustomVenue && (
-                      <optgroup label="Custom Venue">
-                        <option value={selectedVenue}>{selectedVenue}</option>
-                      </optgroup>
-                    )}
-                  </select>
-                </div>
+                <SearchableVenueSelect
+                  required
+                  value={selectedVenue}
+                  onChange={setSelectedVenue}
+                  suggestedVenues={suggestedVenues}
+                  standardVenues={standardVenues}
+                  theme="cloud"
+                  hasIcon={true}
+                />
               </div>
             </div>
 
@@ -1264,31 +1247,15 @@ export default function TeamLeaderDutyAssignment() {
 
             <div className="space-y-1">
               <label className="block text-[10px] font-black uppercase text-admin-muted tracking-wider">Venue</label>
-              <select
+              <SearchableVenueSelect
                 required
                 value={editVenue}
-                onChange={(e) => setEditVenue(e.target.value)}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
-              >
-                <option value="">Choose Venue...</option>
-                {editSuggestedVenues.length > 0 && (
-                  <optgroup label="Suggested (Events in this Time Slot)">
-                    {editSuggestedVenues.map((ven) => (
-                      <option key={ven} value={ven}>{ven}</option>
-                    ))}
-                  </optgroup>
-                )}
-                <optgroup label="Standard Venues">
-                  {editStandardVenues.map((ven) => (
-                    <option key={ven} value={ven}>{ven}</option>
-                  ))}
-                </optgroup>
-                {isEditCustomVenue && (
-                  <optgroup label="Custom Venue">
-                    <option value={editVenue}>{editVenue}</option>
-                  </optgroup>
-                )}
-              </select>
+                onChange={setEditVenue}
+                suggestedVenues={editSuggestedVenues}
+                standardVenues={editStandardVenues}
+                theme="white"
+                hasIcon={false}
+              />
             </div>
 
             <div className="space-y-1">

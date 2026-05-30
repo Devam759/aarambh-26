@@ -84,8 +84,10 @@ implementation_plan.md
 task.md
 walkthrough.md
 
-# API Keys
+# API Keys & Spreadsheets
 *.csv
+*.xlsx
+*.xls
 
 # PWA files
 **/public/sw.js
@@ -97,9 +99,9 @@ walkthrough.md
 /public/teaser.mp4
 
 # Raw photos and processing files
-public/photos/*.JPG
 raw_gallery*.html
 compress.cjs
+scripts/*.cjs
 photos_temp.json
 **/*.JPG
 
@@ -122,3 +124,5 @@ $RECYCLE.BIN/
 *.temp
 *~
 ~*
+/venv/
+

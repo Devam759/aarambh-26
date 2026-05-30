@@ -9,12 +9,12 @@ export default function ComicBackground() {
     const angleEnd = angleStart + 8; // 8-degree width for rays, leaving a gap
     const radStart = (angleStart * Math.PI) / 180;
     const radEnd = (angleEnd * Math.PI) / 180;
-    
+
     const x1 = 500 + 1200 * Math.cos(radStart);
     const y1 = 500 + 1200 * Math.sin(radStart);
     const x2 = 500 + 1200 * Math.cos(radEnd);
     const y2 = 500 + 1200 * Math.sin(radEnd);
-    
+
     rayPaths.push(
       <path
         key={i}
@@ -27,7 +27,7 @@ export default function ComicBackground() {
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden bg-[#fff8ef] select-none pointer-events-none w-full h-full">
-      
+
       {/* 1. Base Decorative Pattern: Comic Halftone Dot Grid */}
       <div
         className="absolute inset-0 opacity-[0.045]"
@@ -143,7 +143,7 @@ export default function ComicBackground() {
             {/* Pole */}
             <rect x="36" y="25" width="8" height="95" fill="#030404" />
             <rect x="36" y="25" width="8" height="95" fill="#fff8ef" stroke="#030404" strokeWidth="3" />
-            
+
             {/* Arrow Plate Shadow */}
             <path
               d="M 33 28 L -17 28 L -27 12 L -17 -4 L 93 -4 L 93 28 Z"
@@ -234,7 +234,7 @@ export default function ComicBackground() {
             <rect x="110" y="140" width="26" height="210" rx="4" fill="#ffb000" stroke="#030404" strokeWidth="4" />
             <line x1="110" y1="200" x2="136" y2="200" stroke="#030404" strokeWidth="3" />
             <line x1="110" y1="260" x2="136" y2="260" stroke="#030404" strokeWidth="3" />
-            
+
             {/* Right Pillar */}
             <rect x="250" y="140" width="26" height="210" rx="4" fill="#ffb000" stroke="#030404" strokeWidth="4" />
             <line x1="250" y1="200" x2="276" y2="200" stroke="#030404" strokeWidth="3" />
@@ -249,7 +249,7 @@ export default function ComicBackground() {
             <rect x="74" y="66" width="238" height="52" fill="#030404" rx="6" />
             {/* Beam */}
             <rect x="70" y="60" width="238" height="52" fill="#1d32ff" stroke="#030404" strokeWidth="4" rx="6" />
-            
+
             {/* Gate Sign Text */}
             <text
               x="189"
@@ -299,10 +299,10 @@ export default function ComicBackground() {
             <rect x="14" y="14" width="90" height="56" fill="#030404" rx="8" />
             {/* Billboard Board */}
             <rect x="10" y="10" width="90" height="56" fill="#fff8ef" stroke="#030404" strokeWidth="4.5" rx="8" />
-            
+
             {/* Pink Header Banner */}
             <path d="M 12 12 L 98 12 L 98 24 L 12 24 Z" fill="#ff1493" stroke="#030404" strokeWidth="2" />
-            
+
             {/* Text: 2026 */}
             <text
               x="55"
@@ -347,7 +347,7 @@ export default function ComicBackground() {
       {/* TOP AREA: Clouds, Stars, Lightning Bolts & Squiggles (All Viewports)     */}
       {/* ========================================================================= */}
       <div className="absolute inset-x-0 top-0 h-[220px] pointer-events-none select-none z-0">
-        
+
         {/* Left Cloud in Top Corner */}
         <div className="absolute top-4 left-4 sm:left-12 w-[160px] sm:w-[220px] h-[100px]">
           <svg className="w-full h-full" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -390,7 +390,7 @@ export default function ComicBackground() {
 
         {/* Scattered Pop-Art Doodles: Lightning Bolts, Spark Bursts, Stars & Squiggles */}
         <svg className="absolute inset-0 w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-          
+
           {/* Lightning Bolt 1 - Top Left-Center */}
           <g transform="translate(280, 30) scale(0.95) rotate(-10)">
             <path d="M 25 5 L 5 45 L 20 45 L 8 75 L 38 35 L 22 35 Z" fill="#030404" />
@@ -490,7 +490,7 @@ export default function ComicBackground() {
       {/* Decorative solid outline borders on extreme left/right of viewport (adds comic book border style) */}
       <div className="absolute inset-y-0 left-0 w-2.5 bg-[#030404] hidden xl:block" />
       <div className="absolute inset-y-0 right-0 w-2.5 bg-[#030404] hidden xl:block" />
-      
+
     </div>
   );
 }

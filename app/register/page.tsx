@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldCheck, Home as HomeIcon, Lock, Unlock, Check } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -22,13 +22,13 @@ function RegisterContent() {
     mobile: '',
     email: '',
     registrationNumber: '',
-    fatherName: '',
-    fatherMobile: '',
-    fatherEmail: '',
-    motherName: '',
-    motherMobile: '',
-    motherEmail: '',
+    gender: '',
+    course: '',
+    parentName: '',
+    parentPhone: '',
+    parentEmail: '',
     address: '',
+    pincode: '',
     coupon: '',
   });
 
@@ -68,7 +68,7 @@ function RegisterContent() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -131,6 +131,9 @@ function RegisterContent() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     handlePayment();
   };
 
@@ -139,30 +142,30 @@ function RegisterContent() {
     formData.name.trim() !== '' ||
     formData.registrationNumber.trim() !== '' ||
     formData.mobile.trim() !== '' ||
-    formData.email.trim() !== '';
+    formData.email.trim() !== '' ||
+    formData.gender.trim() !== '' ||
+    formData.course.trim() !== '';
 
   const isStudentValid = 
     formData.name.trim() !== '' &&
     formData.registrationNumber.trim() !== '' &&
     formData.mobile.trim() !== '' &&
-    formData.email.trim() !== '';
+    formData.email.trim() !== '' &&
+    formData.gender.trim() !== '' &&
+    formData.course.trim() !== '';
 
   const parentsStarted = 
-    formData.fatherName.trim() !== '' ||
-    formData.fatherMobile.trim() !== '' ||
-    formData.fatherEmail.trim() !== '' ||
-    formData.motherName.trim() !== '' ||
-    formData.motherMobile.trim() !== '' ||
-    formData.motherEmail.trim() !== '';
-
+    formData.parentName.trim() !== '' ||
+    formData.parentPhone.trim() !== '' ||
+    formData.parentEmail.trim() !== '';
+ 
   const isParentsValid = 
-    formData.fatherName.trim() !== '' &&
-    formData.fatherMobile.trim() !== '' &&
-    formData.motherName.trim() !== '' &&
-    formData.motherMobile.trim() !== '';
+    formData.parentName.trim() !== '' &&
+    formData.parentPhone.trim() !== '';
 
   const isAddressValid = 
-    formData.address.trim().length >= 10;
+    formData.address.trim().length >= 10 &&
+    formData.pincode.trim().length === 6;
 
   if (isSuccess) {
     return (
@@ -212,7 +215,7 @@ function RegisterContent() {
 
         <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
           {isProcessing ? (
-            <div className="py-20 text-center flex flex-col items-center gap-4">
+            <div className="py-40 flex flex-col items-center justify-center gap-4 min-h-[550px] text-center">
               <Loader2 size={48} className="text-brand-pink animate-spin stroke-[3]" />
               <p className="text-brand-ink/75 font-semibold animate-pulse font-display uppercase tracking-wider text-xs">
                 Processing your registration...
@@ -252,7 +255,7 @@ function RegisterContent() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Full Name *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Full Name *</label>
                     <input 
                       required 
                       name="name" 
@@ -264,7 +267,7 @@ function RegisterContent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Registration Number *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Registration Number *</label>
                     <input 
                       required 
                       name="registrationNumber" 
@@ -276,7 +279,7 @@ function RegisterContent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Mobile Number *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Mobile Number *</label>
                     <input 
                       required 
                       type="tel" 
@@ -289,7 +292,7 @@ function RegisterContent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Email ID *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Email ID *</label>
                     <input 
                       required 
                       type="email" 
@@ -300,6 +303,52 @@ function RegisterContent() {
                       placeholder="Enter your email" 
                       suppressHydrationWarning 
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Course *</label>
+                    <select
+                      required
+                      name="course"
+                      value={formData.course}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 bg-white border-comic-thin font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl appearance-none cursor-pointer pr-10 ${
+                        formData.course ? 'text-brand-ink' : 'text-brand-ink/40'
+                      }`}
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 1rem center',
+                        backgroundSize: '1.25rem',
+                      }}
+                    >
+                      <option value="" disabled hidden>Select Course</option>
+                      <option value="B.Tech" className="text-brand-ink font-bold">B.Tech</option>
+                      <option value="BBA" className="text-brand-ink font-bold">BBA</option>
+                      <option value="B.Des" className="text-brand-ink font-bold">B.Des</option>
+                      <option value="M.Des" className="text-brand-ink font-bold">M.Des</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Gender *</label>
+                    <select
+                      required
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 bg-white border-comic-thin font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl appearance-none cursor-pointer pr-10 ${
+                        formData.gender ? 'text-brand-ink' : 'text-brand-ink/40'
+                      }`}
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 1rem center',
+                        backgroundSize: '1.25rem',
+                      }}
+                    >
+                      <option value="" disabled hidden>Select Gender</option>
+                      <option value="Male" className="text-brand-ink font-bold">Male</option>
+                      <option value="Female" className="text-brand-ink font-bold">Female</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -342,81 +391,42 @@ function RegisterContent() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden space-y-6"
+                      className="overflow-hidden space-y-6 pb-3"
                     >
-                      {/* Father Details Row */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border-2 border-brand-ink/10 rounded-xl bg-white/40 shadow-comic-sm">
+                      {/* Parent Details Row */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Father&apos;s Name *</label>
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Name *</label>
                           <input 
                             required={isStudentValid}
-                            name="fatherName" 
-                            value={formData.fatherName} 
+                            name="parentName" 
+                            value={formData.parentName} 
                             onChange={handleChange} 
                             className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="Father's full name"
+                            placeholder="Parent's full name"
                             suppressHydrationWarning 
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Father&apos;s Mobile *</label>
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Mobile *</label>
                           <input 
                             required={isStudentValid}
-                            name="fatherMobile" 
-                            value={formData.fatherMobile} 
+                            name="parentPhone" 
+                            value={formData.parentPhone} 
                             onChange={handleChange} 
                             className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="Father's mobile number"
+                            placeholder="Parent's mobile number"
                             suppressHydrationWarning 
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Father&apos;s Email</label>
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Email</label>
                           <input 
-                            name="fatherEmail" 
-                            value={formData.fatherEmail} 
+                            name="parentEmail" 
+                            value={formData.parentEmail} 
                             onChange={handleChange} 
                             className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="father@email.com"
-                            suppressHydrationWarning 
-                          />
-                        </div>
-                      </div>
-
-                      {/* Mother Details Row */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border-2 border-brand-ink/10 rounded-xl bg-white/40 shadow-comic-sm">
-                        <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Mother&apos;s Name *</label>
-                          <input 
-                            required={isStudentValid}
-                            name="motherName" 
-                            value={formData.motherName} 
-                            onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="Mother's full name"
-                            suppressHydrationWarning 
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Mother&apos;s Mobile *</label>
-                          <input 
-                            required={isStudentValid}
-                            name="motherMobile" 
-                            value={formData.motherMobile} 
-                            onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="Mother's mobile number"
-                            suppressHydrationWarning 
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Mother&apos;s Email</label>
-                          <input 
-                            name="motherEmail" 
-                            value={formData.motherEmail} 
-                            onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
-                            placeholder="mother@email.com"
+                            placeholder="parents@email.com"
                             suppressHydrationWarning 
                           />
                         </div>
@@ -464,70 +474,73 @@ function RegisterContent() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden space-y-6"
+                      className="overflow-hidden space-y-6 pb-3"
                     >
                       <div className="space-y-2">
-                        <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Full Address *</label>
+                        <label className="text-xs font-bold text-brand-ink/75 block mb-1">Full Address *</label>
                         <textarea 
                           required={isStudentValid && isParentsValid}
                           name="address" 
                           value={formData.address} 
                           onChange={handleChange} 
-                          rows={3} 
+                      rows={3} 
                           className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl resize-none" 
                           placeholder="House No, Street, Landmark, City, State, Pincode" 
                           suppressHydrationWarning 
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-xs font-black uppercase tracking-widest text-brand-ink/80 block">Coupon Code (Optional)</label>
-                        <div className="flex gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Pincode *</label>
                           <input 
-                            name="couponInput" 
-                            value={couponInput} 
-                            onChange={(e) => setCouponInput(e.target.value)} 
-                            className="flex-grow px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl uppercase" 
-                            placeholder="Enter coupon code" 
+                            required={isStudentValid && isParentsValid}
+                            name="pincode" 
+                            maxLength={6}
+                            value={formData.pincode} 
+                            onChange={handleChange} 
+                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                            placeholder="302026" 
                             suppressHydrationWarning 
                           />
-                          <button 
-                            type="button" 
-                            onClick={handleApplyCoupon} 
-                            className="px-6 py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer whitespace-nowrap"
-                          >
-                            Apply
-                          </button>
                         </div>
-                        {couponMessage && (
-                          <p className={`text-xs font-black uppercase tracking-wider mt-1 ${couponMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
-                            {couponMessage}
-                          </p>
-                        )}
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Coupon Code (Optional)</label>
+                          <div className="flex gap-2">
+                            <input 
+                              name="couponInput" 
+                              value={couponInput} 
+                              onChange={(e) => setCouponInput(e.target.value)} 
+                              className="flex-grow px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl uppercase" 
+                              placeholder="Enter coupon code" 
+                              suppressHydrationWarning 
+                            />
+                            <button 
+                              type="button" 
+                              onClick={handleApplyCoupon} 
+                              className="px-6 py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer whitespace-nowrap"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
+                      {couponMessage && (
+                        <p className={`text-xs font-black uppercase tracking-wider mt-1 ${couponMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+                          {couponMessage}
+                        </p>
+                      )}
+
                       <div className="border-comic bg-brand-pink/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
-                        <div className="absolute top-2 right-2 text-[8px] font-black uppercase border-comic-thin px-2 py-0.5 bg-brand-pink text-brand-cloud rounded shadow-comic-sm">
-                          OFFICIAL TICKET
-                        </div>
                         <div>
                           <p className="text-xs font-black text-brand-ink/60 uppercase tracking-widest mb-1">Registration Fee</p>
                           <div className="flex items-center gap-3">
                             {formData.coupon.toUpperCase() === 'TESTTEST' ? (
-                              <>
-                                <p className="text-lg font-display font-black text-brand-ink/30 line-through">₹ 3,500</p>
-                                <p className="text-4xl font-display font-black text-brand-pink drop-shadow-[2px_2px_0px_#030404]">₹ 1</p>
-                              </>
+                              <p className="text-2xl sm:text-3xl font-sans font-bold text-brand-ink">₹ 1</p>
                             ) : (
-                              <div className="flex flex-col">
-                                <div className="flex items-center gap-3">
-                                  <p className="text-lg font-display font-black text-brand-ink/30 line-through">₹ 3,500</p>
-                                  <p className="text-4xl font-display font-black text-brand-pink drop-shadow-[2px_2px_0px_#030404]">₹ 2,500</p>
-                                </div>
-                                <p className="text-[9px] font-black uppercase text-brand-ink/40 tracking-wider mt-1.5">
-                                  * Excludes 2% Cashfree transaction fee
-                                </p>
-                              </div>
+                              <p className="text-2xl sm:text-3xl font-sans font-bold text-brand-ink">₹ 2,500</p>
                             )}
                           </div>
                         </div>
@@ -539,13 +552,12 @@ function RegisterContent() {
                         </button>
                       </div>
 
-                      <div className="mt-4 border-2 border-brand-ink bg-white p-4 rounded-xl text-center shadow-comic-sm space-y-2">
+                      <div className="mt-4 border-2 border-brand-ink bg-white p-4 rounded-xl text-center shadow-comic-sm space-y-1.5">
                         <p className="text-xs font-black uppercase tracking-wider text-brand-pink">
                           Important Note: The registration fee is strictly non-refundable under any circumstances.
                         </p>
-                        <div className="h-[2px] bg-brand-ink/10 w-12 mx-auto" />
-                        <p className="text-[9px] font-black uppercase tracking-wider text-brand-ink/50 leading-relaxed">
-                          Please note: A 2% gateway transaction fee charged by Cashfree Payments will be added at checkout and is to be paid by the participant.
+                        <p className="text-[10px] font-bold uppercase tracking-wide text-brand-ink/60">
+                          A 2% gateway transaction fee charged by Cashfree Payments will be added at checkout.
                         </p>
                       </div>
                     </motion.div>

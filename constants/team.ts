@@ -23,7 +23,7 @@ export const TEAM_DATA = {
       email: "vc@jklu.edu.in"
     }
   } as TeamMember,
-  
+
   osa: [
     {
       name: "Deepak Sogani",
@@ -40,18 +40,28 @@ export const TEAM_DATA = {
       designation: "Executive - Student Affairs",
       photo: "/Team Photos/Admin and Student Affairs/Anushka Pathak.jpg",
       department: "Office of Student Affairs",
-      socials: {
-        email: "anushkapathak@jklu.edu.in"
-      }
+      socials: {}
     },
     {
       name: "Vaibhav Topiwala",
       designation: "Sports Officer - Student Affairs",
       photo: "/Team Photos/Admin and Student Affairs/Vaibhav Topiwala.png",
       department: "Office of Student Affairs",
-      socials: {
-        email: "vaibhavtopiwala@jklu.edu.in"
-      }
+      socials: {}
+    },
+    {
+      name: "Mr. Gajendra",
+      designation: "Sr. Sports Officer - Student Affairs",
+      photo: "/Team Photos/Admin and Student Affairs/Mr. Gajendra.jpeg",
+      department: "Office of Student Affairs",
+      socials: {}
+    },
+    {
+      name: "Rajesh Joshi",
+      designation: "Office Assistant - Student Affairs",
+      photo: "/Team Photos/Admin and Student Affairs/Rajesh Joshi.jpg",
+      department: "Office of Student Affairs",
+      socials: {}
     }
   ] as TeamMember[],
 
@@ -159,6 +169,18 @@ export const TEAM_DATA = {
       }
     },
     {
+      name: "Yash Bansal",
+      designation: "Technical Lead",
+      department: "Technical",
+      photo: "/Team Photos/Team Leaders/yashbansal.webp?v=5",
+      socials: {
+        linkedin: "https://www.linkedin.com/in/yashbansal05",
+        email: "yashbansal@jklu.edu.in",
+        instagram: "https://www.instagram.com/yashbansal.05",
+        github: "https://github.com/yashbansal-dev"
+      }
+    },
+    {
       name: "Varra Srivalli",
       designation: "Cluster Head",
       department: "Cluster Head",
@@ -217,8 +239,8 @@ export const TEAM_DATA = {
     },
     {
       name: "Shlok Chaturvedi",
-      designation: "Cluster Head",
-      department: "Cluster Head",
+      designation: "Event & Venue Lead",
+      department: "Event & Venue",
       photo: "/Team Photos/Team Leaders/Shlok Chaturvedi.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/shlok-chaturvedi",
@@ -293,8 +315,8 @@ export const TEAM_DATA = {
     },
     {
       name: "Gourang Tak",
-      designation: "Cluster Head",
-      department: "Cluster Head",
+      designation: "Hospitality Lead",
+      department: "Hospitality",
       photo: "/Team Photos/Team Leaders/Gourang Tak.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/gourang-tak-153489353",
@@ -402,8 +424,8 @@ export const TEAM_DATA = {
     },
     {
       name: "Jheel Jain",
-      designation: "Cluster Head",
-      department: "Cluster Head",
+      designation: "Hospitality Lead",
+      department: "Hospitality",
       photo: "/Team Photos/Team Leaders/Jheel Jain.webp",
       socials: {
         linkedin: "https://www.linkedin.com/in/jheel-jain-a14913357",
@@ -438,6 +460,15 @@ export const TEAM_DATA = {
       socials: {
         linkedin: "https://www.linkedin.com/in/bhavya-bang",
         email: "bhavya@jklu.edu.in"
+      }
+    },
+    {
+      name: "Parth Bhardwaj",
+      designation: "Event & Venue Lead",
+      department: "Event & Venue",
+      photo: "/Team Photos/Team Leaders/Parth Bhardwaj.webp",
+      socials: {
+        email: "parthbhardwaj@jklu.edu.in"
       }
     }
   ] as TeamMember[]
