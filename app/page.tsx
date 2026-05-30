@@ -828,11 +828,11 @@ export default function Home() {
           >
             <motion.div
               animate={isMobile ? {
-                y: [0, -50, 50, 0],
+                y: [0, -20, 20, 0],
                 x: 0,
                 skewX: 0,
                 skewY: 0,
-                scale: 1.40,
+                scale: 1.10,
               } : {
                 y: [0, -35, 25, -25, 15, -15, 0],
                 x: [0, 20, -20, 15, -15, 8, 0],
