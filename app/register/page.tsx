@@ -32,6 +32,20 @@ function RegisterContent() {
     coupon: '',
   });
 
+  const [touched, setTouched] = useState({
+    mobile: false,
+    email: false,
+    parentPhone: false,
+    parentEmail: false,
+  });
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const name = e.target.name as keyof typeof touched;
+    if (name === 'mobile' || name === 'email' || name === 'parentPhone' || name === 'parentEmail') {
+      setTouched(prev => ({ ...prev, [name]: true }));
+    }
+  };
+
   useEffect(() => {
     const oId = searchParams.get('order_id');
     if (oId) {
@@ -137,6 +151,19 @@ function RegisterContent() {
     handlePayment();
   };
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.trim());
+  };
+
+  const validateMobile = (mobile: string) => {
+    const digits = mobile.replace(/\D/g, '');
+    if (digits.length === 10) return true;
+    if (digits.length === 12 && digits.startsWith('91')) return true;
+    if (digits.length === 11 && digits.startsWith('0')) return true;
+    return false;
+  };
+
   // Section validation logic
   const studentStarted = 
     formData.name.trim() !== '' ||
@@ -150,7 +177,9 @@ function RegisterContent() {
     formData.name.trim() !== '' &&
     formData.registrationNumber.trim() !== '' &&
     formData.mobile.trim() !== '' &&
+    validateMobile(formData.mobile) &&
     formData.email.trim() !== '' &&
+    validateEmail(formData.email) &&
     formData.gender.trim() !== '' &&
     formData.course.trim() !== '';
 
@@ -161,7 +190,9 @@ function RegisterContent() {
  
   const isParentsValid = 
     formData.parentName.trim() !== '' &&
-    formData.parentPhone.trim() !== '';
+    formData.parentPhone.trim() !== '' &&
+    validateMobile(formData.parentPhone) &&
+    (formData.parentEmail.trim() === '' || validateEmail(formData.parentEmail));
 
   const isAddressValid = 
     formData.address.trim().length >= 10 &&
@@ -286,10 +317,20 @@ function RegisterContent() {
                       name="mobile" 
                       value={formData.mobile} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                        touched.mobile && !validateMobile(formData.mobile)
+                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          : 'border-comic-thin focus:border-brand-ink'
+                      }`}
                       placeholder="+91 98765 43210" 
                       suppressHydrationWarning 
                     />
+                    {touched.mobile && !validateMobile(formData.mobile) && (
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                        PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-brand-ink/75 block mb-1">Email ID *</label>
@@ -299,10 +340,20 @@ function RegisterContent() {
                       name="email" 
                       value={formData.email} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                        touched.email && !validateEmail(formData.email)
+                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          : 'border-comic-thin focus:border-brand-ink'
+                      }`}
                       placeholder="Enter your email" 
                       suppressHydrationWarning 
                     />
+                    {touched.email && !validateEmail(formData.email) && (
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                        PLEASE ENTER A VALID EMAIL ADDRESS
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-brand-ink/75 block mb-1">Course *</label>
@@ -414,10 +465,20 @@ function RegisterContent() {
                             name="parentPhone" 
                             value={formData.parentPhone} 
                             onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
+                            onBlur={handleBlur}
+                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                              touched.parentPhone && !validateMobile(formData.parentPhone)
+                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                                : 'border-comic-thin focus:border-brand-ink'
+                            }`} 
                             placeholder="Parent's mobile number"
                             suppressHydrationWarning 
                           />
+                          {touched.parentPhone && !validateMobile(formData.parentPhone) && (
+                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                              PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
+                            </p>
+                          )}
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Email</label>
@@ -425,10 +486,20 @@ function RegisterContent() {
                             name="parentEmail" 
                             value={formData.parentEmail} 
                             onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
+                            onBlur={handleBlur}
+                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                              formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail)
+                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                                : 'border-comic-thin focus:border-brand-ink'
+                            }`} 
                             placeholder="parents@email.com"
                             suppressHydrationWarning 
                           />
+                          {formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail) && (
+                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                              PLEASE ENTER A VALID EMAIL ADDRESS
+                            </p>
+                          )}
                         </div>
                       </div>
                     </motion.div>

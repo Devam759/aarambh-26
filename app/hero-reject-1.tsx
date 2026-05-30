@@ -256,7 +256,7 @@ export default function Home() {
             </h1>
             
             <p className="text-lg sm:text-xl text-brand-ink/70 font-sans leading-relaxed max-w-xl mx-auto mb-10 text-center">
-              Where strangers become friends and dreams find direction. This is not just an welcome—this is your first step toward the future.
+              Where strangers become friends and dreams find direction. This is not just a welcome—this is your first step toward the future.
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-6 w-full">

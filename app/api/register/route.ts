@@ -28,6 +28,18 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { action, honeypot, ...rawData } = body;
     
+    // Standardize mobile numbers to always format as +91 1234567890
+    const formatPhoneNumber = (phone: string): string => {
+      if (!phone) return '';
+      return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
+        return `+91 ${digits}`;
+      });
+    };
+    if (rawData.mobile) rawData.mobile = formatPhoneNumber(rawData.mobile);
+    if (rawData.fatherMobile) rawData.fatherMobile = formatPhoneNumber(rawData.fatherMobile);
+    if (rawData.motherMobile) rawData.motherMobile = formatPhoneNumber(rawData.motherMobile);
+    if (rawData.parentPhone) rawData.parentPhone = formatPhoneNumber(rawData.parentPhone);
+
     // Use unified security sanitization to prevent XSS script injection
     const data = sanitizeObject(rawData);
 

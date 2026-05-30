@@ -639,7 +639,7 @@ export default function Home() {
       rotate: "6deg",
       floatDelay: 0.7,
       className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
-      imgClassName: "w-[90px] h-[90px] lg:w-[220px] lg:h-[220px]"
+      imgClassName: "w-[80px] h-[80px] lg:w-[200px] lg:h-[200px]"
     },
     {
       src: "/images/edition_2026.webp",
@@ -648,7 +648,7 @@ export default function Home() {
       rotate: "-8deg",
       floatDelay: 0,
       className: "top-[10%] left-[2%] lg:top-[14%] lg:left-[5%]",
-      imgClassName: "w-[90px] h-[90px] lg:w-[230px] lg:h-[230px]"
+      imgClassName: "w-[80px] h-[80px] lg:w-[205px] lg:h-[205px]"
     },
     {
       src: "/images/first_step.webp",
@@ -657,7 +657,7 @@ export default function Home() {
       rotate: "-5deg",
       floatDelay: 1.4,
       className: "bottom-[12%] left-[4%] lg:bottom-[23%] lg:left-[6%]",
-      imgClassName: "w-[100px] h-[50px] lg:w-[240px] lg:h-[120px]"
+      imgClassName: "w-[90px] h-[45px] lg:w-[215px] lg:h-[108px]"
     },
     {
       src: "/images/next_dimension.webp",
@@ -666,7 +666,7 @@ export default function Home() {
       rotate: "7deg",
       floatDelay: 2.1,
       className: "bottom-[10%] right-[4%] lg:bottom-[20%] lg:right-[6%]",
-      imgClassName: "w-[110px] h-[55px] lg:w-[260px] lg:h-[130px]"
+      imgClassName: "w-[100px] h-[50px] lg:w-[234px] lg:h-[117px]"
     },
   ];
 
@@ -961,9 +961,8 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
-
         {/* Main Content Container */}
-        <div className="w-full flex-grow flex flex-col items-center justify-center z-20 py-4 sm:py-12 relative">
+        <div className="w-full flex-grow flex flex-col items-center justify-center z-20 py-2 sm:py-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -971,15 +970,15 @@ export default function Home() {
             className="text-center max-w-4xl flex flex-col items-center px-4 w-full"
           >
           {/* Eyebrow text above Aarambh logo */}
-          <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-ink/80 mt-10 sm:mt-18 mb-1 sm:mb-2 select-none text-center block">
+          <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-ink/80 mt-4 sm:mt-8 mb-1 select-none text-center block">
             JK Lakshmipat University Presents
           </span>
 
-          <div className="mb-3 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center w-full">
+          <div className="mb-2 sm:mb-4 select-none p-1 sm:p-2 max-w-full text-center flex justify-center w-full">
             {/* Centered Primary Logo */}
             <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group z-20 perspective-[1500px]">
               {/* Base logo container (no card background, border, or drop shadow) */}
-              <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[100px] sm:min-h-[200px] md:min-h-[260px]">
+              <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[90px] sm:min-h-[170px] md:min-h-[220px]">
                 {loadingComplete && (
                   <>
                     {/* Logo Container Fill Animation */}
@@ -1007,7 +1006,8 @@ export default function Home() {
                            className="object-contain" 
                            priority 
                            loading="eager" 
-                         />
+                           
+                        />
                       </motion.div>
                       
                       {/* Final Pop & Glow */}
@@ -1034,21 +1034,21 @@ export default function Home() {
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-3 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-5 sm:mb-10 mx-auto">
-            <p className="font-display font-black text-xs sm:text-base leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-sm sm:text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+          <div className="border-comic bg-brand-ink text-brand-cloud p-2 sm:p-4 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-4 sm:mb-6 mx-auto">
+            <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
+              <span className="text-brand-pink text-sm sm:text-base">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
+          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 w-full max-w-md text-brand-cloud px-2 sm:px-0">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
-                className={`p-2 sm:p-4 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+                className={`p-1.5 sm:p-3 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
               >
-                <div className="relative h-8 sm:h-10 overflow-hidden flex items-center justify-center w-full">
+                <div className="relative h-6 sm:h-8 overflow-hidden flex items-center justify-center w-full">
                   <AnimatePresence mode="popLayout">
                     <motion.span
                       key={timeLeft[block.valueKey as keyof TimeLeft]}
@@ -1056,7 +1056,7 @@ export default function Home() {
                       animate={{ y: 0, opacity: 1 }}
                       exit={{ y: -24, opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-xl sm:text-3xl font-display font-black tabular-nums absolute"
+                      className="text-lg sm:text-2xl font-display font-black tabular-nums absolute"
                     >
                       {String(timeLeft[block.valueKey as keyof TimeLeft]).padStart(2, '0')}
                     </motion.span>
@@ -1078,14 +1078,6 @@ export default function Home() {
 
 
     </section>
-
-      {/* Torn paper visual separation */}
-      <TornPaperDivider color="fill-brand-ink" />
-
-
-
-      {/* Torn paper visual separation */}
-      <TornPaperDivider color="fill-brand-ink" flip={true} />
 
 
       {/* About Section wrapper */}

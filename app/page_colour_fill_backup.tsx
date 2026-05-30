@@ -522,7 +522,7 @@ export default function Home() {
             <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
               <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
-              <span className="text-brand-orange"> This is not just an welcome&mdash;this is your first step toward the future.</span>
+              <span className="text-brand-orange"> This is not just a welcome&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 

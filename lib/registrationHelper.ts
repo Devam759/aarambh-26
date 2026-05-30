@@ -335,6 +335,18 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   const dateOfPayment = `${day}-${month}-${year}`; // e.g., "24-May-26"
   const dateGroup = `${day}-${month}`; // e.g., "24-May"
 
+  const formatPhoneNumber = (phone: string): string => {
+    if (!phone) return '';
+    return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
+      return `+91 ${digits}`;
+    });
+  };
+
+  if (formData.mobile) formData.mobile = formatPhoneNumber(formData.mobile);
+  if (formData.fatherMobile) formData.fatherMobile = formatPhoneNumber(formData.fatherMobile);
+  if (formData.motherMobile) formData.motherMobile = formatPhoneNumber(formData.motherMobile);
+  if (formData.parentPhone) formData.parentPhone = formatPhoneNumber(formData.parentPhone);
+
   const fatherName = formData.fatherName || '';
   const fatherMobile = formData.fatherMobile || '';
   const fatherEmail = formData.fatherEmail || '';
