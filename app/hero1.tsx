@@ -225,47 +225,40 @@ export default function Home() {
       src: "/images/july_14_21.png",
       alt: "14-21 July Sticker",
       type: "stamp",
-      top: "16%",
-      right: "6%",
-      width: 220,
-      height: 220,
       rotate: "6deg",
       floatDelay: 0.7,
+      className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[220px] lg:h-[220px]"
     },
     {
       src: "/images/edition_2026.png?v=5",
       alt: "2026 Edition Sticker",
       type: "pow",
-      top: "14%",
-      left: "5%",
-      width: 230,
-      height: 230,
       rotate: "-8deg",
       floatDelay: 0,
+      className: "top-[10%] left-[2%] lg:top-[14%] lg:left-[5%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[230px] lg:h-[230px]"
     },
     {
       src: "/images/first_step.png",
       alt: "First Step Sticker",
       type: "bang",
-      bottom: "23%",
-      left: "6%",
-      width: 240,
-      height: 120,
       rotate: "-5deg",
       floatDelay: 1.4,
+      className: "bottom-[12%] left-[4%] lg:bottom-[23%] lg:left-[6%]",
+      imgClassName: "w-[100px] h-[50px] lg:w-[240px] lg:h-[120px]"
     },
     {
       src: "/images/next_dimension.png?v=4",
       alt: "Next Dimension Sticker",
       type: "boom",
-      bottom: "20%",
-      right: "6%",
-      width: 260,
-      height: 130,
       rotate: "7deg",
       floatDelay: 2.1,
+      className: "bottom-[10%] right-[4%] lg:bottom-[20%] lg:right-[6%]",
+      imgClassName: "w-[110px] h-[55px] lg:w-[260px] lg:h-[130px]"
     },
   ];
+
 
 
   const countdownBlocks = [
@@ -407,7 +400,7 @@ export default function Home() {
       </div>
 
       {/* Comic Magazine Cover Hero */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center py-8 sm:py-28 px-4 overflow-hidden bg-brand-cloud text-brand-ink">
 
         {/* Dynamic Light Background Image */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -426,12 +419,12 @@ export default function Home() {
         <div className="absolute inset-0 bg-halftone-black opacity-15 pointer-events-none z-0 mix-blend-overlay" />
 
         {/* Draggable Pop-Art Stickers with synthesized audio triggers */}
-        <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute inset-0 z-10 pointer-events-none">
           {stickers.map((sticker, idx) => (
             <motion.div
               key={idx}
               drag
-              dragConstraints={{ left: -300, right: 300, top: -150, bottom: 150 }}
+              dragConstraints={{ left: -150, right: 150, top: -100, bottom: 100 }}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
               initial={{
                 filter: "drop-shadow(3px 12px 18px rgba(3, 4, 4, 0.15)) drop-shadow(1px 4px 6px rgba(3, 4, 4, 0.08))"
@@ -477,18 +470,9 @@ export default function Home() {
                 spawnParticles(e.clientX, e.clientY);
                 playSynthSound(sticker.type as any);
               }}
-              style={{
-                top: sticker.top,
-                left: sticker.left,
-                right: sticker.right,
-                bottom: sticker.bottom,
-              }}
-              className="absolute pointer-events-auto cursor-grab select-none"
+              className={`absolute pointer-events-auto cursor-grab select-none ${sticker.className}`}
             >
-              <div 
-                className="relative overflow-hidden rounded-xl" 
-                style={{ width: sticker.width, height: sticker.height }}
-              >
+              <div className={`relative overflow-hidden rounded-xl ${sticker.imgClassName}`}>
                 <Image
                   src={sticker.src}
                   alt={sticker.alt}
@@ -516,12 +500,12 @@ export default function Home() {
           className="z-10 text-center max-w-4xl flex flex-col items-center px-4"
         >
           {/* Comic Magazine Header Band */}
-          <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-10 bg-halftone-cloud">
+          <div className="border-comic bg-brand-ink text-brand-cloud px-6 py-2.5 font-display text-xs font-black tracking-[0.25em] uppercase shadow-comic -rotate-1 mb-5 sm:mb-10 bg-halftone-cloud">
             JK LAKSHMIPAT UNIVERSITY PRESENTS • THE MEGA INDUCTION FEST
           </div>
 
           {/* Comic Styled Heading Stack */}
-          <div className="relative mb-8 select-none p-3 max-w-full text-center flex justify-center w-full">
+          <div className="relative mb-4 sm:mb-8 select-none p-3 max-w-full text-center flex justify-center w-full">
             {/* Centered Primary Logo */}
             <div className="relative w-full max-w-xs sm:max-w-md md:max-w-xl group z-20 perspective-[1500px]">
               {/* Base logo container (no card background, border, or drop shadow) */}
@@ -640,16 +624,16 @@ export default function Home() {
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
-            <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+          <div className="border-comic bg-brand-ink text-brand-cloud p-3 sm:p-6 rounded-xl max-w-4xl w-full shadow-comic rotate-1 bg-halftone-cloud mb-5 sm:mb-10 mx-auto">
+            <p className="font-display font-black text-xs sm:text-base leading-relaxed tracking-wide uppercase text-center">
+              <span className="text-brand-pink text-sm sm:text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
               <span className="text-brand-orange"> This is not just an induction&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-12 w-full max-w-md text-brand-cloud">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}

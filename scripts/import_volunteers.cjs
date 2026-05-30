@@ -102,7 +102,7 @@ async function importVolunteers() {
     console.log(`Connecting to Firestore project: ${firebaseConfig.projectId}`);
     
     // Read the Excel workbook
-    const excelPath = 'D:/Master List Aarambh.xlsx';
+    const excelPath = 'D:/Final Master List.xlsx';
     console.log(`Reading Excel file from: ${excelPath}`);
     const workbook = XLSX.readFile(excelPath);
     const sheet1 = workbook.Sheets['Sheet1'];
@@ -115,6 +115,9 @@ async function importVolunteers() {
 
     const parsedVolunteers = [];
     const uniqueTeams = new Set();
+
+    let currentClusterChar = '';
+    let clusterIndex = 0;
 
     rawRows.forEach((row, index) => {
       const rawName = getRowValue(row, ['name']);
@@ -132,7 +135,17 @@ async function importVolunteers() {
       const gender = String(getRowValue(row, ['gender']) || '').trim();
       const position = String(rawPosition || '').trim();
       
-      const { team, role } = parsePosition(position);
+      let { team, role } = parsePosition(position);
+      const posLower = position.trim().toLowerCase();
+      if (posLower === 'cluster head') {
+        currentClusterChar = String.fromCharCode(65 + clusterIndex);
+        clusterIndex++;
+        team = 'Cluster ' + currentClusterChar;
+        role = 'Team Leader';
+      } else if (posLower === 'cohort leader') {
+        team = 'Cluster ' + currentClusterChar;
+        role = 'Volunteer';
+      }
       uniqueTeams.add(team);
 
       const mobileVal = getRowValue(row, ['mobile number', 'phone']);

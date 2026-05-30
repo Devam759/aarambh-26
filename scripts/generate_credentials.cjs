@@ -141,7 +141,7 @@ async function main() {
     console.log(`Connecting to Firebase Project: ${firebaseConfig.projectId}`);
     
     // Read spreadsheet
-    const excelPath = 'D:/Master List Aarambh.xlsx';
+    const excelPath = 'D:/Final Master List.xlsx';
     console.log(`Reading Excel file: ${excelPath}`);
     const workbook = XLSX.readFile(excelPath);
     const sheet = workbook.Sheets['Sheet1'];
@@ -154,6 +154,9 @@ async function main() {
     const emailCounts = {};
     const teamCounts = {};
 
+    let currentClusterChar = '';
+    let clusterIndex = 0;
+
     // 1. Generate local credentials mapping
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -163,7 +166,17 @@ async function main() {
       const name = String(rawName).trim();
       const rawPosition = getRowValue(row, ['position']) || '';
       
-      const { team, role } = parsePosition(String(rawPosition));
+      let { team, role } = parsePosition(String(rawPosition));
+      const posLower = String(rawPosition).trim().toLowerCase();
+      if (posLower === 'cluster head') {
+        currentClusterChar = String.fromCharCode(65 + clusterIndex);
+        clusterIndex++;
+        team = 'Cluster ' + currentClusterChar;
+        role = 'Team Leader';
+      } else if (posLower === 'cohort leader') {
+        team = 'Cluster ' + currentClusterChar;
+        role = 'Volunteer';
+      }
       
       // Calculate UID sequence
       if (!teamCounts[team]) teamCounts[team] = 0;
@@ -186,7 +199,10 @@ async function main() {
         'Cluster Head': 'CLUS',
         'Cohort Leader': 'COH'
       };
-      const code = teamMap[team] || 'VOL';
+      let code = teamMap[team] || 'VOL';
+      if (team.startsWith('Cluster ')) {
+        code = 'CL' + team.split(' ')[1];
+      }
       const seqUid = `AAR-${code}-${String(teamCounts[team]).padStart(3, '0')}`;
       
       // Generate email (firstname.lastname@aarambh.jklu.edu.in)

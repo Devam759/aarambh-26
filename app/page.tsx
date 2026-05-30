@@ -509,10 +509,15 @@ export default function Home() {
   const [introStarted, setIntroStarted] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Show loading screen animation on hard refresh, but skip on client-side navigation
   useEffect(() => {
     setIsMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
     if (!hasPlayedIntro) {
       setIntroStarted(true);
       setLoadingComplete(false);
@@ -521,6 +526,10 @@ export default function Home() {
       setIntroStarted(true);
       setLoadingComplete(true);
     }
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   // Generate Mario Animation Arrays for loading screen
@@ -616,45 +625,37 @@ export default function Home() {
       src: "/images/july_14_21.webp",
       alt: "14-21 July Sticker",
       type: "stamp",
-      top: "16%",
-      right: "6%",
-      width: 220,
-      height: 220,
       rotate: "6deg",
       floatDelay: 0.7,
+      className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[220px] lg:h-[220px]"
     },
     {
       src: "/images/edition_2026.webp",
       alt: "2026 Edition Sticker",
       type: "pow",
-      top: "14%",
-      left: "5%",
-      width: 230,
-      height: 230,
       rotate: "-8deg",
       floatDelay: 0,
+      className: "top-[10%] left-[2%] lg:top-[14%] lg:left-[5%]",
+      imgClassName: "w-[90px] h-[90px] lg:w-[230px] lg:h-[230px]"
     },
     {
       src: "/images/first_step.webp",
       alt: "First Step Sticker",
       type: "bang",
-      bottom: "23%",
-      left: "6%",
-      width: 240,
-      height: 120,
       rotate: "-5deg",
       floatDelay: 1.4,
+      className: "bottom-[12%] left-[4%] lg:bottom-[23%] lg:left-[6%]",
+      imgClassName: "w-[100px] h-[50px] lg:w-[240px] lg:h-[120px]"
     },
     {
       src: "/images/next_dimension.webp",
       alt: "Next Dimension Sticker",
       type: "boom",
-      bottom: "20%",
-      right: "6%",
-      width: 260,
-      height: 130,
       rotate: "7deg",
       floatDelay: 2.1,
+      className: "bottom-[10%] right-[4%] lg:bottom-[20%] lg:right-[6%]",
+      imgClassName: "w-[110px] h-[55px] lg:w-[260px] lg:h-[130px]"
     },
   ];
 
@@ -815,14 +816,25 @@ export default function Home() {
             className="absolute inset-0 w-full h-full"
           >
             <motion.div
-              animate={{
+              animate={isMobile ? {
+                y: [0, -50, 50, 0],
+                x: 0,
+                skewX: 0,
+                skewY: 0,
+                scale: 1.40,
+              } : {
                 y: [0, -35, 25, -25, 15, -15, 0],
                 x: [0, 20, -20, 15, -15, 8, 0],
                 skewX: [0, 4, -4, 2.5, -2.5, 1.2, 0],
                 skewY: [0, 2, -2, 1.2, -1.2, 0.6, 0],
                 scale: [1.02, 1.08, 1.01, 1.06, 1.02],
               }}
-              transition={{
+              transition={isMobile ? {
+                duration: 6,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              } : {
                 duration: 12,
                 repeat: Infinity,
                 repeatType: "reverse",
@@ -836,7 +848,7 @@ export default function Home() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover opacity-100 sm:opacity-65 scale-[1.08] filter saturate-[1.8] brightness-[0.97] contrast-[1.05] sm:saturate-100 sm:brightness-[1.01] sm:contrast-[0.99]"
+                className="object-fill sm:object-cover opacity-55 sm:opacity-65 scale-[1.02] sm:scale-[1.08] filter saturate-[1.8] brightness-[1.05] sm:brightness-[1.01] contrast-[1.05] sm:saturate-100 sm:contrast-[0.99]"
               />
             </motion.div>
           </div>
@@ -866,12 +878,12 @@ export default function Home() {
         </div>
 
         {/* Draggable Pop-Art Stickers with synthesized audio triggers */}
-        <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute inset-0 z-10 pointer-events-none">
           {stickers.map((sticker, idx) => (
             <motion.div
               key={idx}
               drag
-              dragConstraints={{ left: -300, right: 300, top: -150, bottom: 150 }}
+              dragConstraints={{ left: -150, right: 150, top: -100, bottom: 100 }}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
               initial={{
                 filter: "drop-shadow(3px 12px 18px rgba(3, 4, 4, 0.15)) drop-shadow(1px 4px 6px rgba(3, 4, 4, 0.08))"
@@ -917,18 +929,9 @@ export default function Home() {
                 spawnParticles(e.clientX, e.clientY);
                 playSynthSound(sticker.type as any);
               }}
-              style={{
-                top: sticker.top,
-                left: sticker.left,
-                right: sticker.right,
-                bottom: sticker.bottom,
-              }}
-              className="absolute pointer-events-auto cursor-grab select-none"
+              className={`absolute pointer-events-auto cursor-grab select-none ${sticker.className}`}
             >
-              <div 
-                className="relative overflow-hidden rounded-xl" 
-                style={{ width: sticker.width, height: sticker.height }}
-              >
+              <div className={`relative overflow-hidden rounded-xl ${sticker.imgClassName}`}>
                 <Image
                   src={sticker.src}
                   alt={sticker.alt}
@@ -949,7 +952,7 @@ export default function Home() {
         </div>
 
         {/* Main Content Container */}
-        <div className="w-full flex-grow flex flex-col items-center justify-center z-20 py-12 relative">
+        <div className="w-full flex-grow flex flex-col items-center justify-center z-20 py-4 sm:py-12 relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -957,7 +960,7 @@ export default function Home() {
             className="text-center max-w-4xl flex flex-col items-center px-4 w-full"
           >
 
-          <div className="mb-6 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center w-full">
+          <div className="mb-3 sm:mb-8 select-none p-2 sm:p-3 max-w-full text-center flex justify-center w-full">
             {/* Centered Primary Logo */}
             <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group z-20 perspective-[1500px]">
               {/* Base logo container (no card background, border, or drop shadow) */}
@@ -989,7 +992,7 @@ export default function Home() {
                            className="object-contain" 
                            priority 
                            loading="eager" 
-                        />
+                         />
                       </motion.div>
                       
                       {/* Final Pop & Glow */}
@@ -1016,16 +1019,16 @@ export default function Home() {
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-4 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-10 mx-auto">
-            <p className="font-display font-black text-sm sm:text-base leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+          <div className="border-comic bg-brand-ink text-brand-cloud p-3 sm:p-6 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-5 sm:mb-10 mx-auto">
+            <p className="font-display font-black text-xs sm:text-base leading-relaxed tracking-wide uppercase text-center">
+              <span className="text-brand-pink text-sm sm:text-lg">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
               <span className="text-brand-orange"> This is not just an induction&mdash;this is your first step toward the future.</span>
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
+          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-12 w-full max-w-md text-brand-cloud px-2 sm:px-0">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
