@@ -458,7 +458,6 @@ const col2Images = PHOTOS.slice(16, 32).map(p => p.src);
 const col3Images = PHOTOS.slice(32, 48).map(p => p.src);
 const col4Images = PHOTOS.slice(48, 64).map(p => p.src);
 
-let hasPlayedIntro = false;
 
 export default function Home() {
   const router = useRouter();
@@ -522,10 +521,10 @@ export default function Home() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    if (!hasPlayedIntro) {
+    if (!(window as any).hasPlayedIntro) {
       setIntroStarted(true);
       setLoadingComplete(false);
-      hasPlayedIntro = true;
+      (window as any).hasPlayedIntro = true;
     } else {
       setIntroStarted(true);
       setLoadingComplete(true);
