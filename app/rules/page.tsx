@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Download, CheckCircle, Info } from 'lucide-react';
+import { Shield, Download } from 'lucide-react';
 import { RULES_DATA } from '@/constants/rules';
 
 export default function RulesPage() {
@@ -178,9 +178,18 @@ export default function RulesPage() {
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-pink text-center drop-shadow-[4px_4px_0px_#030404]">
             REGULATIONS
           </h1>
-          <p className="text-brand-ink/80 text-xs sm:text-sm font-bold uppercase tracking-wide mt-5 max-w-md mx-auto leading-relaxed">
+          <p className="text-brand-ink/80 text-xs sm:text-sm font-bold uppercase tracking-wide mt-5 mb-6 max-w-md mx-auto leading-relaxed">
             All participants must strictly adhere to the following rules and instructions during the orientation event:
           </p>
+          <a
+            href="https://drive.google.com/file/d/1ZYlhBmtHS6bgUEg6MdhIxg4ipDRmEkpj/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 border-comic bg-brand-ink text-brand-cloud px-5 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+          >
+            <Download size={16} />
+            DOWNLOAD RULES BOOK
+          </a>
         </header>
 
         {/* Rules Stack List */}
@@ -228,35 +237,6 @@ export default function RulesPage() {
           })}
         </div>
 
-        {/* CTA Rules Book Download Card */}
-        <section className="text-center relative z-10 max-w-2xl mx-auto">
-          <div className="border-comic bg-brand-pink text-brand-cloud p-8 rounded-2xl shadow-comic -rotate-1 relative overflow-hidden">
-            
-            {/* Absolute badge */}
-            <div className="absolute top-2 right-2 text-[9px] font-mono font-black text-brand-cloud/40 bg-brand-ink/10 px-2 py-0.5 border-comic-thin rounded rotate-3 select-none">
-              LEVEL 1 RULES
-            </div>
-
-            <div className="relative p-4 mb-4 bg-brand-orange border-comic shadow-comic-sm rounded-lg text-brand-ink inline-block rotate-[-3deg]">
-              <Info size={32} />
-            </div>
-
-            <h3 className="font-display font-black text-xl sm:text-2xl uppercase mb-3 text-brand-ink">
-              DOWNLOAD THE OFFICIAL RULES BOOK
-            </h3>
-            <p className="text-xs uppercase tracking-wide opacity-90 mb-6 font-bold max-w-md mx-auto leading-relaxed">
-              Make sure to download and review the official rule book before check-in. It contains crucial details regarding safety, hostels, and timings!
-            </p>
-            <a
-              href="https://drive.google.com/file/d/1ZYlhBmtHS6bgUEg6MdhIxg4ipDRmEkpj/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-comic bg-brand-orange text-brand-ink px-6 py-3 font-display text-sm font-black uppercase tracking-wider shadow-comic-sm hover:scale-[1.03] transition-transform active:scale-[0.98]"
-            >
-              <Download size={16} /> DOWNLOAD RULES BOOK (PDF)
-            </a>
-          </div>
-        </section>
       </div>
     </div>
   );
