@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, Variants, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles, Users, Mic, Laptop, Music, Gamepad2, Map } from 'lucide-react';
+import { Sparkles, Users, Mic, Laptop, Music, Gamepad2, Map, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AboutSection from '@/components/about';
@@ -1084,64 +1084,125 @@ export default function Home() {
       <section className="w-full z-10 bg-brand-ink">
         <AboutSection />
       </section>
-      {/* Events & Activities Section */}
-      <section className="w-full relative py-20 px-4 md:px-8 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink z-10">
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="flex justify-center mb-16">
-            <div className="inline-block bg-brand-ink text-brand-cloud border-comic px-8 py-3 rounded-xl rotate-[1deg] shadow-comic">
-              <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider">Events & Activities</h2>
-            </div>
+      {/* Unique Fixed-Height Interactive List Section */}
+      <section className="w-full relative py-20 px-4 md:px-8 bg-brand-cloud z-10">
+        <div className="max-w-[1200px] mx-auto">
+          
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-display font-medium text-4xl md:text-6xl lg:text-7xl uppercase tracking-tighter text-brand-ink mb-4 md:mb-6">
+              Experiences
+            </h2>
+            <p className="font-sans text-brand-ink/40 text-xs md:text-sm max-w-2xl mx-auto uppercase tracking-[0.3em] font-semibold">
+              Hover to explore
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {/* Container - Horizontal strips, fixed height, text slides left */}
+          <div className="flex flex-col w-full gap-4 md:gap-6 overflow-visible">
+            
             {/* Card 1 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-pink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
-                <Users size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-brand-pink flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Users size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-brand-pink transition-colors duration-300">
+                  Ice Breaking
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Ice Breaking Session</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Get ready to break the ice and make squads! Fun games and chill vibes to help new students vibe and connect.</p>
+              {/* Content sliding in towards the LEFT along X-axis */}
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-brand-pink font-medium text-sm lg:text-lg leading-relaxed">
+                  Get ready to break the ice and make squads! Fun games and chill vibes to help new students vibe and connect.
+                </p>
+              </div>
             </div>
+
             {/* Card 2 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-blue rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
-                <Mic size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-brand-blue flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Mic size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-brand-blue transition-colors duration-300">
+                  Expert Talks
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Expert Talks</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Real talk from industry pros and top academics — get inspired, motivated, and ready to boss up your journey.</p>
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-brand-blue font-medium text-sm lg:text-lg leading-relaxed">
+                  Real talk from industry pros and top academics — get inspired, motivated, and ready to boss up your journey.
+                </p>
+              </div>
             </div>
+
             {/* Card 3 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-orange rounded-full border-comic flex items-center justify-center mb-6 text-brand-ink shadow-comic-sm">
-                <Laptop size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-brand-orange flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Laptop size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-brand-orange transition-colors duration-300">
+                  Workshops
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Workshops</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Engage in interactive sessions led by experts to kickstart your academic journey. Learn essential skills and gain insights.</p>
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-brand-orange font-medium text-sm lg:text-lg leading-relaxed">
+                  Engage in interactive sessions led by experts to kickstart your academic journey. Learn essential skills.
+                </p>
+              </div>
             </div>
+
             {/* Card 4 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-ink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
-                <Music size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-purple-500 flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Music size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-purple-500 transition-colors duration-300">
+                  Cultural Night
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Cultural Night</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Showcase your unique talents or enjoy captivating performances by fellow students and professionals in a vibrant evening.</p>
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-purple-500 font-medium text-sm lg:text-lg leading-relaxed">
+                  Showcase your unique talents or enjoy captivating performances by fellow students in a vibrant evening.
+                </p>
+              </div>
             </div>
+
             {/* Card 5 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-pink rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
-                <Gamepad2 size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-emerald-500 flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Gamepad2 size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-emerald-500 transition-colors duration-300">
+                  Sports & Games
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Sports & Games</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Get moving with fun activities and friendly matches that bring out your team spirit and good vibes.</p>
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-emerald-500 font-medium text-sm lg:text-lg leading-relaxed">
+                  Get moving with fun activities and friendly matches that bring out your team spirit and good vibes.
+                </p>
+              </div>
             </div>
+
             {/* Card 6 */}
-            <div className="bg-brand-cloud border-comic p-6 rounded-xl shadow-comic hover:translate-y-[-4px] hover:shadow-comic-lg transition-all flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-brand-blue rounded-full border-comic flex items-center justify-center mb-6 text-brand-cloud shadow-comic-sm">
-                <Sparkles size={28} />
+            <div className="group/card bg-white relative overflow-hidden w-full cursor-default border-4 border-brand-ink shadow-[4px_4px_0px_0px_rgba(3,4,4,1)] md:shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] hover:translate-x-[4px] hover:translate-y-[4px] md:hover:translate-x-[8px] md:hover:translate-y-[8px] hover:shadow-none p-4 md:px-8 flex flex-row items-center h-20 md:h-28 transition-all duration-300 ease-out z-10">
+              <div className="flex items-center gap-4 md:gap-6 w-full lg:w-auto z-10 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover/card:-translate-x-2">
+                <div className="w-10 h-10 md:w-14 md:h-14 border-[3px] border-brand-ink bg-cyan-500 flex items-center justify-center text-brand-ink shrink-0 transition-transform duration-500 group-hover/card:scale-105">
+                  <Sparkles size={20} className="w-5 h-5 md:w-6 md:h-6 stroke-[2.5]" />
+                </div>
+                <h3 className="font-display font-semibold text-xl md:text-3xl lg:text-4xl uppercase text-brand-ink tracking-tight truncate group-hover/card:text-cyan-500 transition-colors duration-300">
+                  Club Carnival
+                </h3>
               </div>
-              <h3 className="font-display font-black text-xl mb-3 uppercase text-brand-ink">Club Carnival</h3>
-              <p className="font-sans font-bold text-sm leading-relaxed text-brand-ink/80">Get introduced to JKLU's vibrant student clubs. Find your tribe, explore interest areas, and discover endless opportunities to co-create.</p>
+              <div className="absolute right-4 md:right-8 lg:right-10 opacity-0 translate-x-12 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 delay-75 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none group-hover/card:pointer-events-auto hidden md:block max-w-md lg:max-w-xl text-right z-0">
+                <p className="font-sans text-cyan-500 font-medium text-sm lg:text-lg leading-relaxed">
+                  Get introduced to JKLU's vibrant student clubs. Find your tribe, explore interest areas, and discover endless opportunities.
+                </p>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
