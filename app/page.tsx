@@ -508,9 +508,26 @@ export default function Home() {
   const [galleryMounted, setGalleryMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [introStarted, setIntroStarted] = useState(false);
-  const [loadingComplete, setLoadingComplete] = useState(true);
-  const [isMounted, setIsMounted] = useState(false);
+  const [introStarted, setIntroStarted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return true;
+    }
+    return false;
+  });
+  
+  const [loadingComplete, setLoadingComplete] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !!(window as any).hasPlayedIntro;
+    }
+    return true;
+  });
+  
+  const [isMounted, setIsMounted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !!(window as any).hasPlayedIntro;
+    }
+    return false;
+  });
   const [isMobile, setIsMobile] = useState(false);
   const [hypeCount, setHypeCount] = useState(1284);
 
@@ -549,7 +566,9 @@ export default function Home() {
     const hitTimeSec = (i + 1) * 1.0; 
     const hitNorm = hitTimeSec / TOTAL_DURATION; 
     
-    marioLeft.push(`${(i * 20) + 10}%`);
+    // Exact jump percentages so the final jump perfectly centers on "26"
+    const jumpPositions = [12, 30, 48, 66, 83];
+    marioLeft.push(`${jumpPositions[i]}%`);
     marioLeftTimes.push(hitNorm);
     
     const jumpStart = Math.max(0, hitNorm - 0.05);
@@ -710,8 +729,9 @@ export default function Home() {
               <div className="absolute top-0 w-full flex items-center justify-center pointer-events-none mt-2">
                 <div className="relative w-full aspect-[550/120] z-20">
                   {Array.from({ length: 5 }).map((_, sliceIndex) => {
-                    const leftPercent = sliceIndex * 20;
-                    const rightPercent = 100 - ((sliceIndex + 1) * 20);
+                    const boundaries = [0, 18, 36, 55, 75, 100];
+                    const leftPercent = boundaries[sliceIndex];
+                    const rightPercent = 100 - boundaries[sliceIndex + 1];
                     const hitTime = (sliceIndex + 1) * 1.0;
                     
                     return (
@@ -752,7 +772,7 @@ export default function Home() {
               </div>
               
               {/* Mario Sprite Track (GPU Accelerated) */}
-              <div className="absolute bottom-[-16px] w-full h-16 pointer-events-none">
+              <div className="absolute bottom-[-8px] md:bottom-[-16px] w-full h-12 md:h-16 pointer-events-none">
                 <motion.div 
                   animate={{ x: marioLeft }}
                   transition={{ x: { duration: TOTAL_DURATION, times: marioLeftTimes, ease: "linear" } }}
@@ -761,7 +781,7 @@ export default function Home() {
                   <motion.div
                      animate={{ y: marioY }}
                      transition={{ y: { duration: TOTAL_DURATION, times: marioYTimes, ease: marioYEasings } }}
-                     className="absolute left-0 w-16 h-16"
+                     className="absolute left-0 w-12 h-12 md:w-16 md:h-16"
                   >
                   <div className="w-full h-full relative flex items-center justify-center">
                     <img 
