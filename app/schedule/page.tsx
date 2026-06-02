@@ -197,9 +197,7 @@ export default function SchedulePage() {
 
         {/* Batch Selector */}
         <div className="relative z-20 mb-12 w-full max-w-4xl mx-auto flex flex-col items-center">
-          <h3 className="font-display text-xl font-black uppercase tracking-widest text-brand-ink mb-4 bg-brand-cloud px-4 py-1 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] rotate-[-1deg]">
-            Select Your Batch
-          </h3>
+
           <div className="flex flex-wrap justify-center gap-4">
             {[1, 2, 3, 4].map((batchNum) => {
               const isActive = activeBatch === batchNum;
@@ -320,12 +318,7 @@ export default function SchedulePage() {
                           {event.title}
                         </h3>
                         <div className="flex flex-wrap items-center gap-2 mt-2">
-                          {event.speaker && (
-                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider border-2 border-brand-ink bg-brand-pink/10 text-brand-pink shadow-[2px_2px_0px_0px_#030404]">
-                              <Users size={10} className="text-brand-pink" />
-                              <span>{event.speaker}</span>
-                            </div>
-                          )}
+
                           {event.location && (
                             <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider border-2 border-brand-ink bg-brand-cloud text-brand-ink shadow-[2px_2px_0px_0px_#030404]">
                               <MapPin size={10} className="text-brand-ink" />
