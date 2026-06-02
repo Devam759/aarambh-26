@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function WhatIsAarambh() {
   return (
@@ -74,8 +75,24 @@ export default function WhatIsAarambh() {
                 From Brush & Bond and vibrant DJ nights to team challenges and cultural experiences, Aarambh encourages you to think boldly, explore beyond the familiar, and make every moment count.
               </p>
             </div>
-          </motion.div>
 
+            {/* Buttons for Rules and FAQ */}
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                href="/rules"
+                className="inline-block border-comic bg-brand-pink text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+              >
+                Rules & Regulations
+              </Link>
+              <Link
+                href="/faq"
+                className="inline-block border-comic bg-brand-blue text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+              >
+                FAQ
+              </Link>
+            </div>
+          </motion.div>
+ 
           {/* Comic Frame Graphic (The Poster Image) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}

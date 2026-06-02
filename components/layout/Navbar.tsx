@@ -42,24 +42,22 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Rules', href: '/rules' },
     { name: 'Schedule', href: '/schedule' },
     { name: 'Speakers', href: '/speakers' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Team', href: '/team' },
-    { name: 'FAQ', href: '/faq' },
     { name: 'Contact', href: '/contact' },
   ];
 
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-7xl z-50 transition-all duration-300 rounded-full border ${isScrolled
+        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:w-fit z-50 transition-all duration-300 rounded-full border ${isScrolled
           ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
           : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
           }`}
       >
-        <div className="flex justify-between items-center w-full">
+        <div className="flex justify-between items-center w-full lg:gap-8">
           {/* Logo Container */}
           <div className="flex items-center gap-3 shrink-0">
             <a 
@@ -99,7 +97,7 @@ export default function Navbar() {
 
           {/* Links for Desktop */}
           <div 
-            className="hidden md:flex items-center gap-6 bg-brand-ink/40 py-1.5 px-5 rounded-full border border-brand-cloud/5"
+            className="hidden md:flex items-center gap-6 bg-brand-ink/40 py-1.5 px-5 rounded-full border border-brand-cloud/5 lg:mr-10"
             onMouseLeave={() => setHoveredIndex(null)}
           >
             {navLinks.map((link, index) => {

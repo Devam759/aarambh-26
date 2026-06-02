@@ -286,16 +286,16 @@ export default function FAQPage() {
 
         {/* Support Section */}
         <section className="mt-20 text-center relative z-10">
-          <div className="border-comic bg-brand-ink text-brand-cloud max-w-xl mx-auto p-6 rounded-xl shadow-comic-lg -rotate-1">
-            <h3 className="font-display font-black text-lg uppercase mb-2 text-brand-pink">STILL IN A CONFUSION?</h3>
-            <p className="text-xs uppercase tracking-wide opacity-90 mb-4 font-bold">
+          <div className="border-comic bg-white text-brand-ink max-w-xl mx-auto p-6 rounded-xl shadow-comic -rotate-1">
+            <h3 className="font-display font-black text-2xl uppercase mb-2 text-brand-pink drop-shadow-[2px_2px_0px_#030404]">STILL IN A CONFUSION?</h3>
+            <p className="text-xs uppercase tracking-wide text-brand-ink/80 mb-5 font-bold">
               Our support team and volunteer student council are active 24/7 to resolve your doubts!
             </p>
             <a
               href="https://jklu.edu.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-comic bg-brand-orange text-brand-ink px-4 py-2 font-display text-xs font-black uppercase tracking-wider shadow-comic-sm hover:scale-[1.03] transition-transform active:scale-[0.98]"
+              className="inline-flex items-center gap-2 border-comic bg-brand-pink text-brand-cloud px-5 py-2.5 font-display text-xs font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
             >
               CONTACT ADMISSIONS/STUDENT AFFAIRS OFFICE
             </a>
