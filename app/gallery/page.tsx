@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import ThemeBackground from '@/components/layout/ThemeBackground'
 
 // ── Photos from public/photos/web ──
@@ -408,20 +409,23 @@ export default function GalleryLanding() {
     y.set(0)
   }
 
-  const handleExitMagic = () => {
-    router.push('/#gallery-showcase')
-  }
-
   // ── Tunnel Setup and Animation Loop ──
   useEffect(() => {
     if (!mounted || !tunnelRef.current) return
 
+    const isMobile = window.innerWidth <= 768
+    const cardCount = isMobile ? 32 : CARD_COUNT
+    const zStep = isMobile ? 120 : BASE_Z_STEP
+    const zFar = isMobile ? -3840 : BASE_Z_FAR
+
+    recycleCounterRef.current = cardCount % PHOTOS.length
+
     const scene = tunnelRef.current
     scene.innerHTML = ''
 
-    for (let i = 0; i < CARD_COUNT; i++) {
+    for (let i = 0; i < cardCount; i++) {
       const wallIdx = i % WALL_POSITIONS.length
-      const baseZ = BASE_Z_FAR + (i * BASE_Z_STEP)
+      const baseZ = zFar + (i * zStep)
       const photoIdx = i % PHOTOS.length
       const photo = PHOTOS[photoIdx]
 
@@ -495,7 +499,7 @@ export default function GalleryLanding() {
 
           if (z > 300) {
             // Card flew past the viewer — send it to the far back
-            const newBaseZ = baseZ - (CARD_COUNT * BASE_Z_STEP)
+            const newBaseZ = baseZ - (cardCount * zStep)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
 
@@ -513,9 +517,9 @@ export default function GalleryLanding() {
               card.dataset.photoId = String(nextPhoto.id)
               card.dataset.photoSrc = nextPhoto.src
             }
-          } else if (z < BASE_Z_FAR - 100) {
+          } else if (z < zFar - 100) {
             // Card scrolled backward past the far end — bring it to the front
-            const newBaseZ = baseZ + (CARD_COUNT * BASE_Z_STEP)
+            const newBaseZ = baseZ + (cardCount * zStep)
             card.dataset.baseZ = String(newBaseZ)
             z = newBaseZ + zOffsetRef.current
 
@@ -633,7 +637,7 @@ export default function GalleryLanding() {
         if (lightboxId !== null) {
           setLightboxId(null)
         } else {
-          router.push('/')
+          router.push('/#gallery-showcase')
         }
       } else if (lightboxId !== null) {
         const currentIdx = PHOTOS.findIndex(p => p.id === lightboxId)
@@ -914,8 +918,6 @@ export default function GalleryLanding() {
 
         .tunnel-card {
           position: absolute;
-          width: clamp(240px, 35vw, 500px);
-          aspect-ratio: 3 / 2;
           border: 3.5px solid #030404;
           border-radius: 12px;
           overflow: hidden;
@@ -925,6 +927,15 @@ export default function GalleryLanding() {
           opacity: 0.15;
           box-shadow: 6px 6px 0px 0px #030404;
           transition: box-shadow 0.25s ease, opacity 0.25s ease;
+          width: clamp(200px, 28vw, 420px);
+          aspect-ratio: 3 / 2;
+        }
+
+        @media (max-width: 768px) {
+          .tunnel-card {
+            width: clamp(140px, 60vw, 240px);
+            aspect-ratio: 2 / 3;
+          }
         }
 
         .tunnel-card:hover {
@@ -1081,14 +1092,15 @@ export default function GalleryLanding() {
             }} />
 
             {/* Exit the Magic */}
-            <button 
-              onClick={handleExitMagic}
+            <Link 
+              href="/#gallery-showcase"
               className="tunnel-exit-btn"
+              style={{ textDecoration: 'none', display: 'inline-block' }}
             >
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: '#030404', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 800 }}>
                 Go Back
               </span>
-            </button>
+            </Link>
 
 
 

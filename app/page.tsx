@@ -591,6 +591,51 @@ export default function Home() {
     };
   }, [introStarted, loadingComplete]);
 
+  // Handle hash scrolling on load/transition once loading finishes
+  useEffect(() => {
+    if (!isMounted || !loadingComplete) return;
+
+    let scrollAttempts = 0;
+    const maxAttempts = 20; // try for 2 seconds
+
+    const tryScroll = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const targetId = hash.replace('#', '');
+        const element = document.getElementById(targetId);
+        if (element) {
+          const y = element.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'auto' });
+          // Repeat a few times as elements finish loading/laying out
+          if (scrollAttempts < 6) {
+            scrollAttempts++;
+            setTimeout(tryScroll, 50);
+          }
+        } else {
+          if (scrollAttempts < maxAttempts) {
+            scrollAttempts++;
+            setTimeout(tryScroll, 100);
+          }
+        }
+      } else {
+        // If hash is not present yet (Next.js routing delay), poll for it
+        if (scrollAttempts < 10) {
+          scrollAttempts++;
+          setTimeout(tryScroll, 100);
+        }
+      }
+    };
+
+    tryScroll();
+
+    window.addEventListener('hashchange', tryScroll);
+    window.addEventListener('popstate', tryScroll);
+    return () => {
+      window.removeEventListener('hashchange', tryScroll);
+      window.removeEventListener('popstate', tryScroll);
+    };
+  }, [loadingComplete, isMounted]);
+
   // Function to create comic dot explosion particles
   const spawnParticles = (x: number, y: number) => {
     const colors = ['#FF9A00', '#FF188C', '#0D21DD', '#030404', '#F5F1E5'];
@@ -1227,7 +1272,7 @@ export default function Home() {
       </section>
 
       {/* Memories of 2026 Gallery Showcase Section */}
-      <section className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
+      <section id="gallery-showcase" className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
         <style dangerouslySetInnerHTML={{
           __html: `
 
