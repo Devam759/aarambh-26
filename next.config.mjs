@@ -1,9 +1,4 @@
 import withPWAInit from 'next-pwa';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const withPWA = withPWAInit({
   dest: 'public',
@@ -12,9 +7,6 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {
-    root: __dirname,
-  },
   images: {
     remotePatterns: [{
       protocol: 'https',

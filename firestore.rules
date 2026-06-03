@@ -2,8 +2,89 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    
+    // Helper functions for role checks
+    function getRole(uid) {
+      return get(/databases/$(database)/documents/roles/$(uid)).data.role;
+    }
+    
+    function isAdmin() {
+      return request.auth != null && getRole(request.auth.uid) == 'admin';
+    }
+    
+    function isScanner() {
+      return request.auth != null && getRole(request.auth.uid) == 'scanner';
+    }
+    
+    function isVolunteerOrTL() {
+      return request.auth != null && (
+        getRole(request.auth.uid) == 'volunteer' || 
+        getRole(request.auth.uid) == 'team_leader'
+      );
+    }
+
+    // Roles collection rules
+    match /roles/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if isAdmin();
+    }
+
+    // Registrations collection
+    match /registrations/{id} {
+      allow read: if isAdmin() || isScanner();
+      allow write: if isAdmin();
+    }
+
+    // Volunteers collection
+    match /volunteers/{id} {
+      allow read, write: if isAdmin() || isVolunteerOrTL();
+    }
+
+    // Duty Assignments collection
+    match /dutyAssignments/{id} {
+      allow read: if isAdmin() || isVolunteerOrTL();
+      allow write: if isAdmin();
+    }
+
+    // Notifications/Announcements collections
+    match /notifications/{id} {
+      allow read: if isAdmin() || isVolunteerOrTL();
+      allow write: if isAdmin();
+    }
+    
+    match /announcements/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Scan logs collection
+    match /scanLogs/{id} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() || isScanner();
+    }
+
+    // Events (public schedule)
+    match /events/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Audit logs collection
+    match /auditLogs/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    // Feedback collection (public anonymous submissions allowed)
+    match /feedback/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (request.auth != null && getRole(request.auth.uid) == 'feedback');
+      allow update, delete: if isAdmin();
+    }
+
+    // Settings (e.g. active feedback day settings)
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

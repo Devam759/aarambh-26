@@ -66,8 +66,17 @@ function RegisterContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'VERIFY_PAYMENT', orderId: oId, formData: data })
       });
-      
-      const result = await res.json();
+
+      const text = await res.text();
+      let result: any;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        console.error('Verification response is not valid JSON:', text);
+        alert(`Server error during verification. Please contact support. (${res.status})`);
+        return;
+      }
+
       if (result.success) {
         setIsSuccess(true);
         setRegId(result.id);
@@ -108,8 +117,19 @@ function RegisterContent() {
           ...formData 
         })
       });
-      
-      const order = await res.json();
+
+      const text = await res.text();
+      let order: any;
+      try {
+        order = JSON.parse(text);
+      } catch {
+        console.error('CREATE_ORDER response is not valid JSON:', text);
+        throw new Error(`Server error (${res.status}): ${text.slice(0, 200)}`);
+      }
+
+      if (!res.ok) {
+        throw new Error(order?.error || `Server returned ${res.status}`);
+      }
       if (!order.payment_session_id) throw new Error('Failed to create payment session');
 
       localStorage.setItem('pending_registration_data', JSON.stringify(formData));

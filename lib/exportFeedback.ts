@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { RATING_QUESTIONS, OPEN_QUESTIONS } from '@/constants/feedback';
 
 type FeedbackDoc = {
@@ -56,18 +56,30 @@ export function feedbackToExportRows(
   return { headers, rows };
 }
 
-export function downloadFeedbackExcel(
+export async function downloadFeedbackExcel(
   feedbacks: FeedbackDoc[],
   eventTitleById: Record<string, string>,
   filenamePrefix = 'feedback'
 ) {
   const { headers, rows } = feedbackToExportRows(feedbacks, eventTitleById);
-  const sheetData = [headers, ...rows];
-  const ws = XLSX.utils.aoa_to_sheet(sheetData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Feedback');
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Feedback');
+
+  worksheet.addRow(headers);
+  rows.forEach((row) => worksheet.addRow(row));
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
   const date = new Date().toISOString().split('T')[0];
-  XLSX.writeFile(wb, `${filenamePrefix}_${date}.xlsx`);
+  a.href = url;
+  a.download = `${filenamePrefix}_${date}.xlsx`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export function getDisplayRating(doc: FeedbackDoc): number {

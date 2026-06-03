@@ -422,6 +422,9 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   const parentEmail = formData.parentEmail || `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
   
   // 1. Save data to Firestore Registration Collection
+  if (!db) {
+    throw new Error('Firebase Firestore is not configured on the server. Please ensure NEXT_PUBLIC_FIREBASE_* environment variables are set in your hosting environment.');
+  }
   const registrationsRef = collection(db, 'registrations');
   const docRef = await addDoc(registrationsRef, {
     ...formData,

@@ -202,7 +202,7 @@ const CustomWarningIcon = ({ className = '', size = 18 }: { className?: string; 
 // ============================================================================
 // DEFAULT QUESTIONS SEED GENERATOR
 // ============================================================================
-export function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
+function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
   const forms: Record<string, { questions: any[] }> = {};
   
   SCHEDULE_DATA.forEach((daySchedule) => {
@@ -604,13 +604,26 @@ export default function FeedbackTeamPortalPage() {
         }
       });
 
-      const XLSX = await import('xlsx');
-      const ws = XLSX.utils.json_to_sheet(excelRows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Dynamic Feedback');
-      
+      const ExcelJS = (await import('exceljs')).default;
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Dynamic Feedback');
+
+      if (excelRows.length > 0) {
+        worksheet.addRow(Object.keys(excelRows[0]));
+        excelRows.forEach((row) => worksheet.addRow(Object.values(row)));
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
       const fileDate = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(wb, `Aarambh26_Feedback_Dynamic_${fileDate}.xlsx`);
+      a.href = url;
+      a.download = `Aarambh26_Feedback_Dynamic_${fileDate}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
 
       const performer = user?.email || user?.uid || 'Feedback Operator';
       try {

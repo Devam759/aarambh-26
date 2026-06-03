@@ -93,7 +93,7 @@ const CustomMessageIcon = ({ className = '', size = 18 }: { className?: string; 
 // ============================================================================
 // DEFAULT QUESTIONS SEED GENERATOR
 // ============================================================================
-export function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
+function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
   const forms: Record<string, { questions: any[] }> = {};
   
   SCHEDULE_DATA.forEach((daySchedule) => {
