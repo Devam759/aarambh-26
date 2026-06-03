@@ -200,7 +200,7 @@ function RegisterContent() {
 
   if (isSuccess) {
     return (
-      <div className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
+      <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-28 pb-12 sm:p-6 sm:pt-32 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
         <ComicBackground />
 
         <div className="max-w-md w-full bg-brand-cloud border-comic p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl shadow-comic-lg relative z-10">
@@ -226,7 +226,7 @@ function RegisterContent() {
   }
 
   return (
-    <div className="relative w-full min-h-screen py-8 sm:py-16 md:py-24 px-3 sm:px-4 flex flex-col items-center selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
+    <div className="relative w-full min-h-screen pt-28 pb-12 sm:pt-32 sm:pb-16 md:pt-40 md:pb-24 px-3 sm:px-4 flex flex-col items-center selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
       <ComicBackground />
 
       <div className="w-full max-w-3xl relative z-10">
@@ -239,7 +239,7 @@ function RegisterContent() {
             priority
             className="w-full max-w-2xl h-auto object-contain select-none"
             style={{ 
-              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404) drop-shadow(6px 6px 0px #FF188C)" 
+              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404) drop-shadow(3px 3px 0px #FF188C)" 
             }}
           />
         </div>
@@ -261,24 +261,24 @@ function RegisterContent() {
 
               {/* SECTION 1. STUDENT DETAILS */}
               <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
+                <div className="flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
                   <div className="flex items-center gap-3 text-brand-pink">
                     <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Student Details</h2>
                   </div>
                   {isStudentValid ? (
-                    <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                      <Check size={12} className="stroke-[4] shrink-0" />
-                      <span className="flex flex-col text-left leading-tight">
+                    <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                      <Check size={10} className="stroke-[4] shrink-0" />
+                      <span className="flex flex-col text-right leading-tight">
                         <span>Requirement</span>
                         <span>Fulfilled</span>
                       </span>
                     </span>
                   ) : studentStarted ? (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                       IN PROGRESS
                     </span>
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                       ACTIVE
                     </span>
                   )}
@@ -298,14 +298,14 @@ function RegisterContent() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Registration Number *</label>
+                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Application Number *</label>
                     <input 
                       required 
                       name="registrationNumber" 
                       value={formData.registrationNumber} 
                       onChange={handleChange} 
                       className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
-                      placeholder="20230001" 
+                      placeholder="APP123456" 
                       suppressHydrationWarning 
                     />
                   </div>
@@ -406,30 +406,30 @@ function RegisterContent() {
 
               {/* SECTION 2. PARENTS DETAILS (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-blue">
                     <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Parents Details</h2>
                   </div>
                   {isStudentValid ? (
                     isParentsValid ? (
-                      <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                        <Check size={12} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-left leading-tight">
+                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                        <Check size={10} className="stroke-[4] shrink-0" />
+                        <span className="flex flex-col text-right leading-tight">
                           <span>Requirement</span>
                           <span>Fulfilled</span>
                         </span>
                       </span>
                     ) : parentsStarted ? (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         ACTIVE
                       </span>
                     )
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[9px] font-black uppercase rounded shadow-comic-sm">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
                       🔒 LOCKED
                     </span>
                   )}
@@ -509,30 +509,30 @@ function RegisterContent() {
 
               {/* SECTION 3. ADDRESS & PAYMENT (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-orange">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Address & Verification</h2>
+                    <h2 className="text-xl sm:text-3xl font-vanilla text-brand-ink">Address & Verification</h2>
                   </div>
                   {isStudentValid && isParentsValid ? (
                     isAddressValid ? (
-                      <span className="flex items-center gap-1.5 px-3 py-1 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[9px] font-black uppercase rounded shadow-comic-sm rotate-3">
-                        <Check size={12} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-left leading-tight">
+                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
+                        <Check size={10} className="stroke-[4] shrink-0" />
+                        <span className="flex flex-col text-right leading-tight">
                           <span>Requirement</span>
                           <span>Fulfilled</span>
                         </span>
                       </span>
                     ) : formData.address.trim().length > 0 ? (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
-                      <span className="px-3 py-1 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[10px] font-black uppercase rounded shadow-comic-sm -rotate-2">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         ACTIVE
                       </span>
                     )
                   ) : (
-                    <span className="px-3 py-1 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[9px] font-black uppercase rounded shadow-comic-sm">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
                       🔒 LOCKED
                     </span>
                   )}

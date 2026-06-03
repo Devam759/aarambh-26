@@ -20,15 +20,19 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const unsubRegs = onSnapshot(collection(db, 'registrations'), (snap) => {
-      setStats(s => ({ ...s, totalRegistrations: snap.size, loading: false }));
+      const allRegs = snap.docs.map(d => d.data());
+      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
+      setStats(s => ({ ...s, totalRegistrations: validRegs.length, loading: false }));
     });
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     // Fetch new registrations created today
-    const unsubTodayRegs = onSnapshot(query(collection(db, 'registrations'), where('createdAt', '>=', today)), (snap) => {
-      setStats(s => ({ ...s, todayRegistrations: snap.size }));
+    const unsubTodayRegs = onSnapshot(query(collection(db, 'registrations'), where('registeredAt', '>=', today)), (snap) => {
+      const allRegs = snap.docs.map(d => d.data());
+      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
+      setStats(s => ({ ...s, todayRegistrations: validRegs.length }));
     });
 
     // Fetch entries today

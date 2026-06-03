@@ -326,17 +326,6 @@ export const TEAM_DATA = {
       }
     },
     {
-      name: "Arjun Singh Tanwar",
-      designation: "Food & Accommodation Lead",
-      department: "Food & Accommodation",
-      photo: "/Team Photos/Team Leaders/Arjun Singh Tanwar.webp",
-      socials: {
-        linkedin: "https://www.linkedin.com/in/arjun-singh-tanwar-28348a353",
-        email: "arjunsinghtanwar@jklu.edu.in",
-        instagram: "https://www.instagram.com/_arjunsinghtanwar.10"
-      }
-    },
-    {
       name: "Kartavya Garhwal",
       designation: "Food & Accommodation Lead",
       department: "Food & Accommodation",
@@ -345,6 +334,17 @@ export const TEAM_DATA = {
         linkedin: "https://www.linkedin.com/in/kartavya-garhwal-developer/",
         email: "kartavyagarhwal@jklu.edu.in",
         instagram: "https://www.instagram.com/kartavyagarhwal"
+      }
+    },
+    {
+      name: "Arjun Singh Tanwar",
+      designation: "Food & Accommodation Lead",
+      department: "Food & Accommodation",
+      photo: "/Team Photos/Team Leaders/Arjun Singh Tanwar.webp",
+      socials: {
+        linkedin: "https://www.linkedin.com/in/arjun-singh-tanwar-28348a353",
+        email: "arjunsinghtanwar@jklu.edu.in",
+        instagram: "https://www.instagram.com/_arjunsinghtanwar.10"
       }
     },
     {

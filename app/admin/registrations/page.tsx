@@ -119,7 +119,10 @@ export default function Registrations() {
 
   useEffect(() => {
     const unsub = onSnapshot(query(collection(db, 'registrations'), orderBy('registeredAt', 'desc')), (snap) => {
-      setRegistrations(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      const allRegs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Filter out empty test entries that somehow got created without a name
+      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
+      setRegistrations(validRegs);
       setLoading(false);
     });
     return () => unsub();
@@ -182,6 +185,17 @@ export default function Registrations() {
   // 3. Paginate
   const paginatedRegistrations = sortedRegistrations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(sortedRegistrations.length / itemsPerPage);
+
+  // Calculate Today's Registrations
+  const todaysRegistrationsCount = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return registrations.filter(reg => {
+      if (!reg.registeredAt) return false;
+      const regDate = reg.registeredAt.toDate();
+      return regDate >= today;
+    }).length;
+  }, [registrations]);
 
   // CSV export fully synced with Aman's columns
   const exportCSV = async () => {
@@ -259,17 +273,26 @@ export default function Registrations() {
 
   return (
     <div className="space-y-8 select-none">
-      {/* Live Counter Card */}
-      <div className="bg-admin-surface border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
-        <h2 className="text-xs font-black text-admin-muted uppercase tracking-widest mb-1.5">Total Registrations</h2>
-        <p className="font-adminHeading text-6xl font-black text-brand-ink">
-          {loading ? '-' : registrations.length}
-        </p>
-        {filteredRegistrations.length !== registrations.length && (
-          <p className="text-[10px] uppercase font-black tracking-wide text-brand-orange mt-2 bg-brand-orange/15 px-3 py-1 border-2 border-brand-ink rounded-md">
-            Filtered matches: {filteredRegistrations.length}
+      {/* Live Counter Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-admin-surface border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
+          <h2 className="text-xs font-black text-admin-muted uppercase tracking-widest mb-1.5">Total Registrations</h2>
+          <p className="font-adminHeading text-6xl font-black text-brand-ink">
+            {loading ? '-' : registrations.length}
           </p>
-        )}
+          {filteredRegistrations.length !== registrations.length && (
+            <p className="text-[10px] uppercase font-black tracking-wide text-brand-orange mt-2 bg-brand-orange/15 px-3 py-1 border-2 border-brand-ink rounded-md">
+              Filtered matches: {filteredRegistrations.length}
+            </p>
+          )}
+        </div>
+        
+        <div className="bg-brand-pink/10 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
+          <h2 className="text-xs font-black text-brand-pink uppercase tracking-widest mb-1.5">Today's Registrations</h2>
+          <p className="font-adminHeading text-6xl font-black text-brand-pink">
+            {loading ? '-' : todaysRegistrationsCount}
+          </p>
+        </div>
       </div>
 
       {/* Main Title & Action header */}
@@ -281,7 +304,7 @@ export default function Registrations() {
         <button 
           onClick={exportCSV}
           disabled={loading || registrations.length === 0}
-          className="bg-brand-orange hover:bg-[#E68A00] text-brand-ink font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md text-xs uppercase tracking-wider"
+          className="comic-btn-orange"
         >
           <CustomDownloadIcon size={16} /> Export CSV
         </button>
@@ -296,7 +319,7 @@ export default function Registrations() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-pink focus:bg-white transition-all uppercase tracking-wider"
-            placeholder="Search Name, Registration Number, or Email..."
+            placeholder="Search Name, Application Number, or Email..."
           />
         </div>
         
@@ -330,7 +353,7 @@ export default function Registrations() {
                     Name {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('rollNumber')}>
-                    Registration Number {sortField === 'rollNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    Application Number {sortField === 'rollNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('email')}>
                     Contact Details {sortField === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -602,7 +625,7 @@ export default function Registrations() {
                 <a 
                   href={`/api/receipt?id=${selectedReg.id}`}
                   download
-                  className="w-full sm:w-auto bg-brand-orange hover:bg-[#E68A00] text-brand-ink text-center font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
+                  className="comic-btn-orange w-full sm:w-auto"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

@@ -99,35 +99,23 @@ export default function TeamPage() {
   // Group team leaders into committees and cluster heads
   const groupedTeamLeaders = useMemo(() => {
     const groups: { heading: string; items: TeamMember[] }[] = [
-      { heading: "Discipline Committee", items: [] },
-      { heading: "Technical Committee", items: [] },
-      { heading: "Design Committee", items: [] },
-      { heading: "Photography Committee", items: [] },
-      { heading: "Media Committee", items: [] },
-      { heading: "Social Media Committee", items: [] },
-      { heading: "Hospitality Committee", items: [] },
-      { heading: "Event & Venue Committee", items: [] },
-      { heading: "Food & Accommodation Committee", items: [] },
-      { heading: "Internal Arrangements Committee", items: [] },
-      { heading: "Feedback & Registration Committee", items: [] },
+      { heading: "Discipline", items: [] },
+      { heading: "Technical", items: [] },
+      { heading: "Design", items: [] },
+      { heading: "Photography", items: [] },
+      { heading: "Media", items: [] },
+      { heading: "Social Media", items: [] },
+      { heading: "Hospitality", items: [] },
+      { heading: "Event & Venue", items: [] },
+      { heading: "Food & Accommodation", items: [] },
+      { heading: "Internal Arrangements", items: [] },
+      { heading: "Feedback & Registration", items: [] },
       { heading: "Cluster Heads", items: [] },
     ];
 
     TEAM_DATA.teamLeaders.forEach(member => {
       const dept = member.department || "";
-      let groupName = "";
-      if (dept === "Cluster Head") groupName = "Cluster Heads";
-      else if (dept === "Technical") groupName = "Technical Committee";
-      else if (dept === "Design") groupName = "Design Committee";
-      else if (dept === "Photography") groupName = "Photography Committee";
-      else if (dept === "Media") groupName = "Media Committee";
-      else if (dept === "Social Media") groupName = "Social Media Committee";
-      else if (dept === "Hospitality") groupName = "Hospitality Committee";
-      else if (dept === "Event & Venue") groupName = "Event & Venue Committee";
-      else if (dept === "Food & Accommodation") groupName = "Food & Accommodation Committee";
-      else if (dept === "Discipline") groupName = "Discipline Committee";
-      else if (dept === "Internal Arrangements") groupName = "Internal Arrangements Committee";
-      else if (dept === "Feedback & Registration") groupName = "Feedback & Registration Committee";
+      const groupName = dept === "Cluster Head" ? "Cluster Heads" : dept;
 
       const targetGroup = groups.find(g => g.heading === groupName);
       if (targetGroup) {

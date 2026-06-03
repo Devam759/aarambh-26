@@ -52,6 +52,15 @@
   --shadow-brand-pink: 0 0 40px rgba(255, 24, 140, 0.25);
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
+
+  --shadow-comic-sm: 4px 4px 0px 0px var(--color-brand-ink);
+  --shadow-comic: 8px 8px 0px 0px var(--color-brand-ink);
+  --shadow-comic-lg: 12px 12px 0px 0px var(--color-brand-ink);
+  --shadow-solid-pink: 6px 6px 0px 0px var(--color-brand-pink);
+  --shadow-solid-orange: 6px 6px 0px 0px var(--color-brand-orange);
+  --shadow-solid-blue: 6px 6px 0px 0px var(--color-brand-blue);
+  --shadow-solid-cloud: 6px 6px 0px 0px var(--color-brand-cloud);
+  --shadow-solid-ink: 6px 6px 0px 0px var(--color-brand-ink);
 }
 
 html {
@@ -85,6 +94,15 @@ body {
 
 .btn-blue {
   @apply bg-brand-blue hover:bg-secondary-dark text-brand-cloud font-bold py-2.5 px-6 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+}
+
+/* Comic / Neo-Brutalist Action Buttons — used across feedback, admin, eventsfeedback pages */
+.comic-btn-primary {
+  @apply bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs;
+}
+
+.comic-btn-orange {
+  @apply bg-brand-orange hover:bg-accent-dark text-brand-ink font-black py-3 px-6 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md text-xs uppercase tracking-wider;
 }
 
 .input-field {
@@ -156,39 +174,7 @@ body {
   border: 2px solid var(--color-brand-ink);
 }
 
-/* Comic Solid Black Drop Shadows */
-.shadow-comic-sm {
-  box-shadow: 4px 4px 0px 0px var(--color-brand-ink);
-}
-
-.shadow-comic {
-  box-shadow: 8px 8px 0px 0px var(--color-brand-ink);
-}
-
-.shadow-comic-lg {
-  box-shadow: 12px 12px 0px 0px var(--color-brand-ink);
-}
-
-/* Comic Colored shadows */
-.shadow-solid-pink {
-  box-shadow: 6px 6px 0px 0px var(--color-brand-pink);
-}
-
-.shadow-solid-orange {
-  box-shadow: 6px 6px 0px 0px var(--color-brand-orange);
-}
-
-.shadow-solid-blue {
-  box-shadow: 6px 6px 0px 0px var(--color-brand-blue);
-}
-
-.shadow-solid-cloud {
-  box-shadow: 6px 6px 0px 0px var(--color-brand-cloud);
-}
-
-.shadow-solid-ink {
-  box-shadow: 6px 6px 0px 0px var(--color-brand-ink);
-}
+/* Comic Solid Black Drop Shadows (now in @theme) */
 
 /* Comic Action Starburst */
 .comic-starburst {

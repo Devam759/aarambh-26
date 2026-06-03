@@ -668,7 +668,7 @@ export default function AdminFeedbackAnalytics() {
             <button
               onClick={handleExportExcel}
               disabled={feedbacks.length === 0 || exporting}
-              className="bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs shrink-0"
+              className="comic-btn-primary shrink-0"
             >
               <CustomDownloadIcon size={14} />
               <span>{exporting ? 'Exporting Report...' : 'Download Excel Sheets'}</span>
@@ -933,7 +933,7 @@ export default function AdminFeedbackAnalytics() {
               <button
                 type="submit"
                 disabled={savingSettings}
-                className="bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs shrink-0"
+                className="comic-btn-primary shrink-0"
               >
                 {savingSettings ? 'Saving...' : 'Save Changes'}
               </button>

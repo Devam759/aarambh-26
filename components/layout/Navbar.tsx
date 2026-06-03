@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,7 +11,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredPath, setHoveredPath] = useState(pathname);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -20,6 +21,7 @@ export default function Navbar() {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setHoveredPath(pathname);
   }, [pathname]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -47,39 +49,40 @@ export default function Navbar() {
     { name: 'Gallery', href: '/gallery' },
     { name: 'Team', href: '/team' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Register', href: '/register' },
   ];
 
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:w-fit z-50 transition-all duration-300 rounded-full border ${isScrolled
-          ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
-          : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
-          }`}
+        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-all duration-300 rounded-full border ${
+          isScrolled
+            ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
+            : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
+        }`}
       >
-        <div className="flex justify-between items-center w-full lg:gap-8">
+        <div className="flex justify-between items-center w-full gap-4 lg:gap-6 xl:gap-8">
           {/* Logo Container */}
-          <div className="flex items-center gap-3 shrink-0">
-            <a 
-              href="https://jklu.edu.in" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center hover:scale-105 transition-transform"
+          <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+            <a
+              href="https://jklu.edu.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:flex items-center hover:scale-105 transition-transform"
             >
               <Image
                 src="/jklu_logo_light.svg"
                 alt="JKLU Logo"
                 width={40}
                 height={40}
-                className="h-9 md:h-10 w-auto object-contain"
+                className="h-9 w-auto object-contain"
                 style={{ width: 'auto' }}
                 priority
-                loading="eager"
               />
             </a>
-            <div className="w-[1.5px] h-6 bg-brand-cloud/25 self-center shrink-0" />
-            <Link 
-              href="/" 
+            <div className="hidden xl:block w-[1.5px] h-6 bg-brand-cloud/25 self-center shrink-0" />
+            <Link
+              href="/"
               className="flex items-center hover:scale-105 transition-transform"
             >
               <Image
@@ -90,81 +93,63 @@ export default function Navbar() {
                 className="h-7 md:h-8 w-auto object-contain"
                 style={{ width: 'auto' }}
                 priority
-                loading="eager"
               />
             </Link>
           </div>
 
-          {/* Links for Desktop */}
+          {/* Desktop Menu */}
           <div 
-            className="hidden md:flex items-center gap-6 bg-brand-ink/40 py-1.5 px-5 rounded-full border border-brand-cloud/5 lg:mr-10"
-            onMouseLeave={() => setHoveredIndex(null)}
+            className="hidden lg:flex items-center gap-4 xl:gap-6"
+            onMouseLeave={() => setHoveredPath(pathname)}
           >
-            {navLinks.map((link, index) => {
-              const isActive = pathname === link.href;
-              const isHovered = hoveredIndex === index;
-              const shouldShowHoverPill = isHovered || (hoveredIndex === null && isActive);
+            {/* Links */}
+            <div className="flex items-center gap-1 xl:gap-3">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                const isHovered = hoveredPath === link.href;
+                const isRegister = link.href === '/register';
 
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  className={`relative py-1.5 px-4 text-xs font-bold tracking-widest uppercase transition-colors duration-200 z-10 rounded-full ${
-                    isActive 
-                      ? 'text-brand-cloud' 
-                      : isHovered 
-                        ? 'text-brand-cloud' 
-                        : 'text-brand-cloud/70'
-                  }`}
-                >
-                  {link.name}
-                  
-                  {/* Stationary Solid Active Page Pill */}
-                  {isActive && (
-                    <div className="absolute inset-0 bg-brand-pink rounded-full -z-10 shadow-[0_2px_12px_rgba(255,24,140,0.4)]" />
-                  )}
+                const textColor = isRegister 
+                  ? (isHovered ? 'text-brand-cloud' : 'text-brand-ink')
+                  : (isHovered ? 'text-brand-cloud' : (isActive ? 'text-brand-pink' : 'text-brand-cloud/70 hover:text-brand-cloud'));
 
-                  {/* Translucent Traveling Hover Pill */}
-                  {shouldShowHoverPill && (
-                    <motion.div
-                      layoutId="hoverNav"
-                      className="absolute inset-0 bg-brand-pink/50 border border-brand-pink/70 rounded-full -z-10"
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        opacity: hoveredIndex === null ? 0 : 1
-                      }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    onMouseEnter={() => setHoveredPath(link.href)}
+                    className={`relative py-1.5 px-2.5 xl:px-4 text-[11px] xl:text-xs font-bold tracking-wide xl:tracking-widest uppercase transition-colors duration-200 rounded-full z-10 flex items-center justify-center ${textColor}`}
+                  >
+                    {isHovered && (
+                      <motion.div
+                        layoutId="navHoverPill"
+                        className={`absolute inset-0 rounded-full -z-10 ${
+                          isRegister 
+                            ? 'bg-brand-blue shadow-[0_4px_16px_rgba(13,33,221,0.5)]' 
+                            : isActive
+                              ? 'bg-brand-pink shadow-[0_4px_16px_rgba(255,24,140,0.5)]'
+                              : 'bg-brand-pink/75 backdrop-blur-md shadow-[0_4px_16px_rgba(255,24,140,0.4)]'
+                        }`}
+                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    
+                    {/* Register button static fallback CTA background */}
+                    {isRegister && (
+                       <div className="absolute inset-0 rounded-full bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)] -z-20" />
+                    )}
 
-          {/* Actions (CTA) */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/register"
-              className={`relative group overflow-hidden shrink-0 rounded-full py-2 px-5 font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 ${pathname?.startsWith('/register')
-                ? 'text-brand-cloud bg-brand-blue shadow-[0_4px_12px_rgba(13,33,221,0.4)]'
-                : 'text-brand-cloud bg-brand-pink shadow-[0_4px_12px_rgba(255,24,140,0.3)] hover:shadow-[0_4px_20px_rgba(255,24,140,0.5)]'
-                }`}
-            >
-              <span className="relative z-10 transition-colors">Register</span>
-              {!pathname?.startsWith('/register') && (
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-brand-blue transition-transform duration-300 ease-out -z-0" />
-              )}
-            </Link>
+                    <span className="relative z-10">{link.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
           {/* Mobile menu toggle */}
           <button
-            className={`md:hidden border-2 border-brand-ink p-1.5 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#030404] rounded-md ${
-              isMobileMenuOpen 
-                ? 'bg-brand-pink text-brand-cloud shadow-none' 
-                : 'bg-brand-orange text-brand-ink'
-            }`}
+            className="lg:hidden border-2 border-brand-ink p-1.5 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#030404] rounded-md bg-brand-orange text-brand-ink"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -179,19 +164,17 @@ export default function Navbar() {
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="md:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
             >
-
-
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
-                    pathname === link.href 
-                      ? 'text-brand-pink border-brand-ink bg-brand-pink/5' 
+                    pathname === link.href
+                      ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
                       : 'text-brand-ink hover:text-brand-ink'
                   }`}
                 >
@@ -199,17 +182,6 @@ export default function Navbar() {
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
                 </Link>
               ))}
-
-              <Link
-                href="/register"
-                className={`w-full text-center py-3.5 border-4 border-brand-ink font-display font-black text-xs uppercase tracking-widest transition-all mt-4 shadow-[4px_4px_0px_0px_#030404] active:translate-y-1 active:shadow-none hover:bg-brand-pink hover:text-brand-cloud rounded-lg ${
-                  pathname?.startsWith('/register')
-                    ? 'text-brand-cloud bg-brand-blue'
-                    : 'text-brand-ink bg-brand-orange'
-                }`}
-              >
-                Registration
-              </Link>
             </motion.div>
           )}
         </AnimatePresence>

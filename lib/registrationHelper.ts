@@ -160,6 +160,15 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     page.drawText(clean(value), { x, y: y - 13, size: 10.5, color: darkColor });
   };
 
+  const formatPhone = (phone: string): string => {
+    if (!phone) return '';
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length >= 10) {
+      return `+91 ${digits.slice(-10)}`;
+    }
+    return phone;
+  };
+
   // 1. STUDENT INFORMATION Section
   drawSectionHeader('STUDENT INFORMATION', 525);
   drawField('Full Name', data.name || 'N/A', 40, 502);
@@ -168,12 +177,12 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   drawField('Branch / Programme', data.course || 'B.Tech', 40, 469);
   
   drawField('Email Address', data.email || 'N/A', 40, 436);
-  drawField('Mobile Number', data.phone || data.mobile || 'N/A', 300, 436);
+  drawField('Mobile Number', formatPhone(data.phone || data.mobile || ''), 300, 436);
 
   // 2. PARENT DETAILS Section
   drawSectionHeader('PARENT DETAILS', 395);
   drawField('Parent Name', data.parentName || data.fatherName || 'N/A', 40, 372);
-  drawField('Parent Phone', data.parentPhone || data.fatherMobile || 'N/A', 300, 372);
+  drawField('Parent Phone', formatPhone(data.parentPhone || data.fatherMobile || ''), 300, 372);
   
   drawField('Parent Email', data.parentEmail || data.fatherEmail || 'N/A', 40, 339);
 
@@ -264,19 +273,30 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
       <meta charset="utf-8">
       <style>
         .container { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
-        .header { background-color: #1a1a1a; padding: 40px 20px; text-align: center; }
+        .header { background-color: #ffffff; padding: 40px 20px 20px 20px; text-align: center; border-bottom: 1px solid #eeeeee; }
         .logo-text { color: #FACC15; font-size: 32px; font-weight: bold; margin: 0; letter-spacing: 2px; }
         .content { padding: 40px 30px; background-color: #ffffff; color: #333; line-height: 1.6; }
         .success-badge { display: inline-block; padding: 6px 12px; background-color: #dcfce7; color: #166534; border-radius: 4px; font-weight: bold; font-size: 14px; margin-bottom: 20px; }
-        .footer { background-color: #f9f9f9; padding: 20px; text-align: center; color: #777; font-size: 12px; border-top: 1px solid #eeeeee; }
+        .footer { background-color: #f9f9f9; padding: 30px 20px; text-align: center; color: #777; font-size: 13px; border-top: 1px solid #eeeeee; }
+        .social-icons { margin: 15px 0; }
+        .social-icons a { display: inline-block; margin: 0 6px; color: #555; text-decoration: none; font-weight: bold; font-size: 12px; }
+        .footer-link { color: #FF188C; text-decoration: none; font-weight: bold; }
         .button { display: inline-block; padding: 12px 24px; background-color: #FACC15; color: #1a1a1a; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; }
       </style>
     </head>
     <body>
       <div class="container">
-        <div class="header">
-          <h1 class="logo-text">AARAMBH '26</h1>
-          <p style="color: #fff; margin: 5px 0 0 0; opacity: 0.8;">The Awakening of Future</p>
+        <div class="header" style="text-align: center;">
+          <table align="center" border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+            <tr>
+              <td align="center" valign="middle" style="padding-right: 20px;">
+                <img src="cid:jklu_logo" alt="JKLU Logo" style="max-height: 55px; width: auto; display: block;" />
+              </td>
+              <td align="center" valign="middle" style="padding-left: 20px; border-left: 1px solid rgba(0,0,0,0.1);">
+                <img src="cid:aarambh_logo" alt="Aarambh '26 Logo" style="max-height: 55px; width: auto; display: block;" />
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="content">
           <div class="success-badge">✓ Registration Confirmed</div>
@@ -297,15 +317,47 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
           <p>Best Regards,<br/><strong>Team Aarambh</strong></p>
         </div>
         <div class="footer">
-          <p>JK Lakshmipat University, Jaipur</p>
-          <p>&copy; 2026 Aarambh Event Management System</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/aarambh_jklu?igsh=NmZzYjFrcDNtejMw">Instagram</a> &bull; 
+            <a href="https://www.linkedin.com/school/jklujaipur/">LinkedIn</a> &bull; 
+            <a href="https://x.com/jklujaipur">X (Twitter)</a> &bull; 
+            <a href="https://www.facebook.com/share/1Hsdb57Jcf/">Facebook</a>
+          </div>
+          <p style="margin-bottom: 5px;">JK Lakshmipat University, Jaipur</p>
+          <p style="margin-top: 0;"><a href="https://aarambh.jklu.edu.in" class="footer-link">aarambh.jklu.edu.in</a></p>
+          <p style="margin-top: 15px; font-size: 11px; opacity: 0.7;">&copy; 2026 Aarambh Event Management System</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-  await transporter.sendMail({
+  let logoAttachment: any = null;
+  let jkluAttachment: any = null;
+  try {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    
+    const logoPath = path.join(process.cwd(), 'public', 'aarambh_logo_removebg.png');
+    const logoBytes = await fs.readFile(logoPath);
+    logoAttachment = {
+      filename: 'aarambh_logo_removebg.png',
+      content: logoBytes,
+      cid: 'aarambh_logo' // same cid value as in the html img src
+    };
+
+    const jkluPath = path.join(process.cwd(), 'public', 'jklu_logo.png');
+    const jkluBytes = await fs.readFile(jkluPath);
+    jkluAttachment = {
+      filename: 'jklu_logo.png',
+      content: jkluBytes,
+      cid: 'jklu_logo'
+    };
+  } catch (err) {
+    console.warn("Failed to load logo for email attachment:", err);
+  }
+
+  const mailOptions: any = {
     from: `"Aarambh Team" <${process.env.SMTP_FROM || ''}>`,
     to: to,
     subject: "Aarambh'26 | Your Registration is Confirmed!",
@@ -317,7 +369,16 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
         contentType: 'application/pdf'
       }
     ]
-  });
+  };
+
+  if (logoAttachment) {
+    mailOptions.attachments.push(logoAttachment);
+  }
+  if (jkluAttachment) {
+    mailOptions.attachments.push(jkluAttachment);
+  }
+
+  await transporter.sendMail(mailOptions);
 }
 
 // ============================================================================
@@ -337,9 +398,11 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
 
   const formatPhoneNumber = (phone: string): string => {
     if (!phone) return '';
-    return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
-      return `+91 ${digits}`;
-    });
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length >= 10) {
+      return `+91 ${digits.slice(-10)}`;
+    }
+    return phone;
   };
 
   if (formData.mobile) formData.mobile = formatPhoneNumber(formData.mobile);
@@ -419,6 +482,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 id: dateGroup,
+                isSeparator: true,
                 name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
                 gender: '', course: '',
                 parentName: '', parentPhone: '', parentEmail: '',
@@ -430,6 +494,13 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
             });
           }
 
+          const escapeForSheets = (val: string) => {
+            if (typeof val === 'string' && val.startsWith('+')) {
+              return `'${val}`;
+            }
+            return val;
+          };
+
           await fetch(excelWebhook, {
             method: 'POST',
             headers: {
@@ -439,19 +510,19 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
               id: studentIndex.toString(),
               name: formData.name,
               email: formData.email,
-              phone: formData.mobile,
+              phone: escapeForSheets(formData.mobile),
               rollNumber: formData.registrationNumber,
               registeredAt: new Date().toISOString(),
               gender: formData.gender || 'N/A',
               course: formData.course || 'N/A',
               parentName: parentName,
-              parentPhone: parentPhone,
+              parentPhone: escapeForSheets(parentPhone),
               parentEmail: parentEmail,
               fatherName: fatherName || formData.parentName || 'N/A',
-              fatherMobile: fatherMobile || formData.parentPhone || 'N/A',
+              fatherMobile: escapeForSheets(fatherMobile || formData.parentPhone || 'N/A'),
               fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
               motherName: motherName || 'N/A',
-              motherMobile: motherMobile || 'N/A',
+              motherMobile: escapeForSheets(motherMobile || 'N/A'),
               motherEmail: motherEmail || 'N/A',
               address: formData.address || 'N/A',
               pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),

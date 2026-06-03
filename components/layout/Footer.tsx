@@ -349,15 +349,15 @@ export default function Footer() {
       </div>
 
       {/* DESIGNED AND DEVELOPED BY */}
-      <div className="text-center text-xs md:text-sm font-mono text-brand-ink/65 tracking-wider font-bold mb-10 max-w-7xl mx-auto border-b-2 border-brand-ink/10 pb-6 flex items-center justify-center gap-1.5 uppercase">
+      <div className="relative z-20 text-center text-[10px] sm:text-xs md:text-sm font-mono text-brand-ink/65 tracking-wider font-bold mb-10 max-w-7xl mx-auto border-b-2 border-brand-ink/10 pb-6 flex flex-wrap items-center justify-center gap-1.5 uppercase">
         <Link 
           href="/credits" 
-          className="hover:text-brand-pink transition-colors flex items-center gap-1.5 cursor-pointer"
+          className="hover:text-brand-pink transition-colors flex flex-wrap items-center justify-center gap-1.5 cursor-pointer px-4 py-2 sm:p-0"
           id="tech-credits-link"
         >
-          Designed and Developed with{" "}
-          <HeartIcon className="text-brand-pink shrink-0 animate-pulse" size={14} />{" "}
-          by Tech Team
+          <span>Designed and Developed with</span>
+          <HeartIcon className="text-brand-pink shrink-0 animate-pulse" size={14} />
+          <span>by Tech Team</span>
         </Link>
       </div>
 

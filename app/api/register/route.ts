@@ -31,9 +31,11 @@ export async function POST(req: Request) {
     // Standardize mobile numbers to always format as +91 1234567890
     const formatPhoneNumber = (phone: string): string => {
       if (!phone) return '';
-      return phone.replace(/(?:\+?91\s*)?(\b\d{10}\b)/g, (match, digits) => {
-        return `+91 ${digits}`;
-      });
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length >= 10) {
+        return `+91 ${digits.slice(-10)}`;
+      }
+      return phone;
     };
     if (rawData.mobile) rawData.mobile = formatPhoneNumber(rawData.mobile);
     if (rawData.fatherMobile) rawData.fatherMobile = formatPhoneNumber(rawData.fatherMobile);

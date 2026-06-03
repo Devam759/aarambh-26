@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, HelpCircle, MessageSquare } from 'lucide-react';
 import { FAQS_DATA, FAQ_CATEGORIES } from '@/constants/faqs';
+import PageGlowBackground from '@/components/ui/PageGlowBackground';
 
 export default function FAQPage() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -39,10 +40,7 @@ export default function FAQPage() {
       {/* Retro sketchbook grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
 
-      {/* Dynamic Ambient Gradient Spotlights (Rich Color Depths) */}
-      <div className="absolute top-0 left-0 w-[450px] h-[450px] rounded-full bg-brand-pink/15 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[550px] h-[550px] rounded-full bg-brand-orange/15 blur-[145px] pointer-events-none z-0" />
-      <div className="absolute top-[40%] left-[-100px] w-[400px] h-[400px] rounded-full bg-brand-blue/10 blur-[110px] pointer-events-none z-0" />
+      <PageGlowBackground />
 
       {/* Floating Dynamic Comic Props */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">

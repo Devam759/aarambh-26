@@ -102,6 +102,10 @@ walkthrough.md
 raw_gallery*.html
 compress.cjs
 scripts/*.cjs
+scripts/*.js
+remove-bg.cjs
+remove-bg.js
+page_history.txt
 photos_temp.json
 **/*.JPG
 

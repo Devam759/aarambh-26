@@ -554,7 +554,7 @@ export default function Home() {
 
   // Generate Mario Animation Arrays for loading screen
   const NUM_SLICES = 5;
-  const TOTAL_DURATION = 5.0; // 1.0s per slice
+  const TOTAL_DURATION = 4.0; // 0.8s per slice
   
   const marioLeft: string[] = ['-10%'];
   const marioLeftTimes: number[] = [0];
@@ -563,7 +563,7 @@ export default function Home() {
   const marioYEasings: any[] = [];
   
   for (let i = 0; i < NUM_SLICES; i++) {
-    const hitTimeSec = (i + 1) * 1.0; 
+    const hitTimeSec = (i + 1) * 0.8; 
     const hitNorm = hitTimeSec / TOTAL_DURATION; 
     
     // Exact jump percentages so the final jump perfectly centers on "26"
@@ -704,33 +704,6 @@ export default function Home() {
       className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
       imgClassName: "w-[80px] h-[80px] lg:w-[200px] lg:h-[200px]"
     },
-    {
-      src: "/images/edition_2026.webp",
-      alt: "2026 Edition Sticker",
-      type: "pow",
-      rotate: "-8deg",
-      floatDelay: 0,
-      className: "top-[10%] left-[2%] lg:top-[14%] lg:left-[5%]",
-      imgClassName: "w-[80px] h-[80px] lg:w-[205px] lg:h-[205px]"
-    },
-    {
-      src: "/images/first_step.webp",
-      alt: "First Step Sticker",
-      type: "bang",
-      rotate: "-5deg",
-      floatDelay: 1.4,
-      className: "bottom-[12%] left-[4%] lg:bottom-[23%] lg:left-[6%]",
-      imgClassName: "w-[90px] h-[45px] lg:w-[215px] lg:h-[108px]"
-    },
-    {
-      src: "/images/next_dimension.webp",
-      alt: "Next Dimension Sticker",
-      type: "boom",
-      rotate: "7deg",
-      floatDelay: 2.1,
-      className: "bottom-[10%] right-[4%] lg:bottom-[20%] lg:right-[6%]",
-      imgClassName: "w-[100px] h-[50px] lg:w-[234px] lg:h-[117px]"
-    },
   ];
 
 
@@ -777,7 +750,7 @@ export default function Home() {
                     const boundaries = [0, 18, 36, 55, 75, 100];
                     const leftPercent = boundaries[sliceIndex];
                     const rightPercent = 100 - boundaries[sliceIndex + 1];
-                    const hitTime = (sliceIndex + 1) * 1.0;
+                    const hitTime = (sliceIndex + 1) * 0.8;
                     
                     return (
                       <motion.div
@@ -794,7 +767,7 @@ export default function Home() {
                         }}
                         transition={{ 
                           delay: hitTime, 
-                          duration: 0.4, 
+                          duration: 0.3, 
                           times: [0, 0.3, 1] 
                         }}
                         className="absolute inset-0 w-full h-full"
@@ -1043,8 +1016,6 @@ export default function Home() {
             <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group z-20 perspective-[1500px]">
               {/* Base logo container (no card background, border, or drop shadow) */}
               <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[90px] sm:min-h-[170px] md:min-h-[220px]">
-                {loadingComplete && (
-                  <>
                     {/* Logo Container Fill Animation */}
                     <div className="relative w-full aspect-[550/120] z-20 pointer-events-none flex items-center justify-center">
                       
@@ -1059,8 +1030,11 @@ export default function Home() {
                       
                       <motion.div
                         initial={{ clipPath: 'circle(0% at 50% 50%)', WebkitClipPath: 'circle(0% at 50% 50%)' } as any}
-                        animate={{ clipPath: 'circle(150% at 50% 50%)', WebkitClipPath: 'circle(150% at 50% 50%)' } as any}
-                        transition={{ duration: 4.0, ease: "easeInOut", delay: 0.5 }}
+                        animate={loadingComplete 
+                          ? ({ clipPath: 'circle(150% at 50% 50%)', WebkitClipPath: 'circle(150% at 50% 50%)' } as any)
+                          : ({ clipPath: 'circle(0% at 50% 50%)', WebkitClipPath: 'circle(0% at 50% 50%)' } as any)
+                        }
+                        transition={{ duration: 2.0, ease: "easeInOut", delay: 0.2 }}
                         className="absolute inset-0 w-full h-full"
                       >
                         <Image 
@@ -1070,35 +1044,38 @@ export default function Home() {
                            className="object-contain" 
                            priority 
                            loading="eager" 
-                           
                         />
                       </motion.div>
                       
                       {/* Final Pop & Glow */}
                       <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: [0, 1, 0], scale: [0.8, 1.2, 1] }}
-                        transition={{ delay: 4.5, duration: 0.6 }}
+                        animate={loadingComplete 
+                          ? { opacity: [0, 1, 0], scale: [0.8, 1.2, 1] } 
+                          : { opacity: 0, scale: 0.8 }
+                        }
+                        transition={{ delay: 2.2, duration: 0.4 }}
                         className="absolute inset-0 bg-brand-pink blur-[30px] mix-blend-screen pointer-events-none"
                       />
                       
                       <motion.div
                         initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }}
-                        transition={{ delay: 4.5, duration: 0.8 }}
+                        animate={loadingComplete 
+                          ? { opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] } 
+                          : { opacity: 0, scale: 0 }
+                        }
+                        transition={{ delay: 2.2, duration: 0.6 }}
                         className="absolute top-0 -right-2 text-brand-orange z-30"
                       >
                         <Sparkles size={40} />
                       </motion.div>
                     </div>
-                  </>
-                )}
               </div>
             </div>
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-ink text-brand-cloud p-2 sm:p-4 rounded-xl max-w-4xl w-[95%] sm:w-full shadow-comic rotate-1 bg-halftone-cloud mb-4 sm:mb-6 mx-auto">
+          <div className="border-comic bg-brand-cloud text-brand-ink p-3 sm:p-4 rounded-lg max-w-4xl w-[95%] sm:w-full shadow-comic bg-halftone-black mb-4 sm:mb-6 mx-auto">
             <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
               <span className="text-brand-pink text-sm sm:text-base">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
@@ -1623,110 +1600,222 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <div className="w-full h-[4px] bg-brand-ink" />
-      {/* Static Registration Section */}
-      <section className="py-24 lg:py-32 px-4 sm:px-6 w-full max-w-5xl relative z-10 mx-auto">
-  {/* Reverted the orange border back to the original border-comic black layout line */}
-      <div className="relative border-comic bg-[#F5F1E5] text-brand-ink shadow-comic-lg p-8 sm:p-16 lg:p-20 rounded-2xl overflow-hidden flex flex-col items-center text-center gap-12">
+
+            {/* Packing Checklist Section */}
+<section className="py-24 px-6 w-full max-w-7xl mx-auto relative z-10 font-sans">
+  <div className="bg-brand-cloud border-comic p-8 md:p-14 rounded-xl shadow-comic">
     
-    {/* Expressive Floating Sticker Badges */}
-    <div className="absolute -top-3 left-4 md:top-6 md:left-6 z-20">
-      <div className="border-comic-thin bg-brand-pink text-brand-cloud font-sans font-bold text-xs md:text-sm px-4 py-2 uppercase tracking-tight rotate-[-6deg] shadow-comic-sm flex items-center justify-center animate-pulse">
-        Register Now
-      </div>
-    </div>
-    
-    <div className="absolute bottom-6 right-12 hidden lg:block z-20">
-      <div className="border-comic-thin bg-brand-ink text-brand-cloud font-sans font-bold text-xs px-4 py-2 uppercase tracking-wide rotate-[4deg] shadow-comic-sm">
-        AARAMBH &apos;26
-      </div>
+    {/* Heading Block */}
+    <div className="flex flex-col items-center text-center mb-16">
+      <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black uppercase leading-none tracking-tighter text-brand-ink mb-4">
+        Essential <span className="text-brand-pink">Packing</span> Checklist
+      </h2>
+      <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide">
+        Gear up for the next chapter. Tick off your items below to track your readiness for AARAMBH '26.
+      </p>
     </div>
 
+    {/* Interactive Motivation Banner */}
+    <div id="quote-banner" className="bg-white border-comic rounded-lg p-4 mb-16 text-center shadow-comic-sm transition-all duration-300 max-w-2xl mx-auto -rotate-1">
+      <p id="quote-text" className="text-xs md:text-sm font-display font-black uppercase tracking-wider text-brand-ink">
+        Ready to break conventions? Start checking items to begin your journey Beyond!
+      </p>
+    </div>
+
+    {/* Distorted & Colorful Cards Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
+      
+      {/* Card 1: Clothing & Gear */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Clothing & Gear</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Formal wear (shirts, trousers, dress)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Seasonal clothing (jackets, sweaters)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Undergarments and socks</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sleepwear and loungewear</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Footwear (sneakers, sandals, formals)</span></li>
+        </ul>
+      </div>
+
+      {/* Card 2: Academics */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Academics</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop / computer & charger</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Notebooks and Writing Pads</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Pens, pencils, and highlighters</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Calculator (scientific)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop Bag</span></li>
+        </ul>
+      </div>
+
+      {/* Card 3: Room & Living */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Room & Living</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bed sheets, pillow & cover</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Blankets and Comforter</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-pink decoration-2">Umbrella (Important! Rain Alert)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Desk lamp</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Laundry basket & detergent</span></li>
+        </ul>
+      </div>
+
+      {/* Card 4: Kitchen & Food */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-2">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Kitchen & Food</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Water bottle</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Coffee/tea mug</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Basic utensils (for induction)</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Plates and Bowls</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Non-perishable snacks</span></li>
+        </ul>
+      </div>
+
+      {/* Card 5: Official Docs */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Official Docs</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Admission letter & documents</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Academic transcripts</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Government-issued IDs</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bank account information</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Emergency contacts</span></li>
+        </ul>
+      </div>
+
+      {/* Card 6: Health & Care */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Health & Care</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>First aid kit</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Prescription medications</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Vitamins & supplements</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Thermometer</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Hand sanitizer & Face masks</span></li>
+        </ul>
+      </div>
+
+      {/* Card 7: Tech Gear */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Tech Gear</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Power Bank</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Extension cord</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Headphones or earbuds</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Speakers (respectful volume)</span></li>
+        </ul>
+      </div>
+
+      {/* Card 8: Recreation */}
+      <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+        <div className="border-b-2 border-brand-ink pb-3 mb-4">
+          <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Recreation</h3>
+        </div>
+        <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Books for leisure reading</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Board games or playing cards</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Sports equipment</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Musical instruments</span></li>
+          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Art supplies</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+      {/* Static Registration Section */}
+      <section className="py-24 lg:py-32 px-4 sm:px-6 w-full max-w-5xl relative z-10 mx-auto">
+      <div className="relative border-comic bg-brand-cloud text-brand-ink shadow-comic p-8 sm:p-16 lg:p-20 rounded-xl overflow-hidden flex flex-col items-center text-center gap-12">
+    
     {/* Upper Section: Clean Typography & Messaging (Centered) */}
     <div className="flex flex-col items-center text-center relative z-10 w-full max-w-3xl">
-      <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-ink text-brand-cloud font-sans text-[10px] md:text-xs font-bold tracking-widest rounded-md mb-6 shadow-[3px_3px_0px_0px_#FF188C]">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-ink text-brand-cloud font-display text-[10px] md:text-xs font-black tracking-widest rounded-lg mb-6 shadow-comic-sm border-comic-thin">
         <span className="w-2 h-2 rounded-full bg-brand-pink animate-ping" />
         Your Registration Gateway
       </div>
 
-      <h2 className="text-4xl sm:text-6xl md:text-7xl font-sans font-extrabold uppercase tracking-tighter leading-[0.9] mb-6 text-center">
+      <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black uppercase leading-[0.9] mb-6 text-center">
         AARAMBH 2026 <br />
-        <span className="bg-brand-ink text-brand-cloud px-3 py-1 inline-block my-2 transform -rotate-1 shadow-[5px_5px_0px_0px_rgba(13,33,221,1)]">
+        <span className="bg-brand-ink text-brand-cloud px-4 py-1.5 inline-block my-2 transform -rotate-1 shadow-[4px_4px_0px_0px_#0D21DD] border-comic rounded-lg">
           REGISTRATION
         </span>
       </h2>
       
-      <p className="text-brand-ink text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-medium opacity-90 text-center">
-        Kickstart your JKLU journey with a one-time registration fee of ₹2000 (Non-refundable) covering all essentials for a vibrant and welcoming orientation experience.
+      <p className="text-brand-ink text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-sans font-medium opacity-90 text-center">
+        Kickstart your JKLU journey with a registration fee of ₹2500 (Non-refundable) covering all essentials for a vibrant and welcoming orientation experience.
       </p>
     </div>
 
     {/* Dynamic Structured Content Container (All Sections Center Aligned) */}
     <div className="w-full max-w-3xl flex flex-col gap-8 relative z-10 text-center items-center">
-      
-      {/* BOX 1: AC ACCOMMODATION & FEE POLICY NOTICE BANNER */}
-      <div className="w-full bg-brand-pink/5 border border-brand-pink/30 p-6 rounded-xl flex flex-col items-center justify-center text-center">
-        <p className="font-sans font-semibold text-xs sm:text-sm text-brand-pink tracking-wide max-w-2xl leading-relaxed">
-          AC rooms are optional and subject to availability. These will be allotted on a first-come-first-served basis and charged separately at the time of check-in.
-        </p>
-        <div className="w-12 h-[2px] bg-brand-pink/20 my-3" />
-        <p className="font-sans font-medium text-xs text-brand-ink/80 max-w-2xl leading-relaxed">
-          Note: ₹2000 will increase during online payment due to Cashfree charges. This is a payment gateway charge collected by Cashfree; the university will receive only ₹2000.
-        </p>
-      </div>
+    
 
       {/* BOX 2: WHAT THE FEE INCLUDES */}
-      <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-[6px_6px_0px_0px_rgba(3,4,4,1)] flex flex-col items-center">
-        <h3 className="font-sans font-bold text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-pink inline-block">
+      <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-comic flex flex-col items-center">
+        <h3 className="font-display font-black text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-pink inline-block uppercase">
           What the fee includes
         </h3>
         
         <div className="flex flex-col gap-4 w-full max-w-xl text-center">
-          <div className="bg-[#F5F1E5] p-4 border border-brand-ink/10 rounded-lg flex flex-col items-center">
-            <span className="font-sans font-bold text-xs sm:text-sm text-brand-pink tracking-wide mb-1">Non-AC Shared Accommodation</span>
+          <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
+            <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">Non-AC Shared Accommodation</span>
             <p className="font-sans font-medium text-xs text-brand-ink/70">Comfortable stay in campus hostels throughout the orientation program.</p>
           </div>
 
-          <div className="bg-[#F5F1E5] p-4 border border-brand-ink/10 rounded-lg flex flex-col items-center">
-            <span className="font-sans font-bold text-xs sm:text-sm text-brand-pink tracking-wide mb-1">All Meals</span>
+          <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
+            <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">All Meals</span>
             <p className="font-sans font-medium text-xs text-brand-ink/70">Mess food provided from the day of registration until the conclusion of AARAMBH.</p>
           </div>
 
-          <div className="bg-[#F5F1E5] p-4 border border-brand-ink/10 rounded-lg flex flex-col items-center">
-            <span className="font-sans font-bold text-xs sm:text-sm text-brand-pink tracking-wide mb-1">AARAMBH Kit</span>
+          <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
+            <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">AARAMBH Kit</span>
             <p className="font-sans font-medium text-xs text-brand-ink/70">Includes official merchandise (T-shirts, ID card, and more).</p>
           </div>
 
-          <div className="bg-[#F5F1E5] p-4 border border-brand-ink/10 rounded-lg flex flex-col items-center">
-            <span className="font-sans font-bold text-xs sm:text-sm text-brand-pink tracking-wide mb-1">Full Access</span>
+          <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
+            <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">Full Access</span>
             <p className="font-sans font-medium text-xs text-brand-ink/70">Entry to all workshops, creative sessions, team-building events, and outdoor group activities.</p>
           </div>
         </div>
       </div>
 
       {/* BOX 3: IMPORTANT INSTRUCTIONS */}
-      <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-[6px_6px_0px_0px_rgba(3,4,4,1)] flex flex-col items-center">
-        <h3 className="font-sans font-bold text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-ink inline-block">
+      <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-comic flex flex-col items-center">
+        <h3 className="font-display font-black text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-ink inline-block uppercase">
           Important Instructions
         </h3>
         
         <div className="flex flex-col gap-4 w-full max-w-xl text-center">
-          <div className="border border-brand-ink/10 p-4 rounded-lg bg-[#F5F1E5]/40">
-            <p className="font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-              Please enter the <span className="text-brand-pink font-bold">student&apos;s full name accurately</span> during registration, even if the payment is made by a parent or guardian.
-            </p>
+          <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
+            Please enter the <span className="text-brand-pink font-bold">student&apos;s full name accurately</span> during registration, even if the payment is made by a parent or guardian.
           </div>
 
-          <div className="border border-brand-ink/10 p-4 rounded-lg bg-[#F5F1E5]/40">
-            <p className="font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-              This registration is <span className="text-brand-pink font-bold">strictly for admitted students</span> of JKLU Batch 2026. Kindly avoid sharing the link outside the eligible group.
-            </p>
+          <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
+            This registration is <span className="text-brand-pink font-bold">strictly for admitted students</span> of JKLU Batch 2026. Kindly avoid sharing the link outside the eligible group.
           </div>
 
-          <div className="border border-brand-ink/10 p-4 rounded-lg bg-[#F5F1E5]/40">
-            <p className="font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-              During payment, mention your <span className="text-brand-pink font-bold">JKLU Application Number</span> in the &quot;Notes&quot; section to ensure proper identification and confirmation.
-            </p>
+          <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
+            Mention your <span className="text-brand-pink font-bold">JKLU Application Number</span> to ensure proper identification and confirmation.
           </div>
         </div>
       </div>
@@ -1735,19 +1824,19 @@ export default function Home() {
 
     {/* Lower Section: Interactive Call-To-Action Card (Centered Below) */}
     <div className="flex flex-col items-center justify-center relative z-10 w-full pt-4">
-      <div className="w-full max-w-md border-comic bg-brand-cloud p-6 sm:p-8 rounded-xl shadow-[8px_8px_0px_0px_rgba(3,4,4,1)] transform transition-transform duration-300 hover:scale-[1.01]">
-        <h3 className="font-sans font-bold text-xl tracking-tight mb-2 text-brand-ink text-center">
+      <div className="w-full max-w-md border-comic bg-brand-cloud p-6 sm:p-8 rounded-xl shadow-comic transform transition-transform duration-300 hover:scale-[1.01]">
+        <h3 className="font-display font-black text-xl sm:text-2xl tracking-tight mb-2 text-brand-ink text-center uppercase">
           Register
         </h3>
         <p className="font-sans font-medium text-xs text-brand-ink/70 mb-6 leading-normal text-center mx-auto max-w-xs">
-          Secure your place at the most fearless, boundary-pushing design event of the semester.
+          Secure your place at the most fearless orientation event.
         </p>
         
         <Link href="/register" className="w-full block">
           <motion.button  
             whileHover={{ scale: 1.03, rotate: -1 }}
             whileTap={{ scale: 0.97 }}
-            className="w-full comic-interactive border-comic py-5 px-6 shadow-[6px_6px_0px_0px_rgba(3,4,4,1)] hover:shadow-[10px_10px_0px_0px_rgba(3,4,4,1)] transition-all font-sans font-bold text-xl tracking-wide text-brand-cloud bg-brand-pink rounded-lg cursor-pointer flex items-center justify-center gap-2 group"
+            className="w-full comic-interactive border-comic py-5 px-6 shadow-comic hover:shadow-solid-ink transition-all font-display font-black text-xl tracking-wide text-brand-cloud bg-brand-pink rounded-lg cursor-pointer flex items-center justify-center gap-2 group"
           >
             <span>Register Online Now</span> 
             <span className="transform group-hover:translate-x-2 transition-transform duration-200">→</span>
@@ -1758,155 +1847,6 @@ export default function Home() {
 
     </div>
     </section>
-    <div className="w-full h-[4px] bg-brand-ink" />
-
-            {/* Packing Checklist Section */}
-<section className="py-24 px-6 w-full max-w-7xl mx-auto relative z-10 font-sans">
-  <div className="bg-[#F5F1E5] border-4 border-[#030404] p-8 md:p-14 rounded-3xl shadow-[8px_8px_0px_0px_#030404]">
-    
-    {/* Heading Block */}
-    <div className="flex flex-col items-center text-center mb-16">
-      {/* Heavy, rough-edged simulated punk aesthetic mapping to screenshot font style */}
-      <h2 
-        className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter uppercase text-[#030404] leading-tight mb-4 selection:bg-[#F58220] relative"
-        style={{
-          textShadow: '1px 1px 0px #F58220, -1px -1px 0px #F58220, 2px 2px 0px #030404',
-          letterSpacing: '-0.04em'
-        }}
-      >
-        Essential <span className="text-[#F58220] filter contrast-125">Packing</span> Checklist
-      </h2>
-      <p className="text-sm md:text-base font-bold max-w-xl text-[#030404] uppercase tracking-wide opacity-80">
-        Gear up for the next chapter. Tick off your items below to track your readiness for AARAMBH '26.
-      </p>
-    </div>
-
-    {/* Interactive Motivation Banner */}
-    <div id="quote-banner" className="bg-white border-4 border-[#030404] rounded-2xl p-4 mb-16 text-center shadow-[4px_4px_0px_0px_#030404] transition-all duration-300 max-w-2xl mx-auto -rotate-1">
-      <p id="quote-text" className="text-xs md:text-sm font-black uppercase tracking-wider text-[#030404] transition-opacity duration-150">
-        Ready to break conventions? Start checking items to begin your journey Beyond!
-      </p>
-    </div>
-
-    {/* Distorted & Colorful Cards Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
-      
-      {/* Card 1: Clothing & Gear */}
-      <div className="bg-[#FFF0E6] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform rotate-1">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          {/* Standard clean casing and Google-style font family */}
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Clothing & Gear</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Formal wear (shirts, trousers, dress)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Seasonal clothing (jackets, sweaters)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Undergarments and socks</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Sleepwear and loungewear</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Footwear (sneakers, sandals, formals)</span></li>
-        </ul>
-      </div>
-
-      {/* Card 2: Academics */}
-      <div className="bg-[#E6F0FA] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform -rotate-1">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Academics</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Laptop / computer & charger</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Notebooks and Writing Pads</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Pens, pencils, and highlighters</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Calculator (scientific)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Laptop Bag</span></li>
-        </ul>
-      </div>
-
-      {/* Card 3: Room & Living */}
-      <div className="bg-[#FFEBF5] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform rotate-2">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Room & Living</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Bed sheets, pillow & cover</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Blankets and Comforter</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span className="text-[#030404] font-bold underline decoration-[#F58220] decoration-2">Umbrella (Important! Rain Alert)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Desk lamp</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Laundry basket & detergent</span></li>
-        </ul>
-      </div>
-
-      {/* Card 4: Kitchen & Food */}
-      <div className="bg-[#FEF9E6] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform -rotate-2">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Kitchen & Food</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Water bottle</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Coffee/tea mug</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Basic utensils (for induction)</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Plates and Bowls</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Non-perishable snacks</span></li>
-        </ul>
-      </div>
-
-      {/* Card 5: Official Docs */}
-      <div className="bg-[#E6F0FA] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform rotate-1">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Official Docs</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Admission letter & documents</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Academic transcripts</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Government-issued IDs</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Bank account information</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Emergency contacts</span></li>
-        </ul>
-      </div>
-
-      {/* Card 6: Health & Care */}
-      <div className="bg-[#FFF0E6] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform -rotate-1">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Health & Care</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>First aid kit</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Prescription medications</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Vitamins & supplements</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Thermometer</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Hand sanitizer & Face masks</span></li>
-        </ul>
-      </div>
-
-      {/* Card 7: Tech Gear */}
-      <div className="bg-[#FFEBF5] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform rotate-2">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Tech Gear</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Power Bank</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Extension cord</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Headphones or earbuds</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#0D21DD] cursor-pointer" /><span>Speakers (respectful volume)</span></li>
-        </ul>
-      </div>
-
-      {/* Card 8: Recreation */}
-      <div className="bg-[#FEF9E6] border-4 border-[#030404] rounded-2xl p-6 shadow-[6px_6px_0px_0px_#030404] transition-all hover:shadow-[10px_10px_0px_0px_#030404] hover:-translate-y-1 transform -rotate-1">
-        <div className="border-b-4 border-[#030404] pb-3 mb-4">
-          <h3 className="font-sans font-bold text-xl tracking-tight text-[#030404]">Recreation</h3>
-        </div>
-        <ul className="space-y-3 text-sm font-medium tracking-wide text-[#030404]">
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Books for leisure reading</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Board games or playing cards</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Sports equipment</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Musical instruments</span></li>
-          <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-white/50"><input type="checkbox" className="checklist-item w-5 h-5 accent-[#F58220] cursor-pointer" /><span>Art supplies</span></li>
-        </ul>
-      </div>
-
-          </div>
-        </div>
-        </section>
         </div>
       </div>
     </main>

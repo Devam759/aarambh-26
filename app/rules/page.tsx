@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Download } from 'lucide-react';
 import { RULES_DATA } from '@/constants/rules';
+import PageGlowBackground from '@/components/ui/PageGlowBackground';
 
 export default function RulesPage() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -27,10 +28,7 @@ export default function RulesPage() {
       {/* Retro sketchbook grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.04)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none z-0" />
 
-      {/* Dynamic Ambient Gradient Spotlights (Rich Color Depths) */}
-      <div className="absolute top-0 left-0 w-[450px] h-[450px] rounded-full bg-brand-pink/15 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[550px] h-[550px] rounded-full bg-brand-orange/15 blur-[145px] pointer-events-none z-0" />
-      <div className="absolute top-[40%] left-[-100px] w-[400px] h-[400px] rounded-full bg-brand-blue/10 blur-[110px] pointer-events-none z-0" />
+      <PageGlowBackground />
 
 
 
@@ -38,9 +36,7 @@ export default function RulesPage() {
         
         {/* Strict Header */}
         <header className="text-center mb-16 relative z-10 flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 bg-[#d32f2f] text-white border-2 border-brand-ink px-4 py-2 rounded-sm text-xs font-black uppercase shadow-[3px_3px_0px_0px_#030404] mb-6">
-            <Shield size={16} /> CODE OF CONDUCT
-          </div>
+
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center mb-2">
             RULES AND
           </h1>
@@ -54,7 +50,7 @@ export default function RulesPage() {
             href="https://drive.google.com/file/d/1ZYlhBmtHS6bgUEg6MdhIxg4ipDRmEkpj/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 border-comic bg-brand-blue text-brand-cloud px-5 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+            className="inline-flex items-center gap-2.5 border-comic bg-[#d32f2f] text-white px-5 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-[#991b1b] hover:text-white transition-colors active:scale-[0.98]"
           >
             <Download size={16} />
             DOWNLOAD RULES BOOK

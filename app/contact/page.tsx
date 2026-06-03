@@ -260,8 +260,8 @@ export default function ContactPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
-                { name: "Pratigya Bomb", email: "pratigyabomb@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
-                { name: "Kartik Sharma", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
+                { name: "Pratigya Bomb", phone: "+91 62646 67506", email: "pratigyabomb@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
+                { name: "Kartik Sharma", phone: "+91 87693 29369", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -274,6 +274,19 @@ export default function ContactPage() {
                     <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">Discipline Team Leader</span>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center font-mono text-xs font-bold space-y-4">
+                    {head.phone && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
+                          <Phone size={14} />
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                            {head.phone}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
                         <Mail size={14} />
@@ -302,7 +315,7 @@ export default function ContactPage() {
 
             <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
               {[
-                { name: "Pulkit Dosi", email: "pulkitdosi@jklu.edu.in", bgColor: "bg-brand-ink text-white" }
+                { name: "Pulkit Dosi", phone: "+91 98877 88899", email: "pulkitdosi@jklu.edu.in", bgColor: "bg-brand-ink text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -315,6 +328,19 @@ export default function ContactPage() {
                     <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">Feedback & Registration Lead</span>
                   </div>
                   <div className="p-6 flex-1 flex flex-col justify-center font-mono text-xs font-bold space-y-4">
+                    {head.phone && (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
+                          <Phone size={14} />
+                        </div>
+                        <div>
+                          <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                            {head.phone}
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 border-2 border-brand-ink bg-brand-cloud text-brand-ink flex items-center justify-center rounded shrink-0 shadow-comic-sm">
                         <Mail size={14} />

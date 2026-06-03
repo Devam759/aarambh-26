@@ -217,17 +217,9 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
   const data = items !== undefined ? items : demo;
 
-  const gridColsClass = data.length === 1
-    ? 'grid-cols-1 w-full max-w-[320px]'
-    : data.length === 2 
-      ? 'grid-cols-2 w-full max-w-[680px]' 
-      : data.length === 3 
-        ? 'grid-cols-2 md:grid-cols-3 w-full max-w-[1000px]'
-        : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full';
-
   return (
     <div
-      className={`relative h-full grid justify-items-center gap-3 sm:gap-8 py-6 mx-auto ${gridColsClass} ${className}`}
+      className={`relative h-full flex flex-wrap justify-center items-center gap-3 sm:gap-6 lg:gap-8 py-6 mx-auto w-full ${className}`}
     >
       {/* SVG displacement filter for torn paper edges */}
       <svg className="absolute w-0 h-0" width="0" height="0">
@@ -262,7 +254,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           <div
             key={i}
             onClick={() => toggleFlip(c.title)}
-            className={`relative w-full aspect-[3/5] max-w-[320px] [perspective:1000px] select-none transition-all duration-300 hover:scale-[1.01] ${rotationClass} group cursor-pointer sm:cursor-default`}
+            className={`relative w-[150px] xs:w-[170px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[3/5] [perspective:1000px] select-none transition-all duration-300 hover:scale-[1.01] ${rotationClass} group cursor-pointer sm:cursor-default`}
           >
             <div
               className={`relative w-full h-full duration-700 [transform-style:preserve-3d] transition-transform ${
