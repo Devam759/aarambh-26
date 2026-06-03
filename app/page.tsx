@@ -591,50 +591,31 @@ export default function Home() {
     };
   }, [introStarted, loadingComplete]);
 
-  // Handle hash scrolling on load/transition once loading finishes
+  // Handle hash scrolling — fires from mount, polls until element is found.
+  // Does NOT depend on loadingComplete so it works even during first-visit intro animation.
   useEffect(() => {
-    if (!isMounted || !loadingComplete) return;
+    if (!isMounted) return;
 
-    let scrollAttempts = 0;
-    const maxAttempts = 20; // try for 2 seconds
-
+    let attempts = 0;
     const tryScroll = () => {
       const hash = window.location.hash;
-      if (hash) {
-        const targetId = hash.replace('#', '');
-        const element = document.getElementById(targetId);
-        if (element) {
-          const y = element.getBoundingClientRect().top + window.scrollY - 80;
-          window.scrollTo({ top: y, behavior: 'auto' });
-          // Repeat a few times as elements finish loading/laying out
-          if (scrollAttempts < 6) {
-            scrollAttempts++;
-            setTimeout(tryScroll, 50);
-          }
-        } else {
-          if (scrollAttempts < maxAttempts) {
-            scrollAttempts++;
-            setTimeout(tryScroll, 100);
-          }
-        }
+      if (!hash) return;
+      const el = document.getElementById(hash.replace('#', ''));
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'auto' });
+        // keep re-aligning for a short period as layout settles
+        if (attempts < 8) { attempts++; setTimeout(tryScroll, 80); }
       } else {
-        // If hash is not present yet (Next.js routing delay), poll for it
-        if (scrollAttempts < 10) {
-          scrollAttempts++;
-          setTimeout(tryScroll, 100);
-        }
+        if (attempts < 30) { attempts++; setTimeout(tryScroll, 100); }
       }
     };
 
-    tryScroll();
-
+    // Start immediately and also whenever the hash changes
+    setTimeout(tryScroll, 0);
     window.addEventListener('hashchange', tryScroll);
-    window.addEventListener('popstate', tryScroll);
-    return () => {
-      window.removeEventListener('hashchange', tryScroll);
-      window.removeEventListener('popstate', tryScroll);
-    };
-  }, [loadingComplete, isMounted]);
+    return () => window.removeEventListener('hashchange', tryScroll);
+  }, [isMounted]);
 
   // Function to create comic dot explosion particles
   const spawnParticles = (x: number, y: number) => {
@@ -1255,12 +1236,12 @@ export default function Home() {
               display: flex !important;
               flex-direction: row !important;
               width: 250% !important;
-              height: 105px !important;
+              height: 70px !important;
               left: -75% !important;
               right: auto !important;
               top: auto !important;
-              gap: 12px !important;
-              opacity: 0.7 !important;
+              gap: 8px !important;
+              opacity: 0.55 !important;
             }
             
             /* Position columns as horizontal rows */
@@ -1278,11 +1259,10 @@ export default function Home() {
             }
 
             .gl-slider-img-container {
-              width: 140px !important;
-              height: 95px !important;
-              box-shrink: 0 !important;
+              width: 80px !important;
+              height: 55px !important;
               flex-shrink: 0 !important;
-              box-shadow: 3px 3px 0px 0px #030404 !important;
+              box-shadow: 2px 2px 0px 0px #030404 !important;
             }
 
             .gl-slider-track-up {
