@@ -77,7 +77,6 @@ export default function Navbar() {
                 height={40}
                 className="h-9 w-auto object-contain"
                 style={{ width: 'auto' }}
-                priority
               />
             </a>
             <div className="hidden xl:block w-[1.5px] h-6 bg-brand-cloud/25 self-center shrink-0" />
@@ -92,7 +91,6 @@ export default function Navbar() {
                 height={30}
                 className="h-7 md:h-8 w-auto object-contain"
                 style={{ width: 'auto' }}
-                priority
               />
             </Link>
           </div>

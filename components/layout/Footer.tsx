@@ -376,7 +376,6 @@ export default function Footer() {
               height={193}
               className="h-10 w-auto opacity-95 object-contain"
               style={{ width: 'auto', height: '40px' }}
-              priority
             />
           </Link>
           <a 
@@ -392,7 +391,6 @@ export default function Footer() {
               height={40}
               className="h-12 w-auto opacity-95 object-contain"
               style={{ width: 'auto', height: '48px' }}
-              priority
             />
           </a>
           <button
