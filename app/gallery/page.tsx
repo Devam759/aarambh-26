@@ -559,7 +559,7 @@ export default function GalleryLanding() {
           card.style.left = `${currentLeft}%`
           card.style.top = `${currentTop}%`
 
-          const scale = 800 / (800 - z)
+          const scale = 1400 / (1400 - z)
           const hS = parseFloat(card.dataset.hoverScale || "1")
 
           card.style.transform = `translate(-50%, -50%) scale(${scale * hS})`
@@ -923,25 +923,25 @@ export default function GalleryLanding() {
         .gl-slider-column {
           position: absolute;
           top: -10%;
-          width: 145px;
+          width: 100px;
           height: 120%;
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          gap: 22px;
+          gap: 14px;
           z-index: 2;
           pointer-events: none;
-          opacity: 0.85;
+          opacity: 0.75;
         }
 
         .gl-slider-img-container {
           width: 100%;
-          height: 195px;
+          height: 130px;
           position: relative;
-          border: 3px solid #030404;
-          border-radius: 14px;
+          border: 2.5px solid #030404;
+          border-radius: 10px;
           overflow: hidden;
-          box-shadow: 5px 5px 0px 0px #030404;
+          box-shadow: 3px 3px 0px 0px #030404;
           background: #030404;
         }
 
@@ -1138,7 +1138,7 @@ export default function GalleryLanding() {
           height: 100vh;
           position: absolute;
           inset: 0;
-          perspective: 800px;
+          perspective: 1400px;
           perspective-origin: 50% 50%;
           overflow: hidden;
         }
@@ -1152,9 +1152,9 @@ export default function GalleryLanding() {
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 6px 6px 0px 0px #030404;
+          box-shadow: 4px 4px 0px 0px #030404;
           transition: box-shadow 0.25s ease, opacity 0.25s ease;
-          width: clamp(200px, 28vw, 420px);
+          width: clamp(120px, 16vw, 260px);
           aspect-ratio: 3 / 2;
         }
 
