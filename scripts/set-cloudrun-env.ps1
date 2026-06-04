@@ -34,9 +34,11 @@ $CASHFREE_APP_ID = $env:CASHFREE_APP_ID
 $CASHFREE_SECRET_KEY = $env:CASHFREE_SECRET_KEY
 $SMTP_PASS = $env:SMTP_PASS
 $EXCEL_SYNC_WEBHOOK_URL = $env:EXCEL_SYNC_WEBHOOK_URL
+$FIREBASE_ADMIN_EMAIL = $env:FIREBASE_ADMIN_EMAIL
+$FIREBASE_ADMIN_PASSWORD = $env:FIREBASE_ADMIN_PASSWORD
 
-if (-not $CASHFREE_APP_ID -or -not $CASHFREE_SECRET_KEY -or -not $SMTP_PASS -or -not $EXCEL_SYNC_WEBHOOK_URL) {
-    Write-Host "`nError: Missing secrets (CASHFREE_APP_ID, CASHFREE_SECRET_KEY, SMTP_PASS, or EXCEL_SYNC_WEBHOOK_URL) in environment or .env.local." -ForegroundColor Red
+if (-not $CASHFREE_APP_ID -or -not $CASHFREE_SECRET_KEY -or -not $SMTP_PASS -or -not $EXCEL_SYNC_WEBHOOK_URL -or -not $FIREBASE_ADMIN_EMAIL -or -not $FIREBASE_ADMIN_PASSWORD) {
+    Write-Host "`nError: Missing secrets (CASHFREE_APP_ID, CASHFREE_SECRET_KEY, SMTP_PASS, EXCEL_SYNC_WEBHOOK_URL, FIREBASE_ADMIN_EMAIL, or FIREBASE_ADMIN_PASSWORD) in environment or .env.local." -ForegroundColor Red
     Write-Host "Please ensure they are defined in your local .env.local file." -ForegroundColor Yellow
     exit 1
 }
@@ -67,6 +69,8 @@ gcloud run services update $SERVICE_NAME `
     --set-env-vars="CASHFREE_SECRET_KEY=$CASHFREE_SECRET_KEY" `
     --set-env-vars="SMTP_PASS=$SMTP_PASS" `
     --set-env-vars="EXCEL_SYNC_WEBHOOK_URL=$EXCEL_SYNC_WEBHOOK_URL" `
+    --set-env-vars="FIREBASE_ADMIN_EMAIL=$FIREBASE_ADMIN_EMAIL" `
+    --set-env-vars="FIREBASE_ADMIN_PASSWORD=$FIREBASE_ADMIN_PASSWORD" `
     --set-env-vars="NEXT_PUBLIC_CASHFREE_ENV=PRODUCTION" `
     --set-env-vars="SMTP_HOST=smtp.office365.com" `
     --set-env-vars="SMTP_PORT=587" `

@@ -113,6 +113,9 @@ photos_temp.json
 # Generated Credentials File
 /public/credentials.txt
 /volunteer credentials.txt
+/admin, scanner, feedback credentials.txt
+/team login credentials.txt
+/public/Final Team Wise List.xlsx
 
 # System & Temporary Files
 .DS_Store

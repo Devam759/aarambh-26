@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'Refund & Cancellation Policy | Aarambh \'26',
@@ -17,9 +18,7 @@ export default function RefundPage() {
       <div className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 bg-brand-pink/5 rounded-full blur-[80px] pointer-events-none" />
 
       <header className="text-center mb-16 relative z-10">
-        <span className="text-xs font-mono font-black uppercase tracking-widest text-brand-pink block mb-3">
-          University Guidelines
-        </span>
+        
         <h1 className="text-4xl md:text-5xl font-display font-black uppercase tracking-tight mb-4 drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
           Refund & Cancellation Policy
         </h1>
@@ -99,13 +98,13 @@ export default function RefundPage() {
           <p className="text-xs text-brand-ink/70 mb-4 max-w-xl mx-auto">
             If you experienced an accidental duplicate billing transaction during checkout or encountered a payment gateway error, please reach out to the university administration for immediate reconciliation.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center font-bold text-xs uppercase">
-            <span className="px-4 py-2 border-2 border-brand-ink bg-white rounded shadow-comic-sm">
-              Email: info@jklu.edu.in
-            </span>
-            <span className="px-4 py-2 border-2 border-brand-ink bg-white rounded shadow-comic-sm">
-              Phone: +91 141 7107500
-            </span>
+          <div className="pt-4">
+            <Link
+              href="/contact"
+              className="inline-block px-6 py-2.5 border-2 border-brand-ink bg-white hover:bg-brand-cloud text-brand-ink font-mono font-black text-xs uppercase rounded shadow-comic-sm transition-all duration-100 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none cursor-pointer"
+            >
+              Contact Us
+            </Link>
           </div>
         </div>
       </div>

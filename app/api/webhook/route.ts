@@ -4,10 +4,14 @@ import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimest
 
 
 import { verifyCashfreeSignature } from '@/lib/security';
+import { ensureAdminAuthenticated } from '@/lib/registrationHelper';
 
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
+    
+    // Ensure we are authenticated as Admin on the server to bypass permission-denied errors
+    await ensureAdminAuthenticated();
     
     // Extract signature headers to prevent webhook spoofing attacks
     const signature = req.headers.get('x-webhook-signature') || '';

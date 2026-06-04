@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldCheck, Home as HomeIcon, Lock, Unlock, Check } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { load } from "@cashfreepayments/cashfree-js";
 import Image from 'next/image';
 import ComicBackground from '@/components/ComicBackground';
 
@@ -140,6 +139,7 @@ function RegisterContent() {
         return;
       }
 
+      const { load } = await import("@cashfreepayments/cashfree-js");
       const cashfree = await load({ 
         mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? "production" : "sandbox" 
       });

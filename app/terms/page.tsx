@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'Terms & Conditions | Aarambh \'26',
@@ -93,13 +94,13 @@ export default function TermsPage() {
           <p className="text-xs text-brand-ink/70 mb-4 max-w-xl mx-auto">
             Please reach out to the university administration office for any questions or formal concerns regarding these rules.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center font-bold text-xs uppercase">
-            <span className="px-4 py-2 border-2 border-brand-ink bg-white rounded shadow-comic-sm">
-              Email: info@jklu.edu.in
-            </span>
-            <span className="px-4 py-2 border-2 border-brand-ink bg-white rounded shadow-comic-sm">
-              Phone: +91 141 7107500
-            </span>
+          <div className="pt-4">
+            <Link
+              href="/contact"
+              className="inline-block px-6 py-2.5 border-2 border-brand-ink bg-white hover:bg-brand-cloud text-brand-ink font-mono font-black text-xs uppercase rounded shadow-comic-sm transition-all duration-100 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none cursor-pointer"
+            >
+              Contact Us
+            </Link>
           </div>
         </div>
       </div>

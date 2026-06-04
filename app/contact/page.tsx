@@ -45,8 +45,15 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="py-28 px-6 max-w-5xl mx-auto min-h-screen relative selection:bg-brand-ink selection:text-brand-cloud text-brand-ink bg-brand-cloud">
-      {/* Decorative layout elements */}
+    <div 
+      className="w-full min-h-screen bg-[#F5F1E5] selection:bg-brand-ink selection:text-brand-cloud text-brand-ink"
+      style={{ 
+        backgroundImage: 'radial-gradient(#030404 1px, transparent 1px)', 
+        backgroundSize: '64px 64px' 
+      }}
+    >
+      <div className="py-28 px-6 max-w-5xl mx-auto relative">
+        {/* Decorative layout elements */}
       <div className="absolute top-12 left-1/2 -translate-x-1/2 w-80 h-80 bg-brand-pink/5 rounded-full blur-[90px] pointer-events-none" />
 
       <header className="text-center mb-16 relative z-10">
@@ -361,6 +368,7 @@ export default function ContactPage() {
         </div>
 
       </div>
+    </div>
     </div>
   );
 }

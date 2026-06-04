@@ -53,11 +53,11 @@ export default function ComicBackground() {
         </svg>
       </div>
 
-      {/* 4. High-End SVG Paper Grain Texture Filter */}
+      {/* 4. High-End SVG Paper Grain Texture Filter (Optimized for instant page rendering and smooth animations) */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.05] mix-blend-overlay pointer-events-none">
         <defs>
           <filter id="comic-paper-grain">
-            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" result="noise" />
+            <feTurbulence type="turbulence" baseFrequency="0.06" numOctaves="1" result="noise" />
             <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.18 0" />
             <feComposite operator="in" in2="SourceGraphic" />
           </filter>

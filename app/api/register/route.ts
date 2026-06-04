@@ -95,6 +95,14 @@ export async function POST(req: Request) {
           cleanPhone = '9999999999';
         }
 
+        let host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'aarambh-26.web.app';
+        if (host.includes('0.0.0.0')) {
+          host = host.replace('0.0.0.0', 'localhost');
+        }
+        const proto = req.headers.get('x-forwarded-proto') || 'https';
+        const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+        const origin = `${isLocal ? 'http' : proto}://${host}`;
+
         const response = await cashfree.PGCreateOrder({
           order_id: orderId,
           order_amount: orderAmount,
@@ -106,7 +114,7 @@ export async function POST(req: Request) {
             customer_phone: cleanPhone,
           },
           order_meta: {
-            return_url: `${new URL(req.url).origin}/register?order_id={order_id}`.replace(/^http:\/\//i, 'https://'),
+            return_url: `${origin}/register?order_id={order_id}`,
           }
         });
         console.log("Cashfree order created successfully.");
