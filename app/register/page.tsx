@@ -259,7 +259,7 @@ function RegisterContent() {
             priority
             className="w-full max-w-2xl h-auto object-contain select-none"
             style={{ 
-              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404) drop-shadow(3px 3px 0px #FF188C)" 
+              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404)" 
             }}
           />
         </div>
