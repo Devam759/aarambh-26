@@ -45,19 +45,20 @@ service cloud.firestore {
 
     // Volunteers collection
     match /volunteers/{id} {
-      allow read, write: if isAdmin() || isVolunteerOrTL();
+      allow read: if true;
+      allow write: if isAdmin() || isVolunteerOrTL();
     }
 
     // Duty Assignments collection
     match /dutyAssignments/{id} {
-      allow read: if isAdmin() || isVolunteerOrTL();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
     // Notifications/Announcements collections
     match /notifications/{id} {
-      allow read: if isAdmin() || isVolunteerOrTL();
-      allow write: if isAdmin();
+      allow read, update, delete: if true;
+      allow create: if isAdmin();
     }
     
     match /announcements/{id} {
@@ -94,6 +95,18 @@ service cloud.firestore {
     match /settings/{id} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // Scanner Accounts collection
+    match /scannerAccounts/{id} {
+      allow read: if request.auth != null && (request.auth.uid == id || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Contact Messages collection (public anonymous submissions allowed)
+    match /contact_messages/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
   }
 }
