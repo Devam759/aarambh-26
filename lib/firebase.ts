@@ -2,6 +2,7 @@ import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeFirestore, persistentLocalCache, Firestore } from 'firebase/firestore';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
+import { initializeAppCheck, ReCaptchaV3Provider, CustomProvider } from 'firebase/app-check';
 
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -41,5 +42,53 @@ export const db: Firestore | null = app
     })
   : null;
 export const storage: FirebaseStorage | null = app ? getStorage(app) : null;
+
+export let appCheck: any = null;
+
+if (app) {
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const debugToken = process.env.APP_CHECK_DEBUG_TOKEN;
+
+  if (typeof window !== 'undefined') {
+    // Client-side initialization (requires public siteKey)
+    if (siteKey) {
+      if (process.env.NODE_ENV === 'development') {
+        (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      }
+      try {
+        appCheck = initializeAppCheck(app, {
+          provider: new ReCaptchaV3Provider(siteKey),
+          isTokenAutoRefreshEnabled: true,
+        });
+        console.log("Firebase App Check initialized successfully on client.");
+      } catch (err) {
+        console.error("Failed to initialize App Check on client:", err);
+      }
+    } else {
+      console.warn("Skipping App Check client initialization: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is missing.");
+    }
+  } else {
+    // Server-side initialization (Node.js environment)
+    if (debugToken) {
+      (global as any).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+      try {
+        appCheck = initializeAppCheck(app, {
+          provider: new CustomProvider({
+            getToken: () => Promise.resolve({
+              token: debugToken,
+              expireTimeMillis: Date.now() + 3600000,
+            }),
+          }),
+          isTokenAutoRefreshEnabled: false,
+        });
+        console.log("Firebase App Check initialized successfully on server using Debug Token.");
+      } catch (err) {
+        console.error("Failed to initialize App Check on server:", err);
+      }
+    } else {
+      console.warn("Skipping App Check server initialization: APP_CHECK_DEBUG_TOKEN is missing. Server-side writes to Firestore may fail if App Check is enforced.");
+    }
+  }
+}
 
 export default app;

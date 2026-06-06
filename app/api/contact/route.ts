@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { submitContactMessage } from '@/lib/db';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { isRateLimited, sanitizeObject } from '@/lib/security';
 
 export async function POST(req: Request) {
@@ -41,8 +42,11 @@ export async function POST(req: Request) {
       ipAddress: ip,
     });
 
-    // Save to database
-    await submitContactMessage(sanitizedData);
+    // Save to database using Admin SDK
+    await adminDb.collection('contact_messages').add({
+      ...sanitizedData,
+      submittedAt: FieldValue.serverTimestamp(),
+    });
 
     return NextResponse.json({ success: true, message: 'Message sent successfully!' });
   } catch (error: any) {

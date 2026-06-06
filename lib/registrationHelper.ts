@@ -1,22 +1,13 @@
-import { db, auth } from './firebase';
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, getCountFromServer } from 'firebase/firestore';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { adminDb } from './firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { PDFDocument, rgb } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs/promises';
 import path from 'path';
+import { after } from 'next/server';
 
 export async function ensureAdminAuthenticated() {
-  if (auth && !auth.currentUser) {
-    const adminEmail = process.env.FIREBASE_ADMIN_EMAIL || 'admin@aarambh.jklu.edu.in';
-    const adminPassword = process.env.FIREBASE_ADMIN_PASSWORD || '9DkE64G7PSoJ';
-    try {
-      await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
-      console.log("Server authenticated as Admin successfully.");
-    } catch (authErr: any) {
-      console.error("Server Admin authentication failed:", authErr.message);
-    }
-  }
+  // No-op: Firebase Admin SDK bypasses authentication constraints automatically.
 }
 
 // ============================================================================
@@ -435,12 +426,8 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   const parentPhone = formData.parentPhone || `Father: ${fatherMobile} | Mother: ${motherMobile}`;
   const parentEmail = formData.parentEmail || `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
   
-  // 1. Save data to Firestore Registration Collection
-  if (!db) {
-    throw new Error('Firebase Firestore is not configured on the server. Please ensure NEXT_PUBLIC_FIREBASE_* environment variables are set in your hosting environment.');
-  }
-  const registrationsRef = collection(db, 'registrations');
-  const docRef = await addDoc(registrationsRef, {
+  // 1. Save data to Firestore Registration Collection using Admin SDK
+  const docRef = await adminDb.collection('registrations').add({
     ...formData,
     name: formData.name,
     email: formData.email,
@@ -459,59 +446,74 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     hasEntered: false,
     paymentId: paymentId,
     orderId: orderId,
-    registeredAt: serverTimestamp(),
+    registeredAt: FieldValue.serverTimestamp(),
   });
   console.log("Registration saved. Firestore ID:", docRef.id);
 
-  // Run slow operations (Excel sync, PDF generation, email notification, audit logs)
-  // in the background asynchronously so the client HTTP request completes instantly.
-  (async () => {
+  // Schedule all heavy post-registration tasks to run after the HTTP response has been sent to the client.
+  // This uses Next.js 15 after() API which keeps the server instance active in Cloud Run but responds to the user instantly.
+  after(async () => {
     try {
+      console.log("Starting post-registration tasks in Next.js after() callback...");
+      
       // Ensure we are authenticated as Admin on the server to bypass permission-denied errors
       await ensureAdminAuthenticated();
 
-      // 1.5 Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
       const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
-      if (excelWebhook) {
-        console.log("Background Task: Syncing registration details to Microsoft Excel...");
-        try {
-          let lastDate = "";
-          try {
-            const q = query(collection(db, 'registrations'), orderBy('registeredAt', 'desc'), limit(2));
-            const querySnapshot = await getDocs(q);
-            if (querySnapshot.docs.length > 1) {
-              const lastDoc = querySnapshot.docs[1].data();
-              lastDate = lastDoc.dateOfPayment || "";
-            }
-          } catch (err) {
-            console.warn("Could not query last registration date:", err);
-          }
 
-          let studentIndex = 1;
-          try {
-            const countSnapshot = await getCountFromServer(collection(db, 'registrations'));
-            studentIndex = countSnapshot.data().count;
-          } catch (err) {
-            console.warn("Could not count registrations:", err);
+      // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
+      const excelSyncPromise = (async () => {
+        if (!excelWebhook) {
+          console.log("Skipping Excel sync: EXCEL_SYNC_WEBHOOK_URL is not defined.");
+          return;
+        }
+        console.log("Syncing registration details to Microsoft Excel...");
+        try {
+        let lastDate = "";
+        try {
+          const querySnapshot = await adminDb.collection('registrations')
+            .orderBy('registeredAt', 'desc')
+            .limit(5)
+            .get();
+          for (const docSnap of querySnapshot.docs) {
+            if (docSnap.id !== docRef.id) {
+              lastDate = docSnap.data().dateOfPayment || "";
+              break;
+            }
           }
+        } catch (err) {
+          console.warn("Could not query last registration date:", err);
+        }
+
+        let studentIndex = 1;
+        try {
+          const countSnapshot = await adminDb.collection('registrations').count().get();
+          studentIndex = countSnapshot.data().count;
+        } catch (err) {
+          console.warn("Could not count registrations:", err);
+        }
 
           if (lastDate && lastDate !== dateOfPayment) {
             console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
-            await fetch(excelWebhook, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: dateGroup,
-                isSeparator: true,
-                name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
-                gender: '', course: '',
-                parentName: '', parentPhone: '', parentEmail: '',
-                address: '', pincode: '',
-                paymentAmount: 0, receivedAmount: 0,
-                dateOfPayment: '', dateGroup: dateGroup,
-                paymentId: '', orderId: ''
-              })
-            });
+            try {
+              await fetch(excelWebhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  id: dateGroup,
+                  isSeparator: true,
+                  name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
+                  gender: '', course: '',
+                  parentName: '', parentPhone: '', parentEmail: '',
+                  address: '', pincode: '',
+                  paymentAmount: 0, receivedAmount: 0,
+                  dateOfPayment: '', dateGroup: dateGroup,
+                  paymentId: '', orderId: ''
+                })
+              });
+            } catch (sepErr) {
+              console.warn("Failed to send separator to Excel:", sepErr);
+            }
           }
 
           const escapeForSheets = (val: string) => {
@@ -554,44 +556,51 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
               orderId: orderId
             })
           });
-          console.log("Background Task: Excel sync webhook fired successfully.");
+          console.log("Excel sync webhook fired successfully.");
         } catch (excelError) {
-          console.error("Background Task: Excel sync webhook failed:", excelError);
+          console.error("Excel sync webhook failed:", excelError);
         }
-      }
+      })();
 
-      // 2. Generate PDF Receipt
-      console.log("Background Task: Generating PDF receipt...");
-      const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
-      console.log("Background Task: PDF receipt generated.");
+      // 2. Generate PDF Receipt & Send Email using SMTP
+      const emailAndPdfPromise = (async () => {
+        try {
+          console.log("Generating PDF receipt...");
+          const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
+          console.log("PDF receipt generated.");
 
-      // 3. Send Email using SMTP
-      console.log("Background Task: Attempting to send confirmation email to:", formData.email);
-      try {
-        await sendEmail(formData.email, formData.name, pdfBytes);
-        console.log("Background Task: Email sent successfully.");
-      } catch (emailError) {
-        console.error("Background Task: Email delivery failed:", emailError);
-      }
+          console.log("Attempting to send confirmation email to:", formData.email);
+          await sendEmail(formData.email, formData.name, pdfBytes);
+          console.log("Email sent successfully.");
+        } catch (emailError) {
+          console.error("Email generation/delivery failed:", emailError);
+        }
+      })();
 
-      // 4. Create Audit Log
-      console.log("Background Task: Recording audit log...");
-      try {
-        await addDoc(collection(db, 'auditLogs'), {
-          timestamp: serverTimestamp(),
-          action: 'REGISTRATION_COMPLETE',
-          performedBy: formData.email,
-          targetEntity: `registration/${docRef.id}`,
-          details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
-        });
-        console.log("Background Task: Audit log recorded.");
-      } catch (auditError) {
-        console.error("Background Task: Audit logging failed:", auditError);
-      }
+      // 3. Create Audit Log using Admin SDK
+      const auditLogPromise = (async () => {
+        try {
+          console.log("Recording audit log...");
+          await adminDb.collection('auditLogs').add({
+            timestamp: FieldValue.serverTimestamp(),
+            action: 'REGISTRATION_COMPLETE',
+            performedBy: formData.email,
+            targetEntity: `registration/${docRef.id}`,
+            details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
+          });
+          console.log("Audit log recorded.");
+        } catch (auditError) {
+          console.error("Audit logging failed:", auditError);
+        }
+      })();
+
+      // Wait for all concurrent pipelines to resolve in the background
+      await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
+      console.log("All background post-registration tasks resolved.");
     } catch (bgError) {
-      console.error("Background Task Manager encountered critical error:", bgError);
+      console.error("Critical error inside Next.js after() callback:", bgError);
     }
-  })().catch(err => console.error("Background wrapper runtime failure:", err));
+  });
 
   return docRef.id;
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { finalizeRegistration } from '@/lib/registrationHelper';
 
@@ -56,16 +56,12 @@ export async function POST(req: Request) {
         const orderAmount = data.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500;
 
         console.log("Saving pending registration for order ID:", orderId);
-        if (!db) {
-          throw new Error("Firestore db is null inside CREATE_ORDER. Firebase may not be configured properly.");
-        }
-
-        // 1. Save pending registration details under pendingRegistrations
-        await setDoc(doc(db, 'pendingRegistrations', orderId), {
+        // 1. Save pending registration details under pendingRegistrations using Admin SDK
+        await adminDb.collection('pendingRegistrations').doc(orderId).set({
           formData: data,
           orderId: orderId,
           amount: orderAmount,
-          createdAt: serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
           status: 'pending'
         });
         console.log("Pending registration saved.");
@@ -130,13 +126,24 @@ export async function POST(req: Request) {
     }
 
     if (action === 'VERIFY_PAYMENT') {
-      const { orderId, formData } = data;
-      console.log("Verifying payment for order:", orderId);
+      const { orderId } = data;
+      console.log("Verifying payment securely for order:", orderId);
       
+      // Fetch the secure pending registration details from Firestore using Admin SDK
+      const pendingRef = adminDb.collection('pendingRegistrations').doc(orderId);
+      const pendingSnap = await pendingRef.get();
+      if (!pendingSnap.exists) {
+        console.warn(`No pending registration details found in Firestore for order ${orderId}`);
+        return NextResponse.json({ error: 'Pending registration details not found' }, { status: 404 });
+      }
+
+      const pendingData = pendingSnap.data();
+      const dbFormData = pendingData.formData;
+
       // If we are in development and don't have keys, allow bypass for testing UI
       if (!process.env.CASHFREE_APP_ID) {
         console.warn("CASHFREE_APP_ID missing, bypassing verification for testing.");
-        const regId = await finalizeRegistration(formData, "mock_payment_id", orderId);
+        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", orderId);
         return NextResponse.json({ success: true, id: regId });
       }
 
@@ -150,7 +157,7 @@ export async function POST(req: Request) {
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      const regId = await finalizeRegistration(formData, successPayment.cf_payment_id.toString(), orderId);
+      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), orderId);
       return NextResponse.json({ success: true, id: regId });
     }
 

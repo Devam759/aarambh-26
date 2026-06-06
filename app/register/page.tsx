@@ -146,7 +146,7 @@ function RegisterContent() {
       
       cashfree.checkout({
         paymentSessionId: order.payment_session_id,
-        redirectTarget: "_modal",
+        redirectTarget: "_self",
       }).then((result: any) => {
         if (result.error) {
           console.error("Payment failed or cancelled:", result.error);

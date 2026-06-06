@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebaseAdmin';
 import { generatePDF } from '@/lib/registrationHelper';
 import { isRateLimited } from '@/lib/security';
 
@@ -20,15 +19,15 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Registration ID is required' }, { status: 400 });
     }
     
-    // Fetch registration from Firestore
-    const docRef = doc(db, 'registrations', id);
-    const docSnap = await getDoc(docRef);
+    // Fetch registration from Firestore using Admin SDK
+    const docRef = adminDb.collection('registrations').doc(id);
+    const docSnap = await docRef.get();
     
-    if (!docSnap.exists()) {
+    if (!docSnap.exists) {
       return NextResponse.json({ error: 'Registration not found' }, { status: 404 });
     }
     
-    const data = docSnap.data();
+    const data = docSnap.data() || {};
     
     // Generate PDF receipt bytes using the unified helper
     console.log(`Generating PDF receipt from unified helper for registration ${id}...`);

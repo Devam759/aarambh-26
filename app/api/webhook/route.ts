@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebaseAdmin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 
 import { verifyCashfreeSignature } from '@/lib/security';
@@ -48,25 +48,26 @@ export async function POST(req: Request) {
       console.log(`Processing payment success webhook for Order: ${orderId}, Payment ID: ${paymentId}`);
 
       if (orderId && paymentId) {
-        // Check if registration was already finalized
-        const q = query(collection(db, 'registrations'), where('orderId', '==', orderId));
-        const querySnapshot = await getDocs(q);
+        // Check if registration was already finalized using Admin SDK
+        const querySnapshot = await adminDb.collection('registrations')
+          .where('orderId', '==', orderId)
+          .get();
         
         if (querySnapshot.empty) {
           // Retrieve pending registration details from pendingRegistrations
-          const pendingRef = doc(db, 'pendingRegistrations', orderId);
-          const pendingSnap = await getDoc(pendingRef);
+          const pendingRef = adminDb.collection('pendingRegistrations').doc(orderId);
+          const pendingSnap = await pendingRef.get();
           
-          if (pendingSnap.exists()) {
+          if (pendingSnap.exists) {
             const pendingData = pendingSnap.data();
             const { finalizeRegistration } = await import('@/lib/registrationHelper');
             
             // Finalize registration and mark pending as completed
             console.log(`Finalizing registration from webhook for order ${orderId}`);
             await finalizeRegistration(pendingData.formData, paymentId.toString(), orderId);
-            await updateDoc(pendingRef, {
+            await pendingRef.update({
               status: 'completed',
-              completedAt: serverTimestamp()
+              completedAt: FieldValue.serverTimestamp()
             });
             console.log(`Successfully finalized pending registration for order ${orderId} via webhook.`);
           } else {
@@ -98,15 +99,16 @@ export async function POST(req: Request) {
         
         console.log(`Reconciling payment for Order: ${orderId}, UTR: ${paymentId}`);
         
-        // 1. Update Firestore registration document
+        // 1. Update Firestore registration document using Admin SDK
         let docId = "";
         try {
-          const q = query(collection(db, 'registrations'), where('orderId', '==', orderId));
-          const querySnapshot = await getDocs(q);
+          const querySnapshot = await adminDb.collection('registrations')
+            .where('orderId', '==', orderId)
+            .get();
           if (!querySnapshot.empty) {
             const docRef = querySnapshot.docs[0].ref;
             docId = querySnapshot.docs[0].id;
-            await updateDoc(docRef, {
+            await docRef.update({
               settlementId: settlementId
             });
             console.log(`Firestore registration updated for order ${orderId} with Settlement ID ${settlementId}.`);
