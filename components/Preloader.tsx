@@ -10,7 +10,12 @@ interface PreloaderProps {
 export default function Preloader({ onComplete }: PreloaderProps) {
   // Automatically trigger completion after animation sequence
   useEffect(() => {
+    // Make the page body visible as soon as the preloader mounts and is painting
+    document.documentElement.classList.remove('preloader-active');
+    document.body.style.visibility = 'visible';
+
     const timer = setTimeout(() => {
+      sessionStorage.setItem('hasPlayedIntro', '1');
       onComplete();
     }, 1500); // 1.5 seconds total preloader duration
     return () => clearTimeout(timer);

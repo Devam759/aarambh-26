@@ -63,8 +63,18 @@
   --shadow-solid-ink: 6px 6px 0px 0px var(--color-brand-ink);
 }
 
+/* Preloader: hide entire page body until animation completes on first visit */
+html.preloader-active body {
+  visibility: hidden;
+}
+
+/* The animation overlay itself must remain visible */
+[data-preloader] {
+  visibility: visible !important;
+}
+
 html {
-  background-color: var(--color-brand-cloud);
+  background-color: var(--color-brand-ink);
 }
 
 body {

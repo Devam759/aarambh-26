@@ -301,21 +301,7 @@ const PHOTOS: Photo[] = [
     "src": "/photos/web/MCS05036.webp",
     "label": "Aarambh 26 Moment"
   },
-  {
-    "id": 35,
-    "src": "/photos/web/MCS05143.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 36,
-    "src": "/photos/web/MCS05159.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 37,
-    "src": "/photos/web/MCS05177.webp",
-    "label": "Aarambh 26 Moment"
-  },
+
   {
     "id": 38,
     "src": "/photos/web/MCS05226.webp",
@@ -508,40 +494,25 @@ export default function Home() {
   const [galleryMounted, setGalleryMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [introStarted, setIntroStarted] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return true;
-    }
-    return false;
-  });
+  const [introStarted, setIntroStarted] = useState(false);
   
-  const [loadingComplete, setLoadingComplete] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !!(window as any).hasPlayedIntro;
-    }
-    return true;
-  });
+  const [loadingComplete, setLoadingComplete] = useState(false);
   
-  const [isMounted, setIsMounted] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !!(window as any).hasPlayedIntro;
-    }
-    return false;
-  });
+  const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [hypeCount, setHypeCount] = useState(1284);
 
-  // Show loading screen animation on hard refresh, but skip on client-side navigation
+  // Show loading screen animation on first visit (session), skip on client-side navigation
   useEffect(() => {
     setIsMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    if (!(window as any).hasPlayedIntro) {
+    const hasPlayed = sessionStorage.getItem('hasPlayedIntro');
+    if (!hasPlayed) {
       setIntroStarted(true);
       setLoadingComplete(false);
-      (window as any).hasPlayedIntro = true;
     } else {
       setIntroStarted(true);
       setLoadingComplete(true);
@@ -583,6 +554,8 @@ export default function Home() {
     if (!introStarted || loadingComplete) return;
     
     const completeTimeout = setTimeout(() => {
+      document.documentElement.classList.remove('preloader-active');
+      sessionStorage.setItem('hasPlayedIntro', '1');
       setLoadingComplete(true);
     }, TOTAL_DURATION * 1000 + 500);
 
@@ -711,13 +684,18 @@ export default function Home() {
       <AnimatePresence>
         {introStarted && !loadingComplete && (
           <motion.div 
+            data-preloader
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
             className="fixed inset-0 z-[90] bg-brand-ink flex flex-col items-center justify-center overflow-hidden"
           >
             <button 
-              onClick={() => setLoadingComplete(true)}
+              onClick={() => {
+                document.documentElement.classList.remove('preloader-active');
+                sessionStorage.setItem('hasPlayedIntro', '1');
+                setLoadingComplete(true);
+              }}
               className="absolute top-6 right-6 text-xs font-mono font-bold tracking-widest uppercase bg-brand-ink text-brand-cloud/60 border border-brand-cloud/20 px-4 py-2 rounded hover:text-brand-cloud hover:border-brand-cloud/50 transition-colors z-[100]"
             >
               SKIP

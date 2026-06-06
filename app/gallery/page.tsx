@@ -184,21 +184,7 @@ const PHOTOS: Photo[] = [
     "src": "/photos/web/MCS05036.webp",
     "label": "Aarambh 26 Moment"
   },
-  {
-    "id": 35,
-    "src": "/photos/web/MCS05143.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 36,
-    "src": "/photos/web/MCS05159.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 37,
-    "src": "/photos/web/MCS05177.webp",
-    "label": "Aarambh 26 Moment"
-  },
+
   {
     "id": 38,
     "src": "/photos/web/MCS05226.webp",
@@ -562,7 +548,12 @@ export default function GalleryLanding() {
           const scale = 1400 / (1400 - z)
           const hS = parseFloat(card.dataset.hoverScale || "1")
 
-          card.style.transform = `translate(-50%, -50%) scale(${scale * hS})`
+          // Boost scale only for cards in the focal/foreground zone — tunnel cards stay original size
+          const focusScale = z > -100 ? 1.6
+            : z > -400 ? 1 + ((z + 400) / 300) * 0.6
+            : 1
+
+          card.style.transform = `translate(-50%, -50%) scale(${scale * hS * focusScale})`
 
           let opacity = 0.02
           if (z < -3600) {
@@ -753,7 +744,7 @@ export default function GalleryLanding() {
           }
           .mob-lb-img {
             max-width: 100%;
-            max-height: 75vh;
+            max-height: 88vh;
             object-fit: contain;
             border: 3px solid #030404;
             border-radius: 12px;
@@ -1160,7 +1151,7 @@ export default function GalleryLanding() {
 
         @media (max-width: 768px) {
           .tunnel-card {
-            width: clamp(140px, 60vw, 240px);
+            width: clamp(170px, 70vw, 280px);
             aspect-ratio: 2 / 3;
           }
         }
@@ -1219,8 +1210,8 @@ export default function GalleryLanding() {
         }
 
         .gp-lb-img {
-          max-width: 86vw;
-          max-height: 82vh;
+          max-width: 94vw;
+          max-height: 92vh;
           object-fit: contain;
           border: 4px solid #030404;
           border-radius: 20px;
@@ -1229,8 +1220,8 @@ export default function GalleryLanding() {
 
         @media (max-width: 768px) {
           .gp-lb-img {
-            max-width: 96vw;
-            max-height: 88vh;
+            max-width: 98vw;
+            max-height: 92vh;
             border-radius: 12px;
             box-shadow: 8px 8px 0px 0px #030404;
           }

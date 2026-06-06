@@ -70,14 +70,24 @@ export function sanitizeObject(obj: any): any {
   return sanitized;
 }
 
+export const isProd = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
+
+export const cashfreeAppId = isProd
+  ? (process.env.CASHFREE_PROD_APP_ID || process.env.CASHFREE_APP_ID || '')
+  : (process.env.CASHFREE_TEST_APP_ID || process.env.CASHFREE_APP_ID || '');
+
+export const cashfreeSecretKey = isProd
+  ? (process.env.CASHFREE_PROD_SECRET_KEY || process.env.CASHFREE_SECRET_KEY || '')
+  : (process.env.CASHFREE_TEST_SECRET_KEY || process.env.CASHFREE_SECRET_KEY || '');
+
 /**
  * Verifies the validity of the signature sent by Cashfree Webhooks.
- * Uses SHA-256 HMAC of (timestamp + rawBody) computed with CASHFREE_SECRET_KEY.
+ * Uses SHA-256 HMAC of (timestamp + rawBody) computed with the active Cashfree secret key.
  */
 export function verifyCashfreeSignature(signature: string, rawBody: string, timestamp: string): boolean {
-  const secretKey = process.env.CASHFREE_SECRET_KEY;
+  const secretKey = cashfreeSecretKey;
   if (!secretKey) {
-    console.warn("CASHFREE_SECRET_KEY missing in environment variables. Signature verification bypassed.");
+    console.warn("Cashfree Secret Key missing in environment variables. Signature verification bypassed.");
     return true; // Bypasses signature checking in non-production local debug scenarios
   }
   

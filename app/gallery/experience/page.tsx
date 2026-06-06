@@ -169,21 +169,7 @@ const PHOTOS: Photo[] = [
     "src": "/photos/web/MCS05036.webp",
     "label": "Aarambh 26 Moment"
   },
-  {
-    "id": 30,
-    "src": "/photos/web/MCS05143.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 31,
-    "src": "/photos/web/MCS05159.webp",
-    "label": "Aarambh 26 Moment"
-  },
-  {
-    "id": 32,
-    "src": "/photos/web/MCS05177.webp",
-    "label": "Aarambh 26 Moment"
-  },
+
   {
     "id": 33,
     "src": "/photos/web/MCS05226.webp",

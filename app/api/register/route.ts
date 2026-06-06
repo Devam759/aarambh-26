@@ -4,15 +4,13 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { finalizeRegistration } from '@/lib/registrationHelper';
 
-import { isRateLimited, sanitizeObject } from '@/lib/security';
+import { isRateLimited, sanitizeObject, isProd, cashfreeAppId, cashfreeSecretKey } from '@/lib/security';
 
 // Initialize Cashfree
 const cashfree = new Cashfree(
-  process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' 
-    ? CFEnvironment.PRODUCTION 
-    : CFEnvironment.SANDBOX,
-  process.env.CASHFREE_APP_ID || '',
-  process.env.CASHFREE_SECRET_KEY || ''
+  isProd ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+  cashfreeAppId,
+  cashfreeSecretKey
 );
 cashfree.XApiVersion = '2023-08-01';
 
@@ -67,7 +65,7 @@ export async function POST(req: Request) {
         console.log("Pending registration saved.");
 
         // MOCK MODE: If no keys, return a mock session for testing
-        if (!process.env.CASHFREE_APP_ID) {
+        if (!cashfreeAppId) {
           return NextResponse.json({ 
             order_id: orderId,
             payment_session_id: "mock_session_id",
@@ -95,9 +93,13 @@ export async function POST(req: Request) {
         if (host.includes('0.0.0.0')) {
           host = host.replace('0.0.0.0', 'localhost');
         }
-        const proto = req.headers.get('x-forwarded-proto') || 'https';
         const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
-        const origin = `${isLocal ? 'http' : proto}://${host}`;
+        
+        // Prevent Host Header Injection: In production, strictly use the known safe domain.
+        // During local development, allow localhost.
+        const origin = isLocal 
+          ? ((isProd) ? `https://${host}` : `http://${host}`)
+          : (process.env.NEXT_PUBLIC_SITE_URL || 'https://aarambh.jklu.edu.in');
 
         const response = await cashfree.PGCreateOrder({
           order_id: orderId,
@@ -120,8 +122,8 @@ export async function POST(req: Request) {
           payment_session_id: response.data.payment_session_id 
         });
       } catch (err: any) {
-        console.error("CREATE_ORDER error detail:", err);
-        return NextResponse.json({ error: `CREATE_ORDER failed: ${err.message || err}` }, { status: 500 });
+        console.error("CREATE_ORDER error detail:", err.response?.data || err);
+        return NextResponse.json({ error: `CREATE_ORDER failed: ${err.response?.data ? JSON.stringify(err.response.data) : err.message || err}` }, { status: 500 });
       }
     }
 
@@ -141,8 +143,9 @@ export async function POST(req: Request) {
       const dbFormData = pendingData.formData;
 
       // If we are in development and don't have keys, allow bypass for testing UI
-      if (!process.env.CASHFREE_APP_ID) {
-        console.warn("CASHFREE_APP_ID missing, bypassing verification for testing.");
+      // If we are in development and don't have keys, allow bypass for testing UI
+      if (!cashfreeAppId) {
+        console.warn("Cashfree App ID missing, bypassing verification for testing.");
         const regId = await finalizeRegistration(dbFormData, "mock_payment_id", orderId);
         return NextResponse.json({ success: true, id: regId });
       }

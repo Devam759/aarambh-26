@@ -3,7 +3,7 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 
-import { verifyCashfreeSignature } from '@/lib/security';
+import { verifyCashfreeSignature, cashfreeSecretKey } from '@/lib/security';
 import { ensureAdminAuthenticated } from '@/lib/registrationHelper';
 
 export async function POST(req: Request) {
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const signature = req.headers.get('x-webhook-signature') || '';
     const timestamp = req.headers.get('x-webhook-timestamp') || '';
     
-    if (process.env.CASHFREE_SECRET_KEY) {
+    if (cashfreeSecretKey) {
       if (!signature || !timestamp) {
         console.warn("Unauthorized: Missing Cashfree signature headers on webhook!");
         return NextResponse.json({ error: 'Missing security signature headers' }, { status: 401 });
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       }
       console.log("Cashfree Webhook signature successfully verified.");
     } else {
-      console.warn("Bypassing webhook signature verification because CASHFREE_SECRET_KEY is missing in local environment.");
+      console.warn("Bypassing webhook signature verification because Cashfree Secret Key is missing in local environment.");
     }
 
     const payload = JSON.parse(rawBody);

@@ -79,7 +79,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={tiroDevanagari.variable}>
+    <html lang="en" className={tiroDevanagari.variable} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -134,6 +134,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // Show preloader on first visit (session-based)
+                if (!sessionStorage.getItem('hasPlayedIntro')) {
+                  document.documentElement.classList.add('preloader-active');
+                }
+
+                // Suppress browser extension errors (metamask etc.)
                 const ignoreErrors = [
                   'metamask',
                   'failed to connect to metamask',
@@ -158,7 +164,7 @@ export default function RootLayout({
                     if (shouldIgnore(msg, stack, filename)) {
                       event.stopImmediatePropagation();
                       event.preventDefault();
-                      console.warn('Antigravity: Suppressed browser extension error:', msg);
+                      console.warn('Suppressed browser extension error:', msg);
                     }
                   } catch (e) {}
                 }, true);
@@ -171,7 +177,7 @@ export default function RootLayout({
                     if (shouldIgnore(msg, stack)) {
                       event.stopImmediatePropagation();
                       event.preventDefault();
-                      console.warn('Antigravity: Suppressed browser extension promise rejection:', msg);
+                      console.warn('Suppressed browser extension promise rejection:', msg);
                     }
                   } catch (e) {}
                 }, true);
