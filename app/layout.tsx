@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Get complete event schedules, rules, guidelines, student club details, and registration forms.",
   manifest: '/manifest.json',
   keywords: [
-    "Aarambh", "Aarambh 2026", "Aarambh JKLU", "JKLU Orientation", "JKLU Orientation 2026",
+    "Aarambh", "Aarambh 2026", "Aarambh JKLU", "aarambh jklu", "jklu aarambh", "JKLU Orientation", "JKLU Orientation 2026",
     "JK Lakshmipat University", "JK Lakshmipat University Orientation", "Aarambh JKLU Orientation",
     "JKLU Welcome Week", "JKLU Welcome Week 2026", "Aarambh orientation week", "JKLU student orientation",
     "college orientation Jaipur", "Aarambh festival registration", "Aarambh Jaipur", "JKLU student affairs"
