@@ -1695,6 +1695,21 @@ export default function Home() {
                   </ul>
                 </div>
 
+                {/* Card 9: Toiletries & Grooming */}
+                <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+                  <div className="border-b-2 border-brand-ink pb-3 mb-4">
+                    <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Toiletries & Grooming</h3>
+                  </div>
+                  <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bath towels & hand towels</span></li>
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></li>
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Shampoo, conditioner & body wash</span></li>
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></li>
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Trimmer / grooming kit</span></li>
+                    <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></li>
+                  </ul>
+                </div>
+
               </div>
             </div>
           </section>
