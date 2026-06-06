@@ -1543,7 +1543,7 @@ export default function Home() {
           <section className="w-full relative py-20 px-4 md:px-8">
             <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
               <div className="flex justify-center mb-12 select-none">
-                <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider text-brand-black drop-shadow-[2.5px_2.5px_0px_#FF9A00]">
+                <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider text-brand-black">
                   Aerial View of <span className="text-brand-pink">JKLU</span> Campus
                 </h2>
               </div>
