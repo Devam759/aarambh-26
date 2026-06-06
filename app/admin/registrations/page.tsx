@@ -48,6 +48,26 @@ const CustomDownloadIcon = ({ className = '', size = 18 }: { className?: string;
   </svg>
 );
 
+const CustomSheetIcon = ({ className = '', size = 16 }: { className?: string; size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="square" 
+    strokeLinejoin="miter" 
+    className={className}
+  >
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
 const CustomEyeIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
   <svg 
     width={size} 
@@ -301,13 +321,23 @@ export default function Registrations() {
           <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink">Registration Data</h1>
           <p className="text-admin-muted font-bold text-xs uppercase tracking-wider mt-1">Student orientation portal listings</p>
         </div>
-        <button 
-          onClick={exportCSV}
-          disabled={loading || registrations.length === 0}
-          className="comic-btn-orange"
-        >
-          <CustomDownloadIcon size={16} /> Export CSV
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <a 
+            href="https://docs.google.com/spreadsheets/d/1Pfh7eZaknrvPEqcTjwgK1ludGjsT_OOA-KUnubzYxMc/edit?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="comic-btn-green"
+          >
+            <CustomSheetIcon size={16} /> Google Sheet
+          </a>
+          <button 
+            onClick={exportCSV}
+            disabled={loading || registrations.length === 0}
+            className="comic-btn-orange"
+          >
+            <CustomDownloadIcon size={16} /> Export CSV
+          </button>
+        </div>
       </div>
 
       {/* Structured Filters Option Bar */}

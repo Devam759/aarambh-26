@@ -91,7 +91,7 @@ export async function POST(req: Request) {
           cleanPhone = '9999999999';
         }
 
-        let host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'aarambh-26.web.app';
+        let host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'aarambh.jklu.edu.in';
         if (host.includes('0.0.0.0')) {
           host = host.replace('0.0.0.0', 'localhost');
         }

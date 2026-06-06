@@ -8,7 +8,7 @@
 
 Aarambh '26 is a full-stack web application built to manage all aspects of the university orientation program — from public-facing event information and student registration, to an internal admin dashboard with QR-based check-in, volunteer management, feedback collection, and real-time analytics.
 
-**Live Site:** [https://aarambh-26.web.app](https://aarambh-26.web.app)  
+**Live Site:** [https://aarambh.jklu.edu.in](https://aarambh.jklu.edu.in)  
 **Event Dates:** July 14–21, 2026  
 **Venue:** JK Lakshmipat University Campus, Ajmer Road, Jaipur, Rajasthan — 302026
 

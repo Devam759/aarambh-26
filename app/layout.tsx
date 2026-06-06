@@ -2,9 +2,9 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://aarambh-26.web.app'),
+  metadataBase: new URL('https://aarambh.jklu.edu.in'),
   alternates: {
-    canonical: 'https://aarambh-26.web.app',
+    canonical: 'https://aarambh.jklu.edu.in',
   },
   title: {
     default: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
     description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Register, view schedules, rules, guidelines, and highlights.",
-    url: 'https://aarambh-26.web.app',
+    url: 'https://aarambh.jklu.edu.in',
     siteName: "Aarambh '26 Portal",
     images: [
       {
@@ -111,7 +111,7 @@ export default function RootLayout({
                 }
               },
               "image": [
-                "https://aarambh-26.web.app/aarambh-2025-poster.jpg"
+                "https://aarambh.jklu.edu.in/aarambh-2025-poster.jpg"
               ],
               "description": "Aarambh '26 is the signature first-year orientation program and pop-art welcome festival of JK Lakshmipat University (JKLU), Jaipur. Experience engaging workshops, cultural nights, sports tournaments, and student club showcases.",
               "organizer": {
@@ -121,7 +121,7 @@ export default function RootLayout({
               },
               "offers": {
                 "@type": "Offer",
-                "url": "https://aarambh-26.web.app/register",
+                "url": "https://aarambh.jklu.edu.in/register",
                 "price": "2500",
                 "priceCurrency": "INR",
                 "availability": "https://schema.org/InStock",
