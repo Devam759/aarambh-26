@@ -1549,7 +1549,7 @@ export default function Home() {
               </div>
               <div className="w-full relative border-comic rounded-2xl shadow-comic overflow-hidden bg-brand-ink">
                 <Image
-                  src="/images/jklu_map_v2.webp"
+                  src="/images/jklu_map_v3.webp"
                   alt="JKLU Campus Aerial View"
                   width={1920}
                   height={1080}
