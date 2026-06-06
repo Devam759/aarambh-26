@@ -100,6 +100,7 @@ walkthrough.md
 
 # Large media files
 /public/teaser.mp4
+/public/file.txt
 
 # Raw photos and processing files
 raw_gallery*.html

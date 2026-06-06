@@ -191,6 +191,22 @@ Security headers are applied globally via `next.config.mjs`:
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 
+### Production Rate Limiting (Cloudflare)
+
+While the app includes an optimized, self-pruning in-memory rate limiter for local development and staging environments, it is recommended to configure rate limiting at the infrastructure layer in production.
+
+To configure Cloudflare Rate Limiting (Free Tier):
+1. Route the application traffic through Cloudflare (enable the **Proxied** status on your DNS record).
+2. Go to **Security** -> **WAF** -> **Rate Limiting Rules** in the Cloudflare Dashboard.
+3. Create a rule:
+   - **Rule Name**: `API Rate Limit`
+   - **Field**: `URI Path`
+   - **Operator**: `starts with`
+   - **Value**: `/api/`
+   - **Action**: `Block` (or `JS Challenge`)
+   - **Rate**: Set a reasonable limit, e.g., 5 requests per 1 minute.
+4. Deploy the rule. This will block automated bots and scripts before they can reach the server or execute serverless execution time/database transactions.
+
 ---
 
 ## Registration Flow

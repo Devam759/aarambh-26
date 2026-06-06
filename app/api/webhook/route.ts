@@ -3,37 +3,57 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 
-import { verifyCashfreeSignature, cashfreeSecretKey } from '@/lib/security';
-import { ensureAdminAuthenticated } from '@/lib/registrationHelper';
+import { verifyCashfreeSignature, cashfreeSecretKey, isProd } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
     
-    // Ensure we are authenticated as Admin on the server to bypass permission-denied errors
-    await ensureAdminAuthenticated();
-    
     // Extract signature headers to prevent webhook spoofing attacks
     const signature = req.headers.get('x-webhook-signature') || '';
     const timestamp = req.headers.get('x-webhook-timestamp') || '';
     
-    if (cashfreeSecretKey) {
+    const isProduction = isProd || process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      if (!cashfreeSecretKey) {
+        console.error("CRITICAL SECURITY AUDIT: Webhook signature verification failed. Cashfree Secret Key is missing in production.");
+        return NextResponse.json({ error: 'Signature verification failed: Missing secret key' }, { status: 401 });
+      }
       if (!signature || !timestamp) {
-        console.warn("Unauthorized: Missing Cashfree signature headers on webhook!");
+        console.warn("Unauthorized: Missing Cashfree signature headers on webhook in production!");
         return NextResponse.json({ error: 'Missing security signature headers' }, { status: 401 });
       }
-      
       const isValid = verifyCashfreeSignature(signature, rawBody, timestamp);
       if (!isValid) {
-        console.error("CRITICAL SECURITY DANGER: Fake Cashfree Webhook signature mismatch detected!");
+        console.error("CRITICAL SECURITY DANGER: Fake Cashfree Webhook signature mismatch detected in production!");
         return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
       }
       console.log("Cashfree Webhook signature successfully verified.");
     } else {
-      console.warn("Bypassing webhook signature verification because Cashfree Secret Key is missing in local environment.");
+      if (cashfreeSecretKey) {
+        if (!signature || !timestamp) {
+          console.warn("Unauthorized: Missing Cashfree signature headers on webhook!");
+          return NextResponse.json({ error: 'Missing security signature headers' }, { status: 401 });
+        }
+        const isValid = verifyCashfreeSignature(signature, rawBody, timestamp);
+        if (!isValid) {
+          console.error("Fake Cashfree Webhook signature mismatch detected!");
+          return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
+        }
+        console.log("Cashfree Webhook signature successfully verified.");
+      } else {
+        console.warn("Bypassing webhook signature verification because Cashfree Secret Key is missing in local environment.");
+      }
     }
 
-    const payload = JSON.parse(rawBody);
+    let payload;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch (err) {
+      console.warn("Invalid or empty webhook JSON payload received:", rawBody);
+      return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
+    }
     
     console.log("Cashfree Webhook Received:", payload.event);
 

@@ -5,10 +5,9 @@ import QRCode from 'qrcode';
 import fs from 'fs/promises';
 import path from 'path';
 import { after } from 'next/server';
+import { formatPhoneNumber, maskEmail } from './security';
 
-export async function ensureAdminAuthenticated() {
-  // No-op: Firebase Admin SDK bypasses authentication constraints automatically.
-}
+
 
 // ============================================================================
 // PDF RECEIPT GENERATOR helper (A4 Layout with dynamic aspect scaling)
@@ -165,15 +164,6 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     page.drawText(clean(value), { x, y: y - 13, size: 10.5, color: darkColor });
   };
 
-  const formatPhone = (phone: string): string => {
-    if (!phone) return '';
-    const digits = phone.replace(/\D/g, '');
-    if (digits.length >= 10) {
-      return `+91 ${digits.slice(-10)}`;
-    }
-    return phone;
-  };
-
   // 1. STUDENT INFORMATION Section
   drawSectionHeader('STUDENT INFORMATION', 525);
   drawField('Full Name', data.name || 'N/A', 40, 502);
@@ -182,12 +172,12 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   drawField('Branch / Programme', data.course || 'B.Tech', 40, 469);
   
   drawField('Email Address', data.email || 'N/A', 40, 436);
-  drawField('Mobile Number', formatPhone(data.phone || data.mobile || ''), 300, 436);
+  drawField('Mobile Number', formatPhoneNumber(data.phone || data.mobile || ''), 300, 436);
 
   // 2. PARENT DETAILS Section
   drawSectionHeader('PARENT DETAILS', 395);
   drawField('Parent Name', data.parentName || data.fatherName || 'N/A', 40, 372);
-  drawField('Parent Phone', formatPhone(data.parentPhone || data.fatherMobile || ''), 300, 372);
+  drawField('Parent Phone', formatPhoneNumber(data.parentPhone || data.fatherMobile || ''), 300, 372);
   
   drawField('Parent Email', data.parentEmail || data.fatherEmail || 'N/A', 40, 339);
 
@@ -257,6 +247,9 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
 export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) {
   const nodemailer = await import('nodemailer');
 
+  const isProduction = process.env.NODE_ENV === 'production' || 
+                       (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.office365.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -265,8 +258,9 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
       user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || '',
     },
-    tls: {
-      ciphers: 'SSLv3',
+    tls: isProduction ? {
+      rejectUnauthorized: true
+    } : {
       rejectUnauthorized: false
     }
   });
@@ -400,16 +394,6 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   
   const dateOfPayment = `${day}-${month}-${year}`; // e.g., "24-May-26"
   const dateGroup = `${day}-${month}`; // e.g., "24-May"
-
-  const formatPhoneNumber = (phone: string): string => {
-    if (!phone) return '';
-    const digits = phone.replace(/\D/g, '');
-    if (digits.length >= 10) {
-      return `+91 ${digits.slice(-10)}`;
-    }
-    return phone;
-  };
-
   if (formData.mobile) formData.mobile = formatPhoneNumber(formData.mobile);
   if (formData.fatherMobile) formData.fatherMobile = formatPhoneNumber(formData.fatherMobile);
   if (formData.motherMobile) formData.motherMobile = formatPhoneNumber(formData.motherMobile);
@@ -456,9 +440,6 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     try {
       console.log("Starting post-registration tasks in Next.js after() callback...");
       
-      // Ensure we are authenticated as Admin on the server to bypass permission-denied errors
-      await ensureAdminAuthenticated();
-
       const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
 
       // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
@@ -569,7 +550,9 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
           const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
           console.log("PDF receipt generated.");
 
-          console.log("Attempting to send confirmation email to:", formData.email);
+          const isProduction = process.env.NODE_ENV === 'production' || 
+                               (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+          console.log("Attempting to send confirmation email to:", isProduction ? maskEmail(formData.email) : formData.email);
           await sendEmail(formData.email, formData.name, pdfBytes);
           console.log("Email sent successfully.");
         } catch (emailError) {

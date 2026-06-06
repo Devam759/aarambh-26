@@ -95,6 +95,7 @@ function RegisterContent() {
   };
 
   const handleApplyCoupon = () => {
+    const isProduction = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
     if (couponInput.toUpperCase() === 'TESTTEST') {
       setFormData(prev => ({ ...prev, coupon: couponInput.toUpperCase() }));
       setCouponMessage('Coupon applied successfully!');

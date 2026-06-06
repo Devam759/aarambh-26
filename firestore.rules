@@ -38,27 +38,25 @@ service cloud.firestore {
 
     // Pending Registrations collection
     match /pendingRegistrations/{id} {
-      allow read: if true;
-      allow create, update: if request.resource.data.orderId != null;
-      allow delete: if isAdmin();
+      allow read, write: if false; // Only Admin SDK can read/write
     }
 
     // Volunteers collection
     match /volunteers/{id} {
-      allow read: if true;
+      allow read: if request.auth != null;
       allow write: if isAdmin() || isVolunteerOrTL();
     }
 
     // Duty Assignments collection
     match /dutyAssignments/{id} {
-      allow read: if true;
+      allow read: if request.auth != null;
       allow write: if isAdmin();
     }
 
     // Notifications/Announcements collections
     match /notifications/{id} {
-      allow read, update, delete: if true;
-      allow create: if isAdmin();
+      allow read, update, delete: if request.auth != null;
+      allow create: if request.auth != null && (isAdmin() || isVolunteerOrTL());
     }
     
     match /announcements/{id} {
@@ -81,7 +79,7 @@ service cloud.firestore {
     // Audit logs collection
     match /auditLogs/{id} {
       allow read, update, delete: if isAdmin();
-      allow create: if true;
+      allow create: if isAdmin();
     }
 
     // Feedback collection (public anonymous submissions allowed)

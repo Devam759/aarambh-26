@@ -4,7 +4,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { finalizeRegistration } from '@/lib/registrationHelper';
 
-import { isRateLimited, sanitizeObject, isProd, cashfreeAppId, cashfreeSecretKey } from '@/lib/security';
+import { isRateLimited, sanitizeObject, isProd, cashfreeAppId, cashfreeSecretKey, formatPhoneNumber } from '@/lib/security';
 
 // Initialize Cashfree
 const cashfree = new Cashfree(
@@ -23,18 +23,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Too many attempts. Please try again in a minute.' }, { status: 429 });
     }
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch (err) {
+      console.warn("Invalid or empty registration JSON body received:", err);
+      return NextResponse.json({ error: 'Invalid or empty JSON payload' }, { status: 400 });
+    }
     const { action, honeypot, ...rawData } = body;
     
-    // Standardize mobile numbers to always format as +91 1234567890
-    const formatPhoneNumber = (phone: string): string => {
-      if (!phone) return '';
-      const digits = phone.replace(/\D/g, '');
-      if (digits.length >= 10) {
-        return `+91 ${digits.slice(-10)}`;
-      }
-      return phone;
-    };
     if (rawData.mobile) rawData.mobile = formatPhoneNumber(rawData.mobile);
     if (rawData.fatherMobile) rawData.fatherMobile = formatPhoneNumber(rawData.fatherMobile);
     if (rawData.motherMobile) rawData.motherMobile = formatPhoneNumber(rawData.motherMobile);
@@ -51,7 +48,7 @@ export async function POST(req: Request) {
     if (action === 'CREATE_ORDER') {
       try {
         const orderId = `order_${Date.now()}`;
-        const orderAmount = data.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500;
+        const orderAmount = (data.coupon?.toUpperCase() === 'TESTTEST') ? 1 : 2500;
 
         console.log("Saving pending registration for order ID:", orderId);
         // 1. Save pending registration details under pendingRegistrations using Admin SDK
