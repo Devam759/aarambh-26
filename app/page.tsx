@@ -1542,14 +1542,14 @@ export default function Home() {
       {/* Aerial View Section */}
       <section className="w-full relative py-20 px-4 md:px-8">
         <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-          <div className="flex justify-center mb-16">
-            <div className="inline-block bg-brand-ink text-brand-cloud border-comic px-8 py-3 rounded-xl rotate-[1deg] shadow-comic">
-              <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider">Aerial View of JKLU Campus</h2>
-            </div>
+          <div className="flex justify-center mb-12 select-none">
+            <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider text-brand-black drop-shadow-[2.5px_2.5px_0px_#FF9A00]">
+              Aerial View of <span className="text-brand-pink">JKLU</span> Campus
+            </h2>
           </div>
           <div className="w-full relative border-comic rounded-2xl shadow-comic overflow-hidden bg-brand-ink">
              <Image 
-                src="/images/jklu_map.webp" 
+                src="/images/jklu_map_v2.webp" 
                 alt="JKLU Campus Aerial View" 
                 width={1920}
                 height={1080}
