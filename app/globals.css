@@ -348,3 +348,20 @@ body {
   66% { transform: translate(-10vw, 15vh) scale(0.9) rotate(-30deg); }
   100% { transform: translate(5vw, 5vh) scale(1.2) rotate(15deg); }
 }
+@keyframes slide-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes slide-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 25s linear infinite;
+}
+
+.animate-slide-down {
+  animation: slide-down 30s linear infinite;
+}
