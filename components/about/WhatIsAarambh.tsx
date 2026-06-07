@@ -93,7 +93,7 @@ export default function WhatIsAarambh() {
             </div>
           </motion.div>
  
-          {/* Comic Frame Graphic (The Poster Image) */}
+          {/* Comic Frame Graphic (The Poster Image Placeholder) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -104,12 +104,13 @@ export default function WhatIsAarambh() {
             <div className="absolute inset-0 bg-brand-pink rounded-xl rotate-[3deg] border-comic shadow-comic" />
             <div className="relative border-comic bg-brand-ink p-2 rounded-xl shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
               {/* Halftone graphic frame border overlay */}
-              
-              <img 
-                src="/aarambh-2025-poster.jpg" 
-                alt="Aarambh Poster" 
-                className="w-full object-cover rounded-lg border-2 border-brand-ink brightness-[0.9] contrast-[1.1]" 
-              />
+              <div className="w-full aspect-[3/4] rounded-lg border-2 border-brand-ink bg-brand-cloud flex flex-col items-center justify-center p-6 text-center select-none">
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-brand-ink/40 font-bold mb-2">Aarambh 2026</span>
+                <h3 className="font-display font-black text-2xl sm:text-3xl text-brand-pink uppercase tracking-tight leading-none">
+                  POSTER<br />COMING SOON
+                </h3>
+                <div className="w-12 h-1 bg-brand-orange mt-4 rounded-sm" />
+              </div>
             </div>
           </motion.div>
         </div>

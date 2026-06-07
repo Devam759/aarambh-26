@@ -10,18 +10,90 @@ interface CustomVideoPlayerProps {
   src: string;
   poster?: string;
   autoPlay?: boolean;
+  autoPlayOnScroll?: boolean;
 }
 
-export default function CustomVideoPlayer({ src, poster, autoPlay = false }: CustomVideoPlayerProps) {
+export default function CustomVideoPlayer({ 
+  src, 
+  poster, 
+  autoPlay = false,
+  autoPlayOnScroll = true 
+}: CustomVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default to muted for autoPlay safety
   const [progress, setProgress] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isManuallyPausedRef = useRef(false);
+  const isPlayingRef = useRef(isPlaying);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
+  // Intersection Observer for autoplay/autopause on scroll
+  useEffect(() => {
+    if (!autoPlayOnScroll || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = videoRef.current;
+          if (!video) return;
+
+          if (entry.isIntersecting) {
+            // Play if not manually paused and not already playing
+            if (!isManuallyPausedRef.current && !isPlayingRef.current) {
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => {
+                    setIsPlaying(true);
+                  })
+                  .catch((error) => {
+                    console.warn('Autoplay on scroll failed, attempting muted fallback:', error);
+                    video.muted = true;
+                    setIsMuted(true);
+                    video.play()
+                      .then(() => {
+                        setIsPlaying(true);
+                      })
+                      .catch((err2) => {
+                        console.error('Muted fallback autoplay failed:', err2);
+                      });
+                  });
+              } else {
+                setIsPlaying(true);
+              }
+            }
+          } else {
+            // Stop (pause and reset) when leaving viewport
+            video.pause();
+            try {
+              video.currentTime = 0;
+            } catch (e) {
+              console.warn('Resetting video time failed:', e);
+            }
+            setIsPlaying(false);
+          }
+        });
+      },
+      {
+        threshold: 0.25, // Trigger when 25% of the player is visible
+      }
+    );
+
+    observer.observe(containerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [autoPlayOnScroll]);
+
 
   const handleInteraction = () => {
     setIsControlsVisible(true);
@@ -108,7 +180,9 @@ export default function CustomVideoPlayer({ src, poster, autoPlay = false }: Cus
       if (isPlaying) {
         videoRef.current.pause();
         setIsPlaying(false);
+        isManuallyPausedRef.current = true;
       } else {
+        isManuallyPausedRef.current = false;
         const playPromise = videoRef.current.play();
         if (playPromise !== undefined) {
           playPromise
