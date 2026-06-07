@@ -90,7 +90,7 @@ export default function PackingChecklist() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
 
           {/* Card 1: Clothing & Gear */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -109,7 +109,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 2: Academics */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -127,7 +127,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 3: Room & Living */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+          <div className="relative p-6 rotate-2">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -145,7 +145,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 4: Kitchen & Food */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-2">
+          <div className="relative p-6 -rotate-2">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -163,7 +163,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 5: Official Docs */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -181,7 +181,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 6: Health & Care */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -199,7 +199,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 7: Tech Gear */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+          <div className="relative p-6 rotate-2">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -216,7 +216,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 8: Recreation */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -234,7 +234,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 9: Toiletries & Grooming */}
-          <div className="relative p-6 transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
