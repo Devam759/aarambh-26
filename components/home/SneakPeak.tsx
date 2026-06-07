@@ -143,7 +143,7 @@ export default function SneakPeak() {
               }} />
               
               <CustomVideoPlayer 
-                src="/sneak_peak-hls/master.m3u8" 
+                src="https://storage.googleapis.com/aarambh-26-assets/sneak_peak-hls/master.m3u8" 
                 autoPlayOnScroll={true}
               />
             </div>
