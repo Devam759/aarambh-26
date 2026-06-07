@@ -2,12 +2,17 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Our Team',
-  description: 'Meet the visionaries, coordinators, and volunteers of Aarambh \'26 who made this spectacular pop-art convergence festival at JK Lakshmipat University possible.',
+  description: 'Meet the core team, coordinators, and volunteers behind Aarambh 2026 at JK Lakshmipat University.',
+  alternates: {
+    canonical: 'https://aarambh.jklu.edu.in/team',
+  },
   openGraph: {
-    title: 'Our Team | AARAMBH\'26',
-    description: 'Meet the visionaries, coordinators, and volunteers of Aarambh \'26 who made this spectacular pop-art convergence festival possible.',
-  }
+    title: 'Our Team | Aarambh 2026',
+    description: 'Meet the team behind Aarambh 2026 at JK Lakshmipat University.',
+    url: 'https://aarambh.jklu.edu.in/team',
+  },
 };
+
 
 export default function TeamLayout({
   children,

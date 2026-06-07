@@ -150,7 +150,35 @@ export default function SneakPeak() {
           </div>
         </div>
 
-        
+        {/* Instagram Follow Sticker/Badge */}
+        <div className="mt-12 flex justify-center w-full relative z-20">
+          <a
+            href="https://www.instagram.com/aarambh_jklu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 bg-white border-comic text-brand-ink px-6 py-3.5 shadow-comic hover:bg-brand-pink hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl cursor-pointer group"
+          >
+            {/* Custom Instagram vector icon */}
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              strokeLinecap="square" 
+              strokeLinejoin="miter" 
+              className="group-hover:animate-bounce shrink-0 transition-transform"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+            <span className="font-display font-black text-sm uppercase tracking-wider">
+              FOLLOW <span className="text-brand-pink group-hover:text-white">@AARAMBH_JKLU</span> FOR UPDATES
+            </span>
+          </a>
+        </div>
       </div>
     </section>
   );

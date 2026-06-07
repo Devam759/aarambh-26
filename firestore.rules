@@ -42,8 +42,10 @@ service cloud.firestore {
     }
 
     // Volunteers collection
+    // Unauthenticated reads are allowed because the login page must query this
+    // collection to verify volunteer credentials BEFORE a Firebase Auth session exists.
     match /volunteers/{id} {
-      allow read: if request.auth != null;
+      allow read: if true;
       allow write: if isAdmin() || isVolunteerOrTL();
     }
 
@@ -79,7 +81,9 @@ service cloud.firestore {
     // Audit logs collection
     match /auditLogs/{id} {
       allow read, update, delete: if isAdmin();
-      allow create: if isAdmin();
+      // Allow unauthenticated creates so volunteer login events can be logged
+      // before any Firebase Auth session exists (volunteer auth is localStorage-based)
+      allow create: if true;
     }
 
     // Feedback collection (public anonymous submissions allowed)
