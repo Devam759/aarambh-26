@@ -205,108 +205,159 @@ export default function Home() {
           {/* Packing Checklist Section */}
           <PackingChecklist />
 
+
           {/* ============================================================
               REGISTRATION SECTION — Homepage
               ============================================================ */}
 
-          <section className="py-24 lg:py-32 px-4 sm:px-6 w-full max-w-5xl relative z-10 mx-auto">
-            <div className="relative border-comic bg-brand-cloud text-brand-ink shadow-comic p-8 sm:p-16 lg:p-20 rounded-xl overflow-hidden flex flex-col items-center text-center gap-12">
+          <section className="w-full px-4 sm:px-6 py-20 lg:py-28 relative z-10">
+            <div className="max-w-5xl mx-auto">
 
-              {/* Upper Section: Clean Typography & Messaging (Centered) */}
-              <div className="flex flex-col items-center text-center relative z-10 w-full max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-ink text-brand-cloud font-display text-[10px] md:text-xs font-black tracking-widest rounded-lg mb-6 shadow-comic-sm border-comic-thin">
-                  <span className="w-2 h-2 rounded-full bg-brand-pink animate-ping" />
+              {/* ── Hero Banner — Bright & Vibrant ── */}
+              <div style={{
+                background: '#F5F1E5',
+                border: '4px solid #030404',
+                borderRadius: '24px',
+                boxShadow: '10px 10px 0px 0px #FF188C',
+                padding: 'clamp(36px, 6vw, 60px) clamp(24px, 5vw, 48px) clamp(32px, 5vw, 52px)',
+                position: 'relative',
+                overflow: 'hidden',
+                marginBottom: '28px',
+                textAlign: 'center',
+              }}>
+                {/* Colourful top bar */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '8px', background: 'linear-gradient(90deg, #FF188C 0%, #FF9A00 50%, #0D21DD 100%)' }} />
+
+                {/* Subtle halftone dots bg */}
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, #030404 1px, transparent 1px)', backgroundSize: '28px 28px', opacity: 0.04, pointerEvents: 'none' }} />
+
+                {/* Badge */}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#030404', color: '#F5F1E5', fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 900, letterSpacing: '0.25em', textTransform: 'uppercase', padding: '6px 16px', borderRadius: '8px', border: '2px solid #030404', marginBottom: '24px', boxShadow: '3px 3px 0 #FF188C', position: 'relative' }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF188C', display: 'inline-block' }} />
                   Your Registration Gateway
                 </div>
 
-                <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black uppercase leading-[0.9] mb-6 text-center">
-                  AARAMBH 2026 <br />
-                  <span className="bg-brand-ink text-brand-cloud px-4 py-1.5 inline-block my-2 transform -rotate-1 shadow-[4px_4px_0px_0px_#0D21DD] border-comic rounded-lg">
-                    REGISTRATION
-                  </span>
+                {/* Eyebrow */}
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(0.75rem, 2vw, 1rem)', fontWeight: 800, color: '#FF9A00', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '6px', position: 'relative' }}>
+                  AARAMBH 2026
+                </div>
+
+                {/* Main heading */}
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem, 10vw, 6.5rem)', fontWeight: 900, color: '#030404', lineHeight: 0.88, letterSpacing: '-0.04em', textTransform: 'uppercase', margin: '0 0 24px', position: 'relative' }}>
+                  REGIS<span style={{ color: '#FF188C', WebkitTextStroke: '0px', textShadow: '4px 4px 0 #FF9A00' }}>TRA</span>TION
                 </h2>
 
-                <p className="text-brand-ink text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-sans font-medium opacity-90 text-center">
-                  Kickstart your JKLU journey with a registration fee of ₹2500 (Non-refundable) covering all essentials for a vibrant and welcoming orientation experience.
+                {/* Fee badge */}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '14px', background: '#FF188C', border: '3px solid #030404', borderRadius: '100px', padding: '12px 28px', boxShadow: '5px 5px 0 #030404', marginBottom: '20px', position: 'relative' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem, 3vw, 2rem)', fontWeight: 900, color: '#F5F1E5' }}>₹2,500</span>
+                  <span style={{ width: 2, height: 28, background: 'rgba(245,241,229,0.4)', display: 'inline-block', borderRadius: '2px' }} />
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 800, color: '#F5F1E5', letterSpacing: '0.1em', textTransform: 'uppercase', lineHeight: 1.4, textAlign: 'left', opacity: 0.9 }}>Non-refundable<br />Registration Fee</span>
+                </div>
+
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(0.82rem, 1.8vw, 0.98rem)', fontWeight: 600, color: '#030404', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto', opacity: 0.65, position: 'relative' }}>
+                  Covering stay, meals, merch &amp; full event access — everything you need to begin.
                 </p>
               </div>
 
-              {/* Dynamic Structured Content Container (All Sections Center Aligned) */}
-              <div className="w-full max-w-3xl flex flex-col gap-8 relative z-10 text-center items-center">
+              {/* ── What's Included — 2×2 Grid ── */}
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 900, letterSpacing: '0.25em', color: '#FF188C', textTransform: 'uppercase' }}>✦ What&apos;s Included ✦</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
 
-                {/* BOX 1: WHAT THE FEE INCLUDES */}
-                <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-comic flex flex-col items-center">
-                  <h3 className="font-display font-black text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-pink inline-block uppercase">
-                    What the fee includes
-                  </h3>
-
-                  <div className="flex flex-col gap-4 w-full max-w-xl text-center">
-                    <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
-                      <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">Non-AC Shared Accommodation</span>
-                      <p className="font-sans font-medium text-xs text-brand-ink/70">Comfortable stay in campus hostels throughout the orientation program.</p>
-                    </div>
-
-                    <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
-                      <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">All Meals</span>
-                      <p className="font-sans font-medium text-xs text-brand-ink/70">Mess food provided from the day of registration until the conclusion of AARAMBH.</p>
-                    </div>
-
-                    <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
-                      <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">AARAMBH Kit</span>
-                      <p className="font-sans font-medium text-xs text-brand-ink/70">Includes official merchandise (T-shirts, ID card, and more).</p>
-                    </div>
-
-                    <div className="bg-brand-cloud/40 p-4 border-2 border-brand-ink/15 rounded-lg flex flex-col items-center">
-                      <span className="font-display font-black text-xs sm:text-sm text-brand-pink tracking-wide mb-1 uppercase">Full Access</span>
-                      <p className="font-sans font-medium text-xs text-brand-ink/70">Entry to all workshops, creative sessions, team-building events, and outdoor group activities.</p>
+                  <div style={{ background: '#F5F1E5', border: '3.5px solid #030404', borderRadius: '18px', boxShadow: '5px 5px 0 #030404', padding: '20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+                    <div style={{ width: 46, height: 46, borderRadius: '12px', background: '#0D21DD', border: '3px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '3px 3px 0 #030404', flexShrink: 0 }}>🏠</div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '0.85rem', color: '#030404', textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>Accommodation</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.72rem', color: '#030404', opacity: 0.6, lineHeight: 1.5 }}>Non-AC shared hostel throughout orientation.</div>
                     </div>
                   </div>
-                </div>
 
-                {/* BOX 2: IMPORTANT INSTRUCTIONS */}
-                <div className="w-full bg-white border-comic p-6 sm:p-10 rounded-xl shadow-comic flex flex-col items-center">
-                  <h3 className="font-display font-black text-lg sm:text-xl tracking-tight mb-6 text-brand-ink pb-2 border-b-2 border-brand-ink inline-block uppercase">
-                    Important Instructions
-                  </h3>
-
-                  <div className="flex flex-col gap-4 w-full max-w-xl text-center">
-                    <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-                      Please enter the <span className="text-brand-pink font-bold">student&apos;s full name accurately</span> during registration, even if the payment is made by a parent or guardian.
-                    </div>
-
-                    <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-                      This registration is <span className="text-brand-pink font-bold">strictly for admitted students</span> of JKLU Batch 2026. Kindly avoid sharing the link outside the eligible group.
-                    </div>
-
-                    <div className="border-2 border-brand-ink/15 p-4 rounded-lg bg-brand-cloud/30 font-sans font-medium text-xs sm:text-sm text-brand-ink leading-relaxed">
-                      Mention your <span className="text-brand-pink font-bold">JKLU Application Number</span> to ensure proper identification and confirmation.
+                  <div style={{ background: '#FF9A00', border: '3.5px solid #030404', borderRadius: '18px', boxShadow: '5px 5px 0 #030404', padding: '20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+                    <div style={{ width: 46, height: 46, borderRadius: '12px', background: '#F5F1E5', border: '3px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '3px 3px 0 #030404', flexShrink: 0 }}>🍱</div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '0.85rem', color: '#030404', textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>All Meals</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.72rem', color: '#030404', opacity: 0.7, lineHeight: 1.5 }}>Mess food from day 1 till AARAMBH concludes.</div>
                     </div>
                   </div>
-                </div>
 
+                  <div style={{ background: '#FF188C', border: '3.5px solid #030404', borderRadius: '18px', boxShadow: '5px 5px 0 #030404', padding: '20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+                    <div style={{ width: 46, height: 46, borderRadius: '12px', background: '#F5F1E5', border: '3px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '3px 3px 0 #030404', flexShrink: 0 }}>🎽</div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '0.85rem', color: '#F5F1E5', textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>Aarambh Kit</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.72rem', color: '#F5F1E5', opacity: 0.8, lineHeight: 1.5 }}>Official T-shirt, ID card &amp; exclusive merch.</div>
+                    </div>
+                  </div>
+
+                  <div style={{ background: '#030404', border: '3.5px solid #030404', borderRadius: '18px', boxShadow: '5px 5px 0 #FF188C', padding: '20px 18px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+                    <div style={{ width: 46, height: 46, borderRadius: '12px', background: '#FF9A00', border: '3px solid #F5F1E5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', boxShadow: '3px 3px 0 #F5F1E5', flexShrink: 0 }}>🎪</div>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '0.85rem', color: '#F5F1E5', textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>Full Access</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.72rem', color: 'rgba(245,241,229,0.6)', lineHeight: 1.5 }}>All workshops, events &amp; outdoor activities.</div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
 
-              {/* Lower Section: Interactive Call-To-Action Card (Centered Below) */}
-              <div className="flex flex-col items-center justify-center relative z-10 w-full pt-4">
-                <div className="w-full max-w-md border-comic bg-brand-cloud p-6 sm:p-8 rounded-xl shadow-comic transform transition-transform duration-300 hover:scale-[1.01]">
-                  <h3 className="font-display font-black text-xl sm:text-2xl tracking-tight mb-2 text-brand-ink text-center uppercase">
-                    Register
-                  </h3>
-                  <p className="font-sans font-medium text-xs text-brand-ink/70 mb-6 leading-normal text-center mx-auto max-w-xs">
-                    Secure your place at the most fearless orientation event.
-                  </p>
-
-                  <Link href="/register" className="w-full block">
-                    <motion.button
-                      whileHover={{ scale: 1.03, rotate: -1 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="w-full comic-interactive border-comic py-5 px-6 shadow-comic hover:shadow-solid-ink transition-all font-display font-black text-xl tracking-wide text-brand-cloud bg-brand-pink rounded-lg cursor-pointer flex items-center justify-center gap-2 group"
-                    >
-                      <span>Register Online Now</span>
-                      <span className="transform group-hover:translate-x-2 transition-transform duration-200">→</span>
-                    </motion.button>
-                  </Link>
+              {/* ── Important Instructions ── */}
+              <div style={{ background: '#F5F1E5', border: '3.5px solid #030404', borderRadius: '20px', boxShadow: '7px 7px 0 #030404', padding: '28px 24px', marginBottom: '24px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 900, letterSpacing: '0.2em', color: '#030404', textTransform: 'uppercase' }}>⚠ Important Instructions</span>
                 </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', background: 'white', border: '2.5px solid #030404', borderRadius: '12px', padding: '12px 14px', boxShadow: '3px 3px 0 #030404' }}>
+                    <div style={{ minWidth: 28, height: 28, borderRadius: '8px', background: '#FF188C', border: '2px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '12px', color: '#F5F1E5', flexShrink: 0 }}>01</div>
+                    <p style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.8rem', color: '#030404', lineHeight: 1.6, margin: 0 }}>
+                      Enter the <strong style={{ color: '#FF188C', fontWeight: 900 }}>student&apos;s full name accurately</strong> — even if payment is made by a parent or guardian.
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', background: 'white', border: '2.5px solid #030404', borderRadius: '12px', padding: '12px 14px', boxShadow: '3px 3px 0 #030404' }}>
+                    <div style={{ minWidth: 28, height: 28, borderRadius: '8px', background: '#0D21DD', border: '2px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '12px', color: '#F5F1E5', flexShrink: 0 }}>02</div>
+                    <p style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.8rem', color: '#030404', lineHeight: 1.6, margin: 0 }}>
+                      <strong style={{ color: '#0D21DD', fontWeight: 900 }}>Strictly for admitted students</strong> of JKLU Batch 2026. Do not share outside the eligible group.
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', background: 'white', border: '2.5px solid #030404', borderRadius: '12px', padding: '12px 14px', boxShadow: '3px 3px 0 #030404' }}>
+                    <div style={{ minWidth: 28, height: 28, borderRadius: '8px', background: '#FF9A00', border: '2px solid #030404', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '12px', color: '#030404', flexShrink: 0 }}>03</div>
+                    <p style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.8rem', color: '#030404', lineHeight: 1.6, margin: 0 }}>
+                      Mention your <strong style={{ color: '#030404', fontWeight: 900, textDecoration: 'underline', textDecorationColor: '#FF9A00', textDecorationThickness: '2px' }}>JKLU Application Number</strong> for proper identification &amp; confirmation.
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* ── CTA Button ── */}
+              <div style={{ textAlign: 'center' }}>
+                <Link href="/register" style={{ display: 'inline-block', width: '100%', maxWidth: '480px' }}>
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{
+                      background: 'linear-gradient(135deg, #FF188C 0%, #FF4DB2 100%)',
+                      border: '4px solid #030404',
+                      borderRadius: '16px',
+                      boxShadow: '8px 8px 0 #030404',
+                      padding: '20px 40px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '12px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(1rem, 3vw, 1.3rem)', color: '#F5F1E5', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Register Online Now</span>
+                    <span style={{ fontSize: '1.3rem', color: '#F5F1E5' }}>→</span>
+                  </motion.div>
+                </Link>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 700, color: '#030404', opacity: 0.4, marginTop: '10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                  Secure your spot · Limited seats available
+                </p>
               </div>
 
             </div>
