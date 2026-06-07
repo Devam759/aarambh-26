@@ -49,6 +49,7 @@ export default {
         }
       },
       fontFamily: {
+        bricks: ['"Russo One"', '"TT Bricks"', '"Outfit"', 'sans-serif'],
         display: ['"Outfit"', 'system-ui', 'sans-serif'],
         sans: ['"Google Sans"', 'Roboto', 'system-ui', 'sans-serif'],
         adminHeading: ['"DM Serif Display"', 'serif'],

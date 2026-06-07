@@ -4,11 +4,74 @@ import React from 'react';
 export default function PackingChecklist() {
   return (
     <section className="py-24 px-6 w-full max-w-7xl mx-auto relative z-10 font-sans">
-      <div className="bg-brand-cloud border-comic p-8 md:p-14 rounded-xl shadow-comic">
+      {/* SVG displacement filter for torn paper edges */}
+      <svg className="absolute w-0 h-0" width="0" height="0">
+        <defs>
+          <filter id="torn-card-filter" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
+      <div className="relative p-8 md:p-14 bg-transparent">
+        {/* Distressed/Grunge Box Background Layer */}
+        <div 
+          className="absolute inset-0 bg-[#F5F1E5] border-comic rounded-xl shadow-comic -z-10"
+          style={{
+            filter: 'url(#torn-card-filter)',
+            backgroundImage: `
+              linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 48%, rgba(255,255,255,0.6) 49%, rgba(0,0,0,0.18) 50%, rgba(255,255,255,0) 51%, rgba(255,255,255,0) 100%),
+              linear-gradient(65deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 28%, rgba(255,255,255,0.5) 29%, rgba(0,0,0,0.15) 30%, rgba(255,255,255,0) 31%, rgba(255,255,255,0) 100%),
+              linear-gradient(110deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 73%, rgba(255,255,255,0.4) 74%, rgba(0,0,0,0.15) 75%, rgba(255,255,255,0) 76%, rgba(255,255,255,0) 100%),
+              radial-gradient(circle, transparent 75%, rgba(139, 90, 43, 0.08) 95%, rgba(100, 60, 20, 0.15) 100%)
+            `
+          }}
+        />
+        {/* Noise/Grunge Overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none select-none opacity-[0.06] mix-blend-multiply -z-5"
+          style={{
+            filter: 'url(#torn-card-filter)',
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
+          }}
+        />
+        {/* Tape & Sticker Vibe: Scrapbook Designer Washi Tape Elements (Stripe Style) */}
+        {/* Top Left Tape */}
+        <div 
+          className="absolute -top-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
+          style={{
+            clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
+            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+          }}
+        />
+        {/* Top Right Tape */}
+        <div 
+          className="absolute -top-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
+          style={{
+            clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
+            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+          }}
+        />
+        {/* Bottom Left Tape */}
+        <div 
+          className="absolute -bottom-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
+          style={{
+            clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
+            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+          }}
+        />
+        {/* Bottom Right Tape */}
+        <div 
+          className="absolute -bottom-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
+          style={{
+            clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
+            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+          }}
+        />
 
         {/* Heading Block */}
         <div className="flex flex-col items-center text-center mb-16">
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black uppercase leading-none tracking-tighter text-brand-ink mb-4">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-bricks font-black uppercase leading-none tracking-wide text-brand-ink mb-4">
             Essential <span className="text-brand-pink">Packing</span> Checklist
           </h2>
           <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide">
@@ -27,9 +90,13 @@ export default function PackingChecklist() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
 
           {/* Card 1: Clothing & Gear */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Clothing & Gear</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Clothing & Gear</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
               <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></li>
@@ -42,9 +109,13 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 2: Academics */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Academics</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Academics</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
               <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop / computer & charger</span></li>
@@ -56,51 +127,67 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 3: Room & Living */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+          <div className="relative p-6 rotate-2">
+            <div 
+              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Room & Living</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Room & Living</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bed sheets, pillow & cover</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Blankets and Comforter</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-pink decoration-2">Umbrella (Important! Rain Alert)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Desk lamp</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Laundry basket & detergent</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bed sheets, pillow & cover</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Blankets and Comforter</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-orange decoration-2">Umbrella (Important! Rain Alert)</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Desk lamp</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Laundry basket & detergent</span></li>
             </ul>
           </div>
 
           {/* Card 4: Kitchen & Food */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-2">
+          <div className="relative p-6 -rotate-2">
+            <div 
+              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Kitchen & Food</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Kitchen & Food</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Water bottle</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Coffee/tea mug</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Basic utensils (for induction)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Plates and Bowls</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Non-perishable snacks</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Water bottle</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Coffee/tea mug</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Basic utensils (for induction)</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Plates and Bowls</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Non-perishable snacks</span></li>
             </ul>
           </div>
 
           {/* Card 5: Official Docs */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Official Docs</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Official Docs</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Admission letter & documents</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Academic transcripts</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Government-issued IDs</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bank account information</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Emergency contacts</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Admission letter & documents</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Academic transcripts</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Government-issued IDs</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bank account information</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Emergency contacts</span></li>
             </ul>
           </div>
 
           {/* Card 6: Health & Care */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Health & Care</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Health & Care</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
               <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>First aid kit</span></li>
@@ -112,44 +199,56 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 7: Tech Gear */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-2">
+          <div className="relative p-6 rotate-2">
+            <div 
+              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Tech Gear</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Tech Gear</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Power Bank</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Extension cord</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Headphones or earbuds</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Speakers (respectful volume)</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Power Bank</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Extension cord</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Headphones or earbuds</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Speakers (respectful volume)</span></li>
             </ul>
           </div>
 
           {/* Card 8: Recreation */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:rotate-1 duration-300 -rotate-1">
+          <div className="relative p-6 -rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Recreation</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Recreation</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Books for leisure reading</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Board games or playing cards</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Sports equipment</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Musical instruments</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Art supplies</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Books for leisure reading</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Board games or playing cards</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sports equipment</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Musical instruments</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Art supplies</span></li>
             </ul>
           </div>
 
           {/* Card 9: Toiletries & Grooming */}
-          <div className="bg-white border-comic rounded-xl p-6 shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300 rotate-1">
+          <div className="relative p-6 rotate-1">
+            <div 
+              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
+              style={{ filter: 'url(#torn-card-filter)' }}
+            />
             <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-display font-black text-xl tracking-tight text-brand-ink uppercase">Toiletries & Grooming</h3>
+              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Toiletries & Grooming</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bath towels & hand towels</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Shampoo, conditioner & body wash</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Trimmer / grooming kit</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bath towels & hand towels</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Shampoo, conditioner & body wash</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Trimmer / grooming kit</span></li>
+              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></li>
             </ul>
           </div>
 

@@ -102,7 +102,7 @@ export default function SneakPeak() {
         <div className="w-full max-w-5xl relative">
           {/* Animated Glow effects behind the screen */}
           <motion.div 
-            className="absolute -inset-4 sm:-inset-6 rounded-3xl blur-xl"
+            className="hidden md:block absolute -inset-4 sm:-inset-6 rounded-3xl blur-xl"
             style={{ background: 'linear-gradient(135deg, #FF188C, #FFE600, #00D4FF)' }}
             animate={{ 
               opacity: [0.2, 0.4, 0.2],
@@ -112,7 +112,7 @@ export default function SneakPeak() {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
-            className="absolute -inset-6 sm:-inset-8 rounded-3xl blur-2xl"
+            className="hidden md:block absolute -inset-6 sm:-inset-8 rounded-3xl blur-2xl"
             style={{ background: 'linear-gradient(315deg, #00D4FF, #FF188C, #FFE600)' }}
             animate={{ 
               opacity: [0.1, 0.25, 0.1],
@@ -123,7 +123,7 @@ export default function SneakPeak() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
           />
           <motion.div 
-            className="absolute -inset-3 sm:-inset-5 rounded-3xl blur-lg"
+            className="hidden md:block absolute -inset-3 sm:-inset-5 rounded-3xl blur-lg"
             style={{ background: 'linear-gradient(45deg, #00D4FF, #FF188C)' }}
             animate={{ 
               opacity: [0.08, 0.2, 0.08],

@@ -351,14 +351,14 @@ const VOLUNTEERS: TeamMember[] = [
       "Audited core web vitals and speed indexes across the portal"
     ],
     image: "/Team Photos/Tech Team/pratham.png",
-    themeColor: "from-[#0D21DD] to-[#FF9A00]",
-    glowColor: "rgba(52, 211, 153, 0.25)",
-    accentColor: "#34d399",
+    themeColor: "from-[#d946ef] to-[#4f46e5]",
+    glowColor: "rgba(217, 70, 239, 0.25)",
+    accentColor: "#d946ef",
     icon: <Zap className="w-4 h-4" />,
     socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:rohan@jklu.edu.in" },
     imageScale: "scale(1.12)",
     imagePosition: "translateY(10px)",
-    bgColor: "bg-[#34d399]"
+    bgColor: "bg-[#d946ef]"
   },
   {
     id: "10",
@@ -556,6 +556,7 @@ function TeamMemberCard({
   };
 
   const isLeader = member.role.includes("LEADER");
+  const isPratham = member.id === "9" || member.name === "PRATHAM";
 
   return (
     <motion.div
@@ -573,7 +574,7 @@ function TeamMemberCard({
         onMouseLeave={handleMouseLeave}
         className="relative aspect-[3/4.2] w-full cursor-pointer group select-none overflow-visible"
         style={{
-          transform: isHovered
+          transform: isHovered && !isPratham
             ? `perspective(1000px) rotateY(${coords.x * 12}deg) rotateX(${-coords.y * 12}deg) scale(1.025)`
             : 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)',
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)'
@@ -596,6 +597,24 @@ function TeamMemberCard({
         >
           {/* Simple, gorgeous graphic effects that replicate the movie poster panels */}
           {(() => {
+            if (isPratham) {
+              // Concentric Static Diamonds for Pratham
+              return (
+                <div className="absolute inset-0 opacity-[0.22] pointer-events-none flex items-center justify-center overflow-hidden">
+                  {[0.2, 0.45, 0.7, 0.95, 1.2, 1.45, 1.7].map((scale, i) => (
+                    <div
+                      key={i}
+                      className="absolute border-2 border-white"
+                      style={{
+                        width: '75%',
+                        height: '75%',
+                        transform: `rotate(45deg) scale(${scale})`,
+                      }}
+                    />
+                  ))}
+                </div>
+              );
+            }
             const effectIndex = index % 5;
             if (effectIndex === 0) {
               // Comic Sunburst Rays
@@ -628,37 +647,55 @@ function TeamMemberCard({
                 />
               );
             } else if (effectIndex === 3) {
-              // Action Focus Rings
+              // Action Focus Hearts - Concentric and Ripple Outwards
               return (
                 <div
-                  className="absolute inset-0 opacity-[0.15] group-hover:opacity-[0.24] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, transparent 40%, #fff 41%, #fff 45%, transparent 46%, transparent 70%, #fff 71%, #fff 75%, transparent 76%)'
-                  }}
-                />
+                  className="absolute inset-0 opacity-[0.2] group-hover:opacity-[0.32] transition-opacity duration-300 pointer-events-none flex items-center justify-center overflow-hidden"
+                >
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <motion.svg
+                      key={i}
+                      className="absolute text-white"
+                      style={{ width: '85%', height: '85%' }}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      initial={{ scale: 0.1, opacity: 0 }}
+                      animate={{ 
+                        scale: 1.8, 
+                        opacity: [0, 0.85, 0.85, 0.4, 0] 
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        delay: i * 0.8,
+                        ease: "linear"
+                      }}
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </motion.svg>
+                  ))}
+                </div>
               );
             } else {
-              // Halftone Action Grid Dots
+              // Cyber Grid Lines (replaces Halftone Action Grid Dots)
               return (
                 <div
-                  className="absolute inset-0 opacity-[0.18] group-hover:opacity-[0.28] transition-opacity duration-300 pointer-events-none"
+                  className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
                   style={{
-                    backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2px)',
-                    backgroundSize: '12px 12px'
+                    backgroundImage: `
+                      linear-gradient(to right, #fff 1.5px, transparent 1.5px),
+                      linear-gradient(to bottom, #fff 1.5px, transparent 1.5px)
+                    `,
+                    backgroundSize: '20px 20px'
                   }}
                 />
               );
             }
           })()}
 
-          {/* Subtle Halftone texture overlay inside card */}
-          <div
-            className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-multiply group-hover:opacity-[0.1] transition-opacity duration-300"
-            style={{
-              backgroundImage: `radial-gradient(circle, #030404 1.5px, transparent 1.5px)`,
-              backgroundSize: '8px 8px'
-            }}
-          />
+          {/* Subtle Halftone texture overlay removed to follow no-dots design */}
 
           {/* Dynamic lighting gradient overlay */}
           <div
@@ -790,14 +827,7 @@ function ProfileModal({
               background: `radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, ${member.accentColor} 100%)`
             }}
           >
-            {/* Halftone texture inside modal left panel */}
-            <div
-              className="absolute inset-0 opacity-[0.12] pointer-events-none mix-blend-multiply"
-              style={{
-                backgroundImage: `radial-gradient(circle, #030404 1.5px, transparent 1.5px)`,
-                backgroundSize: '12px 12px'
-              }}
-            />
+            {/* Halftone texture inside modal left panel removed to follow no-dots design */}
 
             {/* Retro Comic Background Words */}
             <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none select-none overflow-hidden opacity-[0.14] font-display font-black leading-none text-[#030404] tracking-tighter z-0">
@@ -1043,13 +1073,12 @@ export default function CreditsPage() {
   const closeModal = useCallback(() => setActiveMember(null), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#F5F1E5] font-sans select-none text-[#030404] z-10">
-      {/* Upper section with blue background */}
-      <div className="relative w-full pt-4 md:pt-8 lg:pt-12 px-4 md:px-8 lg:px-12 pb-16 bg-[#00a6e6]">
-        {/* Futuristic Background layers */}
-        <AnimatedBackground />
+    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] font-sans select-none text-[#030404] z-10">
+      {/* Futuristic Background layers wrapping the entire page */}
+      <AnimatedBackground />
 
-        <div className="w-full max-w-7xl mx-auto relative z-10">
+      <div className="relative w-full pt-24 min-[400px]:pt-28 md:pt-32 px-4 md:px-8 lg:px-12 pb-10 relative z-10">
+        <div className="w-full max-w-7xl mx-auto">
           <div className="h-10 md:h-6" />
 
           {/* ================================================================ */}
@@ -1059,24 +1088,12 @@ export default function CreditsPage() {
             {/* Light Streak Background */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[3px] bg-gradient-to-r from-transparent via-[#FF188C]/20 to-transparent blur-[4px]" />
 
-            <div className="relative z-10 flex items-center justify-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF188C] animate-pulse" />
-              <span className="font-mono text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#FF188C]">
-                AARAMBH &apos;26 SYSTEM CREDITS
-              </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF188C] animate-pulse" />
-            </div>
-
             <h1
               className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-[#030404] leading-none relative z-10"
               style={{ fontFamily: 'var(--font-devanagari)' }}
             >
               THE <span className="bg-gradient-to-r from-[#FF188C] via-[#FF9A00] to-[#0D21DD] bg-clip-text text-transparent">TECH</span> TEAM
             </h1>
-
-            <p className="font-mono text-[10px] md:text-xs text-[#030404]/60 font-bold uppercase tracking-widest relative z-10">
-              The Digital Architects Behind The Roster Reveal
-            </p>
           </div>
 
           {/* ================================================================ */}
@@ -1088,7 +1105,7 @@ export default function CreditsPage() {
             <div className="flex items-center justify-center gap-3 mb-12">
               <div className="h-[2px] w-12 bg-[#030404]" />
               <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
-                CORE LEADERS
+                LEADERS
               </span>
               <div className="h-[2px] w-12 bg-[#030404]" />
             </div>
@@ -1131,7 +1148,7 @@ export default function CreditsPage() {
             <div className="flex items-center justify-center gap-3 mb-16 mt-20">
               <div className="h-[2px] w-12 bg-[#030404]" />
               <span className="font-display font-black text-xl md:text-2xl uppercase tracking-widest text-[#030404]">
-                DEVELOPMENT VOLUNTEERS
+                VOLUNTEERS
               </span>
               <div className="h-[2px] w-12 bg-[#030404]" />
             </div>
@@ -1150,15 +1167,12 @@ export default function CreditsPage() {
         </div>
       </div>
 
-      {/* Lower section with original background */}
-      <div className="relative w-full bg-[#F5F1E5] px-4 md:px-8 lg:px-12 pb-10">
-        <div className="w-full max-w-7xl mx-auto relative z-10">
-          {/* Footer info text */}
-          <div className="text-center py-10 mt-6 border-t border-[#030404]/10 max-w-2xl mx-auto">
-            <p className="text-[#030404]/40 font-mono text-[9px] font-black uppercase tracking-widest">
-              TAP ANY ROSTER CARD TO INTERACT & VIEW CORRESPONDING SYSTEM PROFILE
-            </p>
-          </div>
+      {/* Bottom text block centered directly on blue background just above the dividing line */}
+      <div className="w-full pb-16 text-center relative z-10">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-[#030404]/80 font-mono text-[9px] min-[400px]:text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed px-4">
+            TAP ANY CARD TO INTERACT & VIEW CORRESPONDING PROFILE
+          </p>
         </div>
       </div>
 

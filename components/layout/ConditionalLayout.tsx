@@ -18,11 +18,13 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
     return <>{children}</>;
   }
 
+  const isCreditsPage = pathname === '/credits';
+
   return (
     <>
       <CustomCursor />
       <Navbar />
-      <main className="min-h-screen">
+      <main className={`min-h-screen ${isCreditsPage ? 'bg-[#00a6e6]' : 'bg-brand-cloud'}`}>
         {children}
       </main>
       <Footer />

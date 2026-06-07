@@ -55,7 +55,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-all duration-300 rounded-full border ${
+        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-[padding,background-color,border-color,box-shadow] ease-out duration-300 rounded-full border ${
           isScrolled
             ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
             : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
@@ -63,23 +63,23 @@ export default function Navbar() {
       >
         <div className="flex justify-between items-center w-full gap-4 lg:gap-6 xl:gap-8">
           {/* Logo Container */}
-          <div className="flex items-center gap-2 xl:gap-3 shrink-0">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <a
               href="https://jklu.edu.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden xl:flex items-center hover:scale-105 transition-transform"
+              className="flex items-center hover:scale-105 transition-transform"
             >
               <Image
                 src="/jklu_logo_light.svg"
                 alt="JKLU Logo"
-                width={40}
-                height={40}
-                className="h-9 w-auto object-contain"
+                width={32}
+                height={32}
+                className="h-7 w-auto object-contain md:h-9"
                 style={{ width: 'auto' }}
               />
             </a>
-            <div className="hidden xl:block w-[1.5px] h-6 bg-brand-cloud/25 self-center shrink-0" />
+            <div className="w-[1.5px] h-5 md:h-6 bg-brand-cloud/25 self-center shrink-0" />
             <Link
               href="/"
               className="flex items-center hover:scale-105 transition-transform"
@@ -87,9 +87,9 @@ export default function Navbar() {
               <Image
                 src="/logo.svg"
                 alt="AARAMBH'26"
-                width={130}
-                height={30}
-                className="h-7 md:h-8 w-auto object-contain"
+                width={100}
+                height={24}
+                className="h-6 md:h-8 w-auto object-contain"
                 style={{ width: 'auto' }}
               />
             </Link>
@@ -156,33 +156,29 @@ export default function Navbar() {
         </div>
 
         {/* Mobile dropdown */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
+        <div
+          className={`lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink origin-top transition-all duration-150 ease-out ${
+            isMobileMenuOpen
+              ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+          }`}
+        >
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
+                pathname === link.href
+                  ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
+                  : 'text-brand-ink hover:text-brand-ink'
+              }`}
             >
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
-                    pathname === link.href
-                      ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
-                      : 'text-brand-ink hover:text-brand-ink'
-                  }`}
-                >
-                  <span>{link.name}</span>
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
-                </Link>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <span>{link.name}</span>
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
+            </Link>
+          ))}
+        </div>
       </nav>
     </>
   );
