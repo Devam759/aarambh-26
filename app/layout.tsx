@@ -134,8 +134,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Show preloader on first visit (session-based)
-                if (!sessionStorage.getItem('hasPlayedIntro')) {
+                // Show preloader on first visit (session-based) - only on the home page
+                if (window.location.pathname === '/' && !sessionStorage.getItem('hasPlayedIntro')) {
                   document.documentElement.classList.add('preloader-active');
                 }
 

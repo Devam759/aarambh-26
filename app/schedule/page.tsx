@@ -217,7 +217,7 @@ export default function SchedulePage() {
         </div>
 
         {/* Horizontal Scrollable Neo-Brutalist Tabs */}
-        <div className="relative z-20 mb-12 w-full">
+        <div className="relative z-20 mb-8 w-full">
           <div className="flex overflow-x-auto gap-3 py-5 px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud">
             {SCHEDULE_DATA.map((day, idx) => {
               const isActive = activeDayIdx === idx;
@@ -235,16 +235,20 @@ export default function SchedulePage() {
                 >
                   <div className="text-sm md:text-base tracking-tighter uppercase">{day.day}</div>
                   <div className="text-[10px] md:text-xs uppercase opacity-85 mt-0.5 tracking-wider font-mono">{day.date}</div>
-                  {day.theme && (
-                    <div className="mt-2 text-[10px] leading-tight max-w-[100px] mx-auto opacity-90">
-                      {day.theme}
-                    </div>
-                  )}
                 </button>
               );
             })}
           </div>
         </div>
+
+        {/* Selected Day Theme Banner */}
+        {activeDay.theme && (
+          <div className="w-full max-w-4xl mx-auto mb-10 text-center relative z-20">
+            <h2 className="font-display font-black text-xl sm:text-2xl uppercase tracking-wider text-brand-ink">
+              THEME: <span className="text-brand-pink">{activeDay.theme}</span>
+            </h2>
+          </div>
+        )}
 
         {/* Detailed Itinerary Timeline */}
         <div className="relative z-10 max-w-4xl mx-auto">
