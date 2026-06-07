@@ -85,6 +85,9 @@ export default function Home() {
   useEffect(() => {
     // Global listener for screen clicks to synthesis clicks and pop comic dots
     const handleGlobalClick = (e: MouseEvent) => {
+      // Bypass on mobile/tablet screens to keep scrolling and tapping fast and lag-free
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
+
       const target = e.target as HTMLElement;
       if (
         target.tagName === 'INPUT' || 
@@ -172,14 +175,14 @@ export default function Home() {
         {/* Aurora Mesh — mirrors Hero.tsx background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div className="absolute inset-0 bg-brand-cloud" />
-          <motion.div
-            className="absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
+           <motion.div
+            className="hidden md:block absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
             style={{ background: '#FF188C', filter: 'blur(140px)' }}
             animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
             transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute top-[20%] right-[10%] w-[50%] h-[70%] rounded-full opacity-[0.10]"
+            className="hidden md:block absolute top-[20%] right-[10%] w-[50%] h-[70%] rounded-full opacity-[0.10]"
             style={{ background: '#0D21DD', filter: 'blur(150px)' }}
             animate={{ x: [0, -40, 0], y: [0, -20, 0], scale: [1, 1.15, 1] }}
             transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
