@@ -174,6 +174,83 @@ const getVerticalFontSize = (text: string) => {
   return 'text-[22px]';
 };
 
+interface CardTheme {
+  bg: string;
+  text: string;
+  textAccent: string;
+  textMuted: string;
+  border: string;
+  halftoneClass: string;
+}
+
+const getCardTheme = (borderColor?: string): CardTheme => {
+  const border = (borderColor || '#FF188C').toUpperCase();
+  
+  if (border === '#FF9A00') {
+    return {
+      bg: '#ffe0b0',
+      text: '#030404',
+      textAccent: '#c2410c',
+      textMuted: 'rgba(3, 4, 4, 0.75)',
+      border: 'rgba(3, 4, 4, 0.1)',
+      halftoneClass: 'bg-halftone-black opacity-10',
+    };
+  }
+  
+  if (border === '#FF188C') {
+    return {
+      bg: '#ffb7db',
+      text: '#030404',
+      textAccent: '#be185d',
+      textMuted: 'rgba(3, 4, 4, 0.75)',
+      border: 'rgba(3, 4, 4, 0.1)',
+      halftoneClass: 'bg-halftone-black opacity-10',
+    };
+  }
+  
+  if (border === '#0D21DD') {
+    return {
+      bg: '#b4baf4',
+      text: '#030404',
+      textAccent: '#1d4ed8',
+      textMuted: 'rgba(3, 4, 4, 0.75)',
+      border: 'rgba(3, 4, 4, 0.1)',
+      halftoneClass: 'bg-halftone-black opacity-10',
+    };
+  }
+  
+  if (border === '#10B981') {
+    return {
+      bg: '#c6f6d5',
+      text: '#030404',
+      textAccent: '#047857',
+      textMuted: 'rgba(3, 4, 4, 0.75)',
+      border: 'rgba(3, 4, 4, 0.1)',
+      halftoneClass: 'bg-halftone-black opacity-10',
+    };
+  }
+  
+  if (border === '#8B5CF6') {
+    return {
+      bg: '#ddd6fe',
+      text: '#030404',
+      textAccent: '#6d28d9',
+      textMuted: 'rgba(3, 4, 4, 0.75)',
+      border: 'rgba(3, 4, 4, 0.1)',
+      halftoneClass: 'bg-halftone-black opacity-10',
+    };
+  }
+  
+  return {
+    bg: '#fcfbf7',
+    text: '#030404',
+    textAccent: '#4b5563',
+    textMuted: 'rgba(3, 4, 4, 0.75)',
+    border: 'rgba(3, 4, 4, 0.1)',
+    halftoneClass: 'bg-halftone-black opacity-[0.08]',
+  };
+};
+
 const ChromaGrid: React.FC<ChromaGridProps> = ({
   items,
   className = '',
@@ -232,6 +309,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       </svg>
 
       {data.map((c, i) => {
+        const theme = getCardTheme(c.borderColor);
         // Extract initials for the profile fallback
         const initials = c.title
           .split(' ')
@@ -288,21 +366,22 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
-                {/* 3. Black top paper layer */}
+                {/* 3. Themed top paper layer */}
                 <div 
-                  className="absolute inset-1.5 xs:inset-2 bg-[#030404] -z-10"
+                  className="absolute inset-1.5 xs:inset-2 -z-10"
                   style={{
+                    backgroundColor: theme.bg,
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
                 
-                {/* Subtle paper halftone texture on black paper */}
-                <div className="absolute inset-1.5 xs:inset-2 bg-halftone-cloud opacity-10 mix-blend-screen pointer-events-none -z-5" style={{ filter: 'url(#torn-card-filter)' }} />
+                {/* Subtle paper halftone texture on themed paper */}
+                <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Photo Frame */}
                 <div className="flex justify-center w-full mt-1 xs:mt-2 shrink-0 z-10">
                   <div 
-                    className="relative w-[78%] aspect-[3/5] shrink-0 rounded-lg overflow-hidden border bg-[#0e0e0e] shadow-[4px_4px_0px_0px_rgba(255,255,255,0.08)]"
+                    className="relative w-[78%] aspect-[3/5] shrink-0 rounded-lg overflow-hidden border bg-[#030404]/5 shadow-[4px_4px_0px_0px_rgba(3,4,4,0.15)]"
                     style={{ borderColor: c.borderColor || '#FF188C' }}
                   >
                     {c.image ? (
@@ -327,14 +406,17 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 {/* Identity Section */}
                 <div className="flex flex-col items-center text-center mt-2 space-y-1 flex-grow justify-start z-10">
                   {/* Name */}
-                  <h2 className="text-sm md:text-base font-display font-black uppercase text-white tracking-tight leading-tight line-clamp-2 px-1">
+                  <h2 
+                    className="text-sm md:text-base font-display font-black uppercase tracking-tight leading-tight line-clamp-2 px-1"
+                    style={{ color: theme.text }}
+                  >
                     {c.title}
                   </h2>
 
                   {/* Designation/Role */}
                   <p 
                     className="font-bold text-[9px] xs:text-[10px] uppercase tracking-wider line-clamp-2 px-1"
-                    style={{ color: c.borderColor || '#FF188C' }}
+                    style={{ color: theme.textAccent }}
                   >
                     {c.subtitle}
                   </p>
@@ -362,7 +444,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 text-white/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_8px_var(--hover-color)] transition-all rounded flex justify-center items-center cursor-pointer"
+                      className="w-8 h-8 text-[#030404]/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_6px_rgba(3,4,4,0.1)] transition-all rounded flex justify-center items-center cursor-pointer"
                       style={{ '--hover-color': c.borderColor || '#FF188C' } as React.CSSProperties}
                       aria-label={item.label}
                     >
@@ -370,7 +452,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     </a>
                   );
                   return (
-                    <div className="mt-2 pt-2 border-t border-white/10 w-full z-20 shrink-0 hidden sm:flex flex-col items-center gap-1.5">
+                    <div 
+                      className="mt-2 pt-2 border-t w-full z-20 shrink-0 hidden sm:flex flex-col items-center gap-1.5"
+                      style={{ borderColor: theme.border }}
+                    >
                       {count === 4 && (
                         <>
                           <div className="flex gap-1.5">{frontLinks.slice(0,2).map((l, k) => iconBtn(l, k))}</div>
@@ -422,43 +507,53 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
-                {/* 3. Black top paper layer */}
+                {/* 3. Themed top paper layer */}
                 <div 
-                  className="absolute inset-1.5 xs:inset-2 bg-[#030404] -z-10"
+                  className="absolute inset-1.5 xs:inset-2 -z-10"
                   style={{
+                    backgroundColor: theme.bg,
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
                 
-                {/* Subtle paper halftone texture on black paper */}
-                <div className="absolute inset-1.5 xs:inset-2 bg-halftone-cloud opacity-10 mix-blend-screen pointer-events-none -z-5" style={{ filter: 'url(#torn-card-filter)' }} />
+                {/* Subtle paper halftone texture on themed paper */}
+                <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Top Info Banner (Compact) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-col text-left shrink-0 z-10">
-                  <h3 className="text-xs xs:text-sm sm:text-base font-display font-black uppercase text-white tracking-tight leading-tight line-clamp-1">
+                  <h3 
+                    className="text-xs xs:text-sm sm:text-base font-display font-black uppercase tracking-tight leading-tight line-clamp-1"
+                    style={{ color: theme.text }}
+                  >
                     {c.title}
                   </h3>
                   <p 
                     className="font-bold text-[8px] xs:text-[10px] uppercase tracking-wider truncate mt-0.5"
-                    style={{ color: c.borderColor || '#FF188C' }}
+                    style={{ color: theme.textAccent }}
                   >
                     {c.subtitle}
                   </p>
                 </div>
 
                 {/* Thin Divider - Hidden on Mobile */}
-                <div className="hidden sm:block border-t border-white/10 my-1 xs:my-2.5 shrink-0 z-10" />
+                <div 
+                  className="hidden sm:block border-t my-1 xs:my-2.5 shrink-0 z-10" 
+                  style={{ borderColor: theme.border }}
+                />
 
                 {/* Description/Bio (tagline) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-1 min-h-0 flex-col justify-start z-10 relative">
-                  <p className="text-white/80 text-[8px] xs:text-[11px] font-mono font-bold leading-relaxed line-clamp-4 xs:line-clamp-6">
+                  <p 
+                    className="text-[8px] xs:text-[11px] font-mono font-bold leading-relaxed line-clamp-4 xs:line-clamp-6"
+                    style={{ color: theme.textMuted }}
+                  >
                     {getTagline(c.location, c.title)}
                   </p>
                   
                   {/* Decorative Hindi watermark 'सफ़र' */}
                   <span 
                     className="absolute right-1 bottom-1 text-xl xs:text-3xl font-black font-display select-none pointer-events-none transform rotate-[-8deg] font-hindi opacity-10"
-                    style={{ color: c.borderColor || '#FF188C' }}
+                    style={{ color: theme.textAccent }}
                   >
                     सफ़र
                   </span>
@@ -487,7 +582,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 xs:w-9 xs:h-9 border text-white hover:bg-white hover:text-black transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
+                      className="w-8 h-8 xs:w-9 xs:h-9 border text-[#030404] hover:bg-[#030404] hover:border-[#030404] hover:text-white transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
                       style={{ borderColor: c.borderColor || '#FF188C' }}
                       aria-label={item.label}
                     >
@@ -495,7 +590,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     </a>
                   );
                   return (
-                    <div className="flex-1 sm:flex-initial flex flex-col items-center justify-center border-t border-white/10 pt-1.5 xs:pt-3 mt-1.5 xs:mt-3 gap-1.5 shrink-0 z-10">
+                    <div 
+                      className="flex-1 sm:flex-initial flex flex-col items-center justify-center border-t pt-1.5 xs:pt-3 mt-1.5 xs:mt-3 gap-1.5 shrink-0 z-10"
+                      style={{ borderColor: theme.border }}
+                    >
                       {count === 4 && (
                         <>
                           <div className="flex gap-1.5">{backLinks.slice(0,2).map((l, k) => iconBtn(l, k))}</div>

@@ -69,7 +69,7 @@ export const TEAM_DATA = {
     {
       name: "Vedika Agrawal",
       designation: "Organizing Head",
-      photo: "/Team Photos/OH/Vedika Agrawal.webp",
+      photo: "/Team Photos/OH/Vedika Agrawal.jpeg",
       department: "Core Organizing Committee",
       socials: {
         email: "vedikaagrawal@jklu.edu.in"
@@ -78,7 +78,7 @@ export const TEAM_DATA = {
     {
       name: "Aman Pratap Singh",
       designation: "Organizing Head",
-      photo: "/Team Photos/OH/Aman Pratap Singh.webp",
+      photo: "/Team Photos/OH/Aman Pratap Singh.jpeg",
       department: "Core Organizing Committee",
       socials: {
         email: "amanpratapsingh@jklu.edu.in"
@@ -87,7 +87,7 @@ export const TEAM_DATA = {
     {
       name: "Vaishnavi Shukla",
       designation: "Organizing Head",
-      photo: "/Team Photos/OH/Vaishnavi Shukla.webp",
+      photo: "/Team Photos/OH/Vaishnavi Shukla.jpeg",
       department: "Core Organizing Committee",
       socials: {
         email: "vaishnavishukla@jklu.edu.in"
@@ -96,7 +96,7 @@ export const TEAM_DATA = {
     {
       name: "Tanik Gupta",
       designation: "Organizing Head",
-      photo: "/Team Photos/OH/Tanik Gupta.webp",
+      photo: "/Team Photos/OH/Tanik Gupta.jpeg",
       department: "Core Organizing Committee",
       socials: {
         email: "tanikgupta@jklu.edu.in"
@@ -105,7 +105,7 @@ export const TEAM_DATA = {
     {
       name: "Ambika Dalmia",
       designation: "Organizing Head",
-      photo: "/Team Photos/OH/Ambika Dalmia.webp",
+      photo: "/Team Photos/OH/Ambika Dalmia.jpeg",
       department: "Core Organizing Committee",
       socials: {
         email: "ambikadalmia@jklu.edu.in"
