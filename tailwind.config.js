@@ -56,6 +56,7 @@ export default {
         adminBody: ['"DM Sans"', 'sans-serif'],
         premium: ['"Outfit"', 'system-ui', 'sans-serif'],
         vanilla: ['"Vanilla Extract"', 'sans-serif'],
+        diary: ['"Architects Daughter"', '"Gochi Hand"', 'cursive'],
       },
       backgroundImage: {
         'brand-gradient': 'linear-gradient(135deg, #FF9A00 0%, #FF188C 50%, #0D21DD 100%)',

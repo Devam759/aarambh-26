@@ -2,6 +2,101 @@
 import React from 'react';
 
 export default function PackingChecklist() {
+  const handleDownload = () => {
+    const checklistData = {
+      "Clothing & Gear": [
+        "Casual wear (t-shirts, jeans, shorts)",
+        "Formal wear (shirts, trousers, dress)",
+        "Seasonal clothing (jackets, sweaters)",
+        "Undergarments and socks",
+        "Sleepwear and loungewear",
+        "Footwear (sneakers, sandals, formals)"
+      ],
+      "Academics": [
+        "Laptop / computer & charger",
+        "Notebooks and Writing Pads",
+        "Pens, pencils, and highlighters",
+        "Calculator (scientific)",
+        "Laptop Bag"
+      ],
+      "Room & Living": [
+        "Bed sheets, pillow & cover",
+        "Blankets and Comforter",
+        "Umbrella (Important! Rain Alert)",
+        "Desk lamp",
+        "Laundry basket & detergent"
+      ],
+      "Kitchen & Food": [
+        "Water bottle",
+        "Coffee/tea mug",
+        "Basic utensils (for induction)",
+        "Plates and Bowls",
+        "Non-perishable snacks"
+      ],
+      "Official Docs": [
+        "Admission letter & documents",
+        "Academic transcripts",
+        "Government-issued IDs",
+        "Bank account information",
+        "Emergency contacts"
+      ],
+      "Health & Care": [
+        "First aid kit",
+        "Prescription medications",
+        "Vitamins & supplements",
+        "Thermometer",
+        "Hand sanitizer & Face masks"
+      ],
+      "Tech Gear": [
+        "Power Bank",
+        "Extension cord",
+        "Headphones or earbuds",
+        "Speakers (respectful volume)"
+      ],
+      "Recreation": [
+        "Books for leisure reading",
+        "Board games or playing cards",
+        "Sports equipment",
+        "Musical instruments",
+        "Art supplies"
+      ],
+      "Toiletries & Grooming": [
+        "Bath towels & hand towels",
+        "Toothbrush, toothpaste & mouthwash",
+        "Shampoo, conditioner & body wash",
+        "Comb, hairbrush & nail clippers",
+        "Trimmer / grooming kit",
+        "Bucket, mug & bathroom slippers"
+      ]
+    };
+
+    let text = `==================================================\n`;
+    text += `          AARAMBH '26 PACKING CHECKLIST           \n`;
+    text += `==================================================\n\n`;
+    text += `Get ready for your college journey! Here is your custom checklist:\n\n`;
+
+    Object.entries(checklistData).forEach(([category, items]) => {
+      text += `[ ] ${category.toUpperCase()}\n`;
+      items.forEach(item => {
+        text += `    _ ${item}\n`;
+      });
+      text += `\n`;
+    });
+
+    text += `==================================================\n`;
+    text += `Generated from Aarambh '26 orientation portal.\n`;
+    text += `==================================================\n`;
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Aarambh_26_Packing_Checklist.txt");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <section className="py-24 px-6 w-full max-w-7xl mx-auto relative z-10 font-sans">
       {/* SVG displacement filter for torn paper edges */}
@@ -74,9 +169,18 @@ export default function PackingChecklist() {
           <h2 className="text-4xl sm:text-6xl md:text-7xl font-bricks font-black uppercase leading-none tracking-wide text-brand-ink mb-4">
             Essential <span className="text-brand-pink">Packing</span> Checklist
           </h2>
-          <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide">
+          <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide mb-6">
             Gear up for the next chapter. Tick off your items below to track your readiness for AARAMBH '26.
           </p>
+          <button 
+            onClick={handleDownload}
+            className="comic-interactive border-comic-thin py-3 px-6 bg-brand-pink text-white font-display font-black text-sm uppercase tracking-wider rounded-lg shadow-comic-sm cursor-pointer hover:shadow-solid-ink active:scale-[0.98] transition-all flex items-center gap-2 z-20"
+          >
+            <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Download Checklist (.txt)
+          </button>
         </div>
 
         {/* Interactive Motivation Banner */}
@@ -90,7 +194,7 @@ export default function PackingChecklist() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
 
           {/* Card 1: Clothing & Gear */}
-          <div className="relative p-6 rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -109,7 +213,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 2: Academics */}
-          <div className="relative p-6 -rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -127,7 +231,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 3: Room & Living */}
-          <div className="relative p-6 rotate-2">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -145,7 +249,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 4: Kitchen & Food */}
-          <div className="relative p-6 -rotate-2">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -163,7 +267,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 5: Official Docs */}
-          <div className="relative p-6 rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -181,7 +285,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 6: Health & Care */}
-          <div className="relative p-6 -rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -199,7 +303,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 7: Tech Gear */}
-          <div className="relative p-6 rotate-2">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -216,7 +320,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 8: Recreation */}
-          <div className="relative p-6 -rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
@@ -234,7 +338,7 @@ export default function PackingChecklist() {
           </div>
 
           {/* Card 9: Toiletries & Grooming */}
-          <div className="relative p-6 rotate-1">
+          <div className="relative p-6">
             <div 
               className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
               style={{ filter: 'url(#torn-card-filter)' }}
