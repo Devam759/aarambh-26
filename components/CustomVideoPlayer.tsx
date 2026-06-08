@@ -27,6 +27,15 @@ export default function CustomVideoPlayer({
   const [progress, setProgress] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [unmuteText, setUnmuteText] = useState('Click to Unmute');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      setUnmuteText(isTouch ? 'Tap to Unmute' : 'Click to Unmute');
+    }
+  }, []);
+
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const isManuallyPausedRef = useRef(false);
@@ -237,6 +246,51 @@ export default function CustomVideoPlayer({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  // Keyboard controls (Spacebar: play/pause, Arrow Keys: rewind/forward 5s)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is actively typing in a form or input element
+      const activeEl = document.activeElement;
+      if (
+        activeEl &&
+        (activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.tagName === 'SELECT' ||
+          activeEl.getAttribute('contenteditable') === 'true')
+      ) {
+        return;
+      }
+
+      const video = videoRef.current;
+      if (!video) return;
+
+      switch (e.key) {
+        case ' ':
+          e.preventDefault();
+          togglePlay();
+          handleInteraction();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          video.currentTime = Math.max(0, video.currentTime - 5);
+          handleInteraction();
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          video.currentTime = Math.min(video.duration || 0, video.currentTime + 5);
+          handleInteraction();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPlaying]);
+
   const handleFullscreen = async () => {
     try {
       const doc = document as any;
@@ -284,7 +338,11 @@ export default function CustomVideoPlayer({
       onMouseLeave={() => setIsControlsVisible(false)}
       onClick={() => {
         handleInteraction();
-        togglePlay();
+        if (isPlaying && isMuted) {
+          toggleMute();
+        } else {
+          togglePlay();
+        }
       }}
     >
       <video
@@ -297,6 +355,29 @@ export default function CustomVideoPlayer({
         muted={isMuted}
         loop
       />
+
+      {/* Dark Unmute Overlay */}
+      <AnimatePresence>
+        {isPlaying && isMuted && (
+          <motion.div
+            key="unmute-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 pointer-events-none"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-white font-display font-black text-xs sm:text-sm uppercase tracking-widest flex items-center gap-2"
+            >
+              <VolumeX className="w-4.5 h-4.5 animate-pulse text-white" />
+              <span>tap/click to unmute</span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
 
 

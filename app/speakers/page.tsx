@@ -258,6 +258,7 @@ export default function SpeakersSection() {
                 src={nextSpeaker.image}
                 alt="Next Up Lineup Preview"
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 90px, 180px"
                 className="object-cover grayscale contrast-125"
               />
@@ -299,6 +300,7 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
           src={speaker.image}
           alt={speaker.name}
           fill
+          unoptimized
           sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
           priority
           className="object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100 pointer-events-none"
@@ -333,6 +335,7 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
             src={speaker.image} 
             alt="watermark"
             fill
+            unoptimized
             sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
             className="object-cover grayscale blur-[2px]" 
           />

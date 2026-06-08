@@ -5,6 +5,7 @@ import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldC
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ComicBackground from '@/components/ComicBackground';
+import { validateRegistrationNumber, formatRegistrationNumber } from '@/lib/utils';
 
 function RegisterContent() {
   const router = useRouter();
@@ -36,11 +37,12 @@ function RegisterContent() {
     email: false,
     parentPhone: false,
     parentEmail: false,
+    registrationNumber: false,
   });
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const name = e.target.name as keyof typeof touched;
-    if (name === 'mobile' || name === 'email' || name === 'parentPhone' || name === 'parentEmail') {
+    if (name === 'mobile' || name === 'email' || name === 'parentPhone' || name === 'parentEmail' || name === 'registrationNumber') {
       setTouched(prev => ({ ...prev, [name]: true }));
     }
   };
@@ -91,7 +93,19 @@ function RegisterContent() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'course') {
+      setFormData(prev => {
+        const updated = { ...prev, course: value };
+        if (!prev.registrationNumber || prev.registrationNumber === 'JKLU' || prev.registrationNumber === 'JKLU/') {
+          const courseCode = value.toUpperCase().replace(/\./g, '');
+          updated.registrationNumber = `JKLU/${courseCode}/2025/`;
+        }
+        return updated;
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleApplyCoupon = () => {
@@ -197,6 +211,7 @@ function RegisterContent() {
   const isStudentValid = 
     formData.name.trim() !== '' &&
     formData.registrationNumber.trim() !== '' &&
+    validateRegistrationNumber(formData.registrationNumber) &&
     formData.mobile.trim() !== '' &&
     validateMobile(formData.mobile) &&
     formData.email.trim() !== '' &&
@@ -258,8 +273,10 @@ function RegisterContent() {
             width={800} 
             height={231} 
             priority
+            unoptimized
             className="w-full max-w-2xl h-auto object-contain select-none"
             style={{ 
+              height: 'auto',
               filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404)" 
             }}
           />
@@ -324,11 +341,24 @@ function RegisterContent() {
                       required 
                       name="registrationNumber" 
                       value={formData.registrationNumber} 
-                      onChange={handleChange} 
-                      className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
-                      placeholder="APP123456" 
+                      onChange={(e) => {
+                        const formatted = formatRegistrationNumber(e.target.value, formData.registrationNumber);
+                        setFormData({ ...formData, registrationNumber: formatted });
+                      }}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                        touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber)
+                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          : 'border-comic-thin focus:border-brand-ink'
+                      }`}
+                      placeholder="JKLU/BBA/2025/0310" 
                       suppressHydrationWarning 
                     />
+                    {touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber) && (
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                        PLEASE ENTER A VALID APPLICATION NUMBER (E.G. JKLU/BBA/2025/0310)
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-brand-ink/75 block mb-1">Mobile Number *</label>

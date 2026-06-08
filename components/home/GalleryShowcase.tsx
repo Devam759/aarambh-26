@@ -338,6 +338,7 @@ export default function GalleryShowcase() {
                   src={src} 
                   alt="Aarambh" 
                   fill 
+                  unoptimized
                   sizes="(max-width: 768px) 80px, 150px"
                   className="gl-slider-image object-cover" 
                   loading="lazy"
@@ -357,6 +358,7 @@ export default function GalleryShowcase() {
                     src={src} 
                     alt="Aarambh" 
                     fill 
+                    unoptimized
                     sizes="150px"
                     className="gl-slider-image object-cover" 
                     loading="lazy"
@@ -377,6 +379,7 @@ export default function GalleryShowcase() {
                     src={src} 
                     alt="Aarambh" 
                     fill 
+                    unoptimized
                     sizes="150px"
                     className="gl-slider-image object-cover" 
                     loading="lazy"
@@ -396,6 +399,7 @@ export default function GalleryShowcase() {
                   src={src} 
                   alt="Aarambh" 
                   fill 
+                  unoptimized
                   sizes="(max-width: 768px) 80px, 150px"
                   className="gl-slider-image object-cover" 
                   loading="lazy"
@@ -427,7 +431,7 @@ export default function GalleryShowcase() {
                 textShadow: '2px 2px 0px #030404',
                 letterSpacing: '-0.02em'
               }}>
-                Memories of 2026
+                Memories of 2025
               </h2>
               <p style={{
                 fontFamily: "var(--font-display)",
@@ -436,7 +440,7 @@ export default function GalleryShowcase() {
                 color: '#030404',
                 lineHeight: 1.6
               }}>
-                Experience the best moments of Aarambh 2026 with our curated memories.
+                Experience the best moments of Aarambh 2025 with our curated memories.
               </p>
             </motion.div>
           )}

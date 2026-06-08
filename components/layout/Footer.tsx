@@ -316,6 +316,8 @@ export default function Footer() {
               src="/footer_image.webp"
               alt="JKLU Campus View"
               fill
+              priority
+              unoptimized
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, 280px"
             />
@@ -374,6 +376,7 @@ export default function Footer() {
               alt="Aarambh '26 Logo"
               width={834}
               height={193}
+              unoptimized
               className="h-10 w-auto opacity-95 object-contain"
               style={{ width: 'auto', height: '40px' }}
             />
@@ -387,8 +390,9 @@ export default function Footer() {
             <Image
               src="/jklu_logo.svg"
               alt="JK Lakshmipat University Logo"
-              width={120}
-              height={40}
+              width={819}
+              height={916}
+              unoptimized
               className="h-12 w-auto opacity-95 object-contain"
               style={{ width: 'auto', height: '48px' }}
             />

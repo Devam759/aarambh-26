@@ -390,6 +390,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                         src={c.image} 
                         alt={c.title} 
                         fill
+                        unoptimized
                         sizes="(max-width: 640px) 120px, 200px"
                         referrerPolicy="no-referrer"
                         className="object-cover p-0 hover:scale-105 transition-all duration-300" 

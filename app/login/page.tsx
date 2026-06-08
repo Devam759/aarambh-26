@@ -371,10 +371,12 @@ export default function LoginPage() {
               <Image 
                 src="/logo.svg" 
                 alt="AARAMBH '26" 
-                width={200} 
-                height={46} 
+                width={834} 
+                height={193} 
                 priority
+                unoptimized
                 className="h-10 w-auto object-contain"
+                style={{ width: 'auto' }}
               />
             </div>
             <h1 className="text-xl font-display font-black tracking-wider uppercase text-brand-ink">

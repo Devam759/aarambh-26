@@ -147,6 +147,7 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
               alt="Translucent Fluid Alcohol Ink background"
               fill
               priority
+              unoptimized
               sizes="100vw"
               className="object-fill sm:object-cover opacity-55 sm:opacity-65 scale-[1.02] sm:scale-[1.08] filter saturate-[1.8] brightness-[1.05] sm:brightness-[1.01] contrast-[1.05] sm:saturate-100 sm:contrast-[0.99]"
             />
@@ -236,6 +237,8 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
                 src={sticker.src}
                 alt={sticker.alt}
                 fill
+                unoptimized
+                sizes="(max-width: 1023px) 80px, 200px"
                 className="object-contain"
                 priority
               />
@@ -270,6 +273,8 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
                     src="/aarambh_logo_outline.png"
                     alt="Aarambh '26 Logo Outline"
                     fill
+                    unoptimized
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
                     className="object-contain"
                     priority
                   />
@@ -287,6 +292,8 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
                       src="/aarambh_logo_extruded.png"
                       alt="Aarambh '26 Logo Extruded - The Signature Welcome Festival of JK Lakshmipat University"
                       fill
+                      unoptimized
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
                       className="object-contain"
                       priority
                       loading="eager"
@@ -322,7 +329,7 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
           {/* Narrative Dialogue Box */}
           <div className="border-comic bg-brand-cloud text-brand-ink p-3 sm:p-4 rounded-lg max-w-4xl w-[95%] sm:w-full shadow-comic bg-halftone-black mb-4 sm:mb-6 mx-auto">
             <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-sm sm:text-base">AARAMBH &mdash; THE BEGINNING OF SOMETHING GREATER. </span>
+              <span className="text-brand-pink text-sm sm:text-base">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
             </p>
           </div>

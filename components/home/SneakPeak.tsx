@@ -5,48 +5,69 @@ import CustomVideoPlayer from '@/components/CustomVideoPlayer';
 
 export default function SneakPeak() {
   return (
-    <section className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink py-24 px-4 md:px-8 overflow-hidden">
-      {/* Background Quadrants */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{
-        backgroundImage: `repeating-conic-gradient(#FCE4EC 0% 25%, transparent 0% 50%)`,
-        backgroundSize: '100% 100%',
-        backgroundPosition: 'center center'
-      }} />
+    <section className="w-full relative z-10 bg-[#F7F2E6] border-t-4 border-brand-ink text-brand-ink py-24 px-4 md:px-8 overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4)]">
+      {/* Warm sketchbook dot-grid background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10 bg-[#F7F2E6]" />
       
-      {/* Halftone overlay */}
-      <div className="absolute inset-0 bg-halftone-black opacity-5 mix-blend-overlay pointer-events-none" />
+      {/* Dynamic Retro Comic Sunburst Rays */}
+      <div 
+        className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.05] -z-10" 
+        style={{
+          backgroundImage: `repeating-conic-gradient(from 0deg, #FF9A00 0deg 8deg, transparent 8deg 16deg)`,
+          backgroundPosition: 'center 40%'
+        }} 
+      />
+
+      {/* Halftone Dot Grid Pattern */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-multiply -z-10" 
+        style={{
+          backgroundImage: `radial-gradient(rgba(3, 4, 4, 0.25) 15%, transparent 16%)`,
+          backgroundSize: '20px 20px'
+        }} 
+      />
+
+      {/* Retro Notebook Grid Lines */}
+      <div 
+        className="absolute inset-0 bg-[linear-gradient(to_right,rgba(3,4,4,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(3,4,4,0.015)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none -z-10" 
+      />
+
+      {/* Soft Vignette Border Shadow */}
+      <div 
+        className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(3,4,4,0.04)] -z-10" 
+      />
 
       {/* Film strip edge - left */}
-      <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-brand-ink/5 backdrop-blur-[2px] border-r border-brand-ink/10 hidden lg:block z-10 overflow-hidden shadow-[inset_-10px_0_20px_rgba(0,0,0,0.02)]">
+      <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-brand-ink/[0.12] backdrop-blur-[2px] border-r border-brand-ink/20 hidden lg:block z-10 overflow-hidden shadow-[inset_-10px_0_20px_rgba(0,0,0,0.02)]">
         <div className="w-full flex flex-col items-center gap-8 sm:gap-12 animate-slide-up">
           {Array.from({ length: 40 }).map((_, i) => {
             const hasText = i % 6 === 0;
             return (
             <div key={`spr-l-${i}`} className="relative flex items-center justify-center w-full">
               {hasText && (
-                <span className="absolute right-1 sm:right-2 font-mono text-[8px] sm:text-[9px] font-bold text-brand-ink/20 -rotate-90 origin-center tracking-widest">
+                <span className="absolute right-1 sm:right-2 font-mono text-[8px] sm:text-[9px] font-bold text-brand-ink/40 -rotate-90 origin-center tracking-widest">
                   JKLU
                 </span>
               )}
-              <div className="w-5 h-5 sm:w-8 sm:h-8 shrink-0 rounded-md border-[1.5px] bg-brand-cloud border-brand-ink/10 shadow-[inset_0_3px_6px_rgba(0,0,0,0.08)]" />
+              <div className="w-5 h-5 sm:w-8 sm:h-8 shrink-0 rounded-md border-[1.5px] bg-brand-cloud border-brand-ink/20 shadow-[inset_0_3px_6px_rgba(0,0,0,0.08)]" />
             </div>
           )})}
         </div>
       </div>
       
       {/* Film strip edge - right */}
-      <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-brand-ink/5 backdrop-blur-[2px] border-l border-brand-ink/10 hidden lg:block z-10 overflow-hidden shadow-[inset_10px_0_20px_rgba(0,0,0,0.02)]">
+      <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-brand-ink/[0.12] backdrop-blur-[2px] border-l border-brand-ink/20 hidden lg:block z-10 overflow-hidden shadow-[inset_10px_0_20px_rgba(0,0,0,0.02)]">
         <div className="w-full flex flex-col items-center gap-8 sm:gap-12 animate-slide-down">
           {Array.from({ length: 40 }).map((_, i) => {
             const hasText = i % 5 === 0;
             return (
             <div key={`spr-r-${i}`} className="relative flex items-center justify-center w-full">
               {hasText && (
-                <span className="absolute left-1 sm:left-2 font-mono text-[8px] sm:text-[9px] font-bold text-brand-ink/20 rotate-90 origin-center tracking-widest">
+                <span className="absolute left-1 sm:left-2 font-mono text-[8px] sm:text-[9px] font-bold text-brand-ink/40 rotate-90 origin-center tracking-widest">
                   JKLU
                 </span>
               )}
-              <div className="w-5 h-5 sm:w-8 sm:h-8 shrink-0 rounded-md border-[1.5px] bg-brand-cloud border-brand-ink/10 shadow-[inset_0_3px_6px_rgba(0,0,0,0.08)]" />
+              <div className="w-5 h-5 sm:w-8 sm:h-8 shrink-0 rounded-md border-[1.5px] bg-brand-cloud border-brand-ink/20 shadow-[inset_0_3px_6px_rgba(0,0,0,0.08)]" />
             </div>
           )})}
         </div>

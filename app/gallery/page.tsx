@@ -132,7 +132,7 @@ export default function GalleryLanding() {
       card.style.top = '50%'
 
       const img = document.createElement('img')
-      img.src = `/_next/image?url=${encodeURIComponent(photo.src)}&w=640&q=75`
+      img.src = photo.src
       img.alt = photo.label
       img.loading = 'lazy'
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;border-radius:10px;'
@@ -193,7 +193,7 @@ export default function GalleryLanding() {
             const nextPhoto = PHOTOS[nextIdx]
             const img = card.querySelector('img')
             if (img && nextPhoto) {
-              img.setAttribute('src', `/_next/image?url=${encodeURIComponent(nextPhoto.src)}&w=640&q=75`)
+              img.setAttribute('src', nextPhoto.src)
               card.dataset.photoId = String(nextPhoto.id)
               card.dataset.photoSrc = nextPhoto.src
             }
@@ -213,7 +213,7 @@ export default function GalleryLanding() {
             const nextPhoto = PHOTOS[nextIdx]
             const img = card.querySelector('img')
             if (img && nextPhoto) {
-              img.setAttribute('src', `/_next/image?url=${encodeURIComponent(nextPhoto.src)}&w=640&q=75`)
+              img.setAttribute('src', nextPhoto.src)
               card.dataset.photoId = String(nextPhoto.id)
               card.dataset.photoSrc = nextPhoto.src
             }
@@ -510,6 +510,7 @@ export default function GalleryLanding() {
                   src={photo.src}
                   alt={photo.label}
                   fill
+                  unoptimized
                   sizes="(max-width: 768px) 50vw, 33vw"
                   className="object-cover"
                   loading="lazy"

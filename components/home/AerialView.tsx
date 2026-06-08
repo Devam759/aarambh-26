@@ -19,6 +19,7 @@ export default function AerialView() {
             height={1080}
             unoptimized
             className="w-full h-auto hover:scale-105 transition-transform duration-700"
+            style={{ height: 'auto' }}
           />
         </div>
       </div>

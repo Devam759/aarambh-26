@@ -73,8 +73,10 @@ export default function Navbar() {
               <Image
                 src="/jklu_logo_light.svg"
                 alt="JKLU Logo"
-                width={32}
-                height={32}
+                width={819}
+                height={916}
+                priority
+                unoptimized
                 className="h-7 w-auto object-contain md:h-9"
                 style={{ width: 'auto' }}
               />
@@ -87,8 +89,10 @@ export default function Navbar() {
               <Image
                 src="/logo.svg"
                 alt="AARAMBH'26"
-                width={100}
-                height={24}
+                width={834}
+                height={193}
+                priority
+                unoptimized
                 className="h-6 md:h-8 w-auto object-contain"
                 style={{ width: 'auto' }}
               />

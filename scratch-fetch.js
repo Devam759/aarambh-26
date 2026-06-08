@@ -8,7 +8,7 @@ fetch('http://localhost:3001/api/register', {
     name: 'Test User',
     email: 'test@example.com',
     mobile: '9999999999',
-    registrationNumber: 'cust_123',
+    registrationNumber: 'JKLU/BBA/2025/0310',
     coupon: ''
   })
 }).then(async res => {

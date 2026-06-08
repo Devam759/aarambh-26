@@ -3,6 +3,7 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { finalizeRegistration } from '@/lib/registrationHelper';
+import { validateRegistrationNumber } from '@/lib/utils';
 
 import { isRateLimited, sanitizeObject, isProd, cashfreeAppId, cashfreeSecretKey, formatPhoneNumber } from '@/lib/security';
 
@@ -47,6 +48,11 @@ export async function POST(req: Request) {
 
     if (action === 'CREATE_ORDER') {
       try {
+        if (!data.registrationNumber || !validateRegistrationNumber(data.registrationNumber)) {
+          console.warn("Invalid registration number received:", data.registrationNumber);
+          return NextResponse.json({ error: 'Invalid Application Number format (E.g. JKLU/BBA/2025/0310)' }, { status: 400 });
+        }
+
         const orderId = `order_${Date.now()}`;
         const orderAmount = (data.coupon?.toUpperCase() === 'TESTTEST') ? 1 : 2500;
 

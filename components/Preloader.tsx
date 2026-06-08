@@ -103,6 +103,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
                     src="/aarambh_logo_extruded.png"
                     alt="AARAMBH"
                     fill
+                    unoptimized
+                    sizes="(max-width: 576px) 100vw, 576px"
                     className="object-contain"
                     priority
                   />
