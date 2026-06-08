@@ -138,7 +138,7 @@ const LEADERS: TeamMember[] = [
       "Designed secure database rules & scan endpoint authentications",
       "Configured API protection routes and high-speed registration pipelines"
     ],
-    image: "/Team Photos/Tech Team/devam.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/devam.png",
     themeColor: "from-[#FF188C] via-pink-500 to-[#FF9A00]",
     glowColor: "rgba(139, 92, 246, 0.25)",
     accentColor: "#8b5cf6",
@@ -166,7 +166,7 @@ const LEADERS: TeamMember[] = [
       "Implemented responsive global component grids and animations",
       "Developed high-fidelity page transitions and micro-interaction states"
     ],
-    image: "/Team Photos/Team Leaders/yashbansal_standing.webp?v=5",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Team Leaders/yashbansal_standing.webp?v=5",
     themeColor: "from-[#FF9A00] via-orange-500 to-[#FF188C]",
     glowColor: "rgba(251, 191, 36, 0.25)",
     accentColor: "#fbbf24",
@@ -197,7 +197,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Optimized responsive layout viewports for mobile screens",
       "Reviewed click target zones and alignment rules across the app"
     ],
-    image: "/Team Photos/Tech Team/ashutosh.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/ashutosh.png",
     themeColor: "from-[#0D21DD] to-[#FF188C]",
     glowColor: "rgba(236, 72, 153, 0.25)",
     accentColor: "#ec4899",
@@ -220,7 +220,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed tone-of-voice directives for core messaging",
       "Refined SEO content properties to maximize discovery rates"
     ],
-    image: "/Team Photos/Tech Team/rashi.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/rashi.png",
     themeColor: "from-[#FF188C] to-[#FF9A00]",
     glowColor: "rgba(16, 185, 129, 0.25)",
     accentColor: "#10b981",
@@ -243,7 +243,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed scalable NoSQL schemas for bulk operations",
       "Coordinated automated registration payload checks"
     ],
-    image: "/Team Photos/Tech Team/heramb.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/heramb.png",
     themeColor: "from-[#FF9A00] to-[#0D21DD]",
     glowColor: "rgba(239, 68, 68, 0.25)",
     accentColor: "#ef4444",
@@ -271,7 +271,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Designed reactive custom scrollbars and transition sliders",
       "Configured high-performance vector path animations"
     ],
-    image: "/Team Photos/Tech Team/aalap.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/aalap.png",
     themeColor: "from-[#0D21DD] to-[#FF188C]",
     glowColor: "rgba(14, 165, 233, 0.25)",
     accentColor: "#0ea5e9",
@@ -299,7 +299,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Engineered server-side JSON Web Token validations",
       "Audited scan records to prevent double-entry exploits"
     ],
-    image: "/Team Photos/Tech Team/arihant.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/arihant.png",
     themeColor: "from-[#FF188C] to-[#0D21DD]",
     glowColor: "rgba(249, 115, 22, 0.25)",
     accentColor: "#f97316",
@@ -327,7 +327,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Audited screen rendering parameters across multiple resolutions",
       "Identified and cataloged frontend bottlenecks for speedup"
     ],
-    image: "/Team Photos/Tech Team/mananat.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/mananat.png",
     themeColor: "from-[#FF9A00] to-[#FF188C]",
     glowColor: "rgba(167, 139, 250, 0.25)",
     accentColor: "#a78bfa",
@@ -350,7 +350,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Evaluated Next.js dynamic bundle division configurations",
       "Audited core web vitals and speed indexes across the portal"
     ],
-    image: "/Team Photos/Tech Team/pratham.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/pratham.png",
     themeColor: "from-[#d946ef] to-[#4f46e5]",
     glowColor: "rgba(217, 70, 239, 0.25)",
     accentColor: "#d946ef",
@@ -373,7 +373,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Maintained zero-downtime DNS routing patterns",
       "Optimized build script sizes on the Vercel edge runtime"
     ],
-    image: "/Team Photos/Tech Team/udit.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/udit.png",
     themeColor: "from-[#eab308] to-[#FF9A00]",
     glowColor: "rgba(251, 191, 36, 0.25)",
     accentColor: "#fbbf24",

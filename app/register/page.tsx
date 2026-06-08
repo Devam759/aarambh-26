@@ -598,32 +598,17 @@ function RegisterContent() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Coupon Code (Optional)</label>
-                          <div className="flex gap-2">
-                            <input 
-                              name="couponInput" 
-                              value={couponInput} 
-                              onChange={(e) => setCouponInput(e.target.value)} 
-                              className="flex-grow px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl uppercase" 
-                              placeholder="Enter coupon code" 
-                              suppressHydrationWarning 
-                            />
-                            <button 
-                              type="button" 
-                              onClick={handleApplyCoupon} 
-                              className="px-6 py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer whitespace-nowrap"
-                            >
-                              Apply
-                            </button>
-                          </div>
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">External Portal (Optional)</label>
+                          <a 
+                            href="https://google.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer flex items-center justify-center text-center h-[50px] leading-none"
+                          >
+                            Visit Site
+                          </a>
                         </div>
                       </div>
-
-                      {couponMessage && (
-                        <p className={`text-xs font-black uppercase tracking-wider mt-1 ${couponMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
-                          {couponMessage}
-                        </p>
-                      )}
 
                       <div className="border-comic bg-brand-pink/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
                         <div>
