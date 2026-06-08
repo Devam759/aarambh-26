@@ -64,15 +64,7 @@
   --shadow-solid-ink: 6px 6px 0px 0px var(--color-brand-ink);
 }
 
-/* Preloader: hide entire page body until animation completes on first visit */
-html.preloader-active body {
-  visibility: hidden;
-}
 
-/* The animation overlay itself must remain visible */
-[data-preloader] {
-  visibility: visible !important;
-}
 
 html {
   background-color: var(--color-brand-ink);
@@ -354,4 +346,4 @@ body {
   33% { transform: translate(15vw, -10vh) scale(1.1) rotate(45deg); }
   66% { transform: translate(-10vw, 15vh) scale(0.9) rotate(-30deg); }
   100% { transform: translate(5vw, 5vh) scale(1.2) rotate(15deg); }
-}
+}html.hide-navbar #main-navbar { opacity: 0 !important; pointer-events: none !important; transform: translateY(-100%) !important; }

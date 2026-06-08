@@ -7,6 +7,7 @@ import { playSynthSound } from '@/lib/sounds';
 
 interface HeroSectionProps {
   loadingComplete: boolean;
+  skipAnimation?: boolean;
   spawnParticles?: (x: number, y: number) => void;
 }
 
@@ -23,7 +24,7 @@ const SparkleStar = ({ className, size = 32 }: { className?: string; size?: numb
   </svg>
 );
 
-export default function HeroSection({ loadingComplete, spawnParticles }: HeroSectionProps) {
+export default function HeroSection({ loadingComplete, skipAnimation, spawnParticles }: HeroSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Mouse coordinates tracking for smooth parallax depth
@@ -273,26 +274,24 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
                     src="/aarambh_logo_outline.png"
                     alt="Aarambh '26 Logo Outline"
                     fill
-                    unoptimized
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
                     className="object-contain"
                     priority
                   />
 
                   <motion.div
-                    initial={{ clipPath: 'circle(0% at 50% 50%)', WebkitClipPath: 'circle(0% at 50% 50%)' } as any}
+                    initial={(skipAnimation ? { clipPath: 'circle(150% at 50% 50%)', WebkitClipPath: 'circle(150% at 50% 50%)' } : { clipPath: 'circle(0% at 50% 50%)', WebkitClipPath: 'circle(0% at 50% 50%)' }) as any}
                     animate={loadingComplete
                       ? ({ clipPath: 'circle(150% at 50% 50%)', WebkitClipPath: 'circle(150% at 50% 50%)' } as any)
                       : ({ clipPath: 'circle(0% at 50% 50%)', WebkitClipPath: 'circle(0% at 50% 50%)' } as any)
                     }
-                    transition={{ duration: 2.0, ease: "easeInOut", delay: 0.2 }}
+                    transition={{ duration: skipAnimation ? 0 : 2.0, ease: "easeInOut", delay: skipAnimation ? 0 : 0.2 }}
                     className="absolute inset-0 w-full h-full"
                   >
                     <Image
                       src="/aarambh_logo_extruded.png"
                       alt="Aarambh '26 Logo Extruded - The Signature Welcome Festival of JK Lakshmipat University"
                       fill
-                      unoptimized
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
                       className="object-contain"
                       priority
@@ -301,22 +300,22 @@ export default function HeroSection({ loadingComplete, spawnParticles }: HeroSec
                   </motion.div>
 
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={skipAnimation ? { opacity: 0, scale: 1 } : { opacity: 0, scale: 0.8 }}
                     animate={loadingComplete
-                      ? { opacity: [0, 1, 0], scale: [0.8, 1.2, 1] }
+                      ? (skipAnimation ? { opacity: 0, scale: 1 } : { opacity: [0, 1, 0], scale: [0.8, 1.2, 1] })
                       : { opacity: 0, scale: 0.8 }
                     }
-                    transition={{ delay: 2.2, duration: 0.4 }}
+                    transition={{ delay: skipAnimation ? 0 : 2.2, duration: skipAnimation ? 0 : 0.4 }}
                     className="absolute inset-0 bg-brand-pink blur-[30px] mix-blend-screen pointer-events-none"
                   />
 
                   <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={skipAnimation ? { opacity: 0, scale: 1.5 } : { opacity: 0, scale: 0 }}
                     animate={loadingComplete
-                      ? { opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] }
+                      ? (skipAnimation ? { opacity: 0, scale: 1.5 } : { opacity: [0, 1, 0], scale: [0.5, 1.2, 1.5] })
                       : { opacity: 0, scale: 0 }
                     }
-                    transition={{ delay: 2.2, duration: 0.6 }}
+                    transition={{ delay: skipAnimation ? 0 : 2.2, duration: skipAnimation ? 0 : 0.6 }}
                     className="absolute top-0 -right-2 text-brand-orange z-30"
                   >
                     <Sparkles size={40} />

@@ -26,24 +26,27 @@ interface Particle {
   isSquare: boolean;
 }
 
-let hasPlayedIntro = false;
-
 export default function Home() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [introStarted, setIntroStarted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [skipAnimation, setSkipAnimation] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
 
   // Show loading screen animation on browser reload, skip on client-side navigation
   useEffect(() => {
     setIsMounted(true);
-    if (!hasPlayedIntro) {
-      setIntroStarted(true);
-      setLoadingComplete(false);
-      hasPlayedIntro = true;
-    } else {
-      setIntroStarted(true);
-      setLoadingComplete(true);
+    if (typeof window !== 'undefined') {
+      if (!(window as any).hasPlayedAarambhIntro) {
+        setIntroStarted(true);
+        setLoadingComplete(false);
+        setSkipAnimation(false);
+        (window as any).hasPlayedAarambhIntro = true;
+      } else {
+        setIntroStarted(true);
+        setLoadingComplete(true);
+        setSkipAnimation(true);
+      }
     }
   }, []);
 
@@ -121,7 +124,7 @@ export default function Home() {
       {/* Mario Loading Screen Overlay */}
       <AnimatePresence>
         {introStarted && !loadingComplete && (
-          <Preloader onComplete={() => setLoadingComplete(true)} />
+          <Preloader key="preloader" onComplete={() => setLoadingComplete(true)} />
         )}
       </AnimatePresence>
 
@@ -160,6 +163,7 @@ export default function Home() {
       {/* Hero Section */}
       <HeroSection 
         loadingComplete={loadingComplete} 
+        skipAnimation={skipAnimation}
         spawnParticles={spawnParticles} 
       />
 

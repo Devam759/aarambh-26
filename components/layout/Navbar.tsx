@@ -160,29 +160,33 @@ export default function Navbar() {
         </div>
 
         {/* Mobile dropdown */}
-        <div
-          className={`lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink origin-top transition-all duration-150 ease-out ${
-            isMobileMenuOpen
-              ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
-              : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-          }`}
-        >
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
-                pathname === link.href
-                  ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
-                  : 'text-brand-ink hover:text-brand-ink'
-              }`}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
             >
-              <span>{link.name}</span>
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
-            </Link>
-          ))}
-        </div>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
+                    pathname === link.href
+                      ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
+                      : 'text-brand-ink hover:text-brand-ink'
+                  }`}
+                >
+                  <span>{link.name}</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
+                </Link>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
     </>
   );
