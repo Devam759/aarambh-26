@@ -17,6 +17,7 @@ export default function AerialView() {
             alt="JKLU Campus Aerial View"
             width={1920}
             height={1080}
+            unoptimized
             className="w-full h-auto hover:scale-105 transition-transform duration-700"
           />
         </div>

@@ -2,100 +2,6 @@
 import React from 'react';
 
 export default function PackingChecklist() {
-  const handleDownload = () => {
-    const checklistData = {
-      "Clothing & Gear": [
-        "Casual wear (t-shirts, jeans, shorts)",
-        "Formal wear (shirts, trousers, dress)",
-        "Seasonal clothing (jackets, sweaters)",
-        "Undergarments and socks",
-        "Sleepwear and loungewear",
-        "Footwear (sneakers, sandals, formals)"
-      ],
-      "Academics": [
-        "Laptop / computer & charger",
-        "Notebooks and Writing Pads",
-        "Pens, pencils, and highlighters",
-        "Calculator (scientific)",
-        "Laptop Bag"
-      ],
-      "Room & Living": [
-        "Bed sheets, pillow & cover",
-        "Blankets and Comforter",
-        "Umbrella (Important! Rain Alert)",
-        "Desk lamp",
-        "Laundry basket & detergent"
-      ],
-      "Kitchen & Food": [
-        "Water bottle",
-        "Coffee/tea mug",
-        "Basic utensils (for induction)",
-        "Plates and Bowls",
-        "Non-perishable snacks"
-      ],
-      "Official Docs": [
-        "Admission letter & documents",
-        "Academic transcripts",
-        "Government-issued IDs",
-        "Bank account information",
-        "Emergency contacts"
-      ],
-      "Health & Care": [
-        "First aid kit",
-        "Prescription medications",
-        "Vitamins & supplements",
-        "Thermometer",
-        "Hand sanitizer & Face masks"
-      ],
-      "Tech Gear": [
-        "Power Bank",
-        "Extension cord",
-        "Headphones or earbuds",
-        "Speakers (respectful volume)"
-      ],
-      "Recreation": [
-        "Books for leisure reading",
-        "Board games or playing cards",
-        "Sports equipment",
-        "Musical instruments",
-        "Art supplies"
-      ],
-      "Toiletries & Grooming": [
-        "Bath towels & hand towels",
-        "Toothbrush, toothpaste & mouthwash",
-        "Shampoo, conditioner & body wash",
-        "Comb, hairbrush & nail clippers",
-        "Trimmer / grooming kit",
-        "Bucket, mug & bathroom slippers"
-      ]
-    };
-
-    let text = `==================================================\n`;
-    text += `          AARAMBH '26 PACKING CHECKLIST           \n`;
-    text += `==================================================\n\n`;
-    text += `Get ready for your college journey! Here is your custom checklist:\n\n`;
-
-    Object.entries(checklistData).forEach(([category, items]) => {
-      text += `[ ] ${category.toUpperCase()}\n`;
-      items.forEach(item => {
-        text += `    _ ${item}\n`;
-      });
-      text += `\n`;
-    });
-
-    text += `==================================================\n`;
-    text += `Generated from Aarambh '26 orientation portal.\n`;
-    text += `==================================================\n`;
-
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "Aarambh_26_Packing_Checklist.txt");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   return (
     <section className="py-24 px-6 w-full max-w-7xl mx-auto relative z-10 font-sans">
@@ -170,17 +76,20 @@ export default function PackingChecklist() {
             Essential <span className="text-brand-pink">Packing</span> Checklist
           </h2>
           <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide mb-6">
-            Gear up for the next chapter. Tick off your items below to track your readiness for AARAMBH '26.
+            Gear up for the next chapter. Tick off your items below to track your readiness for the journey.
           </p>
-          <button 
-            onClick={handleDownload}
+          <a 
+            href="https://storage.googleapis.com/aarambh-26-assets/Essesntial%20Packing%20Checklist.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Essential Packing Checklist.pdf"
             className="comic-interactive border-comic-thin py-3 px-6 bg-brand-pink text-white font-display font-black text-sm uppercase tracking-wider rounded-lg shadow-comic-sm cursor-pointer hover:shadow-solid-ink active:scale-[0.98] transition-all flex items-center gap-2 z-20"
           >
             <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Download Checklist
-          </button>
+          </a>
         </div>
 
 
