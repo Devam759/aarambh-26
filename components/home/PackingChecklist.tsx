@@ -179,16 +179,10 @@ export default function PackingChecklist() {
             <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            Download Checklist (.txt)
+            Download Checklist
           </button>
         </div>
 
-        {/* Interactive Motivation Banner */}
-        <div id="quote-banner" className="bg-white border-comic rounded-lg p-4 mb-16 text-center shadow-comic-sm transition-all duration-300 max-w-2xl mx-auto -rotate-1">
-          <p id="quote-text" className="text-xs md:text-sm font-display font-black uppercase tracking-wider text-brand-ink">
-            Ready to break conventions? Start checking items to begin your journey Beyond!
-          </p>
-        </div>
 
         {/* Distorted & Colorful Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
