@@ -62,12 +62,68 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-import { Tiro_Devanagari_Hindi } from 'next/font/google'
+import { 
+  Tiro_Devanagari_Hindi,
+  Outfit,
+  Roboto,
+  DM_Serif_Display,
+  DM_Sans,
+  Russo_One,
+  Architects_Daughter,
+  Gochi_Hand 
+} from 'next/font/google'
 
 const tiroDevanagari = Tiro_Devanagari_Hindi({
   weight: '400',
   subsets: ['devanagari'],
   variable: '--font-devanagari',
+  display: 'swap',
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const dmSerifDisplay = DM_Serif_Display({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-adminHeading',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-adminBody',
+  display: 'swap',
+})
+
+const russoOne = Russo_One({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bricks',
+  display: 'swap',
+})
+
+const architectsDaughter = Architects_Daughter({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-architectsDaughter',
+  display: 'swap',
+})
+
+const gochiHand = Gochi_Hand({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-gochiHand',
   display: 'swap',
 })
 
@@ -79,14 +135,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={tiroDevanagari.variable} suppressHydrationWarning>
+    <html 
+      lang="en" 
+      className={`${tiroDevanagari.variable} ${outfit.variable} ${roboto.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${russoOne.variable} ${architectsDaughter.variable} ${gochiHand.variable}`} 
+      suppressHydrationWarning
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Outfit:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

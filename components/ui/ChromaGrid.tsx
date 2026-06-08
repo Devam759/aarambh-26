@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 
 export interface ChromaItem {
@@ -385,12 +386,13 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     style={{ borderColor: c.borderColor || '#FF188C' }}
                   >
                     {c.image ? (
-                      <img 
+                      <Image 
                         src={c.image} 
                         alt={c.title} 
+                        fill
+                        sizes="(max-width: 640px) 120px, 200px"
                         referrerPolicy="no-referrer"
-                        loading="lazy" 
-                        className="w-full h-full object-cover p-0 hover:scale-105 transition-all duration-300" 
+                        className="object-cover p-0 hover:scale-105 transition-all duration-300" 
                       />
                     ) : (
                       <div 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Plus, X, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -253,10 +254,12 @@ export default function SpeakersSection() {
 
             {/* Dynamic Image Preview Container */}
             <div className="relative w-[75px] sm:w-[90px] lg:w-full lg:max-w-[180px] aspect-[3/4] opacity-100 lg:opacity-60 shadow-[4px_4px_0px_rgba(3,4,4,1)] lg:shadow-[10px_10px_0px_rgba(3,4,4,1)] border-[2px] lg:border-[4px] border-[#030404] bg-[#030404] overflow-hidden group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-              <img
+              <Image
                 src={nextSpeaker.image}
-                className="w-full h-full object-cover grayscale contrast-125"
                 alt="Next Up Lineup Preview"
+                fill
+                sizes="(max-width: 1024px) 90px, 180px"
+                className="object-cover grayscale contrast-125"
               />
               <div className="absolute inset-0 bg-[#030404]/30 mix-blend-multiply" />
               <div className="absolute bottom-0 left-0 right-0 p-1.5 lg:p-3 bg-gradient-to-t from-[#030404] to-transparent">
@@ -291,12 +294,14 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
       transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
       className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-[420px] aspect-[3/4] group z-20"
     >
-      {/* FRONT PHOTO BASE */}
       <div className="absolute inset-0 w-full h-full shadow-[15px_15px_0px_rgba(3,4,4,1)] md:shadow-[25px_25px_0px_rgba(3,4,4,1)] border-[6px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden">
-        <img
+        <Image
           src={speaker.image}
           alt={speaker.name}
-          className="w-full h-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100 pointer-events-none"
+          fill
+          sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
+          priority
+          className="object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100 pointer-events-none"
         />
 
         <div
@@ -324,7 +329,13 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
         className="absolute inset-0 w-full h-full shadow-[15px_15px_0px_rgba(3,4,4,1)] md:shadow-[25px_25px_0px_rgba(3,4,4,1)] border-[6px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden p-4 md:p-8 flex flex-col justify-between z-40 cursor-default"
       >
         <div className="absolute inset-0 opacity-15 mix-blend-luminosity pointer-events-none">
-          <img src={speaker.image} className="w-full h-full object-cover grayscale blur-[2px]" alt="watermark" />
+          <Image 
+            src={speaker.image} 
+            alt="watermark"
+            fill
+            sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
+            className="object-cover grayscale blur-[2px]" 
+          />
           <div className="absolute inset-0 bg-[#030404]/80" />
         </div>
 

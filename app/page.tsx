@@ -2,13 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import AboutSection from '@/components/about';
 import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/home/HeroSection';
-import GalleryShowcase from '@/components/home/GalleryShowcase';
-import SneakPeak from '@/components/home/SneakPeak';
-import AerialView from '@/components/home/AerialView';
-import PackingChecklist from '@/components/home/PackingChecklist';
+
+const GalleryShowcase = dynamic(() => import('@/components/home/GalleryShowcase'), { ssr: true });
+const SneakPeak = dynamic(() => import('@/components/home/SneakPeak'), { ssr: true });
+const AerialView = dynamic(() => import('@/components/home/AerialView'), { ssr: true });
+const PackingChecklist = dynamic(() => import('@/components/home/PackingChecklist'), { ssr: true });
+
 import { playSynthSound } from '@/lib/sounds';
 
 interface Particle {

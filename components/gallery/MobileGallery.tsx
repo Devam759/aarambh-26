@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PHOTOS } from '@/constants/photos';
 
@@ -173,11 +174,13 @@ export default function MobileGallery() {
               className="mob-gallery-card"
               onClick={() => setLightboxId(photo.id)}
             >
-              <img
+              <Image
                 src={photo.src}
                 alt={photo.label}
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="object-cover"
                 loading="lazy"
-                onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0' }}
               />
             </div>
           ))}

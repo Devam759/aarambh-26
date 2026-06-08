@@ -2,19 +2,27 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { PHOTOS } from '@/constants/photos';
 
 export default function GalleryShowcase() {
   const [galleryMounted, setGalleryMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     setGalleryMounted(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1200);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const col1Images = PHOTOS.slice(0, 16).map(p => p.src);
-  const col2Images = PHOTOS.slice(16, 32).map(p => p.src);
-  const col3Images = PHOTOS.slice(32, 48).map(p => p.src);
-  const col4Images = PHOTOS.slice(48, 64).map(p => p.src);
+  const col1Images = PHOTOS.slice(0, 8).map(p => p.src);
+  const col2Images = PHOTOS.slice(8, 16).map(p => p.src);
+  const col3Images = PHOTOS.slice(16, 24).map(p => p.src);
+  const col4Images = PHOTOS.slice(24, 32).map(p => p.src);
 
   return (
     <section id="gallery-showcase" className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
@@ -326,40 +334,72 @@ export default function GalleryShowcase() {
           <div className="gl-slider-track-up">
             {[...col1Images, ...col1Images].map((src, i) => (
               <div key={`col1-${i}`} className="gl-slider-img-container">
-                <img src={src} className="gl-slider-image" alt="Aarambh" />
+                <Image 
+                  src={src} 
+                  alt="Aarambh" 
+                  fill 
+                  sizes="(max-width: 768px) 80px, 150px"
+                  className="gl-slider-image object-cover" 
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>
         </div>
 
         {/* Column 2: Left Inner (Slides Down) */}
-        <div className="gl-slider-column left inner" style={{ left: '12.5%' }}>
-          <div className="gl-slider-track-down">
-            {[...col2Images, ...col2Images].map((src, i) => (
-              <div key={`col2-${i}`} className="gl-slider-img-container">
-                <img src={src} className="gl-slider-image" alt="Aarambh" />
-              </div>
-            ))}
+        {!isMobile && (
+          <div className="gl-slider-column left inner" style={{ left: '12.5%' }}>
+            <div className="gl-slider-track-down">
+              {[...col2Images, ...col2Images].map((src, i) => (
+                <div key={`col2-${i}`} className="gl-slider-img-container">
+                  <Image 
+                    src={src} 
+                    alt="Aarambh" 
+                    fill 
+                    sizes="150px"
+                    className="gl-slider-image object-cover" 
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Column 3: Right Inner (Slides Up) */}
-        <div className="gl-slider-column right inner" style={{ right: '12.5%' }}>
-          <div className="gl-slider-track-up">
-            {[...col3Images, ...col3Images].map((src, i) => (
-              <div key={`col3-${i}`} className="gl-slider-img-container">
-                <img src={src} className="gl-slider-image" alt="Aarambh" />
-              </div>
-            ))}
+        {!isMobile && (
+          <div className="gl-slider-column right inner" style={{ right: '12.5%' }}>
+            <div className="gl-slider-track-up">
+              {[...col3Images, ...col3Images].map((src, i) => (
+                <div key={`col3-${i}`} className="gl-slider-img-container">
+                  <Image 
+                    src={src} 
+                    alt="Aarambh" 
+                    fill 
+                    sizes="150px"
+                    className="gl-slider-image object-cover" 
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Column 4: Right Outer (Slides Down) */}
         <div className="gl-slider-column right" style={{ right: '1.5%' }}>
           <div className="gl-slider-track-down">
             {[...col4Images, ...col4Images].map((src, i) => (
               <div key={`col4-${i}`} className="gl-slider-img-container">
-                <img src={src} className="gl-slider-image" alt="Aarambh" />
+                <Image 
+                  src={src} 
+                  alt="Aarambh" 
+                  fill 
+                  sizes="(max-width: 768px) 80px, 150px"
+                  className="gl-slider-image object-cover" 
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>
