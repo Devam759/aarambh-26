@@ -7,10 +7,10 @@ export const metadata: Metadata = {
     canonical: 'https://aarambh.jklu.edu.in',
   },
   title: {
-    default: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    template: "%s | Aarambh 2026"
+    default: "Aarambh '26 | JK Lakshmipat University Orientation",
+    template: "%s | Aarambh '26"
   },
-  description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Get complete event schedules, rules, guidelines, student club details, and registration forms.",
+  description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
   manifest: '/manifest.json',
   keywords: [
     "Aarambh", "Aarambh 2026", "Aarambh JKLU", "aarambh jklu", "jklu aarambh", "JKLU Orientation", "JKLU Orientation 2026",
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   authors: [{ name: "JKLU Tech Team" }],
   creator: "JKLU Tech Team",
   openGraph: {
-    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur. Register, view schedules, rules, guidelines, and highlights.",
+    title: "Aarambh '26 | JK Lakshmipat University Orientation",
+    description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
     url: 'https://aarambh.jklu.edu.in',
     siteName: "Aarambh '26 Portal",
     images: [
@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Aarambh 2026 | JKLU New Student Orientation & Welcome Program - JK Lakshmipat University",
-    description: "Official portal for Aarambh 2026, the signature eight-day New Student Orientation and Welcome Program at JK Lakshmipat University (JKLU), Jaipur.",
+    title: "Aarambh '26 | JK Lakshmipat University Orientation",
+    description: "Official portal for Aarambh 2026, the signature New Student Orientation and pop-art Welcome Festival at JK Lakshmipat University (JKLU), Jaipur.",
     images: ['/aarambh-2025-poster.jpg'],
   },
   robots: {

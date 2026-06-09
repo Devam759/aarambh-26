@@ -258,6 +258,9 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-4xl flex flex-col items-center px-4 w-full"
         >
+          <h1 className="sr-only">
+            Aarambh '26 - JK Lakshmipat University Student Orientation and Welcome Festival
+          </h1>
           <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-ink/80 mt-4 sm:mt-8 mb-1 select-none text-center block">
             JK Lakshmipat University Presents
           </span>
