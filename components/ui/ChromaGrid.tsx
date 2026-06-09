@@ -184,71 +184,47 @@ interface CardTheme {
   halftoneClass: string;
 }
 
+const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+  return result
+    ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) }
+    : null;
+};
+
 const getCardTheme = (borderColor?: string): CardTheme => {
-  const border = (borderColor || '#FF188C').toUpperCase();
-  
-  if (border === '#FF9A00') {
+  const hex = (borderColor || '#FF188C').toUpperCase();
+  const rgb = hexToRgb(hex);
+
+  if (!rgb) {
     return {
-      bg: '#ffe0b0',
+      bg: '#fcfbf7',
       text: '#030404',
-      textAccent: '#c2410c',
+      textAccent: '#4b5563',
       textMuted: 'rgba(3, 4, 4, 0.75)',
       border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-10',
+      halftoneClass: 'bg-halftone-black opacity-[0.08]',
     };
   }
-  
-  if (border === '#FF188C') {
-    return {
-      bg: '#ffb7db',
-      text: '#030404',
-      textAccent: '#be185d',
-      textMuted: 'rgba(3, 4, 4, 0.75)',
-      border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-10',
-    };
-  }
-  
-  if (border === '#0D21DD') {
-    return {
-      bg: '#b4baf4',
-      text: '#030404',
-      textAccent: '#1d4ed8',
-      textMuted: 'rgba(3, 4, 4, 0.75)',
-      border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-10',
-    };
-  }
-  
-  if (border === '#10B981') {
-    return {
-      bg: '#c6f6d5',
-      text: '#030404',
-      textAccent: '#047857',
-      textMuted: 'rgba(3, 4, 4, 0.75)',
-      border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-10',
-    };
-  }
-  
-  if (border === '#8B5CF6') {
-    return {
-      bg: '#ddd6fe',
-      text: '#030404',
-      textAccent: '#6d28d9',
-      textMuted: 'rgba(3, 4, 4, 0.75)',
-      border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-10',
-    };
-  }
-  
+
+  // Generate a soft pastel background by blending with white
+  const pastelR = Math.round(rgb.r * 0.35 + 255 * 0.65);
+  const pastelG = Math.round(rgb.g * 0.35 + 255 * 0.65);
+  const pastelB = Math.round(rgb.b * 0.35 + 255 * 0.65);
+  const bg = `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
+
+  // Darken for accent text
+  const accentR = Math.round(rgb.r * 0.7);
+  const accentG = Math.round(rgb.g * 0.7);
+  const accentB = Math.round(rgb.b * 0.7);
+  const textAccent = `rgb(${accentR}, ${accentG}, ${accentB})`;
+
   return {
-    bg: '#fcfbf7',
+    bg,
     text: '#030404',
-    textAccent: '#4b5563',
+    textAccent,
     textMuted: 'rgba(3, 4, 4, 0.75)',
-    border: 'rgba(3, 4, 4, 0.1)',
-    halftoneClass: 'bg-halftone-black opacity-[0.08]',
+    border: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
+    halftoneClass: 'bg-halftone-black opacity-10',
   };
 };
 

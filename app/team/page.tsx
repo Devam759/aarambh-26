@@ -39,6 +39,21 @@ function SectionHeading({ label, sub, accent }: SectionHeadingProps) {
   );
 }
 
+const SECTION_COLORS: Record<string, {hex: string, rgb: string}> = {
+  'Discipline':              { hex: '#C62828', rgb: '198, 40, 40' },    // Deep Crimson Red
+  'Technical':               { hex: '#212121', rgb: '33, 33, 33' },     // Onyx Black
+  'Design':                  { hex: '#FF9A00', rgb: '255, 154, 0' },    // Brand Orange
+  'Photography':             { hex: '#9C27B0', rgb: '156, 39, 176' },   // Rich Purple
+  'Media':                   { hex: '#880E4F', rgb: '136, 14, 79' },     // Dark Maroon
+  'Social Media':            { hex: '#00838F', rgb: '0, 131, 143' },    // Deep Teal
+  'Hospitality':             { hex: '#FF5722', rgb: '255, 87, 34' },    // Deep Orange
+  'Event & Venue':           { hex: '#283593', rgb: '40, 53, 147' },    // Deep Indigo Navy
+  'Food & Accommodation':    { hex: '#F57F17', rgb: '245, 127, 23' },   // Golden Amber
+  'Internal Arrangements':   { hex: '#4A148C', rgb: '74, 20, 140' },    // Deep Eggplant Purple
+  'Feedback & Registration': { hex: '#006064', rgb: '0, 96, 100' },     // Dark Cyan
+  'Cluster Heads':           { hex: '#827717', rgb: '130, 119, 23' },   // Olive Gold
+};
+
 export default function TeamPage() {
   // Helper to map member to chroma item
   const mapMemberToChromaItem = (member: TeamMember, type: 'vc' | 'osa' | 'orgHead' | 'tl'): ChromaItem => {
@@ -46,32 +61,26 @@ export default function TeamPage() {
     let gradient = 'linear-gradient(145deg, rgba(245, 241, 229, 0.05), rgba(3, 4, 4, 0.95))';
 
     if (type === 'vc') {
-      borderColor = '#FF9A00'; // brand.orange
-      gradient = 'linear-gradient(145deg, rgba(255, 154, 0, 0.15), rgba(3, 4, 4, 0.98))';
+      borderColor = '#0D21DD'; // same as OSA/faculty blue
+      gradient = 'linear-gradient(145deg, rgba(13, 33, 221, 0.15), rgba(3, 4, 4, 0.98))';
     } else if (type === 'osa') {
-      borderColor = '#FF9A00'; // Match VC brand.orange color scheme
-      gradient = 'linear-gradient(145deg, rgba(255, 154, 0, 0.15), rgba(3, 4, 4, 0.98))';
+      borderColor = '#0D21DD'; // brand.blue
+      gradient = 'linear-gradient(145deg, rgba(13, 33, 221, 0.15), rgba(3, 4, 4, 0.98))';
     } else if (type === 'orgHead') {
       borderColor = '#FF188C'; // brand.pink
       gradient = 'linear-gradient(145deg, rgba(255, 24, 140, 0.15), rgba(3, 4, 4, 0.98))';
     } else if (type === 'tl') {
-      const dept = member.department?.toLowerCase() || '';
-      if (dept.includes('tech')) {
-        borderColor = '#FF9A00'; // brand.orange
-        gradient = 'linear-gradient(145deg, rgba(255, 154, 0, 0.1), rgba(3, 4, 4, 0.95))';
-      } else if (dept.includes('sponsorship') || dept.includes('finance')) {
-        borderColor = '#10B981'; // emerald green
-        gradient = 'linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(3, 4, 4, 0.95))';
-      } else if (dept.includes('media') || dept.includes('design')) {
-        borderColor = '#FF188C'; // brand.pink
-        gradient = 'linear-gradient(145deg, rgba(255, 24, 140, 0.1), rgba(3, 4, 4, 0.95))';
-      } else if (dept.includes('hospitality')) {
-        borderColor = '#8B5CF6'; // purple
-        gradient = 'linear-gradient(145deg, rgba(139, 92, 246, 0.1), rgba(3, 4, 4, 0.95))';
-      } else {
-        borderColor = '#0D21DD'; // brand.blue
-        gradient = 'linear-gradient(145deg, rgba(13, 33, 221, 0.1), rgba(3, 4, 4, 0.95))';
+      const dept = member.department || '';
+      let colorDef = { hex: '#10B981', rgb: '16, 185, 129' }; // default green
+      for (const [key, val] of Object.entries(SECTION_COLORS)) {
+          // Use exact match to prevent "Social Media" from matching "Media"
+          if (dept.toLowerCase().trim() === key.toLowerCase().trim() || (dept.toLowerCase() === 'cluster head' && key === 'Cluster Heads')) {
+              colorDef = val;
+              break;
+          }
       }
+      borderColor = colorDef.hex;
+      gradient = `linear-gradient(145deg, rgba(${colorDef.rgb}, 0.1), rgba(3, 4, 4, 0.95))`;
     }
 
     return {
@@ -204,10 +213,21 @@ export default function TeamPage() {
           <div className="w-full space-y-16">
             {groupedTeamLeaders.map((group) => {
               const mappedItems = group.items.map(m => mapMemberToChromaItem(m, 'tl'));
+              let groupColorHex = '#10B981';
+              for (const [key, val] of Object.entries(SECTION_COLORS)) {
+                  // Use exact match to prevent "Social Media" from matching "Media"
+                  if (group.heading.toLowerCase().trim() === key.toLowerCase().trim()) {
+                      groupColorHex = val.hex;
+                      break;
+                  }
+              }
               return (
                 <div key={group.heading} className="w-full relative">
                   <div className="flex items-center gap-4 mb-8">
-                    <span className="w-4.5 h-4.5 rounded-md border-2 border-brand-ink bg-brand-pink shrink-0 shadow-comic-sm" />
+                    <span 
+                      className="w-4.5 h-4.5 rounded-md border-2 border-brand-ink shrink-0 shadow-comic-sm" 
+                      style={{ backgroundColor: groupColorHex }}
+                    />
                     <h3 className="text-lg sm:text-xl font-display font-black uppercase text-brand-ink tracking-wide">
                       {group.heading}
                     </h3>
