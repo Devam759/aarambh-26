@@ -41,8 +41,8 @@ function SectionHeading({ label, sub, accent }: SectionHeadingProps) {
 
 const SECTION_COLORS: Record<string, {hex: string, rgb: string}> = {
   'Discipline':              { hex: '#C62828', rgb: '198, 40, 40' },    // Deep Crimson Red
-  'Technical':               { hex: '#212121', rgb: '33, 33, 33' },     // Onyx Black
-  'Design':                  { hex: '#FF9A00', rgb: '255, 154, 0' },    // Brand Orange
+  'Technical':               { hex: '#FF9A00', rgb: '255, 154, 0' },    // Brand Orange
+  'Design':                  { hex: '#6F3E2E', rgb: '111, 62, 46' },     // Rich Mahogany
   'Photography':             { hex: '#9C27B0', rgb: '156, 39, 176' },   // Rich Purple
   'Media':                   { hex: '#880E4F', rgb: '136, 14, 79' },     // Dark Maroon
   'Social Media':            { hex: '#00838F', rgb: '0, 131, 143' },    // Deep Teal
