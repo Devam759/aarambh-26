@@ -105,6 +105,7 @@ export function SearchableVenueSelect({
           required
           className="absolute opacity-0 pointer-events-none h-0 w-0"
           tabIndex={-1}
+          aria-label="Selected Venue"
         />
       )}
 
@@ -119,6 +120,7 @@ export function SearchableVenueSelect({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search venue..."
+              aria-label="Search venues"
               className="w-full bg-white border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink"
               autoFocus
             />

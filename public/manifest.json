@@ -8,9 +8,9 @@
   "theme_color": "#FF9A00",
   "icons": [
     {
-      "src": "/aarambh_logo_removebg.png",
+      "src": "/logos/aarambh_logo_removebg.webp",
       "sizes": "any",
-      "type": "image/png"
+      "type": "image/webp"
     }
   ]
 }

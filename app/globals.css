@@ -48,7 +48,7 @@
   --font-adminBody: var(--font-adminBody), "DM Sans", sans-serif;
   --font-vanilla: "Vanilla Extract", sans-serif;
   --font-bricks: var(--font-bricks), "Russo One", "TT Bricks", "Outfit", sans-serif;
-  --font-diary: var(--font-architectsDaughter), var(--font-gochiHand), "Architects Daughter", "Gochi Hand", cursive;
+  --font-diary: var(--font-architectsDaughter), "Architects Daughter", cursive;
 
   --shadow-brand-pink: 0 0 40px rgba(255, 24, 140, 0.25);
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);

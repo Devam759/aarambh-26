@@ -268,7 +268,7 @@ function RegisterContent() {
       <div className="w-full max-w-3xl relative z-10">
         <div className="mb-6 sm:mb-8 md:mb-12 text-center flex flex-col items-center">
           <Image 
-            src="/aarambh-registration.svg" 
+            src="/logos/aarambh-registration.svg" 
             alt="Aarambh '26 Registration" 
             width={800} 
             height={231} 

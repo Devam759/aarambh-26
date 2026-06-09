@@ -69,7 +69,7 @@ export default function Hero() {
             </h1>
 
             <div className="my-4 sm:my-6 border-comic bg-brand-ink p-3 sm:p-4 rounded-lg flex items-center justify-center">
-              <img src="/logo_cloud_white.svg" alt="Aarambh '26 Logo" className="h-12 sm:h-16 md:h-20 w-auto object-contain" />
+              <img src="/logos/logo_cloud_white.svg" alt="Aarambh '26 Logo" className="h-12 sm:h-16 md:h-20 w-auto object-contain" />
             </div>
 
             <p className="text-brand-ink/80 font-bold text-xs sm:text-sm md:text-base leading-relaxed mb-5 sm:mb-6 uppercase">

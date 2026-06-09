@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import AboutSection from '@/components/about';
-import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/home/HeroSection';
 
 const GalleryShowcase = dynamic(() => import('@/components/home/GalleryShowcase'), { ssr: true });
@@ -27,27 +26,11 @@ interface Particle {
 }
 
 export default function Home() {
-  const [loadingComplete, setLoadingComplete] = useState(false);
-  const [introStarted, setIntroStarted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [skipAnimation, setSkipAnimation] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
 
-  // Show loading screen animation on browser reload, skip on client-side navigation
   useEffect(() => {
     setIsMounted(true);
-    if (typeof window !== 'undefined') {
-      if (!(window as any).hasPlayedAarambhIntro) {
-        setIntroStarted(true);
-        setLoadingComplete(false);
-        setSkipAnimation(false);
-        (window as any).hasPlayedAarambhIntro = true;
-      } else {
-        setIntroStarted(true);
-        setLoadingComplete(true);
-        setSkipAnimation(true);
-      }
-    }
   }, []);
 
   // Handle hash scrolling — fires from mount, polls until element is found.
@@ -113,20 +96,13 @@ export default function Home() {
   }, []);
 
   if (!isMounted) {
-    return <div className="fixed inset-0 bg-brand-ink" />;
+    return <div className="fixed inset-0 bg-brand-cloud" />;
   }
 
   return (
     <main className="flex flex-col items-center overflow-x-hidden relative bg-brand-cloud text-brand-ink font-sans">
       {/* Noise/Grain Overlay */}
       <div className="noise-overlay" />
-
-      {/* Mario Loading Screen Overlay */}
-      <AnimatePresence>
-        {introStarted && !loadingComplete && (
-          <Preloader key="preloader" onComplete={() => setLoadingComplete(true)} />
-        )}
-      </AnimatePresence>
 
       {/* Particle Overlay for click explosions */}
       <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
@@ -162,8 +138,6 @@ export default function Home() {
 
       {/* Hero Section */}
       <HeroSection 
-        loadingComplete={loadingComplete} 
-        skipAnimation={skipAnimation}
         spawnParticles={spawnParticles} 
       />
 

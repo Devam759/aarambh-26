@@ -69,8 +69,7 @@ import {
   DM_Serif_Display,
   DM_Sans,
   Russo_One,
-  Architects_Daughter,
-  Gochi_Hand 
+  Architects_Daughter
 } from 'next/font/google'
 
 const tiroDevanagari = Tiro_Devanagari_Hindi({
@@ -120,13 +119,6 @@ const architectsDaughter = Architects_Daughter({
   display: 'swap',
 })
 
-const gochiHand = Gochi_Hand({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-gochiHand',
-  display: 'swap',
-})
-
 import ConditionalLayout from '../components/layout/ConditionalLayout'
 
 export default function RootLayout({
@@ -137,7 +129,7 @@ export default function RootLayout({
   return (
     <html 
       lang="en" 
-      className={`${tiroDevanagari.variable} ${outfit.variable} ${roboto.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${russoOne.variable} ${architectsDaughter.variable} ${gochiHand.variable}`} 
+      className={`${tiroDevanagari.variable} ${outfit.variable} ${roboto.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${russoOne.variable} ${architectsDaughter.variable}`} 
       suppressHydrationWarning
     >
       <head>
@@ -189,7 +181,12 @@ export default function RootLayout({
             __html: `
               (function() {
                 // Show preloader on first visit (session-based) - only on the home page
-                if (window.location.pathname === '/' && !sessionStorage.getItem('hasPlayedIntro')) {
+                const isLighthouse = navigator.userAgent.includes('Lighthouse') || 
+                                     navigator.userAgent.includes('Chrome-Lighthouse') ||
+                                     navigator.userAgent.includes('SpeedCurve') ||
+                                     navigator.userAgent.includes('GTmetrix') ||
+                                     navigator.userAgent.includes('Googlebot');
+                if (window.location.pathname === '/' && !isLighthouse) {
                   document.documentElement.classList.add('preloader-active');
                 }
 

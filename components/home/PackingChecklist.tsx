@@ -106,12 +106,12 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Clothing & Gear</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Formal wear (shirts, trousers, dress)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Seasonal clothing (jackets, sweaters)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Undergarments and socks</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sleepwear and loungewear</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Footwear (sneakers, sandals, formals)</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Formal wear (shirts, trousers, dress)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Seasonal clothing (jackets, sweaters)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Undergarments and socks</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sleepwear and loungewear</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Footwear (sneakers, sandals, formals)</span></label></li>
             </ul>
           </div>
 
@@ -125,11 +125,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Academics</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop / computer & charger</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Notebooks and Writing Pads</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Pens, pencils, and highlighters</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Calculator (scientific)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop Bag</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop / computer & charger</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Notebooks and Writing Pads</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Pens, pencils, and highlighters</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Calculator (scientific)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop Bag</span></label></li>
             </ul>
           </div>
 
@@ -143,11 +143,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Room & Living</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bed sheets, pillow & cover</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Blankets and Comforter</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-orange decoration-2">Umbrella (Important! Rain Alert)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Desk lamp</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Laundry basket & detergent</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bed sheets, pillow & cover</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Blankets and Comforter</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-orange decoration-2">Umbrella (Important! Rain Alert)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Desk lamp</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Laundry basket & detergent</span></label></li>
             </ul>
           </div>
 
@@ -161,11 +161,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Kitchen & Food</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Water bottle</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Coffee/tea mug</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Basic utensils (for induction)</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Plates and Bowls</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Non-perishable snacks</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Water bottle</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Coffee/tea mug</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Basic utensils (for induction)</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Plates and Bowls</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Non-perishable snacks</span></label></li>
             </ul>
           </div>
 
@@ -179,11 +179,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Official Docs</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Admission letter & documents</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Academic transcripts</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Government-issued IDs</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bank account information</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Emergency contacts</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Admission letter & documents</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Academic transcripts</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Government-issued IDs</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bank account information</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Emergency contacts</span></label></li>
             </ul>
           </div>
 
@@ -197,11 +197,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Health & Care</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>First aid kit</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Prescription medications</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Vitamins & supplements</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Thermometer</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Hand sanitizer & Face masks</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>First aid kit</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Prescription medications</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Vitamins & supplements</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Thermometer</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Hand sanitizer & Face masks</span></label></li>
             </ul>
           </div>
 
@@ -215,10 +215,10 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Tech Gear</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Power Bank</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Extension cord</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Headphones or earbuds</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Speakers (respectful volume)</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Power Bank</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Extension cord</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Headphones or earbuds</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Speakers (respectful volume)</span></label></li>
             </ul>
           </div>
 
@@ -232,11 +232,11 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Recreation</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Books for leisure reading</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Board games or playing cards</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sports equipment</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Musical instruments</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Art supplies</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Books for leisure reading</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Board games or playing cards</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sports equipment</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Musical instruments</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Art supplies</span></label></li>
             </ul>
           </div>
 
@@ -250,12 +250,12 @@ export default function PackingChecklist() {
               <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Toiletries & Grooming</h3>
             </div>
             <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bath towels & hand towels</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Shampoo, conditioner & body wash</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Trimmer / grooming kit</span></li>
-              <li className="flex items-center space-x-3 cursor-pointer p-1 rounded hover:bg-brand-cloud/40"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bath towels & hand towels</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Shampoo, conditioner & body wash</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Trimmer / grooming kit</span></label></li>
+              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></label></li>
             </ul>
           </div>
 

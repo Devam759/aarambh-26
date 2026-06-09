@@ -31,6 +31,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     const jkluLogoPath = path.join(
       process.cwd(), 
       'public', 
+      'logos',
       'jklu_logo.png'
     );
     const jkluLogoBytes = await fs.readFile(jkluLogoPath);
@@ -51,11 +52,12 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     const aarambhLogoPath = path.join(
       process.cwd(), 
       'public', 
-      'aarambh_logo_removebg.png'
+      'logos',
+      'Aarambh_new_logo.png'
     );
     const aarambhLogoBytes = await fs.readFile(aarambhLogoPath);
     aarambhLogoImage = await pdfDoc.embedPng(aarambhLogoBytes);
-    const targetHeight = 44;
+    const targetHeight = 50;
     const scaleFactor = targetHeight / aarambhLogoImage.height;
     aarambhScaledWidth = aarambhLogoImage.width * scaleFactor;
     aarambhScaledHeight = aarambhLogoImage.height * scaleFactor;
@@ -292,7 +294,7 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
                 <img src="cid:jklu_logo" alt="JKLU Logo" style="max-height: 55px; width: auto; display: block;" />
               </td>
               <td align="center" valign="middle" style="padding-left: 20px; border-left: 1px solid rgba(0,0,0,0.1);">
-                <img src="cid:aarambh_logo" alt="Aarambh '26 Logo" style="max-height: 55px; width: auto; display: block;" />
+                <img src="cid:aarambh_logo" alt="Aarambh '26 Logo" style="max-height: 70px; width: auto; display: block;" />
               </td>
             </tr>
           </table>
@@ -337,15 +339,15 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
     const fs = await import('fs/promises');
     const path = await import('path');
     
-    const logoPath = path.join(process.cwd(), 'public', 'aarambh_logo_removebg.png');
+    const logoPath = path.join(process.cwd(), 'public', 'logos', 'Aarambh_new_logo.png');
     const logoBytes = await fs.readFile(logoPath);
     logoAttachment = {
-      filename: 'aarambh_logo_removebg.png',
+      filename: 'Aarambh_new_logo.png',
       content: logoBytes,
       cid: 'aarambh_logo' // same cid value as in the html img src
     };
 
-    const jkluPath = path.join(process.cwd(), 'public', 'jklu_logo.png');
+    const jkluPath = path.join(process.cwd(), 'public', 'logos', 'jklu_logo.png');
     const jkluBytes = await fs.readFile(jkluPath);
     jkluAttachment = {
       filename: 'jklu_logo.png',

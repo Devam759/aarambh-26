@@ -510,7 +510,6 @@ export default function GalleryLanding() {
                   src={photo.src}
                   alt={photo.label}
                   fill
-                  unoptimized
                   sizes="(max-width: 768px) 50vw, 33vw"
                   className="object-cover"
                   loading="lazy"

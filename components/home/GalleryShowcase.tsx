@@ -338,7 +338,6 @@ export default function GalleryShowcase() {
                   src={src} 
                   alt="Aarambh" 
                   fill 
-                  unoptimized
                   sizes="(max-width: 768px) 80px, 150px"
                   className="gl-slider-image object-cover" 
                   loading="lazy"
@@ -358,7 +357,6 @@ export default function GalleryShowcase() {
                     src={src} 
                     alt="Aarambh" 
                     fill 
-                    unoptimized
                     sizes="150px"
                     className="gl-slider-image object-cover" 
                     loading="lazy"
@@ -379,7 +377,6 @@ export default function GalleryShowcase() {
                     src={src} 
                     alt="Aarambh" 
                     fill 
-                    unoptimized
                     sizes="150px"
                     className="gl-slider-image object-cover" 
                     loading="lazy"
@@ -399,7 +396,6 @@ export default function GalleryShowcase() {
                   src={src} 
                   alt="Aarambh" 
                   fill 
-                  unoptimized
                   sizes="(max-width: 768px) 80px, 150px"
                   className="gl-slider-image object-cover" 
                   loading="lazy"

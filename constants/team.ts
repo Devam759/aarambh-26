@@ -27,7 +27,7 @@ export const TEAM_DATA = {
   osa: [
     {
       name: "Deepak Sogani",
-      designation: "Head - Student Affairs",
+      designation: "Incharge - Student Affairs",
       photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Admin and Student Affairs/Deepak Sogani.webp",
       department: "Office of Student Affairs",
       socials: {
@@ -381,7 +381,7 @@ export const TEAM_DATA = {
       }
     },
     {
-      name: "Adityavardhan Singh Chauhan",
+      name: "Adityavardhan Singh",
       designation: "Media Lead",
       department: "Media",
       photo: "https://storage.googleapis.com/aarambh-26-assets/Team%20Photos/Team%20Leaders/Adityavardhan%20Singh.webp",

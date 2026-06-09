@@ -726,7 +726,6 @@ function TeamMemberCard({
                 src={member.image}
                 alt={member.name}
                 fill
-                unoptimized
                 sizes="(max-w-768px) 100vw, 300px"
                 className="object-contain object-bottom filter drop-shadow-[0_8px_16px_rgba(3,4,4,0.22)] saturate-105 contrast-105"
                 priority={isLeader}
@@ -867,7 +866,6 @@ function ProfileModal({
                           src={member.image}
                           alt=""
                           fill
-                          unoptimized
                           sizes="350px"
                           className="object-contain object-bottom select-none pointer-events-none"
                           style={{
@@ -887,7 +885,6 @@ function ProfileModal({
                           src={member.image}
                           alt=""
                           fill
-                          unoptimized
                           sizes="350px"
                           className="object-contain object-bottom select-none pointer-events-none"
                           style={{
@@ -907,7 +904,6 @@ function ProfileModal({
                           src={member.image}
                           alt=""
                           fill
-                          unoptimized
                           sizes="350px"
                           className="object-contain object-bottom select-none pointer-events-none"
                           style={{
@@ -927,7 +923,6 @@ function ProfileModal({
                           src={member.image}
                           alt={member.name}
                           fill
-                          unoptimized
                           sizes="350px"
                           className="object-contain object-bottom filter drop-shadow-[0_10px_20px_rgba(3,4,4,0.15)]"
                         />

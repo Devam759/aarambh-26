@@ -112,7 +112,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '7:30 AM - 8:50 AM', title: 'BREAKFAST', batches: [1, 2, 3, 4] },
       
       { time: '9:30 AM - 11:00 AM', title: 'Workshop on Cyber Security', speaker: 'Mr. Mukesh Choudhary', location: 'IM Amphi', batches: [1] },
-      { time: '11:00 AM - 1:00 PM', title: 'Mr. Manan Pahwa Sessions', location: 'IM Amphi', batches: [1] },
+      { time: '11:00 AM - 1:00 PM', title: 'Mind Hacks: The Hidden Psychology Behind Every Decision Mr. Manan Pahwa', location: 'IM Amphi', batches: [1] },
 
       { time: '9:30 AM - 10:30 AM', title: 'Examination (1hr)', location: 'IET Amphi', batches: [2] },
       { time: '10:30 AM - 11:00 AM', title: 'Admin Session(30min)', location: 'IET Amphi', batches: [2] },
@@ -138,12 +138,12 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '4:00 PM - 5:30 PM', title: 'Workshop on Cyber Security', speaker: 'Mr. Mukesh Choudhary', location: 'IM Amphi', batches: [3] },
 
       { time: '2:00 PM - 3:30 PM', title: 'Workshop on Cyber Security (till 3:30pm)', speaker: 'Mr. Mukesh Choudhary', location: 'IET Amphi', batches: [4] },
-      { time: '3:30 PM - 5:30 PM', title: 'Mr. Manan Pahwa Sessions (From 3:30pm)', location: 'IM Amphi', batches: [4] },
+      { time: '3:30 PM - 5:30 PM', title: 'Mind Hacks: The Hidden Psychology Behind Every Decision Mr. Manan Pahwa (From 3:30pm)', location: 'IM Amphi', batches: [4] },
 
       { time: '5:30 PM - 6:30 PM', title: 'SNACKS', batches: [1, 2, 3, 4] },
       { time: '6:30 PM - 9:00 PM', title: 'Fashion Show', location: 'Tech Lawn', batches: [1, 2, 3, 4] },
       { time: '9:00 PM - 10:30 PM', title: 'DINNER', batches: [1, 2, 3, 4] },
-      { time: '10:30 PM - 11:30 PM', title: 'Stories Framed', location: 'Batch Wise', batches: [1, 2, 3, 4] }
+      { time: '10:30 PM - 11:30 PM', title: 'JKLU Got Latent', location: 'Tech Lawn', batches: [1, 2, 3, 4] }
     ]
   },
   {
@@ -158,7 +158,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '10:30 AM - 11:00 AM', title: 'Admin Session(30min)', location: '008TB', batches: [1] },
       { time: '11:00 AM - 1:00 PM', title: 'Hostel(1hr) | Anti-Ragging(30min) | Session on International studies (30min)', location: '008TB', batches: [1] },
 
-      { time: '9:30 AM - 11:00 AM', title: 'Mr. Manan Pahwa Sessions', location: 'IET Amphi', batches: [2] },
+      { time: '9:30 AM - 11:00 AM', title: 'Mind Hacks: The Hidden Psychology Behind Every Decision Mr. Manan Pahwa', location: 'IET Amphi', batches: [2] },
       { time: '11:00 AM - 1:00 PM', title: 'Introduction to AIC session(1hr) | Session on Mental Health(1hr)', location: '009TB', batches: [2] },
 
       { time: '9:30 AM - 10:30 AM', title: 'Session on Mental Health(1hr)', location: '009TB', batches: [3] },
@@ -177,7 +177,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '2:00 PM - 3:30 PM', title: 'Alumni of JKLU(1.5hr)(*Till 3:30pm)', location: 'IM Amphi', batches: [2] },
       { time: '3:30 PM - 5:30 PM', title: 'Student Affairs (1.5Hr)(*from 3:30pm) | Session on International studies (30min)', location: 'IM Amphi', batches: [2] },
 
-      { time: '2:00 PM - 4:00 PM', title: 'Mr. Manan Pahwa Sessions (till 4pm)', location: 'IET Amphi', batches: [3] },
+      { time: '2:00 PM - 4:00 PM', title: 'Mind Hacks: The Hidden Psychology Behind Every Decision Mr. Manan Pahwa (till 4pm)', location: 'IET Amphi', batches: [3] },
       { time: '4:00 PM - 5:30 PM', title: 'Session on International studies (30min) (*From 4pm) | Introduction to AIC session(1hr)', location: 'IET Amphi', batches: [3] },
 
       { time: '2:00 PM - 3:00 PM', title: 'Examination (1HR)', location: '008TB', batches: [4] },
@@ -186,7 +186,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '5:30 PM - 6:30 PM', title: 'SNACKS', batches: [1, 2, 3, 4] },
       { time: '6:30 PM - 9:00 PM', title: 'Bands & Brief about Outing', location: 'Tech Lawn', batches: [1, 2, 3, 4] },
       { time: '9:00 PM - 10:30 PM', title: 'DINNER', batches: [1, 2, 3, 4] },
-      { time: '10:30 PM - 11:30 PM', title: 'Rest', batches: [1, 2, 3, 4] }
+      { time: 'Midnight', title: 'Live telecast of FIFA world cup', batches: [1, 2, 3, 4] }
     ]
   },
   {
@@ -203,7 +203,7 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '2:00 PM - 5:30 PM', title: 'VR Zone (Cohort Wise)', speaker: 'Tech Club & Aarambh Team', location: '006 Tech Block Room', batches: [4] },
 
       { time: '5:30 PM - 6:30 PM', title: 'SNACKS', batches: [1, 2, 3, 4] },
-      { time: '6:30 PM - 9:00 PM', title: 'JKLU Got Latent', location: 'Tech Lawn', batches: [1, 2, 3, 4] },
+      { time: '6:30 PM - 9:00 PM', title: 'Stories Framed', location: 'Tech Lawn', batches: [1, 2, 3, 4] },
       { time: '9:00 PM - 10:30 PM', title: 'DINNER', batches: [1, 2, 3, 4] },
       { time: '10:30 PM - 11:30 PM', title: 'Star Gazing & Vibe Check (Start From 8pm* (Cohort Wise))', speaker: 'Astronomy Club & Aarambh Team', location: 'Tech Lawn', batches: [1, 2, 3, 4] }
     ]

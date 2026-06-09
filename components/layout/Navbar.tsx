@@ -71,7 +71,7 @@ export default function Navbar() {
               className="flex items-center hover:scale-105 transition-transform"
             >
               <Image
-                src="/jklu_logo_light.svg"
+                src="/logos/jklu_logo_light.svg"
                 alt="JKLU Logo"
                 width={819}
                 height={916}
@@ -87,13 +87,13 @@ export default function Navbar() {
               className="flex items-center hover:scale-105 transition-transform"
             >
               <Image
-                src="/logo.svg"
+                src="/logos/Aarambh_new_logo_white.png"
                 alt="AARAMBH'26"
-                width={834}
-                height={193}
+                width={1078}
+                height={540}
                 priority
                 unoptimized
-                className="h-6 md:h-8 w-auto object-contain"
+                className="h-9 md:h-12 w-auto object-contain"
                 style={{ width: 'auto' }}
               />
             </Link>

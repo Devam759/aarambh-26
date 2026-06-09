@@ -313,11 +313,9 @@ export default function Footer() {
         <div className="flex justify-start md:justify-end items-center">
           <div className="relative border-4 border-brand-ink shadow-[6px_6px_0px_0px_#030404] rounded-xl overflow-hidden group w-full max-w-[280px] aspect-[4/3] bg-brand-cloud">
             <Image
-              src="/footer_image.webp"
+              src="/images/footer_image.webp"
               alt="JKLU Campus View"
               fill
-              priority
-              unoptimized
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, 280px"
             />
@@ -372,13 +370,13 @@ export default function Footer() {
         <div className="flex items-center gap-6">
           <Link href="/" className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex">
             <Image
-              src="/logo.svg"
+              src="/logos/Aarambh_new_logo.svg"
               alt="Aarambh '26 Logo"
-              width={834}
-              height={193}
+              width={1222}
+              height={482}
               unoptimized
-              className="h-10 w-auto opacity-95 object-contain"
-              style={{ width: 'auto', height: '40px' }}
+              className="h-20 w-auto opacity-95 object-contain"
+              style={{ width: 'auto', height: '80px' }}
             />
           </Link>
           <a 
@@ -388,7 +386,7 @@ export default function Footer() {
             className="cursor-pointer transition-transform hover:scale-[1.03] active:scale-95 flex"
           >
             <Image
-              src="/jklu_logo.svg"
+              src="/logos/jklu_logo.svg"
               alt="JK Lakshmipat University Logo"
               width={819}
               height={916}

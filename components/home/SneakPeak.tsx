@@ -111,7 +111,7 @@ export default function SneakPeak() {
           </h3>
           
           <p className="font-sans font-bold text-base sm:text-lg text-brand-ink/80 leading-relaxed mb-6">
-            Watch the official Aarambh Aftermovie! From morning treks and pottery sessions to the electrifying DJ night and endless cheering. Witness the efforts, dedication, hard work, and hopes that made the orientation an unforgettable journey for the Batch of 2025 at JKLU.
+            Watch the Aarambh Aftermovie! From morning treks and pottery sessions to the electrifying DJ night and endless cheering. Witness the efforts, dedication, hard work, and hopes that made the orientation an unforgettable journey for the Batch of 2025 at JKLU.
           </p>
           
           <p className="font-sans font-black text-lg sm:text-xl text-brand-pink uppercase tracking-wide">
