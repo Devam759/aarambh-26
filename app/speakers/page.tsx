@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Share2, Plus, X, ArrowRight, ArrowLeft } from 'lucide-react';
+import { 
+  Plus, 
+  ArrowLeft 
+} from 'lucide-react';
+import { playSynthSound } from '@/lib/sounds';
 
 const LinkedInIcon = () => (
   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -12,98 +15,92 @@ const LinkedInIcon = () => (
 );
 
 const THEMES = [
-  { primary: '#FF188C', highlight: '#FF9A00', dark: '#030404' },
-  { primary: '#0D21DD', highlight: '#FF188C', dark: '#030404' },
-  { primary: '#FF9A00', highlight: '#0D21DD', dark: '#030404' },
-  { primary: '#FF188C', highlight: '#0D21DD', dark: '#030404' },
-  { primary: '#0D21DD', highlight: '#FF9A00', dark: '#030404' },
-  { primary: '#FF9A00', highlight: '#FF188C', dark: '#030404' },
-  { primary: '#FF188C', highlight: '#FF9A00', dark: '#030404' },
-  { primary: '#0D21DD', highlight: '#FF188C', dark: '#030404' },
-  { primary: '#FF9A00', highlight: '#0D21DD', dark: '#030404' },
+  { primary: '#FF188C', highlight: '#FF9A00', accent: '#0D21DD' },
+  { primary: '#FF9A00', highlight: '#FF188C', accent: '#030404' },
+  { primary: '#030404', highlight: '#FF9A00', accent: '#FF188C' },
+  { primary: '#FF188C', highlight: '#FF188C', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF188C' },
+  { primary: '#030404', highlight: '#FF188C', accent: '#FF9A00' },
+  { primary: '#FF188C', highlight: '#FF9A00', accent: '#030404' },
+  { primary: '#FF9A00', highlight: '#FF188C', accent: '#030404' },
+  { primary: '#030404', highlight: '#FF9A00', accent: '#FF188C' },
+];
+
+const CARD_COLORS = [
+  { border: '#FF188C', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
+  { border: '#030404', shadow: '#FF188C', bg: '#FF188C', text: '#F5F1E5' },
+  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#030404' },
+  { border: '#FF188C', shadow: '#FF9A00', bg: '#FF188C', text: '#030404' },
+  { border: '#030404', shadow: '#FF9A00', bg: '#FF9A00', text: '#F5F1E5' },
+  { border: '#FF9A00', shadow: '#FF188C', bg: '#FF188C', text: '#030404' },
+  { border: '#FF188C', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
+  { border: '#030404', shadow: '#FF188C', bg: '#FF188C', text: '#F5F1E5' },
+  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#030404' }
 ];
 
 const SPEAKERS_DATA = [
   {
-    name: 'Manish Freeman',
-    role: 'Movement Facilitator',
-    time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Manish%20Freeman%20.webp',
-    bio: "A joyful mover who turns play and dance into deep human connection. Manish brings energy, rhythm, and presence to every space he enters. His session at Aarambh '26 will get you on your feet and help you connect with fellow classmates in the most alive way possible.",
-    expertise: ['Movement', 'Dance', 'Connection'],
-    linkedin: 'https://www.linkedin.com/in/manish-freeman-a7ab34169/',
-  },
-  {
-    name: 'Chetan Kanoongo',
-    role: 'Experiential Facilitator',
-    time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Chetan%20.webp',
-    bio: "A curious facilitator who creates space for connection, reflection, and play. Chetan designs experiences that help people slow down, tune in, and discover something new about themselves and each other. Expect thoughtful, memorable sessions that stay with you long after Aarambh ends.",
-    expertise: ['Facilitation', 'Reflection', 'Play'],
-    linkedin: null,
-  },
-  {
-    name: 'Anjali Suneja',
+    name: 'Mrs. Anjali Suneja',
     role: 'POSH Trainer & HR Leader',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Anjali_Suneja.webp',
-    bio: "A POSH trainer and HR leader passionate about building safe, inclusive spaces. Anjali's session at Aarambh '26 is designed to help you understand your rights, your responsibilities, and the culture of respect that makes great communities thrive. An essential conversation for every incoming student.",
+    image: '/images/speakers/Anjali_Suneja.webp',
+    bio: "Meet Anjali Suneja, a veteran Human Resources strategist and a Ministry-empanelled POSH & POCSO Consultant. Over her distinguished 15-year career, she has dedicated herself to fostering safe, respectful, and compliant environments in both corporate offices and academic institutions. ",
     expertise: ['POSH Training', 'HR Leadership', 'Inclusion'],
     linkedin: 'https://www.linkedin.com/in/anjali-suneja-05021427/',
   },
   {
-    name: 'Kunal Agarwal',
+    name: 'Mr. Kunal Agarwal',
     role: 'Designer & Craftsman',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Kunal%20Agarwal%20.webp',
-    bio: "A designer who turns clay and tradition into everyday stories. Kunal bridges the gap between heritage craft and contemporary design thinking. His hands-on workshop at Aarambh '26 invites you to slow down, get your hands dirty, and shape something meaningful — both in clay and in your new college life.",
+    image: '/images/speakers/Kunal Agarwal .webp',
+    bio: "Kunal Agarwal is a creative designer and craftsman who believes that art is best experienced hands-on. By blending traditional craftsmanship with contemporary design thinking, he transforms simple materials into meaningful stories. His work reflects patience, creativity, and cultural connection. At Aarambh ’26, Kunal invites students to explore the joy of creating something with their own hands while rediscovering the beauty of slow and mindful art.",
     expertise: ['Design', 'Craft', 'Tradition'],
     linkedin: 'https://www.linkedin.com/in/kunalagarwal112/',
   },
   {
-    name: 'Vidhi Modi',
-    role: 'Tech & Wellness Advocate',
+    name: 'Mr. Manish Freeman',
+    role: 'Movement Falicitator',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Vidhi%20Modi%20.webp',
-    bio: "A techie with a heart for well-being and youth empowerment. Vidhi blends her passion for technology with a deep commitment to mental wellness and self-awareness. At Aarambh '26, she'll help you start this chapter with the clarity, confidence, and tools you need to thrive — both online and off.",
-    expertise: ['Tech', 'Well-being', 'Youth Empowerment'],
-    linkedin: 'https://www.linkedin.com/in/vidhimodi99/',
+    image: '/images/speakers/Manish Freeman .webp',
+    bio: "Manish Freeman is an experiential learning facilitator, community builder, and corporate wellness expert. Rejecting a conventional engineering path, he dedicated his career to human connection, play-based leadership development, and championing a unique 'Gift Culture' lifestyle. His training programs are trusted by top-tier organizations like she’ll energy, Deloitte, the Indian Army, Tata Trusts, and the National Academy of Customs (NACIN).His workshop in aarambh will help freshers to get along and create amazing memories. ",
+    expertise: ['Movement', 'Dance', 'Connection'],
+    linkedin: 'https://www.linkedin.com/in/manish-freeman-a7ab34169/',
   },
   {
-    name: 'Amit Sheth',
-    role: 'Author & Changemaker',
+    name: 'Mr. Mukesh Choudhary',
+    role: 'Cyber Crime Consultant',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Amit%20Seth%20.webp',
-    bio: "A runner, author, and changemaker who believes in purpose with every step. Amit's story is one of transformation — from corporate life to a life driven by meaning and movement. His talk at Aarambh '26 will challenge you to ask what you truly stand for and how to walk into your future with courage and heart.",
-    expertise: ['Authorship', 'Purpose', 'Changemaking'],
-    linkedin: null,
+    image: '/images/speakers/Mukesh Choudhary.webp',
+    bio: "Mukesh Choudhary is a Cyber Crime Consultant and InfoSec professional with extensive experience in digital security and cyber awareness. Having worked closely with leading law enforcement and intelligence agencies, he brings deep insights into the evolving world of cybersecurity. Through his practical knowledge and engaging sessions, he inspires students to stay informed, aware, and prepared for the challenges of the digital era.",
+    expertise: ['Cyber Security', 'InfoSec', 'Law Enforcement'],
+    linkedin: 'https://www.google.com/search?q=https://www.linkedin.com/in/mukesh-choudhary-cyber-expert',
   },
   {
-    name: 'Manzil Mystics',
-    role: 'Soul Music Collective',
+    name: 'Mr. RamG Vallath',
+    role: 'Growth Mindset & Resilience Coach | TedX Speaker',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Manzil%20Mystics%20.webp',
-    bio: "Blending soul, sound, and Kabir's timeless spirit to spark unity through music. Manzil Mystics creates experiences where song becomes a bridge across differences. Their performance at Aarambh '26 will have you singing, feeling, and celebrating the beautiful diversity of your new community.",
-    expertise: ['Music', 'Kabir Poetry', 'Unity'],
-    linkedin: 'https://www.linkedin.com/in/anuraghoon/',
+    image: '/images/speakers/RamG Vallath.webp',
+    bio: "RamG Vallath is a bestselling author, highly sought-after motivational speaker, and former tech industry leader. After a successful corporate career at companies like HP and Dell, he faced a life-altering diagnosis of a rare autoimmune disorder. Drawing from his personal journey of reinvention, he now empowers students and professionals alike, focusing on the power of resilience, developing a growth mindset, and bouncing back from life's toughest challenges with humor and positivity.",
+    expertise: ['Resilience', 'Growth Mindset', 'Leadership'],
+    linkedin: 'https://www.linkedin.com/in/ramgvallath/',
+  },
+  {
+    name: 'Mrs. Vibhuti Mehra',
+    role: 'Professional Makeup Artist',
+    time: "Aarambh '26 · JKLU",
+    image: '/images/speakers/Vibhuti Mehra.webp',
+    bio: "Vibhuti Mehra is a Professional Makeup Artist based in Jaipur, Rajasthan, and the founder of her own full-time beauty venture, Vibhuti Mehra Makeup. Coming from an educational background at Government Women Engineering College Ajmer, she successfully pivoted to pursue her passion in the beauty industry, bringing a unique blend of technical precision and creative vision to her craft.",
+    expertise: ['Makeup Artistry', 'Beauty & Cosmetics', 'Creative Styling'],
+    linkedin: 'https://www.linkedin.com/in/vibhuti-mehra/',
   },
   {
     name: 'Manan Pahwa',
     role: 'Design & Behavior Researcher',
     time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Manan%20Pahwa%20.webp',
-    bio: "A curious mind who blends design, behavior, and deep research to decode human decisions. Manan's work sits at the intersection of how people think and how systems are built. At Aarambh '26, he'll take you on a journey to uncover the 'why' behind what we do — a session that will permanently change how you see choices.",
+    image: '/images/speakers/Manan Pahwa .webp',
+    bio: "Manan is an applied behavior strategist and researcher who operates at the fascinating intersection of human psychology and system design. At Aarambh '26, he will be delivering a powerful session on decoding human decisions. He will take the audience on a deep dive to uncover the 'why' behind our actions—permanently shifting how we perceive consumer choices and system building.",
     expertise: ['Behavioral Research', 'Design Thinking', 'Decision Making'],
     linkedin: 'https://www.linkedin.com/in/mananpahwaa/',
-  },
-  {
-    name: 'Mukesh Choudhary',
-    role: 'Cyber Crime Consultant',
-    time: "Aarambh '26 · JKLU",
-    image: 'https://aarambh.jklu.edu.in/assets/Images/Speakers/Mukesh%20Choudhary.webp',
-    bio: "Cyber Crime Consultant and InfoSec professional who has trained India's top law enforcement and intelligence agencies — from the CBI to the armed forces — for over a decade. At Aarambh '26, Mukesh will decode the real world of cyber security and help you navigate the digital landscape with awareness and confidence.",
-    expertise: ['Cyber Security', 'InfoSec', 'Law Enforcement'],
-    linkedin: 'https://www.linkedin.com/in/mukesh1choudhary/',
   },
 ];
 
@@ -126,44 +123,131 @@ export default function SpeakersSection() {
   const prevIndexRef = useRef(0);
   const [direction, setDirection] = useState<1 | -1>(1); // 1 = forward, -1 = backward
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
+  const rafRef = useRef<number | null>(null);
+  const containerOffsetRef = useRef(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const cardChangeInterval = viewportHeight * SCROLL_SPEED_FACTOR;
-      
-      if (rect.top <= 0) {
-        const scrollDepth = Math.abs(rect.top);
-        let newIndex = Math.floor(scrollDepth / cardChangeInterval);
-        newIndex = Math.max(0, Math.min(newIndex, SPEAKERS_DATA.length - 1));
-        if (newIndex !== prevIndexRef.current) {
-          setDirection(newIndex > prevIndexRef.current ? 1 : -1);
-          prevIndexRef.current = newIndex;
-          setCurrentIndex(newIndex);
-        }
-      } else {
-        if (prevIndexRef.current !== 0) {
-          setDirection(-1);
-          prevIndexRef.current = 0;
-          setCurrentIndex(0);
-        }
-      }
-    };
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleNextClick = () => {
-    window.scrollBy({ top: window.innerHeight * SCROLL_SPEED_FACTOR, behavior: 'smooth' });
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
   };
 
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diffX = e.changedTouches[0].clientX - touchStartX.current;
+    const diffY = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Check if swipe is mostly horizontal and significant
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX < 0) {
+        // Swiped left -> Next speaker
+        const nextIdx = Math.min(SPEAKERS_DATA.length - 1, currentIndex + 1);
+        window.scrollTo({
+          top: nextIdx * window.innerHeight * SCROLL_SPEED_FACTOR,
+          behavior: 'smooth'
+        });
+      } else {
+        // Swiped right -> Previous speaker
+        const prevIdx = Math.max(0, currentIndex - 1);
+        window.scrollTo({
+          top: prevIdx * window.innerHeight * SCROLL_SPEED_FACTOR,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Set initial size on client
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Dynamic scaling based on viewport height
+  const viewportHeight = dimensions.height;
+  const isLargeScreen = dimensions.width >= 1024; // lg breakpoint
+
+  // Base parameters for desktop
+  const estimatedColWidth = isLargeScreen ? Math.floor((dimensions.width - 96) * 0.35) : 0;
+  const R = isLargeScreen
+    ? Math.min(Math.floor((estimatedColWidth - 8) / 1.42), Math.min(360, Math.max(180, (viewportHeight / 2 - 60) / 1.2)))
+    : 290;
+  const cardHeight = isLargeScreen ? R * 0.36 : 80;
+  const cardWidth = isLargeScreen ? cardHeight : 70;
+  const angleStep = 25; // degrees — 7 speakers span ±75°, no overlap
+  const dialOffset = isLargeScreen ? Math.round(cardWidth / 2 + 10) : 0; // push center right so top/bottom cards clear the column edge
+
+  // Cache container's document offset once (avoids getBoundingClientRect in hot path)
+  useEffect(() => {
+    const updateOffset = () => {
+      if (!containerRef.current) return;
+      let el: HTMLElement | null = containerRef.current;
+      let offset = 0;
+      while (el) {
+        offset += el.offsetTop;
+        el = el.offsetParent as HTMLElement | null;
+      }
+      containerOffsetRef.current = offset;
+    };
+    updateOffset();
+    window.addEventListener('resize', updateOffset, { passive: true });
+    return () => window.removeEventListener('resize', updateOffset);
+  }, []);
+
+  // RAF-throttled scroll handler — fires at most once per animation frame
+  useEffect(() => {
+    const onScroll = () => {
+      if (rafRef.current !== null) return; // already a frame pending
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+        const interval = vh * SCROLL_SPEED_FACTOR;
+        const scrollDepth = scrollY - containerOffsetRef.current;
+
+        if (scrollDepth >= 0) {
+          let newIndex = Math.floor(scrollDepth / interval);
+          newIndex = Math.max(0, Math.min(newIndex, SPEAKERS_DATA.length - 1));
+          if (newIndex !== prevIndexRef.current) {
+            setDirection(newIndex > prevIndexRef.current ? 1 : -1);
+            prevIndexRef.current = newIndex;
+            setCurrentIndex(newIndex);
+            playSynthSound('click');
+          }
+        } else {
+          if (prevIndexRef.current !== 0) {
+            setDirection(-1);
+            prevIndexRef.current = 0;
+            setCurrentIndex(0);
+            playSynthSound('click');
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // run once on mount to set initial state
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   const speaker = SPEAKERS_DATA[currentIndex];
-  const nextSpeaker = SPEAKERS_DATA[(currentIndex + 1) % SPEAKERS_DATA.length];
   const theme = THEMES[currentIndex % THEMES.length];
 
   return (
@@ -173,9 +257,44 @@ export default function SpeakersSection() {
       style={{ height: `${((SPEAKERS_DATA.length - 1) * SCROLL_SPEED_FACTOR * 100) + 100}vh` }} 
     >
       <div
-        className="sticky top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#030404] selection:text-[#F5F1E5]"
-        style={{ backgroundImage: 'radial-gradient(#030404 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        className="sticky top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#FF188C] selection:text-[#F5F1E5]"
+        style={{ backgroundImage: 'radial-gradient(rgba(13, 33, 221, 0.07) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}
       >
+        {/* Soft Fluid Aura Blobs (Zero Black) */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div
+            className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full opacity-[0.08]"
+            style={{ background: '#FF188C', filter: 'blur(120px)' }}
+            animate={{ x: [0, 20, 0], y: [0, 10, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-[10%] right-[5%] w-[50%] h-[50%] rounded-full opacity-[0.08]"
+            style={{ background: '#0D21DD', filter: 'blur(120px)' }}
+            animate={{ x: [0, -20, 0], y: [0, -10, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <div className="absolute top-[30%] left-[20%] w-[40%] h-[40%] rounded-full opacity-[0.05]" style={{ background: '#FF9A00', filter: 'blur(100px)' }} />
+        </div>
+
+        {/* Radiating pop-art pink rays from the left edge center */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-screen pointer-events-none z-0 overflow-hidden">
+          {Array.from({ length: 15 }).map((_, idx) => {
+            const angle = -70 + idx * 10;
+            return (
+              <div
+                key={idx}
+                className="absolute left-0 top-1/2 h-[1px] bg-brand-pink/20 origin-left"
+                style={{
+                  width: '120vw',
+                  transform: `translateY(-50%) rotate(${angle}deg)`,
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Scroll Progress indicators at top */}
         <div className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 md:gap-2">
           {SPEAKERS_DATA.map((_, i) => (
             <div
@@ -184,106 +303,272 @@ export default function SpeakersSection() {
               style={{
                 width: i === currentIndex ? 24 : 8,
                 height: 8,
-                backgroundColor: i === currentIndex ? THEMES[i % THEMES.length].primary : '#030404',
-                opacity: i === currentIndex ? 1 : 0.3,
+                backgroundColor: i === currentIndex ? THEMES[i % THEMES.length].primary : '#F5F1E5',
+                opacity: i === currentIndex ? 1 : 0.4,
               }}
             />
           ))}
         </div>
 
-        {/* MAIN CONTENT AREA */}
-        <div className="relative w-full h-full px-4 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-4 md:gap-8 pt-16 pb-6 md:pt-20 md:pb-10">
+        {/* DESKTOP VIEWPORT LAYOUT */}
+        <div className="hidden lg:flex w-full h-full relative z-10 px-12 items-center justify-between pt-20 pb-10">
+          
+          {/* 1. LEFT COLUMN: FIXED-ARC SPEAKER RING */}
+          <div className="w-[35%] h-full relative flex items-center justify-start overflow-hidden">
 
-          {/* LEFT 80% AREA */}
-          <div className="w-full lg:w-[80%] h-full flex flex-col lg:flex-row items-center justify-start lg:justify-between gap-2 lg:gap-12 z-20">
-            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center lg:items-start text-center lg:text-left pointer-events-none shrink-0 mt-2 lg:mt-0">
-              <AnimatePresence mode="wait" custom={direction}>
+            {/* Decorative ring — rotates for visual effect only, no speaker children */}
+            <div
+              className="absolute rounded-full border-[8px] border-[#030404] bg-[#F5F1E5]/40 backdrop-blur-sm shadow-[8px_8px_0px_#FF188C]"
+              style={{
+                width: `${2 * R}px`,
+                height: `${2 * R}px`,
+                left: `${dialOffset}px`,
+                top: '50%',
+                transform: `translate(-50%, -50%) rotate(${currentIndex * angleStep * 1.5}deg)`,
+                transition: 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform'
+              }}
+            >
+              <div className="absolute inset-8 rounded-full border-2 border-dashed border-[#030404]/10" />
+              <div className="absolute inset-20 rounded-full border border-[#030404]/5" />
+            </div>
+
+            {/* All 7 speakers at FIXED arc positions — all always visible, none rotate */}
+            {SPEAKERS_DATA.map((sp, idx) => {
+              const isActive = idx === currentIndex;
+              const spColor = CARD_COLORS[idx % CARD_COLORS.length];
+              const angleRad = ((idx - (SPEAKERS_DATA.length - 1) / 2) * angleStep) * Math.PI / 180;
+              const cx = dialOffset + R * Math.cos(angleRad);
+              const cy = R * Math.sin(angleRad);
+              return (
                 <motion.div
-                  key={speaker.name}
-                  custom={direction}
-                  variants={textVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
-                  className="flex flex-col items-center lg:items-start"
-                >
-                  <div
-                    className="inline-block px-4 py-1.5 md:px-6 md:py-2 border-[3px] md:border-[4px] border-[#030404] text-[10px] md:text-sm uppercase tracking-widest font-black mb-3 md:mb-6 shadow-[4px_4px_0px_rgba(3,4,4,1)] md:shadow-[6px_6px_0px_rgba(3,4,4,1)]"
-                    style={{ backgroundColor: theme.primary, color: '#F5F1E5' }}
-                  >
-                    {speaker.role}
-                  </div>
-                  <h2
-                    className="text-[3.5rem] leading-[0.85] sm:text-6xl md:text-[7rem] lg:text-[8rem] font-black uppercase tracking-tighter text-[#030404] mb-2 md:mb-8"
-                    style={{ textShadow: `4px 4px 0px ${theme.highlight}` }}
-                  >
-                    {speaker.name.split(' ').map((word, i) => (
-                      <span key={i} className="block">{word}</span>
-                    ))}
-                  </h2>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  key={idx}
+                  className="absolute rounded-full border-[4px] overflow-hidden cursor-pointer"
+                  style={{
+                    width: `${cardWidth}px`,
+                    height: `${cardWidth}px`,
+                    left: `${cx}px`,
+                    top: '50%',
+                    transform: `translate(-50%, calc(-50% + ${cy}px)) scale(${isActive ? 1.2 : 1})`,
+                    borderColor: isActive ? '#FF188C' : spColor.border,
+                    boxShadow: isActive
+                      ? `0 0 0 3px #FF188C, 4px 4px 0px ${spColor.shadow}`
+                      : `2px 2px 0px ${spColor.shadow}`,
+                    transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease',
+                    willChange: 'transform',
+                    zIndex: isActive ? 10 : 5,
+                  }}
 
-            <div className="w-full lg:w-1/2 flex-1 lg:h-full flex justify-center lg:justify-end items-center relative min-h-[35vh]">
-              <AnimatePresence mode="wait" custom={direction}>
-                <DossierCard key={speaker.name} speaker={speaker} theme={theme} direction={direction} />
-              </AnimatePresence>
-            </div>
+                  onClick={() => window.scrollTo({ top: idx * window.innerHeight * SCROLL_SPEED_FACTOR, behavior: 'smooth' })}
+                >
+                  <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
+                  {!isActive && <div className="absolute inset-0 rounded-full bg-[#030404]/20" />}
+                </motion.div>
+              );
+            })}
+
           </div>
 
-          {/* FLOATING PREVIEW AND SCROLL WRAPPER */}
-          {/* Changed right position configuration and layout alignment classes to bring it fully into view */}
-          <div
-            onClick={handleNextClick}
-            className="absolute bottom-6 right-3 sm:right-6 lg:relative lg:bottom-auto lg:right-auto w-auto lg:w-[20%] flex flex-col justify-center items-end cursor-pointer group z-40 select-none"
-          >
-            {/* Desktop Text */}
-            <p className="hidden lg:flex text-[#030404]/40 font-black uppercase tracking-widest text-[11px] mb-4 items-center gap-2 group-hover:text-[#030404] transition-colors">
-              {currentIndex === SPEAKERS_DATA.length - 1 ? 'Scroll to Exit' : 'Scroll to View'} <ArrowRight size={14} className="animate-pulse" />
-            </p>
+          {/* 2. MIDDLE COLUMN: TEXT CONTENT */}
+          <div className="w-[34%] h-full flex flex-col justify-center items-start pl-12 z-20 pointer-events-none select-none overflow-hidden">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={speaker.name}
+                custom={direction}
+                variants={textVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                className="flex flex-col items-start"
+              >
+                <div
+                  className="inline-block px-4 py-1.5 border-[3px] border-[#030404] text-xs uppercase tracking-widest font-black mb-6 shadow-[4px_4px_0px_#030404]"
+                  style={{ backgroundColor: theme.primary, color: '#F5F1E5' }}
+                >
+                  {speaker.role}
+                </div>
+                
+                <h2
+                  className="text-5xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter text-[#030404] mb-2 leading-none"
+                  style={{ textShadow: `4px 4px 0px ${theme.highlight}` }}
+                >
+                  {speaker.name.split(' ').map((word, i) => (
+                    <span key={i} className="block">{word}</span>
+                  ))}
+                </h2>
+                
 
-            {/* Mobile Scroll Text - Added clear structural rules to stop overlap */}
-            <div className="flex lg:hidden items-center justify-end gap-1 mb-1 w-full max-w-[75px] sm:max-w-[90px] text-right">
-              <span className="text-[#030404] font-black uppercase tracking-widest text-[10px] block whitespace-nowrap">
-                Scroll
-              </span>
-              <ArrowRight size={12} className="animate-pulse text-[#030404] shrink-0" />
-            </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-            {/* Dynamic Image Preview Container */}
-            <div className="relative w-[75px] sm:w-[90px] lg:w-full lg:max-w-[180px] aspect-[3/4] opacity-100 lg:opacity-60 shadow-[4px_4px_0px_rgba(3,4,4,1)] lg:shadow-[10px_10px_0px_rgba(3,4,4,1)] border-[2px] lg:border-[4px] border-[#030404] bg-[#030404] overflow-hidden group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-              <Image
-                src={nextSpeaker.image}
-                alt="Next Up Lineup Preview"
-                fill
-                unoptimized
-                sizes="(max-width: 1024px) 90px, 180px"
-                className="object-cover grayscale contrast-125"
-              />
-              <div className="absolute inset-0 bg-[#030404]/30 mix-blend-multiply" />
-              <div className="absolute bottom-0 left-0 right-0 p-1.5 lg:p-3 bg-gradient-to-t from-[#030404] to-transparent">
-                <p className="text-[#F5F1E5] font-black text-[8px] lg:text-xs uppercase truncate">{nextSpeaker.name}</p>
-              </div>
-            </div>
-
-            <p className="mt-1.5 lg:mt-4 text-[#030404]/60 lg:text-[#030404]/40 font-black text-[10px] lg:text-xs tracking-widest bg-[#F5F1E5]/80 lg:bg-transparent px-1 lg:px-0 rounded-sm">
-              {currentIndex + 1} / {SPEAKERS_DATA.length}
-            </p>
+          {/* 3. RIGHT COLUMN: DOSSIER CARD */}
+          <div className="w-[31%] h-full flex items-center justify-center relative z-20">
+            <AnimatePresence mode="wait" custom={direction}>
+              <DossierCard key={speaker.name} speaker={speaker} theme={theme} direction={direction} currentIndex={currentIndex} />
+            </AnimatePresence>
           </div>
 
         </div>
+
+
+        {/* MOBILE VIEWPORT LAYOUT */}
+        <div
+          className="lg:hidden w-full h-full flex flex-col relative z-10"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* 1. HEADER: role badge + name + event label */}
+          <div className="shrink-0 w-full text-center z-20 select-none pt-16 px-4">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={speaker.name + '-header'}
+                custom={direction}
+                variants={textVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                className="flex flex-col items-center"
+              >
+                <div
+                  className="inline-block px-3 py-1 border-[2px] border-[#030404] text-[10px] uppercase tracking-widest font-black mb-2 shadow-[2px_2px_0px_#030404]"
+                  style={{ backgroundColor: theme.primary, color: '#F5F1E5' }}
+                >
+                  {speaker.role}
+                </div>
+                <h2
+                  className="text-3xl font-black uppercase tracking-tighter text-[#030404] leading-none mb-1"
+                  style={{ textShadow: `2px 2px 0px ${theme.highlight}` }}
+                >
+                  {speaker.name}
+                </h2>
+                <p className="text-brand-pink font-bold text-[9px] uppercase tracking-widest">
+                  {speaker.time}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* 2. SPEAKER CARD — explicit width so w-full inside DossierCard works */}
+          <div className="flex-1 flex items-center justify-center z-20 px-6 pb-[155px]">
+            <AnimatePresence mode="wait" custom={direction}>
+              {/* Fixed width container — this is the key fix */}
+              <motion.div
+                key={speaker.name + '-card-wrapper'}
+                custom={direction}
+                variants={cardVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                className="w-[200px] xs:w-[220px] sm:w-[260px]"
+              >
+                <DossierCard speaker={speaker} theme={theme} direction={direction} currentIndex={currentIndex} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* 3. BOTTOM ARC DIAL — absolutely pinned to bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-[150px] overflow-hidden select-none z-30">
+
+            {/* Decorative ring — rotates for visual effect only, no speaker children */}
+            <div
+              className="absolute rounded-full border-[4px] border-[#030404] bg-[#F5F1E5]/40"
+              style={{
+                width: '560px',
+                height: '560px',
+                bottom: '-490px',
+                left: '50%',
+                transform: `translateX(-50%) rotate(${currentIndex * 20}deg)`,
+                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'transform'
+              }}
+            >
+              <div className="absolute inset-4 rounded-full border border-dashed border-[#030404]/10" />
+            </div>
+
+            {/* All 7 speakers at FIXED arc positions — all always visible, none rotate */}
+            {SPEAKERS_DATA.map((sp, idx) => {
+              const isActive = idx === currentIndex;
+              const spColor = CARD_COLORS[idx % CARD_COLORS.length];
+              const mobileR = 280;
+              const ringCenterY = 360; // px from container top
+              const totalArcDeg = 70; // ±35° keeps outer cards on-screen at 375px width
+              const mobileAngleStep = totalArcDeg / (SPEAKERS_DATA.length - 1);
+              const mobileCardSize = isActive ? 58 : 50;
+              const angleRad = ((idx - (SPEAKERS_DATA.length - 1) / 2) * mobileAngleStep) * Math.PI / 180;
+              const cxOffset = mobileR * Math.sin(angleRad);
+              const cy = ringCenterY - mobileR * Math.cos(angleRad);
+              return (
+                <div
+                  key={idx}
+                  className="absolute rounded-full border-[3px] overflow-hidden cursor-pointer"
+                  style={{
+                    width: `${mobileCardSize}px`,
+                    height: `${mobileCardSize}px`,
+                    left: `calc(50% + ${cxOffset}px)`,
+                    top: `${cy}px`,
+                    transform: 'translate(-50%, -50%)',
+                    borderColor: isActive ? '#FF188C' : spColor.border,
+                    boxShadow: isActive
+                      ? `0 0 0 2px #FF188C, 3px 3px 0px ${spColor.shadow}`
+                      : `1px 1px 0px ${spColor.shadow}`,
+                    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    zIndex: isActive ? 10 : 5,
+                  }}
+                  onClick={() => window.scrollTo({ top: idx * window.innerHeight * SCROLL_SPEED_FACTOR, behavior: 'smooth' })}
+                >
+                  <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
+                  {!isActive && <div className="absolute inset-0 rounded-full bg-[#030404]/20" />}
+                </div>
+              );
+            })}
+
+
+            {/* Swipe indicator strip */}
+            <div className="absolute bottom-2 left-4 right-4 flex justify-between items-center text-[9px] font-black uppercase text-[#030404]/40 tracking-wider">
+              <span className="flex items-center gap-1"><ArrowLeft size={10} /> Swipe</span>
+              <span>{currentIndex + 1} / {SPEAKERS_DATA.length}</span>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// DOSSIER CARD COMPONENT
+// DOSSIER CARD COMPONENT (LIGHT THEME - NO BLACK TONES EXCEPT INTENTIONAL OUTLINES)
 // ---------------------------------------------------------------------------
-function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; direction: 1 | -1 }) {
+function DossierCard({ 
+  speaker, 
+  theme, 
+  direction, 
+  currentIndex 
+}: { 
+  speaker: any; 
+  theme: any; 
+  direction: 1 | -1;
+  currentIndex: number;
+}) {
   const [showBio, setShowBio] = useState(false);
+
+  // Cycle the bio reveal background color and text
+  const bioBgClass = currentIndex % 3 === 0 
+    ? 'bg-[#FF188C] text-[#F5F1E5]' 
+    : currentIndex % 3 === 1 
+      ? 'bg-[#FF9A00] text-[#030404]' 
+      : 'bg-[#F5F1E5] text-[#030404]';
+
+  const bioBorderClass = currentIndex % 3 === 0
+    ? 'border-[#030404]'
+    : currentIndex % 3 === 1
+      ? 'border-[#030404]'
+      : 'border-[#030404]';
 
   return (
     <motion.div
@@ -293,17 +578,14 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
       animate="animate"
       exit="exit"
       transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
-      className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-[420px] aspect-[3/4] group z-20"
+      className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-[400px] aspect-[3/4] group z-20"
     >
-      <div className="absolute inset-0 w-full h-full shadow-[15px_15px_0px_rgba(3,4,4,1)] md:shadow-[25px_25px_0px_rgba(3,4,4,1)] border-[6px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden">
-        <Image
+      {/* FRONT PHOTO BASE */}
+      <div className="absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF188C] md:shadow-[20px_20px_0px_#FF188C] border-[8px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden">
+        <img
           src={speaker.image}
           alt={speaker.name}
-          fill
-          unoptimized
-          sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
-          priority
-          className="object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100 pointer-events-none"
+          className="w-full h-full object-cover transition-all duration-700 pointer-events-none"
         />
 
         <div
@@ -313,7 +595,7 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
 
         <button
           onClick={() => setShowBio(true)}
-          className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 w-20 h-20 md:w-28 md:h-28 rounded-full flex flex-col items-center justify-center shadow-[4px_4px_0px_rgba(3,4,4,1)] md:shadow-[6px_6px_0px_rgba(3,4,4,1)] border-[3px] md:border-[4px] border-[#030404] hover:scale-110 transition-transform duration-300 z-30 cursor-pointer"
+          className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 w-20 h-20 md:w-28 md:h-28 rounded-full flex flex-col items-center justify-center shadow-[4px_4px_0px_#030404] md:shadow-[6px_6px_0px_#030404] border-[4px] border-[#030404] hover:scale-110 transition-all duration-300 z-30 cursor-pointer"
           style={{ backgroundColor: theme.highlight }}
         >
           <Plus size={24} className="text-[#030404] mb-0.5 md:mb-1 w-5 md:w-7 h-5 md:h-7" />
@@ -323,69 +605,59 @@ function DossierCard({ speaker, theme, direction }: { speaker: any; theme: any; 
         </button>
       </div>
 
-      {/* BIO REVEAL */}
+      {/* BIO REVEAL (FLIP DETAILED SECTION) */}
       <motion.div
         initial={{ clipPath: 'circle(0% at 10% 90%)' }}
         animate={{ clipPath: showBio ? 'circle(150% at 10% 90%)' : 'circle(0% at 10% 90%)' }}
         transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        className="absolute inset-0 w-full h-full shadow-[15px_15px_0px_rgba(3,4,4,1)] md:shadow-[25px_25px_0px_rgba(3,4,4,1)] border-[6px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden p-4 md:p-8 flex flex-col justify-between z-40 cursor-default"
+        className={`absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF188C] md:shadow-[20px_20px_0px_#FF188C] border-[8px] md:border-[12px] ${bioBgClass} ${bioBorderClass} overflow-hidden p-4 md:p-8 flex flex-col justify-between z-40 cursor-default`}
       >
         <div className="absolute inset-0 opacity-15 mix-blend-luminosity pointer-events-none">
-          <Image 
-            src={speaker.image} 
-            alt="watermark"
-            fill
-            unoptimized
-            sizes="(max-width: 768px) 260px, (max-width: 1024px) 320px, 420px"
-            className="object-cover grayscale blur-[2px]" 
-          />
-          <div className="absolute inset-0 bg-[#030404]/80" />
+          <img src={speaker.image} className="w-full h-full object-cover blur-[2px]" alt="watermark" />
+          <div className="absolute inset-0 bg-[#030404]/30" />
         </div>
 
         <div className="relative z-10 flex flex-col h-full overflow-y-auto pr-2 custom-scrollbar">
-          <div className="flex justify-between items-start mb-4 md:mb-6 border-b-[3px] border-[#F5F1E5]/20 pb-4 md:pb-6 shrink-0">
+          <div className="flex justify-between items-start mb-4 md:mb-6 border-b-[3px] border-current/25 pb-4 md:pb-6 shrink-0">
             <div className="flex flex-col items-start gap-2 md:gap-3">
               <button
                 onClick={() => setShowBio(false)}
-                className="flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-1 bg-[#F5F1E5] text-[#030404] text-[9px] md:text-[10px] font-black uppercase tracking-widest border-[2px] border-[#030404] shadow-[2px_2px_0px_rgba(245,241,229,0.3)] hover:translate-y-[1px] hover:translate-x-[1px] hover:shadow-none transition-all cursor-pointer"
+                className="flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-1 bg-[#F5F1E5] text-[#030404] text-[9px] md:text-[10px] font-black uppercase tracking-widest border-[2px] border-[#030404] shadow-[2px_2px_0px_#030404] hover:translate-y-[1px] hover:translate-x-[1px] hover:shadow-none transition-all cursor-pointer"
               >
                 <ArrowLeft size={10} className="w-3 h-3 md:w-auto md:h-auto" /> Back
               </button>
               
               <div>
-                <h3 className="font-black text-xl md:text-3xl uppercase tracking-tighter text-[#F5F1E5] leading-none mb-1.5 md:mb-2">
-                  Dossier:<br />{speaker.name.split(' ')[0]}
+                <h3 className="font-black text-xl md:text-3xl uppercase tracking-tighter leading-none mb-1.5 md:mb-2">
+                  {speaker.name}
                 </h3>
-                <p className="text-[#F5F1E5]/70 font-bold text-[9px] md:text-xs uppercase tracking-widest mb-2 md:mb-3">{speaker.time}</p>
+                <p className="opacity-80 font-bold text-[9px] md:text-xs uppercase tracking-widest mb-2 md:mb-3">{speaker.time}</p>
                 {speaker.linkedin && (
                   <a
                     href={speaker.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 border-[2px] border-[#F5F1E5]/40 bg-[#F5F1E5]/10 hover:bg-[#F5F1E5]/20 transition-all duration-200 cursor-pointer group/li"
+                    className="inline-flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 border-[2px] border-current bg-current/10 hover:bg-current/20 transition-all duration-200 cursor-pointer group/li"
                     style={{ textDecoration: 'none' }}
                   >
                     <LinkedInIcon />
-                    <span className="text-[#F5F1E5] font-black text-[9px] md:text-[10px] uppercase tracking-widest">LinkedIn</span>
+                    <span className="font-black text-[9px] md:text-[10px] uppercase tracking-widest">LinkedIn</span>
                   </a>
                 )}
               </div>
             </div>
-            <div className="w-8 h-8 md:w-12 md:h-12 bg-[#F5F1E5] flex items-center justify-center border-[2px] md:border-[3px] border-[#030404] shadow-[3px_3px_0px_rgba(245,241,229,0.3)] shrink-0">
-              <Share2 size={16} className="text-[#030404] w-3.5 h-3.5 md:w-4 md:h-4" />
-            </div>
           </div>
 
-          <p className="text-[#F5F1E5] font-medium text-[11px] md:text-sm leading-relaxed mb-4 md:mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+          <p className="font-medium text-[11px] md:text-sm leading-relaxed mb-4 md:mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
             {speaker.bio}
           </p>
 
           <div className="mt-auto">
-            <p className="text-[#F5F1E5]/50 text-[9px] md:text-xs font-black uppercase tracking-widest mb-2 md:mb-3">Core Focus</p>
+            <p className="opacity-60 text-[9px] md:text-xs font-black uppercase tracking-widest mb-2 md:mb-3">Core Focus</p>
             <div className="flex flex-wrap gap-1.5 md:gap-2">
               {speaker.expertise.map((skill: string, i: number) => (
-                <span key={i} className="px-1.5 md:px-2 py-0.5 md:py-1 bg-[#F5F1E5]/10 border border-[#F5F1E5]/30 text-[#F5F1E5] text-[8px] md:text-[10px] font-bold uppercase tracking-wider">
+                <span key={i} className="px-1.5 md:px-2 py-0.5 md:py-1 bg-current/10 border border-current/30 text-current text-[8px] md:text-[10px] font-bold uppercase tracking-wider">
                   {skill}
                 </span>
               ))}
