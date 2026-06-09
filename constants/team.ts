@@ -205,14 +205,13 @@ export const TEAM_DATA = {
       }
     },
     {
-      name: "Khushi Soni",
+      name: "Bhavya Bang",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/Khushi Soni.webp",
+      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/Bhavya.webp",
       socials: {
-        linkedin: "https://www.linkedin.com/in/khushi-soni--ks0906",
-        email: "khushisoni@jklu.edu.in",
-        instagram: "https://www.instagram.com/khushiii_06_09"
+        linkedin: "https://www.linkedin.com/in/bhavya-bang",
+        email: "bhavya@jklu.edu.in"
       }
     },
     {
@@ -303,14 +302,14 @@ export const TEAM_DATA = {
       }
     },
     {
-      name: "Swadha Saxena",
+      name: "Khushi Soni",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/swadha.webp",
+      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/Khushi Soni.webp",
       socials: {
-        linkedin: "https://www.linkedin.com/in/swadha-saxena-24b365363",
-        email: "swadhasaxena@jklu.edu.in",
-        instagram: "https://www.instagram.com/istg.swadhaa__"
+        linkedin: "https://www.linkedin.com/in/khushi-soni--ks0906",
+        email: "khushisoni@jklu.edu.in",
+        instagram: "https://www.instagram.com/khushiii_06_09"
       }
     },
     {
@@ -453,13 +452,14 @@ export const TEAM_DATA = {
       }
     },
     {
-      name: "Bhavya Bang",
+      name: "Swadha Saxena",
       designation: "Cluster Head",
       department: "Cluster Head",
-      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/Bhavya.webp",
+      photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Cluster Heads/swadha.webp",
       socials: {
-        linkedin: "https://www.linkedin.com/in/bhavya-bang",
-        email: "bhavya@jklu.edu.in"
+        linkedin: "https://www.linkedin.com/in/swadha-saxena-24b365363",
+        email: "swadhasaxena@jklu.edu.in",
+        instagram: "https://www.instagram.com/istg.swadhaa__"
       }
     },
     {

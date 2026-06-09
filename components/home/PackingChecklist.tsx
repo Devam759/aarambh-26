@@ -1,6 +1,116 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
+const STORAGE_PREFIX = 'aarambh-checklist-';
+
+/* ── Single Checklist Row ── */
+const ChecklistItem = ({
+  label,
+  accentColor,
+  highlight = false,
+}: {
+  label: string;
+  accentColor: string;
+  highlight?: boolean;
+}) => {
+  const storageKey = `${STORAGE_PREFIX}${label.replace(/\s+/g, '-').toLowerCase()}`;
+
+  const [checked, setChecked] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore from localStorage on mount (SSR-safe)
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved === 'true') setChecked(true);
+    } catch {}
+    setHydrated(true);
+  }, [storageKey]);
+
+  const toggle = useCallback(() => {
+    setChecked((prev) => {
+      const next = !prev;
+      try {
+        if (next) {
+          localStorage.setItem(storageKey, 'true');
+        } else {
+          localStorage.removeItem(storageKey);
+        }
+      } catch {}
+      return next;
+    });
+  }, [storageKey]);
+
+  return (
+    <li
+      className="group relative rounded-xl cursor-pointer select-none transition-all duration-300"
+      style={{
+        backgroundColor: checked ? `${accentColor}12` : 'transparent',
+        padding: '8px 10px',
+        opacity: hydrated ? 1 : 0.6,
+      }}
+      onClick={toggle}
+    >
+      <div className="flex items-center gap-3.5">
+        {/* ── Custom checkbox ── */}
+        <div className="relative flex-shrink-0 w-6 h-6">
+          {/* Box */}
+          <div
+            className="absolute inset-0 rounded-md border-2 transition-all duration-300"
+            style={{
+              borderColor: '#030404',
+              backgroundColor: checked ? accentColor : 'white',
+              boxShadow: checked ? '2px 2px 0px 0px #030404' : '1px 1px 0px 0px #030404',
+              transform: checked ? 'scale(1.05) rotate(-3deg)' : 'scale(1) rotate(0deg)',
+            }}
+          />
+          {/* Checkmark SVG */}
+          <svg
+            className="absolute inset-0 w-full h-full p-1 pointer-events-none"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline
+              points="20 6 9 17 4 12"
+              style={{
+                strokeDasharray: 30,
+                strokeDashoffset: checked ? 0 : 30,
+                transition: 'stroke-dashoffset 0.3s cubic-bezier(0.65, 0, 0.35, 1) 0.1s',
+              }}
+            />
+          </svg>
+        </div>
+
+        {/* ── Label ── */}
+        <div className="relative flex-1">
+          <span
+            className={`text-sm tracking-wide transition-colors duration-200 ${
+              highlight && !checked 
+                ? 'font-bold px-1.5 py-0.5 rounded-sm' 
+                : checked 
+                ? 'font-medium text-brand-ink/40 line-through' 
+                : 'font-medium text-brand-ink'
+            }`}
+            style={{
+              backgroundColor: highlight && !checked ? `${accentColor}40` : 'transparent',
+            }}
+          >
+            {label}
+          </span>
+        </div>
+      </div>
+    </li>
+  );
+};
+
+/* ── Keyframes injected via style tag ── */
+
+
+/* ── Main Component ── */
 export default function PackingChecklist() {
 
   return (
@@ -17,7 +127,7 @@ export default function PackingChecklist() {
       <div className="relative p-8 md:p-14 bg-transparent">
         {/* Distressed/Grunge Box Background Layer */}
         <div 
-          className="absolute inset-0 bg-[#F5F1E5] border-comic rounded-xl shadow-comic -z-10"
+          className="absolute inset-0 bg-[#F5F1E5] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10"
           style={{
             filter: 'url(#torn-card-filter)',
             backgroundImage: `
@@ -36,8 +146,7 @@ export default function PackingChecklist() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
           }}
         />
-        {/* Tape & Sticker Vibe: Scrapbook Designer Washi Tape Elements (Stripe Style) */}
-        {/* Top Left Tape */}
+        {/* Tape & Sticker Vibe */}
         <div 
           className="absolute -top-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
@@ -45,7 +154,6 @@ export default function PackingChecklist() {
             background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
           }}
         />
-        {/* Top Right Tape */}
         <div 
           className="absolute -top-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
@@ -53,7 +161,6 @@ export default function PackingChecklist() {
             background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
           }}
         />
-        {/* Bottom Left Tape */}
         <div 
           className="absolute -bottom-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
@@ -61,7 +168,6 @@ export default function PackingChecklist() {
             background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
           }}
         />
-        {/* Bottom Right Tape */}
         <div 
           className="absolute -bottom-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
@@ -92,170 +198,142 @@ export default function PackingChecklist() {
           </a>
         </div>
 
-
-        {/* Distorted & Colorful Cards Grid */}
+        {/* Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4 pb-8">
 
           {/* Card 1: Clothing & Gear */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Clothing & Gear</h3>
+            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Clothing & Gear</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Casual wear (t-shirts, jeans, shorts)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Formal wear (shirts, trousers, dress)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Seasonal clothing (jackets, sweaters)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Undergarments and socks</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sleepwear and loungewear</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Footwear (sneakers, sandals, formals)</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF188C" label="Casual wear (t-shirts, jeans, shorts)" />
+              <ChecklistItem accentColor="#FF188C" label="Formal wear (shirts, trousers, dress)" />
+              <ChecklistItem accentColor="#FF188C" label="Seasonal clothing (jackets, sweaters)" />
+              <ChecklistItem accentColor="#FF188C" label="Undergarments and socks" />
+              <ChecklistItem accentColor="#FF188C" label="Sleepwear and loungewear" />
+              <ChecklistItem accentColor="#FF188C" label="Footwear (sneakers, sandals, formals)" />
             </ul>
           </div>
 
           {/* Card 2: Academics */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Academics</h3>
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Academics</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop / computer & charger</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Notebooks and Writing Pads</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Pens, pencils, and highlighters</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Calculator (scientific)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Laptop Bag</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#0D21DD" label="Laptop / computer & charger" />
+              <ChecklistItem accentColor="#0D21DD" label="Notebooks and Writing Pads" />
+              <ChecklistItem accentColor="#0D21DD" label="Pens, pencils, and highlighters" />
+              <ChecklistItem accentColor="#0D21DD" label="Calculator (scientific)" />
+              <ChecklistItem accentColor="#0D21DD" label="Laptop Bag" />
             </ul>
           </div>
 
           {/* Card 3: Room & Living */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Room & Living</h3>
+            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Room & Living</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bed sheets, pillow & cover</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Blankets and Comforter</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span className="text-brand-ink font-bold underline decoration-brand-orange decoration-2">Umbrella (Important! Rain Alert)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Desk lamp</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Laundry basket & detergent</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF9A00" label="Bed sheets, pillow & cover" />
+              <ChecklistItem accentColor="#FF9A00" label="Blankets and Comforter" />
+              <ChecklistItem accentColor="#FF9A00" label="Umbrella (Important! Rain Alert)" highlight />
+              <ChecklistItem accentColor="#FF9A00" label="Desk lamp" />
+              <ChecklistItem accentColor="#FF9A00" label="Laundry basket & detergent" />
             </ul>
           </div>
 
           {/* Card 4: Kitchen & Food */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Kitchen & Food</h3>
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Kitchen & Food</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Water bottle</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Coffee/tea mug</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Basic utensils (for induction)</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Plates and Bowls</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Non-perishable snacks</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#0D21DD" label="Water bottle" />
+              <ChecklistItem accentColor="#0D21DD" label="Coffee/tea mug" />
+              <ChecklistItem accentColor="#0D21DD" label="Basic utensils (for induction)" />
+              <ChecklistItem accentColor="#0D21DD" label="Plates and Bowls" />
+              <ChecklistItem accentColor="#0D21DD" label="Non-perishable snacks" />
             </ul>
           </div>
 
           {/* Card 5: Official Docs */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Official Docs</h3>
+            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Official Docs</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Admission letter & documents</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Academic transcripts</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Government-issued IDs</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Bank account information</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Emergency contacts</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF9A00" label="Admission letter & documents" />
+              <ChecklistItem accentColor="#FF9A00" label="Academic transcripts" />
+              <ChecklistItem accentColor="#FF9A00" label="Government-issued IDs" />
+              <ChecklistItem accentColor="#FF9A00" label="Bank account information" />
+              <ChecklistItem accentColor="#FF9A00" label="Emergency contacts" />
             </ul>
           </div>
 
           {/* Card 6: Health & Care */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Health & Care</h3>
+            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Health & Care</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>First aid kit</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Prescription medications</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Vitamins & supplements</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Thermometer</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Hand sanitizer & Face masks</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF188C" label="First aid kit" />
+              <ChecklistItem accentColor="#FF188C" label="Prescription medications" />
+              <ChecklistItem accentColor="#FF188C" label="Vitamins & supplements" />
+              <ChecklistItem accentColor="#FF188C" label="Thermometer" />
+              <ChecklistItem accentColor="#FF188C" label="Hand sanitizer & Face masks" />
             </ul>
           </div>
 
           {/* Card 7: Tech Gear */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffe0b0] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Tech Gear</h3>
+            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Tech Gear</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Power Bank</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Extension cord</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Headphones or earbuds</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-orange cursor-pointer" /><span>Speakers (respectful volume)</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF9A00" label="Power Bank" />
+              <ChecklistItem accentColor="#FF9A00" label="Extension cord" />
+              <ChecklistItem accentColor="#FF9A00" label="Headphones or earbuds" />
+              <ChecklistItem accentColor="#FF9A00" label="Speakers (respectful volume)" />
             </ul>
           </div>
 
           {/* Card 8: Recreation */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#ffb7db] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Recreation</h3>
+            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Recreation</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Books for leisure reading</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Board games or playing cards</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Sports equipment</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Musical instruments</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-pink cursor-pointer" /><span>Art supplies</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF188C" label="Books for leisure reading" />
+              <ChecklistItem accentColor="#FF188C" label="Board games or playing cards" />
+              <ChecklistItem accentColor="#FF188C" label="Sports equipment" />
+              <ChecklistItem accentColor="#FF188C" label="Musical instruments" />
+              <ChecklistItem accentColor="#FF188C" label="Art supplies" />
             </ul>
           </div>
 
           {/* Card 9: Toiletries & Grooming */}
           <div className="relative p-6">
-            <div 
-              className="absolute inset-0 bg-[#b4bef4] border-comic rounded-xl shadow-comic -z-10"
-              style={{ filter: 'url(#torn-card-filter)' }}
-            />
-            <div className="border-b-2 border-brand-ink pb-3 mb-4">
-              <h3 className="font-bricks font-black text-xl tracking-tight text-brand-ink uppercase">Toiletries & Grooming</h3>
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Toiletries & Grooming</h3>
             </div>
-            <ul className="space-y-3 text-sm font-medium tracking-wide text-brand-ink">
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bath towels & hand towels</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Toothbrush, toothpaste & mouthwash</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Shampoo, conditioner & body wash</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Comb, hairbrush & nail clippers</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Trimmer / grooming kit</span></label></li>
-              <li className="p-1 rounded hover:bg-brand-cloud/40"><label className="flex items-center space-x-3 cursor-pointer w-full"><input type="checkbox" className="checklist-item w-5 h-5 accent-brand-blue cursor-pointer" /><span>Bucket, mug & bathroom slippers</span></label></li>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#0D21DD" label="Bath towels & hand towels" />
+              <ChecklistItem accentColor="#0D21DD" label="Toothbrush, toothpaste & mouthwash" />
+              <ChecklistItem accentColor="#0D21DD" label="Shampoo, conditioner & body wash" />
+              <ChecklistItem accentColor="#0D21DD" label="Comb, hairbrush & nail clippers" />
+              <ChecklistItem accentColor="#0D21DD" label="Trimmer / grooming kit" />
+              <ChecklistItem accentColor="#0D21DD" label="Bucket, mug & bathroom slippers" />
             </ul>
           </div>
 
