@@ -50,6 +50,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   }
 
   const isCreditsPage = pathname === '/credits';
+  const isGalleryPage = pathname?.startsWith('/gallery');
 
   return (
     <>
@@ -73,7 +74,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
       <main className={`min-h-screen ${isCreditsPage ? 'bg-[#00a6e6]' : 'bg-brand-cloud'}`}>
         {children}
       </main>
-      <Footer />
+      {!isGalleryPage && <Footer />}
     </>
   );
 }

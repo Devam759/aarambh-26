@@ -73,11 +73,9 @@ export default function TunnelGallery() {
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08";
-        card.style.boxShadow = '0 16px 48px rgba(255,154,0,0.4), 0 0 0 2px rgba(255,154,0,0.6)';
       };
       card.onmouseleave = () => {
         card.dataset.hoverScale = "1";
-        card.style.boxShadow = '';
       };
 
       card.style.left = '50%';
@@ -179,14 +177,20 @@ export default function TunnelGallery() {
           card.style.top = `${currentTop}%`;
 
           const scale = 1400 / (1400 - z);
-          const hS = parseFloat(card.dataset.hoverScale || "1");
+          
+          let curHS = parseFloat(card.dataset.currentHoverScale || "1");
+          const targetHS = parseFloat(card.dataset.hoverScale || "1");
+          curHS += (targetHS - curHS) * 0.18;
+          card.dataset.currentHoverScale = String(curHS);
 
           // Boost scale only for cards in focal zone
-          const focusScale = z > -100 ? 1.6
-            : z > -400 ? 1 + ((z + 400) / 300) * 0.6
+          const isMobileViewport = window.innerWidth <= 768;
+          const maxFocusScale = isMobileViewport ? 1.2 : 1.6;
+          const focusScale = z > -100 ? maxFocusScale
+            : z > -400 ? 1 + ((z + 400) / 300) * (maxFocusScale - 1)
             : 1;
 
-          card.style.transform = `translate(-50%, -50%) scale(${scale * hS * focusScale})`;
+          card.style.transform = `translate(-50%, -50%) scale(${scale * curHS * focusScale})`;
 
           let opacity = 0.02;
           if (z < -3600) {
@@ -313,21 +317,23 @@ export default function TunnelGallery() {
 
         .tunnel-card {
           position: absolute;
-          border: 3.5px solid #030404;
+          border: 1px solid #030404;
           border-radius: 12px;
           overflow: hidden;
           will-change: transform, opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 4px 4px 0px 0px #030404;
-          transition: box-shadow 0.25s ease, opacity 0.25s ease;
+          transition: opacity 0.25s ease;
           width: clamp(120px, 16vw, 260px);
           aspect-ratio: 3 / 2;
         }
 
-        .tunnel-card:hover {
-          box-shadow: 10px 10px 0px 0px #FF9A00, 16px 16px 0px 0px #030404;
+        @media (max-width: 768px) {
+          .tunnel-card {
+            width: clamp(100px, 45vw, 180px);
+            aspect-ratio: 2 / 3;
+          }
         }
 
         /* Neo-Brutalism Exit button */
@@ -342,16 +348,13 @@ export default function TunnelGallery() {
           border-radius: 12px;
           cursor: pointer;
           box-shadow: 6px 6px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: all 0.2s ease-in-out;
         }
         .tunnel-exit-btn:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 9px 9px 0px 0px #030404;
           background: #FF188C;
         }
         .tunnel-exit-btn:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          opacity: 0.85;
         }
 
         /* Lightbox styling */
@@ -370,9 +373,8 @@ export default function TunnelGallery() {
           max-width: 94vw;
           max-height: 92vh;
           object-fit: contain;
-          border: 4px solid #030404;
+          border: 1px solid #030404;
           border-radius: 20px;
-          box-shadow: 16px 16px 0px 0px #030404;
         }
 
         .gp-lb-close {
@@ -406,16 +408,31 @@ export default function TunnelGallery() {
           align-items: center;
           justify-content: center;
           box-shadow: 4px 4px 0px 0px #030404;
-          transition: all 0.1s;
+          transition: all 0.2s ease-in-out;
           z-index: 100000;
         }
         .gp-lb-arrow:hover { 
-          transform: translate(-2px, -2px);
-          box-shadow: 6px 6px 0px 0px #030404;
           background: #FF9A00;
         }
         .gp-lb-prev { left: 24px; }
         .gp-lb-next { right: 24px; }
+
+        @media (max-width: 768px) {
+          .gp-lb-arrow {
+            top: auto;
+            bottom: 24px;
+            transform: none;
+            width: 48px;
+            height: 48px;
+          }
+          .gp-lb-prev {
+            left: calc(50% - 60px);
+          }
+          .gp-lb-next {
+            right: calc(50% - 60px);
+            left: auto;
+          }
+        }
       `}} />
 
       <div className="gl-root">

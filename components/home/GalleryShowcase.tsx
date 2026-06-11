@@ -3,11 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { PHOTOS } from '@/constants/photos';
 
 export default function GalleryShowcase() {
+  const router = useRouter();
   const [galleryMounted, setGalleryMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
+  const [isCTAloading, setIsCTALoading] = useState(false);
+  const [loadingCount, setLoadingCount] = useState(0);
 
   useEffect(() => {
     setGalleryMounted(true);
@@ -18,6 +22,36 @@ export default function GalleryShowcase() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const handleBeginExperience = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isCTAloading) return;
+    setIsCTALoading(true);
+    setLoadingCount(0);
+
+    try {
+      const preloadImage = (src: string) => {
+        return new Promise<void>((resolve) => {
+          const img = new window.Image();
+          img.src = src;
+          img.onload = () => {
+            setLoadingCount(prev => prev + 1);
+            resolve();
+          };
+          img.onerror = () => {
+            setLoadingCount(prev => prev + 1);
+            resolve();
+          };
+        });
+      };
+
+      await Promise.all(PHOTOS.map(p => preloadImage(p.src)));
+    } catch (err) {
+      console.error("Failed to preload images:", err);
+    }
+
+    router.push('/gallery');
+  };
 
   const col1Images = PHOTOS.slice(0, 8).map(p => p.src);
   const col2Images = PHOTOS.slice(8, 16).map(p => p.src);
@@ -75,10 +109,9 @@ export default function GalleryShowcase() {
             width: 100%;
             height: 195px;
             position: relative;
-            border: 3px solid #030404;
+            border: 1px solid #030404;
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 5px 5px 0px 0px #030404;
             background: #030404;
           }
 
@@ -127,12 +160,12 @@ export default function GalleryShowcase() {
               display: flex !important;
               flex-direction: row !important;
               width: 250% !important;
-              height: 70px !important;
+              height: 120px !important;
               left: -75% !important;
               right: auto !important;
               top: auto !important;
               gap: 8px !important;
-              opacity: 0.55 !important;
+              opacity: 0.85 !important;
             }
             
             /* Position columns as horizontal rows */
@@ -150,24 +183,23 @@ export default function GalleryShowcase() {
             }
 
             .gl-slider-img-container {
-              width: 80px !important;
-              height: 55px !important;
+              width: 70px !important;
+              height: 105px !important;
               flex-shrink: 0 !important;
-              box-shadow: 2px 2px 0px 0px #030404 !important;
             }
 
             .gl-slider-track-up {
               display: flex !important;
               flex-direction: row !important;
               gap: 12px !important;
-              animation: slideLeft 22s linear infinite !important;
+              animation: slideLeft 24s linear infinite !important;
             }
 
             .gl-slider-track-down {
               display: flex !important;
               flex-direction: row !important;
               gap: 12px !important;
-              animation: slideRight 22s linear infinite !important;
+              animation: slideRight 24s linear infinite !important;
             }
           }
 
@@ -291,17 +323,14 @@ export default function GalleryShowcase() {
             text-decoration: none;
             cursor: pointer;
             box-shadow: 5px 5px 0px 0px #030404;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+            transition: all 0.2s ease-in-out;
           }
           .gl-cta:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 8px 8px 0px 0px #030404;
             background: #FF9A00;
             color: #030404;
           }
           .gl-cta:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px 0px #030404;
+            opacity: 0.85;
           }
 
           .gl-corner-tag {
@@ -449,8 +478,6 @@ export default function GalleryShowcase() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="gl-card-topbar" />
-
               {/* Content Container */}
               <div style={{ position: 'relative', zIndex: 10 }}>
                 {/* Devanagari */}
@@ -464,9 +491,24 @@ export default function GalleryShowcase() {
 
                 {/* CTA - Navigates to /gallery */}
                 <div style={{ display: 'inline-block', position: 'relative', zIndex: 100, marginTop: '8px' }}>
-                  <Link href="/gallery" className="gl-cta">
-                    Begin Experience →
-                  </Link>
+                  <button
+                    onClick={handleBeginExperience}
+                    className="gl-cta"
+                    disabled={isCTAloading}
+                    style={{ minWidth: '240px', pointerEvents: isCTAloading ? 'none' : 'auto' }}
+                  >
+                    {isCTAloading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        just a sec..
+                      </span>
+                    ) : (
+                      "Begin Experience →"
+                    )}
+                  </button>
                 </div>
               </div>
             </motion.div>

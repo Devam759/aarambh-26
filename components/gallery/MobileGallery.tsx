@@ -49,8 +49,9 @@ export default function MobileGallery() {
           color: #030404;
           text-decoration: none;
           box-shadow: 4px 4px 0px 0px #030404;
+          transition: all 0.2s ease-in-out;
         }
-        .mob-back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0px 0px #030404; }
+        .mob-back-btn:active { opacity: 0.85; }
         .mob-gallery-title {
           font-family: var(--font-display, 'Syne', sans-serif);
           font-size: 15px;
@@ -67,18 +68,16 @@ export default function MobileGallery() {
         }
         .mob-gallery-card {
           aspect-ratio: 2 / 3;
-          border: 3px solid #030404;
+          border: 1px solid #030404;
           border-radius: 10px;
           overflow: hidden;
-          box-shadow: 4px 4px 0px 0px #030404;
           cursor: pointer;
           background: #030404;
           position: relative;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: transform 0.1s ease;
         }
         .mob-gallery-card:active {
           transform: translate(2px, 2px);
-          box-shadow: 1px 1px 0px 0px #030404;
         }
         .mob-gallery-card img {
           width: 100%;
@@ -101,9 +100,8 @@ export default function MobileGallery() {
           max-width: 100%;
           max-height: 88vh;
           object-fit: contain;
-          border: 3px solid #030404;
+          border: 1px solid #030404;
           border-radius: 12px;
-          box-shadow: 6px 6px 0px 0px #FF9A00;
         }
         .mob-lb-nav {
           display: flex;
@@ -124,8 +122,9 @@ export default function MobileGallery() {
           box-shadow: 3px 3px 0px 0px #030404;
           text-align: center;
           cursor: pointer;
+          transition: all 0.2s ease-in-out;
         }
-        .mob-lb-arrow:active { transform: translate(2px,2px); box-shadow: none; }
+        .mob-lb-arrow:active { opacity: 0.85; }
         .mob-lb-close {
           position: absolute;
           top: 16px;
@@ -143,6 +142,7 @@ export default function MobileGallery() {
           justify-content: center;
           box-shadow: 3px 3px 0px 0px #030404;
           cursor: pointer;
+          transition: all 0.2s ease-in-out;
         }
         .mob-lb-counter {
           font-family: var(--font-display, 'Syne', sans-serif);

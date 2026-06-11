@@ -43,7 +43,6 @@ const BASE_Z_FAR = -5760
 export default function GalleryLanding() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
-  const [isMobileDevice, setIsMobileDevice] = useState(false)
   const [isEntered, setIsEntered] = useState(true)
   const [showScrollHint, setShowScrollHint] = useState(true)
   const [lightboxId, setLightboxId] = useState<number | null>(null)
@@ -66,10 +65,6 @@ export default function GalleryLanding() {
 
   useEffect(() => {
     setMounted(true)
-    const checkMobile = () => setIsMobileDevice(window.innerWidth <= 768)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -90,8 +85,6 @@ export default function GalleryLanding() {
   // ── Tunnel Setup and Animation Loop ──
   useEffect(() => {
     if (!mounted || !tunnelRef.current) return
-    // Mobile uses its own portrait grid — skip heavy 3D tunnel
-    if (isMobileDevice) return
 
     const isMobile = window.innerWidth <= 768
     const cardCount = isMobile ? 32 : CARD_COUNT
@@ -121,11 +114,9 @@ export default function GalleryLanding() {
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08"
-        card.style.boxShadow = '0 16px 48px rgba(255,154,0,0.4), 0 0 0 2px rgba(255,154,0,0.6)'
       }
       card.onmouseleave = () => {
         card.dataset.hoverScale = "1"
-        card.style.boxShadow = ''
       }
 
       card.style.left = '50%'
@@ -233,14 +224,20 @@ export default function GalleryLanding() {
           card.style.top = `${currentTop}%`
 
           const scale = 1400 / (1400 - z)
-          const hS = parseFloat(card.dataset.hoverScale || "1")
+          
+          let curHS = parseFloat(card.dataset.currentHoverScale || "1")
+          const targetHS = parseFloat(card.dataset.hoverScale || "1")
+          curHS += (targetHS - curHS) * 0.18
+          card.dataset.currentHoverScale = String(curHS)
 
           // Boost scale only for cards in the focal/foreground zone — tunnel cards stay original size
-          const focusScale = z > -100 ? 1.6
-            : z > -400 ? 1 + ((z + 400) / 300) * 0.6
+          const isMobileViewport = window.innerWidth <= 768
+          const maxFocusScale = isMobileViewport ? 1.2 : 1.6
+          const focusScale = z > -100 ? maxFocusScale
+            : z > -400 ? 1 + ((z + 400) / 300) * (maxFocusScale - 1)
             : 1
 
-          card.style.transform = `translate(-50%, -50%) scale(${scale * hS * focusScale})`
+          card.style.transform = `translate(-50%, -50%) scale(${scale * curHS * focusScale})`
 
           let opacity = 0.02
           if (z < -3600) {
@@ -283,10 +280,9 @@ export default function GalleryLanding() {
     }
   }, [isEntered, mounted])
 
-  // Scroll/Touch inputs (desktop 3D tunnel only)
+  // Scroll/Touch inputs
   useEffect(() => {
     if (!mounted) return
-    if (isMobileDevice) return // mobile grid scrolls natively
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
@@ -341,226 +337,7 @@ export default function GalleryLanding() {
   const currentIdx = lightboxId !== null ? PHOTOS.findIndex(p => p.id === lightboxId) : -1
   const currentPhoto = currentIdx >= 0 ? PHOTOS[currentIdx] : null
 
-  // ── Mobile portrait grid renderer ──
-  if (mounted && isMobileDevice) {
-    return (
-      <>
-        <style dangerouslySetInnerHTML={{ __html: `
-          html, body { overflow: auto !important; }
-          .mob-gallery-root {
-            min-height: 100vh;
-            background: #F5F1E5;
-            padding: 0;
-            padding-bottom: 40px;
-            font-family: var(--font-display, 'Syne', sans-serif);
-          }
-          .mob-gallery-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #F5F1E5;
-            border-bottom: 3.5px solid #030404;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          }
-          .mob-back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #FF9A00;
-            border: 3px solid #030404;
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-family: var(--font-display, 'Syne', sans-serif);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: #030404;
-            text-decoration: none;
-            box-shadow: 4px 4px 0px 0px #030404;
-          }
-          .mob-back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0px 0px #030404; }
-          .mob-gallery-title {
-            font-family: var(--font-display, 'Syne', sans-serif);
-            font-size: 15px;
-            font-weight: 900;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #030404;
-          }
-          .mob-gallery-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 14px 12px;
-          }
-          .mob-gallery-card {
-            aspect-ratio: 2 / 3;
-            border: 3px solid #030404;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 4px 4px 0px 0px #030404;
-            cursor: pointer;
-            background: #030404;
-            position: relative;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-          }
-          .mob-gallery-card:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px 0px #030404;
-          }
-          .mob-gallery-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-          }
-          .mob-lb-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: rgba(3,4,4,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-          }
-          .mob-lb-img {
-            max-width: 100%;
-            max-height: 88vh;
-            object-fit: contain;
-            border: 3px solid #030404;
-            border-radius: 12px;
-            box-shadow: 6px 6px 0px 0px #FF9A00;
-          }
-          .mob-lb-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 16px;
-            gap: 12px;
-          }
-          .mob-lb-arrow {
-            flex: 1;
-            padding: 14px;
-            background: #F5F1E5;
-            border: 3px solid #030404;
-            border-radius: 10px;
-            font-size: 1.6rem;
-            font-weight: 900;
-            box-shadow: 3px 3px 0px 0px #030404;
-            text-align: center;
-            cursor: pointer;
-          }
-          .mob-lb-arrow:active { transform: translate(2px,2px); box-shadow: none; }
-          .mob-lb-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 44px;
-            height: 44px;
-            background: #FF188C;
-            border: 3px solid #030404;
-            border-radius: 10px;
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: #F5F1E5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 3px 3px 0px 0px #030404;
-            cursor: pointer;
-          }
-          .mob-lb-counter {
-            font-family: var(--font-display, 'Syne', sans-serif);
-            font-size: 12px;
-            font-weight: 800;
-            color: #F5F1E5;
-            letter-spacing: 0.15em;
-            margin-top: 10px;
-          }
-        `}} />
 
-        <div className="mob-gallery-root">
-          {/* Sticky Header */}
-          <div className="mob-gallery-header">
-            <Link href="/#gallery-showcase" className="mob-back-btn">
-              ← Go Back
-            </Link>
-            <span className="mob-gallery-title">Gallery</span>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#FF9A00', letterSpacing: '0.1em' }}>
-              {PHOTOS.length} PHOTOS
-            </span>
-          </div>
-
-          {/* Portrait Grid */}
-          <div className="mob-gallery-grid">
-            {PHOTOS.map((photo) => (
-              <div
-                key={photo.id}
-                className="mob-gallery-card"
-                onClick={() => setLightboxId(photo.id)}
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.label}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Lightbox */}
-        <AnimatePresence>
-          {lightboxId !== null && currentPhoto && (
-            <motion.div
-              className="mob-lb-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-            >
-              <button className="mob-lb-close" onClick={() => setLightboxId(null)}>×</button>
-              <motion.img
-                key={currentPhoto.id}
-                className="mob-lb-img"
-                src={currentPhoto.src}
-                alt={currentPhoto.label}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              />
-              <div className="mob-lb-nav">
-                <button
-                  className="mob-lb-arrow"
-                  disabled={currentIdx <= 0}
-                  style={{ opacity: currentIdx <= 0 ? 0.3 : 1 }}
-                  onClick={() => currentIdx > 0 && setLightboxId(PHOTOS[currentIdx - 1].id)}
-                >‹</button>
-                <button
-                  className="mob-lb-arrow"
-                  disabled={currentIdx >= PHOTOS.length - 1}
-                  style={{ opacity: currentIdx >= PHOTOS.length - 1 ? 0.3 : 1 }}
-                  onClick={() => currentIdx < PHOTOS.length - 1 && setLightboxId(PHOTOS[currentIdx + 1].id)}
-                >›</button>
-              </div>
-              <span className="mob-lb-counter">{currentIdx + 1} / {PHOTOS.length}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </>
-    )
-  }
 
   return (
     <>
@@ -618,10 +395,9 @@ export default function GalleryLanding() {
           width: 100%;
           height: 130px;
           position: relative;
-          border: 2.5px solid #030404;
+          border: 1px solid #030404;
           border-radius: 10px;
           overflow: hidden;
-          box-shadow: 3px 3px 0px 0px #030404;
           background: #030404;
         }
 
@@ -777,17 +553,14 @@ export default function GalleryLanding() {
           text-decoration: none;
           cursor: pointer;
           box-shadow: 5px 5px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: all 0.2s ease-in-out;
         }
         .gl-cta:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 8px 8px 0px 0px #030404;
           background: #FF9A00;
           color: #030404;
         }
         .gl-cta:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          opacity: 0.85;
         }
 
         .gl-corner-tag {
@@ -825,28 +598,23 @@ export default function GalleryLanding() {
 
         .tunnel-card {
           position: absolute;
-          border: 3.5px solid #030404;
+          border: 1px solid #030404;
           border-radius: 12px;
           overflow: hidden;
           will-change: transform, opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 4px 4px 0px 0px #030404;
-          transition: box-shadow 0.25s ease, opacity 0.25s ease;
+          transition: opacity 0.25s ease;
           width: clamp(120px, 16vw, 260px);
           aspect-ratio: 3 / 2;
         }
 
         @media (max-width: 768px) {
           .tunnel-card {
-            width: clamp(170px, 70vw, 280px);
+            width: clamp(100px, 45vw, 180px);
             aspect-ratio: 2 / 3;
           }
-        }
-
-        .tunnel-card:hover {
-          box-shadow: 10px 10px 0px 0px #FF9A00, 16px 16px 0px 0px #030404;
         }
 
         /* Neo-Brutalism Exit the Magic button */
@@ -861,16 +629,13 @@ export default function GalleryLanding() {
           border-radius: 12px;
           cursor: pointer;
           box-shadow: 6px 6px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: all 0.2s ease-in-out;
         }
         .tunnel-exit-btn:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 9px 9px 0px 0px #030404;
           background: #FF188C;
         }
         .tunnel-exit-btn:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          opacity: 0.85;
         }
 
         /* Neo-Brutalism Scroll to Explore pill */
@@ -902,9 +667,8 @@ export default function GalleryLanding() {
           max-width: 94vw;
           max-height: 92vh;
           object-fit: contain;
-          border: 4px solid #030404;
+          border: 1px solid #030404;
           border-radius: 20px;
-          box-shadow: 16px 16px 0px 0px #030404;
         }
 
         @media (max-width: 768px) {
@@ -912,7 +676,6 @@ export default function GalleryLanding() {
             max-width: 98vw;
             max-height: 92vh;
             border-radius: 12px;
-            box-shadow: 8px 8px 0px 0px #030404;
           }
         }
 
@@ -947,12 +710,10 @@ export default function GalleryLanding() {
           align-items: center;
           justify-content: center;
           box-shadow: 4px 4px 0px 0px #030404;
-          transition: all 0.1s;
+          transition: all 0.2s ease-in-out;
           z-index: 100000;
         }
         .gp-lb-arrow:hover { 
-          transform: translate(-2px, -2px);
-          box-shadow: 6px 6px 0px 0px #030404;
           background: #FF9A00;
         }
         .gp-lb-prev { left: 24px; }
@@ -966,6 +727,20 @@ export default function GalleryLanding() {
             top: 90px;
             left: 50%;
             transform: translateX(-50%) translate(0, 0);
+          }
+          .gp-lb-arrow {
+            top: auto;
+            bottom: 24px;
+            transform: none;
+            width: 48px;
+            height: 48px;
+          }
+          .gp-lb-prev {
+            left: calc(50% - 60px);
+          }
+          .gp-lb-next {
+            right: calc(50% - 60px);
+            left: auto;
           }
         }
       `}} />

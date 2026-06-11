@@ -53,11 +53,9 @@ export default function ExperienceTunnel() {
       card.dataset.hoverScale = "1";
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08";
-        card.style.boxShadow = '0 16px 48px rgba(26,155,142,0.40), 0 0 0 2px rgba(26,155,142,0.50), 0 0 20px rgba(244,162,61,0.20)';
       };
       card.onmouseleave = () => {
         card.dataset.hoverScale = "1";
-        card.style.boxShadow = '';
       };
 
       card.dataset.baseZ = String(baseZ);
@@ -180,9 +178,13 @@ export default function ExperienceTunnel() {
           card.style.top = `${currentTop}%`;
 
           const scale = 800 / (800 - z);
-          const hS = parseFloat(card.dataset.hoverScale || "1");
+          
+          let curHS = parseFloat(card.dataset.currentHoverScale || "1");
+          const targetHS = parseFloat(card.dataset.hoverScale || "1");
+          curHS += (targetHS - curHS) * 0.18;
+          card.dataset.currentHoverScale = String(curHS);
 
-          card.style.transform = `translate(-50%, -50%) scale(${scale * hS})`;
+          card.style.transform = `translate(-50%, -50%) scale(${scale * curHS})`;
           card.style.zIndex = String(Math.round(z + 3000));
 
           let opacity = 0.02;
@@ -286,18 +288,14 @@ export default function ExperienceTunnel() {
           position: absolute;
           width: clamp(160px, 20vw, 300px);
           aspect-ratio: 3 / 2;
+          border: 1px solid #030404;
           border-radius: 8px;
           overflow: hidden;
           will-change: transform, opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.85), 0 0 0 1px rgba(255, 24, 140, 0.25);
-          transition: box-shadow 0.25s ease, opacity 0.25s ease;
-        }
-
-        .tunnel-card:hover {
-          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 24, 140, 0.60), 0 0 20px rgba(255, 154, 0, 0.30);
+          transition: opacity 0.25s ease;
         }
 
         .tunnel-exit-btn {
@@ -343,8 +341,8 @@ export default function ExperienceTunnel() {
           max-width: 86vw;
           max-height: 82vh;
           object-fit: contain;
+          border: 1px solid #030404;
           border-radius: 8px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
 
         .gp-lb-close {
@@ -389,7 +387,7 @@ export default function ExperienceTunnel() {
             height: 100vh !important;
           }
           .tunnel-card {
-            width: clamp(100px, 20vw, 220px) !important;
+            width: clamp(80px, 15vw, 150px) !important;
           }
           .tunnel-controls-pill {
             display: none !important;
@@ -398,6 +396,20 @@ export default function ExperienceTunnel() {
             top: 90px;
             left: 50%;
             transform: translateX(-50%);
+          }
+          .gp-lb-arrow {
+            top: auto;
+            bottom: 24px;
+            transform: none;
+            width: 48px;
+            height: 48px;
+          }
+          .gp-lb-prev {
+            left: calc(50% - 60px);
+          }
+          .gp-lb-next {
+            right: calc(50% - 60px);
+            left: auto;
           }
         }
       `}} />
