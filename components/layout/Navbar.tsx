@@ -12,12 +12,45 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [hoveredPath, setHoveredPath] = useState(pathname);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // If mobile menu is open, keep navbar visible
+      if (isMobileMenuOpen) {
+        setIsVisible(true);
+        setIsScrolled(currentScrollY > 20);
+        return;
+      }
+
+      if (currentScrollY < 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling down -> hide
+        setIsVisible(false);
+      } else {
+        // Scrolling up -> show
+        setIsVisible(true);
+      }
+
+      setIsScrolled(currentScrollY > 20);
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, isMobileMenuOpen]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -54,8 +87,19 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-[padding,background-color,border-color,box-shadow] ease-out duration-300 rounded-full border ${
+      <motion.nav
+        initial={{ y: 0, x: '-50%' }}
+        animate={{ 
+          y: (!isVisible && isMobile) ? -120 : 0,
+          x: '-50%'
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 260,
+          damping: 26,
+          mass: 0.8
+        }}
+        className={`fixed top-4 left-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-[padding,background-color,border-color,box-shadow] ease-out duration-300 rounded-full border ${
           isScrolled
             ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
             : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
@@ -187,7 +231,7 @@ export default function Navbar() {
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
     </>
   );
 }
