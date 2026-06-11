@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { gsap } from 'gsap';
 
 export interface ChromaItem {
   image?: string;
@@ -29,10 +28,6 @@ export interface ChromaGridProps {
   flipTrigger?: 'hover' | 'click' | 'none';
 }
 
-type SetterFn = (v: number | string) => void;
-
-
-
 const GitHubIcon = ({ size = 12 }: { size?: number }) => (
   <svg
     width={size}
@@ -41,8 +36,8 @@ const GitHubIcon = ({ size = 12 }: { size?: number }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
-    strokeLinecap="square"
-    strokeLinejoin="miter"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
   </svg>
@@ -56,8 +51,8 @@ const LinkedInIcon = ({ size = 12 }: { size?: number }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
-    strokeLinecap="square"
-    strokeLinejoin="miter"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
     <rect x="2" y="9" width="4" height="12" />
@@ -73,8 +68,8 @@ const InstagramIcon = ({ size = 12 }: { size?: number }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
-    strokeLinecap="square"
-    strokeLinejoin="miter"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -90,8 +85,8 @@ const EmailIcon = ({ size = 12 }: { size?: number }) => (
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
-    strokeLinecap="square"
-    strokeLinejoin="miter"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
     <polyline points="22,6 12,13 2,6" />
@@ -128,60 +123,12 @@ const getTagline = (location?: string, title?: string) => {
   return "Part of the driving force behind Aarambh'26.";
 };
 
-const getCompetencies = (location?: string, title?: string): string[] => {
-  const loc = location?.toLowerCase() || '';
-  const t = title?.toLowerCase() || '';
-
-  if (t.includes('vice chancellor') || t.includes('chellaboina')) {
-    return ["Governance", "Academic Leadership", "Strategic Vision", "Institutional Growth"];
-  }
-  if (loc.includes('student affairs') || t.includes('sogani')) {
-    return ["Student Welfare", "Mentorship", "Campus Operations", "Leadership Development"];
-  }
-  if (loc.includes('core organizing') || loc.includes('organizing head')) {
-    return ["Strategic Planning", "Core Coordination", "Team Leadership", "Operations Execution"];
-  }
-  if (loc.includes('tech') || t.includes('technical')) {
-    return ["React & Next.js", "TypeScript", "Tailwind CSS", "Interaction Engineering"];
-  }
-  if (loc.includes('design')) {
-    return ["UI/UX Design", "Figma", "Typography", "Visual Identity"];
-  }
-  if (loc.includes('media') || loc.includes('social media') || loc.includes('photography')) {
-    return ["Content Strategy", "Digital Media", "Photography", "Creative Writing"];
-  }
-  if (loc.includes('sponsorship') || loc.includes('finance')) {
-    return ["Client Relations", "Budgeting", "Strategic Pitching", "Fundraising"];
-  }
-  if (loc.includes('food') || loc.includes('accommodation') || loc.includes('hospitality')) {
-    return ["Logistics Management", "Hospitality Services", "Vendor Relations", "Coordination"];
-  }
-  if (loc.includes('discipline')) {
-    return ["Crowd Management", "Safety Protocol", "Operations Oversight", "Event Discipline"];
-  }
-  if (loc.includes('arrangements') || loc.includes('internal arrangements')) {
-    return ["Venue Decoration", "Stage Logistics", "Resource Operations", "Planning"];
-  }
-  if (loc.includes('cluster head')) {
-    return ["Event Liaison", "Team Supervision", "Cross-functional Coordination", "Task Operations"];
-  }
-  return ["Team Operations", "Event Coordination", "Public Relations", "Execution"];
-};
-
-const getVerticalFontSize = (text: string) => {
-  if (text.length > 25) return 'text-[11px]';
-  if (text.length > 18) return 'text-[14px]';
-  if (text.length > 12) return 'text-[18px]';
-  return 'text-[22px]';
-};
-
 interface CardTheme {
   bg: string;
   text: string;
   textAccent: string;
   textMuted: string;
   border: string;
-  halftoneClass: string;
 }
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
@@ -192,7 +139,7 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
 };
 
 const getCardTheme = (borderColor?: string): CardTheme => {
-  const hex = (borderColor || '#FF188C').toUpperCase();
+  const hex = (borderColor || '#215798').toUpperCase();
   const rgb = hexToRgb(hex);
 
   if (!rgb) {
@@ -202,20 +149,19 @@ const getCardTheme = (borderColor?: string): CardTheme => {
       textAccent: '#4b5563',
       textMuted: 'rgba(3, 4, 4, 0.75)',
       border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-[0.08]',
     };
   }
 
   // Generate a soft pastel background by blending with white
-  const pastelR = Math.round(rgb.r * 0.35 + 255 * 0.65);
-  const pastelG = Math.round(rgb.g * 0.35 + 255 * 0.65);
-  const pastelB = Math.round(rgb.b * 0.35 + 255 * 0.65);
+  const pastelR = Math.round(rgb.r * 0.15 + 255 * 0.85);
+  const pastelG = Math.round(rgb.g * 0.15 + 255 * 0.85);
+  const pastelB = Math.round(rgb.b * 0.15 + 255 * 0.85);
   const bg = `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
 
   // Darken for accent text
-  const accentR = Math.round(rgb.r * 0.7);
-  const accentG = Math.round(rgb.g * 0.7);
-  const accentB = Math.round(rgb.b * 0.7);
+  const accentR = Math.round(rgb.r * 0.8);
+  const accentG = Math.round(rgb.g * 0.8);
+  const accentB = Math.round(rgb.b * 0.8);
   const textAccent = `rgb(${accentR}, ${accentG}, ${accentB})`;
 
   return {
@@ -223,23 +169,17 @@ const getCardTheme = (borderColor?: string): CardTheme => {
     text: '#030404',
     textAccent,
     textMuted: 'rgba(3, 4, 4, 0.75)',
-    border: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
-    halftoneClass: 'bg-halftone-black opacity-10',
+    border: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`,
   };
 };
 
 const ChromaGrid: React.FC<ChromaGridProps> = ({
   items,
   className = '',
-  radius = 300,
-  damping = 0.45,
-  fadeOut = 0.6,
-  ease = 'power3.out',
   flipTrigger = 'click'
 }) => {
   const [flippedCard, setFlippedCard] = useState<string | null>(null);
   const toggleFlip = (title: string) => {
-    // Enable click to flip strictly on mobile viewports (<640px) regardless of dynamic configuration
     if (window.innerWidth < 640 || flipTrigger === 'click') {
       setFlippedCard(prev => prev === title ? null : title);
     }
@@ -250,21 +190,21 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       title: 'Alex Rivera',
       subtitle: 'Full Stack Developer',
       handle: '@alexrivera',
-      borderColor: '#FF9A00',
+      borderColor: '#f5821e',
       location: 'Technical'
     },
     {
       title: 'Jordan Chen',
       subtitle: 'DevOps Engineer',
       handle: '@jordanchen',
-      borderColor: '#10B981',
+      borderColor: '#215798',
       location: 'Sponsorship'
     },
     {
       title: 'Morgan Blake',
       subtitle: 'UI/UX Designer',
       handle: '@morganblake',
-      borderColor: '#FF188C',
+      borderColor: '#184176',
       location: 'Design'
     }
   ];
@@ -275,19 +215,8 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
     <div
       className={`relative h-full flex flex-wrap justify-center items-center gap-3 sm:gap-6 lg:gap-8 py-6 mx-auto w-full ${className}`}
     >
-      {/* SVG displacement filter for torn paper edges */}
-      <svg className="absolute w-0 h-0" width="0" height="0">
-        <defs>
-          <filter id="torn-card-filter" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-      </svg>
-
       {data.map((c, i) => {
         const theme = getCardTheme(c.borderColor);
-        // Extract initials for the profile fallback
         const initials = c.title
           .split(' ')
           .filter(n => !n.startsWith('(') && !n.endsWith(')'))
@@ -296,20 +225,13 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           .slice(0, 2)
           .toUpperCase();
 
-        // Determine alternate rotation for hand-made comic zine feel
-        const rotationClass = i % 3 === 0
-          ? 'hover:rotate-1'
-          : i % 3 === 1
-            ? 'hover:-rotate-1'
-            : 'hover:rotate-[0.5deg]';
-
         const isFlipped = flippedCard === c.title;
 
         return (
           <div
             key={i}
             onClick={() => toggleFlip(c.title)}
-            className={`relative w-[150px] xs:w-[170px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[3/5] [perspective:1000px] select-none transition-all duration-300 hover:scale-[1.01] ${rotationClass} group cursor-pointer sm:cursor-default`}
+            className="relative w-[150px] xs:w-[170px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[3/5] [perspective:1000px] select-none transition-all duration-300 hover:scale-[1.02] group cursor-pointer sm:cursor-default"
           >
             <div
               className={`relative w-full h-full duration-700 [transform-style:preserve-3d] transition-transform ${isFlipped ? '[transform:rotateY(180deg)]' : ''
@@ -318,60 +240,40 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
             >
               {/* FRONT SIDE */}
               <div
-                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] flex flex-col p-2.5 xs:p-4 sm:p-6 bg-transparent justify-between select-none transition-all duration-300 ${flipTrigger === 'hover' ? 'sm:group-hover:opacity-0 sm:group-hover:pointer-events-none' : ''
-                  }`}
+                className="absolute inset-0 w-full h-full [backface-visibility:hidden] flex flex-col p-4 sm:p-6 bg-transparent justify-between select-none transition-all duration-300"
                 style={{
                   opacity: isFlipped ? 0 : 1,
                   pointerEvents: isFlipped ? 'none' : 'auto'
                 }}
               >
-                {/* 1. Solid drop shadow layer (Torn shape) */}
+                {/* Unified Card Container Background */}
                 <div
-                  className="absolute inset-1.5 xs:inset-2 -z-20 translate-x-1 translate-y-1 xs:translate-x-2 xs:translate-y-2 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
+                  className="absolute inset-0 border border-brand-ink/10 rounded-xl -z-10 shadow-sm group-hover:shadow-md transition-shadow duration-300"
                   style={{
-                    backgroundColor: c.borderColor || '#FF188C',
-                    filter: 'url(#torn-card-filter)'
+                    backgroundColor: theme.bg
                   }}
                 />
-                {/* 2. White fibrous paper core layer */}
-                <div
-                  className="absolute inset-1 xs:inset-1.5 bg-[#FEFEFC] -z-10"
-                  style={{
-                    filter: 'url(#torn-card-filter)'
-                  }}
-                />
-                {/* 3. Themed top paper layer */}
-                <div
-                  className="absolute inset-1.5 xs:inset-2 -z-10"
-                  style={{
-                    backgroundColor: theme.bg,
-                    filter: 'url(#torn-card-filter)'
-                  }}
-                />
-
-                {/* Subtle paper halftone texture on themed paper */}
-                <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Photo Frame */}
                 <div className="flex justify-center w-full mt-1 xs:mt-2 shrink-0 z-10">
                   <div
-                    className="relative w-[78%] aspect-[3/5] shrink-0 rounded-lg overflow-hidden border bg-[#030404]/5 shadow-[4px_4px_0px_0px_rgba(3,4,4,0.15)]"
-                    style={{ borderColor: c.borderColor || '#FF188C' }}
+                    className="relative w-[82%] aspect-[3/4.2] shrink-0 rounded-lg overflow-hidden border bg-[#030404]/5 shadow-sm"
+                    style={{ borderColor: c.borderColor || '#215798' }}
                   >
                     {c.image ? (
-                      <Image
+                       <Image
                         src={c.image}
                         alt={c.title}
                         fill
                         unoptimized
                         sizes="(max-width: 640px) 120px, 200px"
                         referrerPolicy="no-referrer"
-                        className="object-cover p-0 hover:scale-105 transition-all duration-300"
+                        className="object-cover p-0 transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
                       <div
-                        className="w-full h-full flex items-center justify-center font-display font-black text-3xl select-none"
-                        style={{ backgroundColor: c.borderColor || '#FF188C', color: '#030404' }}
+                        className="w-full h-full flex items-center justify-center font-display font-black text-2xl select-none"
+                        style={{ backgroundColor: c.borderColor || '#215798', color: 'white' }}
                       >
                         {initials}
                       </div>
@@ -380,7 +282,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 </div>
 
                 {/* Identity Section */}
-                <div className="flex flex-col items-center text-center mt-2 space-y-1 flex-grow justify-start z-10">
+                <div className="flex flex-col items-center text-center mt-3 space-y-1 flex-grow justify-start z-10">
                   {/* Name */}
                   <h2
                     className="text-sm md:text-base font-display font-black uppercase tracking-tight leading-tight line-clamp-2 px-1"
@@ -401,10 +303,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 {/* Social Icons inside front side card when flipTrigger === 'none' */}
                 {flipTrigger === 'none' && (c.socials?.linkedin || c.socials?.email || c.socials?.github || c.socials?.instagram) && (() => {
                   const frontLinks = [
-                    c.socials?.github ? { href: c.socials.github, icon: <GitHubIcon size={16} />, label: 'GitHub Profile', isMailto: false } : null,
-                    c.socials?.linkedin ? { href: c.socials.linkedin, icon: <LinkedInIcon size={16} />, label: 'LinkedIn Profile', isMailto: false } : null,
-                    c.socials?.email ? { href: c.socials.email.startsWith('mailto:') ? c.socials.email : `mailto:${c.socials.email}`, icon: <EmailIcon size={16} />, label: 'Send Email', isMailto: true } : null,
-                    c.socials?.instagram ? { href: c.socials.instagram, icon: <InstagramIcon size={16} />, label: 'Instagram Profile', isMailto: false } : null,
+                    c.socials?.github ? { href: c.socials.github, icon: <GitHubIcon size={14} />, label: 'GitHub Profile', isMailto: false } : null,
+                    c.socials?.linkedin ? { href: c.socials.linkedin, icon: <LinkedInIcon size={14} />, label: 'LinkedIn Profile', isMailto: false } : null,
+                    c.socials?.email ? { href: c.socials.email.startsWith('mailto:') ? c.socials.email : `mailto:${c.socials.email}`, icon: <EmailIcon size={14} />, label: 'Send Email', isMailto: true } : null,
+                    c.socials?.instagram ? { href: c.socials.instagram, icon: <InstagramIcon size={14} />, label: 'Instagram Profile', isMailto: false } : null,
                   ].filter(Boolean) as { href: string; icon: React.ReactNode; label: string; isMailto: boolean }[];
                   const count = frontLinks.length;
                   const iconBtn = (item: typeof frontLinks[0], key: number) => (
@@ -420,8 +322,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 text-[#030404]/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_6px_rgba(3,4,4,0.1)] transition-all rounded flex justify-center items-center cursor-pointer"
-                      style={{ '--hover-color': c.borderColor || '#FF188C' } as React.CSSProperties}
+                      className="w-8 h-8 text-[#030404]/60 hover:text-brand-blue transition-colors rounded flex justify-center items-center cursor-pointer"
                       aria-label={item.label}
                     >
                       {item.icon}
@@ -432,27 +333,9 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                       className="mt-2 pt-2 border-t w-full z-20 shrink-0 hidden sm:flex flex-col items-center gap-1.5"
                       style={{ borderColor: theme.border }}
                     >
-                      {count === 4 && (
-                        <>
-                          <div className="flex gap-1.5">{frontLinks.slice(0, 2).map((l, k) => iconBtn(l, k))}</div>
-                          <div className="flex gap-1.5">{frontLinks.slice(2, 4).map((l, k) => iconBtn(l, k + 2))}</div>
-                        </>
-                      )}
-                      {count === 3 && (
-                        <>
-                          <div className="flex gap-1.5">{iconBtn(frontLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{frontLinks.slice(1, 3).map((l, k) => iconBtn(l, k + 1))}</div>
-                        </>
-                      )}
-                      {count === 2 && (
-                        <>
-                          <div className="flex gap-1.5">{iconBtn(frontLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{iconBtn(frontLinks[1], 1)}</div>
-                        </>
-                      )}
-                      {count === 1 && (
-                        <div className="flex gap-1.5">{iconBtn(frontLinks[0], 0)}</div>
-                      )}
+                      <div className="flex gap-2 justify-center">
+                        {frontLinks.map((l, k) => iconBtn(l, k))}
+                      </div>
                     </div>
                   );
                 })()}
@@ -460,39 +343,19 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
               {/* BACK SIDE */}
               <div
-                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-2.5 xs:p-4 sm:p-5 bg-transparent justify-between select-none transition-all duration-300 ${flipTrigger === 'hover' ? 'opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto' : ''
-                  }`}
+                className="absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-4 sm:p-5 bg-transparent justify-between select-none transition-all duration-300"
                 style={{
                   opacity: isFlipped ? 1 : 0,
                   pointerEvents: isFlipped ? 'auto' : 'none'
                 }}
               >
-                {/* 1. Solid drop shadow layer (Torn shape - flipped direction) */}
+                {/* Unified Card Container Background (Back) */}
                 <div
-                  className="absolute inset-1.5 xs:inset-2 -z-20 -translate-x-1 translate-y-1 xs:-translate-x-2 xs:translate-y-2 group-hover:-translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
+                  className="absolute inset-0 border border-brand-ink/10 rounded-xl -z-10 shadow-sm"
                   style={{
-                    backgroundColor: c.borderColor || '#FF188C',
-                    filter: 'url(#torn-card-filter)'
+                    backgroundColor: theme.bg
                   }}
                 />
-                {/* 2. White fibrous paper core layer */}
-                <div
-                  className="absolute inset-1 xs:inset-1.5 bg-[#FEFEFC] -z-10"
-                  style={{
-                    filter: 'url(#torn-card-filter)'
-                  }}
-                />
-                {/* 3. Themed top paper layer */}
-                <div
-                  className="absolute inset-1.5 xs:inset-2 -z-10"
-                  style={{
-                    backgroundColor: theme.bg,
-                    filter: 'url(#torn-card-filter)'
-                  }}
-                />
-
-                {/* Subtle paper halftone texture on themed paper */}
-                <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Top Info Banner (Compact) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-col text-left shrink-0 z-10">
@@ -519,28 +382,20 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 {/* Description/Bio (tagline) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-1 min-h-0 flex-col justify-start z-10 relative">
                   <p
-                    className="text-[8px] xs:text-[11px] font-mono font-bold leading-relaxed line-clamp-4 xs:line-clamp-6"
+                    className="text-[10px] xs:text-xs font-medium leading-relaxed"
                     style={{ color: theme.textMuted }}
                   >
                     {getTagline(c.location, c.title)}
                   </p>
-
-                  {/* Decorative Hindi watermark 'सफ़र' */}
-                  <span
-                    className="absolute right-1 bottom-1 text-xl xs:text-3xl font-black font-display select-none pointer-events-none transform rotate-[-8deg] font-hindi opacity-10"
-                    style={{ color: theme.textAccent }}
-                  >
-                    सफ़र
-                  </span>
                 </div>
 
-                {/* Social Actions Block - Back side, count-aware layout */}
+                {/* Social Actions Block - Back side */}
                 {(() => {
                   const backLinks = [
-                    c.socials?.github ? { href: c.socials.github, icon: <GitHubIcon size={16} />, label: 'GitHub Profile', isMailto: false } : null,
-                    c.socials?.linkedin ? { href: c.socials.linkedin, icon: <LinkedInIcon size={16} />, label: 'LinkedIn Profile', isMailto: false } : null,
-                    c.socials?.email ? { href: c.socials.email.startsWith('mailto:') ? c.socials.email : `mailto:${c.socials.email}`, icon: <EmailIcon size={16} />, label: 'Send Email', isMailto: true } : null,
-                    c.socials?.instagram ? { href: c.socials.instagram, icon: <InstagramIcon size={16} />, label: 'Instagram Profile', isMailto: false } : null,
+                    c.socials?.github ? { href: c.socials.github, icon: <GitHubIcon size={14} />, label: 'GitHub Profile', isMailto: false } : null,
+                    c.socials?.linkedin ? { href: c.socials.linkedin, icon: <LinkedInIcon size={14} />, label: 'LinkedIn Profile', isMailto: false } : null,
+                    c.socials?.email ? { href: c.socials.email.startsWith('mailto:') ? c.socials.email : `mailto:${c.socials.email}`, icon: <EmailIcon size={14} />, label: 'Send Email', isMailto: true } : null,
+                    c.socials?.instagram ? { href: c.socials.instagram, icon: <InstagramIcon size={14} />, label: 'Instagram Profile', isMailto: false } : null,
                   ].filter(Boolean) as { href: string; icon: React.ReactNode; label: string; isMailto: boolean }[];
                   const count = backLinks.length;
                   if (count === 0) return null;
@@ -557,8 +412,8 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 xs:w-9 xs:h-9 border text-[#030404] hover:bg-[#030404] hover:border-[#030404] hover:text-white transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
-                      style={{ borderColor: c.borderColor || '#FF188C' }}
+                      className="w-8 h-8 border rounded flex justify-center items-center cursor-pointer transition-colors hover:bg-brand-blue hover:text-white"
+                      style={{ borderColor: theme.border, color: '#030404' }}
                       aria-label={item.label}
                     >
                       {item.icon}
@@ -566,30 +421,10 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                   );
                   return (
                     <div
-                      className="flex-1 sm:flex-initial flex flex-col items-center justify-center border-t pt-1.5 xs:pt-3 mt-1.5 xs:mt-3 gap-1.5 shrink-0 z-10"
+                      className="flex-1 sm:flex-initial flex items-center justify-center border-t pt-2 mt-2 gap-2 shrink-0 z-10"
                       style={{ borderColor: theme.border }}
                     >
-                      {count === 4 && (
-                        <>
-                          <div className="flex gap-1.5">{backLinks.slice(0, 2).map((l, k) => iconBtn(l, k))}</div>
-                          <div className="flex gap-1.5">{backLinks.slice(2, 4).map((l, k) => iconBtn(l, k + 2))}</div>
-                        </>
-                      )}
-                      {count === 3 && (
-                        <>
-                          <div className="flex gap-1.5">{iconBtn(backLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{backLinks.slice(1, 3).map((l, k) => iconBtn(l, k + 1))}</div>
-                        </>
-                      )}
-                      {count === 2 && (
-                        <>
-                          <div className="flex gap-1.5">{iconBtn(backLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{iconBtn(backLinks[1], 1)}</div>
-                        </>
-                      )}
-                      {count === 1 && (
-                        <div className="flex gap-1.5">{iconBtn(backLinks[0], 0)}</div>
-                      )}
+                      {backLinks.map((l, k) => iconBtn(l, k))}
                     </div>
                   );
                 })()}

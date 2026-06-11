@@ -57,7 +57,7 @@ export default function Navbar() {
       <nav
         className={`fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] lg:max-w-5xl z-50 transition-[padding,background-color,border-color,box-shadow] ease-out duration-300 rounded-full border ${
           isScrolled
-            ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-pink/30 py-2.5 px-6 shadow-[0_8px_32px_rgba(255,24,140,0.15)] shadow-brand-pink/10'
+            ? 'bg-brand-ink/80 backdrop-blur-xl border-brand-blue/20 py-2.5 px-6 shadow-md'
             : 'bg-brand-ink/40 backdrop-blur-md border-brand-cloud/10 py-3.5 px-6 shadow-lg'
         }`}
       >
@@ -112,8 +112,8 @@ export default function Navbar() {
                 const isRegister = link.href === '/register';
 
                 const textColor = isRegister 
-                  ? (isHovered ? 'text-brand-cloud' : 'text-brand-ink')
-                  : (isHovered ? 'text-brand-cloud' : (isActive ? 'text-brand-pink' : 'text-brand-cloud/70 hover:text-brand-cloud'));
+                  ? 'text-brand-ink'
+                  : (isActive ? 'text-brand-orange' : (isHovered ? 'text-brand-cloud' : 'text-brand-cloud/70'));
 
                 return (
                   <Link
@@ -126,20 +126,14 @@ export default function Navbar() {
                     {isHovered && (
                       <motion.div
                         layoutId="navHoverPill"
-                        className={`absolute inset-0 rounded-full -z-10 ${
-                          isRegister 
-                            ? 'bg-brand-blue shadow-[0_4px_16px_rgba(13,33,221,0.5)]' 
-                            : isActive
-                              ? 'bg-brand-pink shadow-[0_4px_16px_rgba(255,24,140,0.5)]'
-                              : 'bg-brand-pink/75 backdrop-blur-md shadow-[0_4px_16px_rgba(255,24,140,0.4)]'
-                        }`}
+                        className="absolute inset-0 rounded-full -z-10 bg-white/10 shadow-sm"
                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                       />
                     )}
                     
                     {/* Register button static fallback CTA background */}
                     {isRegister && (
-                       <div className="absolute inset-0 rounded-full bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)] -z-20" />
+                       <div className="absolute inset-0 rounded-full bg-brand-orange -z-20" />
                     )}
 
                     <span className="relative z-10">{link.name}</span>
@@ -151,7 +145,7 @@ export default function Navbar() {
 
           {/* Mobile menu toggle */}
           <button
-            className="lg:hidden border-2 border-brand-ink p-1.5 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#030404] rounded-md bg-brand-orange text-brand-ink"
+            className="lg:hidden p-2 transition-all rounded-md bg-brand-orange text-brand-ink shadow-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -167,17 +161,17 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
+              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-white border border-brand-ink/10 p-6 flex flex-col gap-3 shadow-xl rounded-xl z-50 text-brand-ink"
             >
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className={`text-sm font-display font-black tracking-wider uppercase transition-all py-2.5 px-3 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange hover:-translate-y-0.5 rounded-lg flex items-center justify-between group ${
+                  className={`text-xs font-display font-bold tracking-wider uppercase transition-all py-2.5 px-4 rounded-lg flex items-center justify-between group ${
                     pathname === link.href
-                      ? 'text-brand-pink border-brand-ink bg-brand-pink/5'
-                      : 'text-brand-ink hover:text-brand-ink'
+                      ? 'text-brand-orange bg-brand-orange/5 font-bold'
+                      : 'text-brand-ink hover:bg-brand-cloud/40'
                   }`}
                 >
                   <span>{link.name}</span>

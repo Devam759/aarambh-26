@@ -27,7 +27,7 @@ export default function MobileGallery() {
           top: 0;
           z-index: 100;
           background: #F5F1E5;
-          border-bottom: 3.5px solid #030404;
+          border-bottom: 1px solid rgba(3, 4, 4, 0.1);
           padding: 14px 16px;
           display: flex;
           align-items: center;
@@ -37,20 +37,21 @@ export default function MobileGallery() {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: #FF9A00;
-          border: 3px solid #030404;
-          border-radius: 10px;
+          background: #215798;
+          border: none;
+          border-radius: 8px;
           padding: 8px 14px;
           font-family: var(--font-display, 'Syne', sans-serif);
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #030404;
+          color: white;
           text-decoration: none;
-          box-shadow: 4px 4px 0px 0px #030404;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s ease;
         }
-        .mob-back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0px 0px #030404; }
+        .mob-back-btn:active { transform: scale(0.98); }
         .mob-gallery-title {
           font-family: var(--font-display, 'Syne', sans-serif);
           font-size: 15px;
@@ -67,18 +68,17 @@ export default function MobileGallery() {
         }
         .mob-gallery-card {
           aspect-ratio: 2 / 3;
-          border: 3px solid #030404;
-          border-radius: 10px;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 8px;
           overflow: hidden;
-          box-shadow: 4px 4px 0px 0px #030404;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
           cursor: pointer;
           background: #030404;
           position: relative;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          transition: transform 0.1s ease;
         }
         .mob-gallery-card:active {
-          transform: translate(2px, 2px);
-          box-shadow: 1px 1px 0px 0px #030404;
+          transform: scale(0.98);
         }
         .mob-gallery-card img {
           width: 100%;
@@ -101,9 +101,9 @@ export default function MobileGallery() {
           max-width: 100%;
           max-height: 88vh;
           object-fit: contain;
-          border: 3px solid #030404;
+          border: 1px solid rgba(3, 4, 4, 0.1);
           border-radius: 12px;
-          box-shadow: 6px 6px 0px 0px #FF9A00;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
         }
         .mob-lb-nav {
           display: flex;
@@ -115,33 +115,36 @@ export default function MobileGallery() {
         }
         .mob-lb-arrow {
           flex: 1;
-          padding: 14px;
+          padding: 12px;
           background: #F5F1E5;
-          border: 3px solid #030404;
-          border-radius: 10px;
-          font-size: 1.6rem;
-          font-weight: 900;
-          box-shadow: 3px 3px 0px 0px #030404;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 8px;
+          font-size: 1.4rem;
+          font-weight: 400;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
           text-align: center;
           cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .mob-lb-arrow:active { transform: translate(2px,2px); box-shadow: none; }
+        .mob-lb-arrow:active { transform: scale(0.98); }
         .mob-lb-close {
           position: absolute;
           top: 16px;
           right: 16px;
-          width: 44px;
-          height: 44px;
-          background: #FF188C;
-          border: 3px solid #030404;
-          border-radius: 10px;
-          font-size: 1.6rem;
-          font-weight: 900;
+          width: 40px;
+          height: 40px;
+          background: #215798;
+          border: none;
+          border-radius: 50%;
+          font-size: 1.4rem;
+          font-weight: 400;
           color: #F5F1E5;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 3px 3px 0px 0px #030404;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
           cursor: pointer;
         }
         .mob-lb-counter {

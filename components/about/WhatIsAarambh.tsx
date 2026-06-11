@@ -13,7 +13,7 @@ export default function WhatIsAarambh() {
         {/* Deep sweeping base - Pink */}
         <motion.div
           className="absolute -top-[10%] -right-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-          style={{ background: '#FF188C', filter: 'blur(140px)' }}
+          style={{ background: '#184176', filter: 'blur(140px)' }}
           animate={{
             x: [0, -50, 0],
             y: [0, 30, 0],
@@ -25,7 +25,7 @@ export default function WhatIsAarambh() {
         {/* Secondary subtle ribbon - Blue */}
         <motion.div
           className="absolute top-[20%] left-[10%] w-[50%] h-[70%] rounded-full opacity-[0.15]"
-          style={{ background: '#0D21DD', filter: 'blur(150px)' }}
+          style={{ background: '#215798', filter: 'blur(150px)' }}
           animate={{
             x: [0, 40, 0],
             y: [0, -20, 0],
@@ -58,13 +58,13 @@ export default function WhatIsAarambh() {
             className="space-y-6"
           >
             <div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-brand-ink uppercase leading-none tracking-tight text-center lg:text-left">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-brand-ink uppercase leading-none tracking-tight text-center lg:text-left">
                 ABOUT<br />
                 <span className="text-brand-pink">AARAMBH</span>
               </h2>
             </div>
 
-            <div className="space-y-3 sm:space-y-4 border-comic bg-brand-cloud text-brand-ink p-4 sm:p-6 rounded-lg shadow-comic rotate-0 sm:rotate-1 bg-halftone-black">
+            <div className="space-y-3 sm:space-y-4 border border-brand-ink/10 bg-brand-cloud p-4 sm:p-6 rounded-lg shadow-md">
               <p className="font-bold text-base sm:text-lg leading-relaxed">
                 Aarambh is JKLU's orientation program, designed to help new students connect, explore, and confidently begin their university journey.
               </p>
@@ -80,13 +80,13 @@ export default function WhatIsAarambh() {
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
                 href="/rules"
-                className="inline-block border-comic bg-brand-pink text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+                className="inline-block btn-primary px-6 py-2.5 font-display text-sm font-bold uppercase tracking-wider rounded-md"
               >
                 Rules & Regulations
               </Link>
               <Link
                 href="/faq"
-                className="inline-block border-comic bg-brand-blue text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+                className="inline-block btn-blue px-6 py-2.5 font-display text-sm font-bold uppercase tracking-wider rounded-md"
               >
                 FAQ
               </Link>
@@ -101,12 +101,11 @@ export default function WhatIsAarambh() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-brand-pink rounded-xl rotate-[3deg] border-comic shadow-comic" />
-            <div className="relative border-comic bg-brand-ink p-2 rounded-xl shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
+            <div className="relative border border-brand-ink/10 bg-brand-cloud p-3 rounded-xl shadow-lg transition-all hover:scale-[1.01] duration-300">
               {/* Halftone graphic frame border overlay */}
-              <div className="w-full aspect-[3/4] rounded-lg border-2 border-brand-ink bg-brand-cloud flex flex-col items-center justify-center p-6 text-center select-none">
+              <div className="w-full aspect-[3/4] rounded-lg border border-brand-ink/5 bg-brand-cloud/50 flex flex-col items-center justify-center p-6 text-center select-none">
                 <span className="font-mono text-xs uppercase tracking-[0.2em] text-brand-ink/40 font-bold mb-2">Aarambh 2026</span>
-                <h3 className="font-display font-black text-2xl sm:text-3xl text-brand-pink uppercase tracking-tight leading-none">
+                <h3 className="font-display font-bold text-2xl sm:text-3xl text-brand-pink uppercase tracking-tight leading-none">
                   POSTER<br />COMING SOON
                 </h3>
                 <div className="w-12 h-1 bg-brand-orange mt-4 rounded-sm" />

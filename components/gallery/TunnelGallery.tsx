@@ -73,10 +73,12 @@ export default function TunnelGallery() {
 
       card.onmouseenter = () => {
         card.dataset.hoverScale = "1.08";
-        card.style.boxShadow = '0 16px 48px rgba(255,154,0,0.4), 0 0 0 2px rgba(255,154,0,0.6)';
+        card.style.borderColor = '#f5821e';
+        card.style.boxShadow = '0 12px 32px rgba(245,130,30,0.25)';
       };
       card.onmouseleave = () => {
         card.dataset.hoverScale = "1";
+        card.style.borderColor = '';
         card.style.boxShadow = '';
       };
 
@@ -313,45 +315,45 @@ export default function TunnelGallery() {
 
         .tunnel-card {
           position: absolute;
-          border: 3.5px solid #030404;
-          border-radius: 12px;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 8px;
           overflow: hidden;
           will-change: transform, opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 4px 4px 0px 0px #030404;
-          transition: box-shadow 0.25s ease, opacity 0.25s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transition: all 0.25s ease;
           width: clamp(120px, 16vw, 260px);
           aspect-ratio: 3 / 2;
         }
 
         .tunnel-card:hover {
-          box-shadow: 10px 10px 0px 0px #FF9A00, 16px 16px 0px 0px #030404;
+          border-color: #f5821e;
+          box-shadow: 0 12px 32px rgba(245, 130, 30, 0.25);
         }
 
-        /* Neo-Brutalism Exit button */
+        /* Clean formal Exit button */
         .tunnel-exit-btn {
           position: absolute;
           top: 110px;
           left: 32px;
           z-index: 20;
-          background: #FF9A00; 
-          border: 3.5px solid #030404; 
-          padding: 12px 24px;
-          border-radius: 12px;
+          background: #215798; 
+          border: 1px solid rgba(255, 255, 255, 0.1); 
+          padding: 10px 20px;
+          border-radius: 8px;
           cursor: pointer;
-          box-shadow: 6px 6px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transition: all 0.2s ease;
         }
         .tunnel-exit-btn:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 9px 9px 0px 0px #030404;
-          background: #FF188C;
+          background: #184176;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
         .tunnel-exit-btn:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          transform: translateY(1px);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         /* Lightbox styling */
@@ -370,50 +372,53 @@ export default function TunnelGallery() {
           max-width: 94vw;
           max-height: 92vh;
           object-fit: contain;
-          border: 4px solid #030404;
-          border-radius: 20px;
-          box-shadow: 16px 16px 0px 0px #030404;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 12px;
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
         }
 
         .gp-lb-close {
           position: fixed;
           top: 24px;
           right: 30px;
-          font-size: 3rem;
-          font-weight: 900;
+          font-size: 2.5rem;
+          font-weight: 400;
           color: #030404;
           background: none;
           border: none;
           cursor: pointer;
           z-index: 100000;
         }
-        .gp-lb-close:hover { color: #FF188C; }
+        .gp-lb-close:hover { color: #184176; }
 
         .gp-lb-arrow {
           position: fixed;
           top: 50%;
           transform: translateY(-50%);
-          width: 56px;
-          height: 56px;
-          border-radius: 12px;
-          border: 3px solid #030404;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          border: 1px solid rgba(3, 4, 4, 0.1);
           background: #F5F1E5;
           color: #030404;
-          font-size: 1.8rem;
-          font-weight: 900;
+          font-size: 1.5rem;
+          font-weight: 400;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 4px 4px 0px 0px #030404;
-          transition: all 0.1s;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transition: all 0.2s;
           z-index: 100000;
         }
         .gp-lb-arrow:hover { 
-          transform: translate(-2px, -2px);
-          box-shadow: 6px 6px 0px 0px #030404;
-          background: #FF9A00;
+          transform: translateY(-50%) scale(1.05);
+          background: #215798;
+          color: white;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
+        .gp-lb-prev { left: 24px; }
+        .gp-lb-next { right: 24px; }
         .gp-lb-prev { left: 24px; }
         .gp-lb-next { right: 24px; }
       `}} />
@@ -495,11 +500,11 @@ export default function TunnelGallery() {
                     <span style={{ 
                       fontFamily: "'Syne', sans-serif",
                       fontSize: '13px', 
-                      color: '#FF188C', 
+                      color: '#184176', 
                       fontWeight: 800, 
                       letterSpacing: '0.3em', 
                       textTransform: 'uppercase', 
-                      textShadow: '0 2px 10px rgba(255, 24, 140, 0.3)'
+                      textShadow: '0 2px 10px rgba(24, 65, 118, 0.3)'
                     }}>
                       Aarambh Gallery
                     </span>

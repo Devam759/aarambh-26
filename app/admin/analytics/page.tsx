@@ -1043,7 +1043,7 @@ export default function AdminFeedbackAnalytics() {
                     <button
                       type="button"
                       onClick={() => handleRemoveQuestion(q.id)}
-                      className="bg-brand-pink/10 text-brand-pink hover:bg-brand-pink hover:text-white border border-brand-pink/30 hover:border-brand-ink py-2 px-4 shadow-[2px_2px_0px_0px_#FF188C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 rounded text-[9px] uppercase font-mono font-black tracking-wider cursor-pointer shrink-0 self-end md:self-auto"
+                      className="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 py-2 px-4 transition-all duration-150 rounded text-[9px] uppercase font-mono font-bold tracking-wider cursor-pointer shrink-0 self-end md:self-auto"
                     >
                       Delete Item
                     </button>

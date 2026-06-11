@@ -359,7 +359,7 @@ export default function GalleryLanding() {
             top: 0;
             z-index: 100;
             background: #F5F1E5;
-            border-bottom: 3.5px solid #030404;
+            border-bottom: 1px solid rgba(3, 4, 4, 0.1);
             padding: 14px 16px;
             display: flex;
             align-items: center;
@@ -369,20 +369,22 @@ export default function GalleryLanding() {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #FF9A00;
-            border: 3px solid #030404;
-            border-radius: 10px;
+            background: var(--color-brand-pink);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
             padding: 8px 14px;
             font-family: var(--font-display, 'Syne', sans-serif);
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #030404;
+            color: white;
             text-decoration: none;
-            box-shadow: 4px 4px 0px 0px #030404;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
           }
-          .mob-back-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0px 0px #030404; }
+          .mob-back-btn:active { transform: translateY(1px); }
+          .mob-back-btn:hover { background: var(--color-primary-dark); }
           .mob-gallery-title {
             font-family: var(--font-display, 'Syne', sans-serif);
             font-size: 15px;
@@ -399,18 +401,17 @@ export default function GalleryLanding() {
           }
           .mob-gallery-card {
             aspect-ratio: 2 / 3;
-            border: 3px solid #030404;
-            border-radius: 10px;
+            border: 1px solid rgba(3, 4, 4, 0.1);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 4px 4px 0px 0px #030404;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             background: #030404;
             position: relative;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
           }
           .mob-gallery-card:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px 0px #030404;
+            transform: scale(0.98);
           }
           .mob-gallery-card img {
             width: 100%;
@@ -433,9 +434,9 @@ export default function GalleryLanding() {
             max-width: 100%;
             max-height: 88vh;
             object-fit: contain;
-            border: 3px solid #030404;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            box-shadow: 6px 6px 0px 0px #FF9A00;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
           }
           .mob-lb-nav {
             display: flex;
@@ -449,31 +450,32 @@ export default function GalleryLanding() {
             flex: 1;
             padding: 14px;
             background: #F5F1E5;
-            border: 3px solid #030404;
-            border-radius: 10px;
+            border: 1px solid rgba(3, 4, 4, 0.1);
+            border-radius: 8px;
             font-size: 1.6rem;
-            font-weight: 900;
-            box-shadow: 3px 3px 0px 0px #030404;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             cursor: pointer;
+            transition: all 0.2s ease;
           }
-          .mob-lb-arrow:active { transform: translate(2px,2px); box-shadow: none; }
+          .mob-lb-arrow:active { transform: scale(0.95); }
           .mob-lb-close {
             position: absolute;
             top: 16px;
             right: 16px;
             width: 44px;
             height: 44px;
-            background: #FF188C;
-            border: 3px solid #030404;
-            border-radius: 10px;
+            background: #184176;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
             font-size: 1.6rem;
             font-weight: 900;
             color: #F5F1E5;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 3px 3px 0px 0px #030404;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             cursor: pointer;
           }
           .mob-lb-counter {
@@ -493,7 +495,7 @@ export default function GalleryLanding() {
               ← Go Back
             </Link>
             <span className="mob-gallery-title">Gallery</span>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#FF9A00', letterSpacing: '0.1em' }}>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: '#f5821e', letterSpacing: '0.1em' }}>
               {PHOTOS.length} PHOTOS
             </span>
           </div>
@@ -716,7 +718,7 @@ export default function GalleryLanding() {
           font-weight: 800;
           letter-spacing: 0.25em;
           text-transform: uppercase;
-          color: #FF188C;
+          color: #184176;
           margin-bottom: 18px;
         }
 
@@ -734,10 +736,10 @@ export default function GalleryLanding() {
         .gl-heading-highlight {
           color: #F5F1E5;
           text-shadow: 
-            2px 2px 0 #FF188C,
-            -2px -2px 0 #FF188C,
-            2px -2px 0 #FF188C,
-            -2px 2px 0 #FF188C,
+            2px 2px 0 #184176,
+            -2px -2px 0 #184176,
+            2px -2px 0 #184176,
+            -2px 2px 0 #184176,
             4px 4px 0 #030404;
         }
 
@@ -770,7 +772,7 @@ export default function GalleryLanding() {
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: #F5F1E5;
-          background: #FF188C;
+          background: #184176;
           border: 3.5px solid #030404;
           border-radius: 12px;
           padding: 14px 28px;
@@ -825,14 +827,14 @@ export default function GalleryLanding() {
 
         .tunnel-card {
           position: absolute;
-          border: 3.5px solid #030404;
-          border-radius: 12px;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 8px;
           overflow: hidden;
           will-change: transform, opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
-          box-shadow: 4px 4px 0px 0px #030404;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           transition: box-shadow 0.25s ease, opacity 0.25s ease;
           width: clamp(120px, 16vw, 260px);
           aspect-ratio: 3 / 2;
@@ -846,7 +848,7 @@ export default function GalleryLanding() {
         }
 
         .tunnel-card:hover {
-          box-shadow: 10px 10px 0px 0px #FF9A00, 16px 16px 0px 0px #030404;
+          box-shadow: 0 12px 30px rgba(245, 130, 30, 0.25);
         }
 
         /* Neo-Brutalism Exit the Magic button */
@@ -855,22 +857,22 @@ export default function GalleryLanding() {
           top: 110px;
           left: 32px;
           z-index: 20;
-          background: #FF9A00; 
-          border: 3.5px solid #030404; 
+          background: var(--color-brand-pink); 
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.15); 
           padding: 12px 24px;
-          border-radius: 12px;
+          border-radius: 8px;
           cursor: pointer;
-          box-shadow: 6px 6px 0px 0px #030404;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transition: all 0.2s ease;
         }
         .tunnel-exit-btn:hover {
-          transform: translate(-3px, -3px);
-          box-shadow: 9px 9px 0px 0px #030404;
-          background: #FF188C;
+          background: var(--color-primary-dark);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
         .tunnel-exit-btn:active {
-          transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0px 0px #030404;
+          transform: translateY(0);
         }
 
         /* Neo-Brutalism Scroll to Explore pill */
@@ -880,10 +882,10 @@ export default function GalleryLanding() {
           right: 32px;
           z-index: 10;
           background: #F5F1E5;
-          border: 3.5px solid #030404;
-          border-radius: 12px;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 8px;
           padding: 12px 24px;
-          box-shadow: 6px 6px 0px 0px #030404;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         /* Lightbox styling */
@@ -902,9 +904,9 @@ export default function GalleryLanding() {
           max-width: 94vw;
           max-height: 92vh;
           object-fit: contain;
-          border: 4px solid #030404;
-          border-radius: 20px;
-          box-shadow: 16px 16px 0px 0px #030404;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          border-radius: 12px;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -912,7 +914,7 @@ export default function GalleryLanding() {
             max-width: 98vw;
             max-height: 92vh;
             border-radius: 12px;
-            box-shadow: 8px 8px 0px 0px #030404;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
           }
         }
 
@@ -928,7 +930,7 @@ export default function GalleryLanding() {
           cursor: pointer;
           z-index: 100000;
         }
-        .gp-lb-close:hover { color: #FF188C; }
+        .gp-lb-close:hover { color: #184176; }
 
         .gp-lb-arrow {
           position: fixed;
@@ -936,24 +938,25 @@ export default function GalleryLanding() {
           transform: translateY(-50%);
           width: 56px;
           height: 56px;
-          border-radius: 12px;
-          border: 3px solid #030404;
-          background: #F5F1E5;
+          border-radius: 50%;
+          border: 1px solid rgba(3, 4, 4, 0.1);
+          background: var(--color-brand-cloud);
           color: #030404;
           font-size: 1.8rem;
-          font-weight: 900;
+          font-weight: 700;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 4px 4px 0px 0px #030404;
-          transition: all 0.1s;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transition: all 0.2s ease;
           z-index: 100000;
         }
         .gp-lb-arrow:hover { 
-          transform: translate(-2px, -2px);
-          box-shadow: 6px 6px 0px 0px #030404;
-          background: #FF9A00;
+          transform: translateY(-50%) scale(1.05);
+          background: var(--color-brand-pink);
+          color: white;
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         }
         .gp-lb-prev { left: 24px; }
         .gp-lb-next { right: 24px; }
@@ -1004,7 +1007,7 @@ export default function GalleryLanding() {
               className="tunnel-exit-btn"
               style={{ textDecoration: 'none', display: 'inline-block' }}
             >
-              <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: '#030404', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 800 }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'white', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 800 }}>
                 Go Back
               </span>
             </Link>
@@ -1050,7 +1053,7 @@ export default function GalleryLanding() {
                     <span style={{ 
                       fontFamily: "'Syne', sans-serif",
                       fontSize: '13px', 
-                      color: '#FF188C', 
+                      color: '#184176', 
                       fontWeight: 800, 
                       letterSpacing: '0.3em', 
                       textTransform: 'uppercase', 

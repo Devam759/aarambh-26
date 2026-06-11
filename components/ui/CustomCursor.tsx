@@ -68,9 +68,9 @@ export default function CustomCursor() {
       'DREAM', 'GROW', 'CONNECT', 'WELCOME', 'PIONEER', 'LEAD', 'LEARN', 'UNITY', 'VIBES', 'START'
     ];
     const colors = [
-      '#FF188C', // Brand Pink
-      '#0D21DD', // Brand Blue
-      '#FF9A00', // Brand Orange
+      '#184176', // Brand Primary Deep Blue
+      '#215798', // Brand Secondary Medium Blue
+      '#f5821e', // Brand Accent Orange
       '#030404', // Brand Ink (Solid dark contrast)
     ];
 

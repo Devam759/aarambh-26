@@ -976,7 +976,7 @@ export default function TeamLeaderDutyAssignment() {
             </button>
             <button
               type="submit"
-              className="bg-brand-pink hover:bg-[#E0107A] text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
+              className="bg-brand-pink hover:bg-brand-blue text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
             >
               <Plus size={14} /> Assign Duty
             </button>

@@ -14,7 +14,7 @@ export default function Hero() {
         {/* Deep sweeping base - Pink */}
         <motion.div
           className="absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-          style={{ background: '#FF188C', filter: 'blur(140px)' }}
+          style={{ background: '#184176', filter: 'blur(140px)' }}
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
@@ -26,7 +26,7 @@ export default function Hero() {
         {/* Secondary subtle ribbon - Blue */}
         <motion.div
           className="absolute top-[20%] right-[10%] w-[50%] h-[70%] rounded-full opacity-[0.15]"
-          style={{ background: '#0D21DD', filter: 'blur(150px)' }}
+          style={{ background: '#215798', filter: 'blur(150px)' }}
           animate={{
             x: [0, -40, 0],
             y: [0, -20, 0],
@@ -58,18 +58,18 @@ export default function Hero() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="border-comic bg-brand-cloud text-brand-ink p-5 sm:p-8 rounded-xl shadow-comic bg-halftone-black rotate-0 sm:rotate-1 mx-2 sm:mx-0"
+            className="border border-brand-ink/10 bg-brand-cloud text-brand-ink p-5 sm:p-8 rounded-xl shadow-xl mx-2 sm:mx-0"
           >
-            <div className="inline-block text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-2 sm:px-3 py-1 sm:py-1.5 mb-4 sm:mb-6 border-comic bg-brand-orange text-brand-ink rotate-0 sm:rotate-[-2deg] shadow-comic-sm">
+            <div className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] px-3 py-1.5 mb-4 sm:mb-6 bg-brand-orange text-brand-ink rounded-md">
               JK LAKSHMIPAT UNIVERSITY
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black leading-none uppercase tracking-tight text-brand-ink mb-3 sm:mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-none uppercase tracking-tight text-brand-ink mb-3 sm:mb-4">
               ABOUT <span className="text-brand-pink">AARAMBH</span>
             </h1>
 
-            <div className="my-4 sm:my-6 border-comic bg-brand-ink p-3 sm:p-4 rounded-lg flex items-center justify-center">
-              <img src="/logos/logo_cloud_white.svg" alt="Aarambh '26 Logo" className="h-12 sm:h-16 md:h-20 w-auto object-contain" />
+            <div className="my-4 sm:my-6 bg-brand-ink p-4 rounded-lg flex items-center justify-center shadow-md">
+              <img src="/logos/logo_cloud_white.svg" alt="Aarambh '26 Logo" className="h-[90px] sm:h-[100px] md:h-[110px] w-auto object-contain" />
             </div>
 
             <p className="text-brand-ink/80 font-bold text-xs sm:text-sm md:text-base leading-relaxed mb-5 sm:mb-6 uppercase">
@@ -79,7 +79,7 @@ export default function Hero() {
             <div className="flex gap-4 flex-wrap">
               <a 
                 href="#what-is-aarambh" 
-                className="comic-interactive group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 w-full sm:w-auto border-comic bg-brand-pink text-brand-cloud font-display font-black uppercase tracking-wider text-xs shadow-comic-sm rounded-lg"
+                className="btn-primary group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 w-full sm:w-auto text-brand-cloud font-display font-bold uppercase tracking-wider text-xs rounded-lg"
               >
                 DISCOVER PANELS
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

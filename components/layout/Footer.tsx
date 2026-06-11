@@ -161,7 +161,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-white border-t-4 border-brand-ink py-16 px-6 overflow-hidden select-none">
+    <footer className="relative bg-white border-t border-brand-ink/10 py-16 px-6 overflow-hidden select-none">
       
       {/* 4-Column Neobrutalist Grid */}
       <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
@@ -275,7 +275,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-blue hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
+              className="w-10 h-10 bg-white/5 border border-brand-ink/10 text-brand-ink hover:bg-brand-blue/10 hover:text-brand-blue transition-all rounded-md flex justify-center items-center shadow-sm cursor-pointer hover:scale-[1.05]"
             >
               <FacebookIcon size={18} />
             </a>
@@ -284,7 +284,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X (Twitter)"
-              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-pink hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
+              className="w-10 h-10 bg-white/5 border border-brand-ink/10 text-brand-ink hover:bg-brand-pink/10 hover:text-brand-pink transition-all rounded-md flex justify-center items-center shadow-sm cursor-pointer hover:scale-[1.05]"
             >
               <XIcon size={16} />
             </a>
@@ -293,7 +293,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-orange hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
+              className="w-10 h-10 bg-white/5 border border-brand-ink/10 text-brand-ink hover:bg-brand-orange/10 hover:text-brand-orange transition-all rounded-md flex justify-center items-center shadow-sm cursor-pointer hover:scale-[1.05]"
             >
               <InstagramIcon size={18} />
             </a>
@@ -302,7 +302,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-blue hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
+              className="w-10 h-10 bg-white/5 border border-brand-ink/10 text-brand-ink hover:bg-brand-blue/10 hover:text-brand-blue transition-all rounded-md flex justify-center items-center shadow-sm cursor-pointer hover:scale-[1.05]"
             >
               <LinkedInIcon size={18} />
             </a>
@@ -311,7 +311,7 @@ export default function Footer() {
 
         {/* COLUMN 4: CAMPUS IMAGE */}
         <div className="flex justify-start md:justify-end items-center">
-          <div className="relative border-4 border-brand-ink shadow-[6px_6px_0px_0px_#030404] rounded-xl overflow-hidden group w-full max-w-[280px] aspect-[4/3] bg-brand-cloud">
+          <div className="relative border border-brand-ink/10 shadow-md rounded-xl overflow-hidden group w-full max-w-[280px] aspect-[4/3] bg-brand-cloud">
             <Image
               src="/images/footer_image.webp"
               alt="JKLU Campus View"
@@ -333,7 +333,7 @@ export default function Footer() {
           <div className="w-24 h-1 bg-brand-orange mx-auto rounded-full" />
         </div>
 
-        <div className="w-full border-4 border-brand-ink shadow-[8px_8px_0px_0px_#030404] rounded-lg overflow-hidden h-80 mb-10 transform hover:scale-[1.002] transition-transform duration-250">
+        <div className="w-full border border-brand-ink/10 shadow-lg rounded-lg overflow-hidden h-80 mb-10 transform hover:scale-[1.002] transition-transform duration-250">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.1052887370965!2d75.64772927502109!3d26.83660327669258!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4af4fe68f403%3A0x3bf05f95df22b8c4!2sJK%20Lakshmipat%20University!5e0!3m2!1sen!2sin!4v1779876968774!5m2!1sen!2sin"
             width="100%"
@@ -375,8 +375,8 @@ export default function Footer() {
               width={1222}
               height={482}
               unoptimized
-              className="h-20 w-auto opacity-95 object-contain"
-              style={{ width: 'auto', height: '80px' }}
+              className="h-[90px] w-auto opacity-95 object-contain"
+              style={{ width: 'auto', height: '90px' }}
             />
           </Link>
           <a 
@@ -397,7 +397,7 @@ export default function Footer() {
           </a>
           <button
             onClick={scrollToTop}
-            className="w-10 h-10 bg-brand-pink text-white border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-orange active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#030404] transition-all rounded-md flex justify-center items-center cursor-pointer"
+            className="w-10 h-10 bg-brand-pink text-white hover:bg-primary-dark transition-all rounded-md flex justify-center items-center cursor-pointer shadow-md hover:scale-[1.05]"
             aria-label="Scroll back to top"
             id="scroll-to-top-btn"
           >

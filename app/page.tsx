@@ -58,7 +58,7 @@ export default function Home() {
 
   // Function to create comic dot explosion particles
   const spawnParticles = (x: number, y: number) => {
-    const colors = ['#FF9A00', '#FF188C', '#0D21DD', '#030404', '#F5F1E5'];
+    const colors = ['#f5821e', '#184176', '#215798', '#030404', '#F5F1E5'];
     const newParticles = Array.from({ length: 12 }).map((_, i) => ({
       id: Math.random() + Date.now() + i,
       x,
@@ -128,8 +128,8 @@ export default function Home() {
                 height: p.size,
                 backgroundColor: p.color,
                 borderRadius: p.isSquare ? '0%' : '50%',
-                border: '2px solid #030404',
-                boxShadow: '1.5px 1.5px 0px #030404',
+                border: 'none',
+                boxShadow: 'none',
               }}
             />
           ))}
@@ -153,30 +153,17 @@ export default function Home() {
       <SneakPeak />
 
       {/* Unified Background Wrapper */}
-      <div className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink overflow-hidden">
-        {/* Aurora Mesh — mirrors Hero.tsx background */}
+      <div className="w-full relative z-10 bg-brand-cloud border-t border-brand-ink/10 overflow-hidden">
+        {/* Subtle Background mesh */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <div className="absolute inset-0 bg-brand-cloud" />
-           <motion.div
-            className="hidden md:block absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-            style={{ background: '#FF188C', filter: 'blur(140px)' }}
-            animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="hidden md:block absolute top-[20%] right-[10%] w-[50%] h-[70%] rounded-full opacity-[0.10]"
-            style={{ background: '#0D21DD', filter: 'blur(150px)' }}
-            animate={{ x: [0, -40, 0], y: [0, -20, 0], scale: [1, 1.15, 1] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          />
           <div
-            className="absolute inset-0 pointer-events-none opacity-[0.05]"
+            className="absolute inset-0 pointer-events-none opacity-[0.03]"
             style={{
               backgroundImage: `linear-gradient(to right, #030404 1px, transparent 1px), linear-gradient(to bottom, #030404 1px, transparent 1px)`,
               backgroundSize: '4rem 4rem'
             }}
           />
-          <div className="absolute inset-0 bg-halftone-black opacity-10 mix-blend-overlay" />
         </div>
 
         {/* Content Container */}

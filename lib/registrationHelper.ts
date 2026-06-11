@@ -18,7 +18,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   const { width, height } = page.getSize();
   
   // Brand Colors
-  const primaryColor = rgb(1.0, 0.094, 0.549); // #FF188C Bold Pink
+  const primaryColor = rgb(0.094, 0.255, 0.463); // #184176 Primary Deep Blue
   const darkColor = rgb(0.012, 0.016, 0.016);  // #030404 Ink Black
   const lightGray = rgb(0.961, 0.945, 0.898);  // #F5F1E5 Cloud White
   const greyColor = rgb(0.4, 0.4, 0.4);
@@ -281,7 +281,7 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
         .footer { background-color: #f9f9f9; padding: 30px 20px; text-align: center; color: #777; font-size: 13px; border-top: 1px solid #eeeeee; }
         .social-icons { margin: 15px 0; }
         .social-icons a { display: inline-block; margin: 0 6px; color: #555; text-decoration: none; font-weight: bold; font-size: 12px; }
-        .footer-link { color: #FF188C; text-decoration: none; font-weight: bold; }
+        .footer-link { color: #184176; text-decoration: none; font-weight: bold; }
         .button { display: inline-block; padding: 12px 24px; background-color: #FACC15; color: #1a1a1a; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; }
       </style>
     </head>

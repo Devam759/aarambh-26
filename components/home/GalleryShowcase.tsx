@@ -230,7 +230,7 @@ export default function GalleryShowcase() {
             font-weight: 800;
             letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: #FF188C;
+            color: #184176;
             margin-bottom: 18px;
           }
 
@@ -248,10 +248,10 @@ export default function GalleryShowcase() {
           .gl-heading-highlight {
             color: #F5F1E5;
             text-shadow: 
-              2px 2px 0 #FF188C,
-              -2px -2px 0 #FF188C,
-              2px -2px 0 #FF188C,
-              -2px 2px 0 #FF188C,
+              2px 2px 0 #184176,
+              -2px -2px 0 #184176,
+              2px -2px 0 #184176,
+              -2px 2px 0 #184176,
               4px 4px 0 #030404;
           }
 
@@ -284,7 +284,7 @@ export default function GalleryShowcase() {
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: #F5F1E5;
-            background: #FF188C;
+            background: #184176;
             border: 3.5px solid #030404;
             border-radius: 12px;
             padding: 14px 28px;
@@ -422,7 +422,7 @@ export default function GalleryShowcase() {
                 fontFamily: "var(--font-display)",
                 fontSize: 'clamp(2.0rem, 5vw, 3rem)',
                 fontWeight: 800,
-                color: '#FF9A00',
+                color: '#f5821e',
                 marginBottom: '16px',
                 textShadow: '2px 2px 0px #030404',
                 letterSpacing: '-0.02em'

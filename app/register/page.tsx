@@ -239,20 +239,20 @@ function RegisterContent() {
       <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-28 pb-12 sm:p-6 sm:pt-32 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">
         <ComicBackground />
 
-        <div className="max-w-md w-full bg-brand-cloud border-comic p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl shadow-comic-lg relative z-10">
+        <div className="max-w-md w-full bg-brand-cloud border border-brand-ink/10 p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl shadow-xl relative z-10">
           
           <h1 className="text-3xl md:text-4xl font-vanilla text-brand-ink mb-4">
             Registration Successful!
           </h1>
           <p className="font-sans font-medium text-sm text-brand-ink/70 mb-6 leading-relaxed">
-            Your payment has been processed. A copy of your details has been mailed to <strong className="text-brand-pink font-semibold">{formData.email}</strong>.
+            Your payment has been processed. A copy of your details has been mailed to <strong className="text-primary font-semibold">{formData.email}</strong>.
           </p>
-          <div className="bg-white border-comic-thin px-4 py-2.5 rounded-xl font-mono text-xs tracking-wider mb-8 text-brand-ink w-full shadow-comic-sm">
+          <div className="bg-white border border-brand-ink/10 px-4 py-2.5 rounded-xl font-mono text-xs tracking-wider mb-8 text-brand-ink w-full shadow-sm">
             REGISTRATION ID: {regId}
           </div>
           <button 
             onClick={() => router.push('/')} 
-            className="w-full py-4 bg-brand-pink hover:bg-brand-pink/90 text-brand-cloud border-comic shadow-comic font-sans font-black text-sm uppercase tracking-wider rounded-xl comic-interactive cursor-pointer"
+            className="w-full py-4 bg-primary hover:bg-primary-dark text-brand-cloud font-sans font-semibold text-sm uppercase tracking-wider rounded-xl cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md"
           >
             Back to Home
           </button>
@@ -276,16 +276,15 @@ function RegisterContent() {
             unoptimized
             className="w-full max-w-2xl h-auto object-contain select-none"
             style={{ 
-              height: 'auto',
-              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404)" 
+              height: 'auto'
             }}
           />
         </div>
 
-        <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
+        <div className="border border-brand-ink/10 bg-brand-cloud/95 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-lg relative overflow-hidden">
           {isProcessing ? (
             <div className="py-40 flex flex-col items-center justify-center gap-4 min-h-[550px] text-center">
-              <Loader2 size={48} className="text-brand-pink animate-spin stroke-[3]" />
+              <Loader2 size={48} className="text-primary animate-spin stroke-[3]" />
               <p className="text-brand-ink/75 font-semibold animate-pulse font-display uppercase tracking-wider text-xs">
                 Processing your registration...
               </p>
@@ -299,44 +298,41 @@ function RegisterContent() {
 
               {/* SECTION 1. STUDENT DETAILS */}
               <div className="space-y-6">
-                <div className="flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
-                  <div className="flex items-center gap-3 text-brand-pink">
+                <div className="flex flex-row items-center justify-between gap-3 border-b border-brand-ink/10 pb-4">
+                  <div className="flex items-center gap-3 text-primary">
                     <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Student Details</h2>
                   </div>
                   {isStudentValid ? (
-                    <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
-                      <Check size={10} className="stroke-[4] shrink-0" />
-                      <span className="flex flex-col text-right leading-tight">
-                        <span>Requirement</span>
-                        <span>Fulfilled</span>
-                      </span>
+                    <span className="flex items-center gap-1 px-2.5 py-1 border border-green-500/20 bg-green-50 text-green-700 font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap text-right">
+                      <Check size={12} className="stroke-[3] shrink-0" />
+                      <span>Requirement Fulfilled</span>
                     </span>
                   ) : studentStarted ? (
-                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                      IN PROGRESS
+                    <span className="px-2.5 py-1 border border-brand-orange/20 bg-brand-orange/10 text-brand-orange font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                      In Progress
                     </span>
                   ) : (
-                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                      ACTIVE
+                    <span className="px-2.5 py-1 border border-brand-blue/20 bg-brand-blue/10 text-brand-blue font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                      Active
                     </span>
                   )}
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Full Name *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Full Name *</label>
                     <input 
                       required 
                       name="name" 
                       value={formData.name} 
                       onChange={handleChange} 
-                      className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                      className="w-full px-4 py-3 bg-white border border-brand-ink/20 text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl shadow-sm"
                       placeholder="Enter your full name" 
                       suppressHydrationWarning 
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Application Number *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Application Number *</label>
                     <input 
                       required 
                       name="registrationNumber" 
@@ -346,22 +342,22 @@ function RegisterContent() {
                         setFormData({ ...formData, registrationNumber: formatted });
                       }}
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none transition-all rounded-xl shadow-sm ${
                         touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
-                          : 'border-comic-thin focus:border-brand-ink'
+                          ? 'border border-red-500 bg-red-50/30 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border border-brand-ink/20 focus:border-primary focus:ring-1 focus:ring-primary'
                       }`}
                       placeholder="JKLU/BBA/2025/0310" 
                       suppressHydrationWarning 
                     />
                     {touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
-                        PLEASE ENTER A VALID APPLICATION NUMBER (E.G. JKLU/BBA/2025/0310)
+                      <p className="text-xs font-medium text-red-600 mt-1.5">
+                        Please enter a valid application number (e.g. JKLU/BBA/2025/0310)
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Mobile Number *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Mobile Number *</label>
                     <input 
                       required 
                       type="tel" 
@@ -369,22 +365,22 @@ function RegisterContent() {
                       value={formData.mobile} 
                       onChange={handleChange} 
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none transition-all rounded-xl shadow-sm ${
                         touched.mobile && !validateMobile(formData.mobile)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
-                          : 'border-comic-thin focus:border-brand-ink'
+                          ? 'border border-red-500 bg-red-50/30 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border border-brand-ink/20 focus:border-primary focus:ring-1 focus:ring-primary'
                       }`}
                       placeholder="+91 98765 43210" 
                       suppressHydrationWarning 
                     />
                     {touched.mobile && !validateMobile(formData.mobile) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
-                        PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
+                      <p className="text-xs font-medium text-red-600 mt-1.5">
+                        Please enter a valid 10-digit mobile number
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Email ID *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Email ID *</label>
                     <input 
                       required 
                       type="email" 
@@ -392,64 +388,64 @@ function RegisterContent() {
                       value={formData.email} 
                       onChange={handleChange} 
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                      className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none transition-all rounded-xl shadow-sm ${
                         touched.email && !validateEmail(formData.email)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
-                          : 'border-comic-thin focus:border-brand-ink'
+                          ? 'border border-red-500 bg-red-50/30 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border border-brand-ink/20 focus:border-primary focus:ring-1 focus:ring-primary'
                       }`}
                       placeholder="Enter your email" 
                       suppressHydrationWarning 
                     />
                     {touched.email && !validateEmail(formData.email) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
-                        PLEASE ENTER A VALID EMAIL ADDRESS
+                      <p className="text-xs font-medium text-red-600 mt-1.5">
+                        Please enter a valid email address
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Course *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Course *</label>
                     <select
                       required
                       name="course"
                       value={formData.course}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 bg-white border-comic-thin font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl appearance-none cursor-pointer pr-10 ${
+                      className={`w-full px-4 py-3 bg-white border border-brand-ink/20 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl appearance-none cursor-pointer pr-10 shadow-sm ${
                         formData.course ? 'text-brand-ink' : 'text-brand-ink/40'
                       }`}
                       style={{
-                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'right 1rem center',
                         backgroundSize: '1.25rem',
                       }}
                     >
                       <option value="" disabled hidden>Select Course</option>
-                      <option value="B.Tech" className="text-brand-ink font-bold">B.Tech</option>
-                      <option value="BBA" className="text-brand-ink font-bold">BBA</option>
-                      <option value="B.Des" className="text-brand-ink font-bold">B.Des</option>
-                      <option value="M.Des" className="text-brand-ink font-bold">M.Des</option>
+                      <option value="B.Tech" className="text-brand-ink font-medium">B.Tech</option>
+                      <option value="BBA" className="text-brand-ink font-medium">BBA</option>
+                      <option value="B.Des" className="text-brand-ink font-medium">B.Des</option>
+                      <option value="M.Des" className="text-brand-ink font-medium">M.Des</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-brand-ink/75 block mb-1">Gender *</label>
+                    <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Gender *</label>
                     <select
                       required
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 bg-white border-comic-thin font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl appearance-none cursor-pointer pr-10 ${
+                      className={`w-full px-4 py-3 bg-white border border-brand-ink/20 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl appearance-none cursor-pointer pr-10 shadow-sm ${
                         formData.gender ? 'text-brand-ink' : 'text-brand-ink/40'
                       }`}
                       style={{
-                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
+                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'right 1rem center',
                         backgroundSize: '1.25rem',
                       }}
                     >
                       <option value="" disabled hidden>Select Gender</option>
-                      <option value="Male" className="text-brand-ink font-bold">Male</option>
-                      <option value="Female" className="text-brand-ink font-bold">Female</option>
+                      <option value="Male" className="text-brand-ink font-medium">Male</option>
+                      <option value="Female" className="text-brand-ink font-medium">Female</option>
                     </select>
                   </div>
                 </div>
@@ -457,31 +453,28 @@ function RegisterContent() {
 
               {/* SECTION 2. PARENTS DETAILS (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b border-brand-ink/10 pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-blue">
                     <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Parents Details</h2>
                   </div>
                   {isStudentValid ? (
                     isParentsValid ? (
-                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
-                        <Check size={10} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-right leading-tight">
-                          <span>Requirement</span>
-                          <span>Fulfilled</span>
-                        </span>
+                      <span className="flex items-center gap-1 px-2.5 py-1 border border-green-500/20 bg-green-50 text-green-700 font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap text-right">
+                        <Check size={12} className="stroke-[3] shrink-0" />
+                        <span>Requirement Fulfilled</span>
                       </span>
                     ) : parentsStarted ? (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                        IN PROGRESS
+                      <span className="px-2.5 py-1 border border-brand-orange/20 bg-brand-orange/10 text-brand-orange font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                        In Progress
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                        ACTIVE
+                      <span className="px-2.5 py-1 border border-brand-blue/20 bg-brand-blue/10 text-brand-blue font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                        Active
                       </span>
                     )
                   ) : (
-                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
-                      🔒 LOCKED
+                    <span className="px-2.5 py-1 border border-dark/10 bg-dark/5 text-dark/40 font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                      LOCKED
                     </span>
                   )}
                 </div>
@@ -498,57 +491,57 @@ function RegisterContent() {
                       {/* Parent Details Row */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Name *</label>
+                          <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Parent&apos;s Name *</label>
                           <input 
                             required={isStudentValid}
                             name="parentName" 
                             value={formData.parentName} 
                             onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl" 
+                            className="w-full px-4 py-3 bg-white border border-brand-ink/20 text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl shadow-sm" 
                             placeholder="Parent's full name"
                             suppressHydrationWarning 
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Mobile *</label>
+                          <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Parent&apos;s Mobile *</label>
                           <input 
                             required={isStudentValid}
                             name="parentPhone" 
                             value={formData.parentPhone} 
                             onChange={handleChange} 
                             onBlur={handleBlur}
-                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none transition-all rounded-xl shadow-sm ${
                               touched.parentPhone && !validateMobile(formData.parentPhone)
-                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
-                                : 'border-comic-thin focus:border-brand-ink'
+                                ? 'border border-red-500 bg-red-50/30 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                                : 'border border-brand-ink/20 focus:border-primary focus:ring-1 focus:ring-primary'
                             }`} 
                             placeholder="Parent's mobile number"
                             suppressHydrationWarning 
                           />
                           {touched.parentPhone && !validateMobile(formData.parentPhone) && (
-                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
-                              PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
+                            <p className="text-xs font-medium text-red-600 mt-1.5">
+                              Please enter a valid 10-digit mobile number
                             </p>
                           )}
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Parent&apos;s Email</label>
+                          <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Parent&apos;s Email</label>
                           <input 
                             name="parentEmail" 
                             value={formData.parentEmail} 
                             onChange={handleChange} 
                             onBlur={handleBlur}
-                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
+                            className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none transition-all rounded-xl shadow-sm ${
                               formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail)
-                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
-                                : 'border-comic-thin focus:border-brand-ink'
+                                ? 'border border-red-500 bg-red-50/30 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                                : 'border border-brand-ink/20 focus:border-primary focus:ring-1 focus:ring-primary'
                             }`} 
                             placeholder="parents@email.com"
                             suppressHydrationWarning 
                           />
                           {formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail) && (
-                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
-                              PLEASE ENTER A VALID EMAIL ADDRESS
+                            <p className="text-xs font-medium text-red-600 mt-1.5">
+                              Please enter a valid email address
                             </p>
                           )}
                         </div>
@@ -560,31 +553,28 @@ function RegisterContent() {
 
               {/* SECTION 3. ADDRESS & PAYMENT (ACCORDION) */}
               <div className="space-y-6">
-                <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
+                <div className={`flex flex-row items-center justify-between gap-3 border-b border-brand-ink/10 pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-orange">
                     <h2 className="text-xl sm:text-3xl font-vanilla text-brand-ink">Address & Verification</h2>
                   </div>
                   {isStudentValid && isParentsValid ? (
                     isAddressValid ? (
-                      <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
-                        <Check size={10} className="stroke-[4] shrink-0" />
-                        <span className="flex flex-col text-right leading-tight">
-                          <span>Requirement</span>
-                          <span>Fulfilled</span>
-                        </span>
+                      <span className="flex items-center gap-1 px-2.5 py-1 border border-green-500/20 bg-green-50 text-green-700 font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap text-right">
+                        <Check size={12} className="stroke-[3] shrink-0" />
+                        <span>Requirement Fulfilled</span>
                       </span>
                     ) : formData.address.trim().length > 0 ? (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                        IN PROGRESS
+                      <span className="px-2.5 py-1 border border-brand-orange/20 bg-brand-orange/10 text-brand-orange font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                        In Progress
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-blue text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
-                        ACTIVE
+                      <span className="px-2.5 py-1 border border-brand-blue/20 bg-brand-blue/10 text-brand-blue font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                        Active
                       </span>
                     )
                   ) : (
-                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-[#F5F1E5] text-brand-ink/40 font-display text-[8px] font-black uppercase rounded shadow-comic-sm whitespace-nowrap">
-                      🔒 LOCKED
+                    <span className="px-2.5 py-1 border border-dark/10 bg-dark/5 text-dark/40 font-sans text-xs font-semibold uppercase rounded-md whitespace-nowrap">
+                      LOCKED
                     </span>
                   )}
                 </div>
@@ -599,14 +589,14 @@ function RegisterContent() {
                       className="overflow-hidden space-y-6 pb-3"
                     >
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-brand-ink/75 block mb-1">Full Address *</label>
+                        <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Full Address *</label>
                         <textarea 
                           required={isStudentValid && isParentsValid}
                           name="address" 
                           value={formData.address} 
                           onChange={handleChange} 
-                      rows={3} 
-                          className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl resize-none" 
+                          rows={3} 
+                          className="w-full px-4 py-3 bg-white border border-brand-ink/20 text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl resize-none shadow-sm" 
                           placeholder="House No, Street, Landmark, City, State, Pincode" 
                           suppressHydrationWarning 
                         />
@@ -614,35 +604,35 @@ function RegisterContent() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Pincode *</label>
+                          <label className="text-xs font-semibold text-brand-ink/75 block mb-1">Pincode *</label>
                           <input 
                             required={isStudentValid && isParentsValid}
                             name="pincode" 
                             maxLength={6}
                             value={formData.pincode} 
                             onChange={handleChange} 
-                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                            className="w-full px-4 py-3 bg-white border border-brand-ink/20 text-brand-ink placeholder:text-brand-ink/40 font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all rounded-xl shadow-sm"
                             placeholder="302026" 
                             suppressHydrationWarning 
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">External Portal (Optional)</label>
+                          <label className="text-xs font-semibold text-brand-ink/75 block mb-1">External Portal (Optional)</label>
                           <a 
                             href="https://google.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer flex items-center justify-center text-center h-[50px] leading-none"
+                            className="w-full py-3 bg-primary hover:bg-primary-dark text-white font-sans font-semibold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm hover:shadow-md cursor-pointer flex items-center justify-center text-center h-[50px] leading-none"
                           >
                             Visit Site
                           </a>
                         </div>
                       </div>
 
-                      <div className="border-comic bg-brand-pink/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
+                      <div className="border border-brand-ink/10 bg-primary/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-sm opacity-95">
                         <div>
-                          <p className="text-xs font-black text-brand-ink/60 uppercase tracking-widest mb-1">Registration Fee</p>
+                          <p className="text-xs font-semibold text-brand-ink/60 uppercase tracking-wider mb-1">Registration Fee</p>
                           <div className="flex items-center gap-3">
                             {formData.coupon.toUpperCase() === 'TESTTEST' ? (
                               <p className="text-2xl sm:text-3xl font-sans font-bold text-brand-ink">₹ 1</p>
@@ -653,17 +643,17 @@ function RegisterContent() {
                         </div>
                         <button 
                           type="submit" 
-                          className="px-10 py-5 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-lg uppercase tracking-wider rounded-xl comic-interactive flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+                          className="px-10 py-4 bg-accent hover:bg-accent-dark text-white font-sans font-semibold text-lg uppercase tracking-wider rounded-xl shadow-sm hover:shadow-md transition-all flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
                         >
-                          <CreditCard size={24} className="stroke-[3]" /> Pay Now
+                          <CreditCard size={24} className="stroke-[2]" /> Pay Now
                         </button>
                       </div>
 
-                      <div className="mt-4 border-2 border-brand-ink bg-white p-4 rounded-xl text-center shadow-comic-sm space-y-1.5">
-                        <p className="text-xs font-black uppercase tracking-wider text-brand-pink">
+                      <div className="mt-4 border border-red-200 bg-red-50/30 p-4 rounded-xl text-center shadow-sm space-y-1.5">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-red-700">
                           Important Note: The registration fee is strictly non-refundable under any circumstances.
                         </p>
-                        <p className="text-[10px] font-bold uppercase tracking-wide text-brand-ink/60">
+                        <p className="text-[10px] font-medium uppercase tracking-wide text-brand-ink/60">
                           A 2% gateway transaction fee charged by Cashfree Payments will be added at checkout.
                         </p>
                       </div>
@@ -681,7 +671,7 @@ function RegisterContent() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-brand-ink flex items-center justify-center"><Loader2 className="animate-spin text-brand-pink stroke-[3]" size={48} /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-brand-ink flex items-center justify-center"><Loader2 className="animate-spin text-primary stroke-[3]" size={48} /></div>}>
       <RegisterContent />
     </Suspense>
   );

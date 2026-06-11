@@ -17,27 +17,27 @@
 }
 
 @theme {
-  --color-brand-orange: #FF9A00;
-  --color-brand-pink: #FF188C;
-  --color-brand-blue: #0D21DD;
+  --color-brand-orange: #f5821e;
+  --color-brand-pink: #184176;
+  --color-brand-blue: #215798;
   --color-brand-ink: #030404;
   --color-brand-cloud: #F5F1E5;
 
   --color-admin-bg: #F5F1E5;
   --color-admin-surface: #ffffff;
-  --color-admin-accent: #FF9A00;
+  --color-admin-accent: #f5821e;
   --color-admin-text: #030404;
   --color-admin-muted: #64748b;
   --color-admin-border: #e2e8f0;
 
-  --color-primary: #FF188C;
-  --color-primary-dark: #E0107A;
+  --color-primary: #184176;
+  --color-primary-dark: #0f2a4e;
 
-  --color-secondary: #0D21DD;
-  --color-secondary-dark: #0A1AB8;
+  --color-secondary: #215798;
+  --color-secondary-dark: #153965;
 
-  --color-accent: #FF9A00;
-  --color-accent-dark: #E68A00;
+  --color-accent: #f5821e;
+  --color-accent-dark: #d06a13;
 
   --color-dark: #030404;
   --color-dark-lighter: #1a1a1a;
@@ -46,9 +46,9 @@
   --font-sans: "Google Sans", var(--font-sans), Roboto, system-ui, sans-serif;
   --font-adminHeading: var(--font-adminHeading), "DM Serif Display", serif;
   --font-adminBody: var(--font-adminBody), "DM Sans", sans-serif;
-  --font-vanilla: "Vanilla Extract", sans-serif;
-  --font-bricks: var(--font-bricks), "Russo One", "TT Bricks", "Outfit", sans-serif;
-  --font-diary: var(--font-architectsDaughter), "Architects Daughter", cursive;
+  --font-vanilla: "Outfit", system-ui, sans-serif;
+  --font-bricks: "Outfit", var(--font-sans), sans-serif;
+  --font-diary: "Outfit", var(--font-sans), sans-serif;
 
   --shadow-brand-pink: 0 0 40px rgba(255, 24, 140, 0.25);
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);
@@ -315,7 +315,7 @@ body {
 .fluid-blob-1 {
   width: 80vw;
   height: 80vw;
-  background: radial-gradient(circle, rgba(255, 24, 140, 0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(24, 65, 118, 0.6) 0%, transparent 70%);
   top: 0;
   left: 0;
   animation-duration: 25s;
@@ -324,7 +324,7 @@ body {
 .fluid-blob-2 {
   width: 90vw;
   height: 90vw;
-  background: radial-gradient(circle, rgba(255, 154, 0, 0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 130, 30, 0.6) 0%, transparent 70%);
   bottom: 0;
   right: 0;
   animation-duration: 28s;
@@ -334,7 +334,7 @@ body {
 .fluid-blob-3 {
   width: 70vw;
   height: 70vw;
-  background: radial-gradient(circle, rgba(13, 33, 221, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(33, 87, 152, 0.4) 0%, transparent 70%);
   top: 20%;
   left: 30%;
   animation-duration: 22s;

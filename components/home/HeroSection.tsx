@@ -82,23 +82,11 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
     };
   }, []);
 
-  const stickers = [
-    {
-      src: "/images/july_14_21.webp",
-      alt: "14-21 July Sticker",
-      type: "stamp",
-      rotate: "6deg",
-      floatDelay: 0.7,
-      className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
-      imgClassName: "w-[80px] h-[80px] lg:w-[200px] lg:h-[200px]"
-    },
-  ];
-
   const countdownBlocks = [
-    { label: 'Days', valueKey: 'days', bg: 'bg-brand-orange text-brand-ink', rotate: '-rotate-2' },
-    { label: 'Hours', valueKey: 'hours', bg: 'bg-brand-pink text-brand-cloud', rotate: 'rotate-3' },
-    { label: 'Mins', valueKey: 'mins', bg: 'bg-brand-blue text-brand-cloud', rotate: '-rotate-1' },
-    { label: 'Secs', valueKey: 'secs', bg: 'bg-brand-cloud text-brand-ink', rotate: 'rotate-2' },
+    { label: 'Days', valueKey: 'days', bg: 'bg-brand-orange text-brand-ink' },
+    { label: 'Hours', valueKey: 'hours', bg: 'bg-brand-pink text-brand-cloud' },
+    { label: 'Mins', valueKey: 'mins', bg: 'bg-brand-blue text-brand-cloud' },
+    { label: 'Secs', valueKey: 'secs', bg: 'bg-brand-cloud/10 border border-white/20 text-brand-cloud' },
   ];
 
   return (
@@ -106,145 +94,23 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-brand-cloud text-brand-ink selection:bg-brand-pink selection:text-brand-cloud p-4 md:p-8"
+      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-[#0c1a2f] text-brand-cloud selection:bg-brand-orange selection:text-brand-ink p-4 md:p-8"
     >
       {/* Noise overlay and grid ticks */}
       <div className="absolute inset-0 bg-halftone-black opacity-[0.03] pointer-events-none z-0" />
 
-      {/* Full-bleed Translucent Fluid Alcohol Ink Background with motion drift */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-        <div className="absolute inset-0 w-full h-full">
-          <motion.div
-            animate={isMobile ? {
-              y: 0,
-              x: 0,
-              skewX: 0,
-              skewY: 0,
-              scale: 1.35,
-            } : {
-              y: [0, -35, 25, -25, 15, -15, 0],
-              x: [0, 20, -20, 15, -15, 8, 0],
-              skewX: [0, 4, -4, 2.5, -2.5, 1.2, 0],
-              skewY: [0, 2, -2, 1.2, -1.2, 0.6, 0],
-              scale: [1.02, 1.08, 1.01, 1.06, 1.02],
-            }}
-            transition={isMobile ? {
-              duration: 0,
-            } : {
-              duration: 12,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <Image
-              src="/images/translucent_fluid_ink.webp"
-              alt="Translucent Fluid Alcohol Ink background"
-              fill
-              priority
-              sizes="100vw"
-              className="object-fill sm:object-cover opacity-55 sm:opacity-65 scale-[1.02] sm:scale-[1.08] filter saturate-[1.8] brightness-[1.05] sm:brightness-[1.01] contrast-[1.05] sm:saturate-100 sm:contrast-[0.99]"
-            />
-          </motion.div>
-        </div>
-        {/* Subtle radial gradient overlay */}
-        <div className="absolute inset-0 hidden sm:block bg-[radial-gradient(circle_at_center,rgba(245,241,229,0.75)_0%,rgba(245,241,229,0.1)_100%)] pointer-events-none" />
-      </div>
-
-      {/* Floating Y2K Sparkle Stars (Drifts dynamically with cursor) */}
-      <div className="absolute inset-0 pointer-events-none z-20 hidden md:block select-none">
-        {/* Star 1: Bold Pink */}
-        <motion.div
-          style={{ x: starX1, y: starY1 }}
-          animate={{ rotate: [0, 360], scale: [1, 1.12, 1] }}
-          transition={{ rotate: { repeat: Infinity, duration: 25, ease: "linear" }, scale: { repeat: Infinity, duration: 6, ease: "easeInOut" } }}
-          className="absolute top-[20%] left-[28%] text-brand-pink/70"
-        >
-          <SparkleStar size={36} />
-        </motion.div>
-
-        {/* Star 2: Electric Blue */}
-        <motion.div
-          style={{ x: starX2, y: starY2 }}
-          animate={{ rotate: [360, 0], scale: [1, 1.15, 1] }}
-          transition={{ rotate: { repeat: Infinity, duration: 20, ease: "linear" }, scale: { repeat: Infinity, duration: 5, ease: "easeInOut" } }}
-          className="absolute bottom-[28%] right-[32%] text-brand-blue"
-        >
-          <SparkleStar size={48} />
-        </motion.div>
-      </div>
-
-      {/* Draggable Pop-Art Stickers */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        {stickers.map((sticker, idx) => (
-          <motion.div
-            key={idx}
-            drag
-            dragConstraints={{ left: -150, right: 150, top: -100, bottom: 100 }}
-            dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
-            initial={{
-              filter: "drop-shadow(3px 12px 18px rgba(3, 4, 4, 0.15)) drop-shadow(1px 4px 6px rgba(3, 4, 4, 0.08))"
-            }}
-            animate={{
-              y: [0, -6, 0],
-              rotate: [sticker.rotate, (parseFloat(sticker.rotate) + 1.5) + "deg", sticker.rotate],
-            }}
-            transition={{
-              y: {
-                duration: 4.5 + idx * 0.8,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                delay: sticker.floatDelay,
-              },
-              rotate: {
-                duration: 5.5 + idx * 0.6,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                delay: sticker.floatDelay,
-              }
-            }}
-            whileHover={{
-              scale: 1.05,
-              y: -12,
-              zIndex: 50,
-              filter: "drop-shadow(8px 24px 32px rgba(3, 4, 4, 0.22)) drop-shadow(2px 8px 12px rgba(3, 4, 4, 0.12))",
-              transition: { type: "spring", stiffness: 300, damping: 15 }
-            }}
-            whileDrag={{
-              scale: 1.1,
-              zIndex: 100,
-              filter: "drop-shadow(12px 36px 48px rgba(3, 4, 4, 0.26)) drop-shadow(4px 12px 18px rgba(3, 4, 4, 0.15))"
-            }}
-            onDragStart={(e) => {
-              playSynthSound(sticker.type as any);
-            }}
-            onClick={(e) => {
-              if (spawnParticles) spawnParticles(e.clientX, e.clientY);
-              playSynthSound(sticker.type as any);
-            }}
-            className={`absolute pointer-events-auto cursor-grab select-none ${sticker.className}`}
-          >
-            <div className={`relative overflow-hidden rounded-xl ${sticker.imgClassName}`}>
-              <Image
-                src={sticker.src}
-                alt={sticker.alt}
-                fill
-                sizes="(max-width: 1023px) 80px, 200px"
-                className="object-contain"
-                priority
-              />
-              <div
-                className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                }}
-              />
-            </div>
-          </motion.div>
-        ))}
+      {/* Premium Dark Deep Blue Gradient Background */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none bg-gradient-to-b from-[#0b1626] to-[#184176]">
+        {/* Subtle architectural grid pattern overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.06]" 
+          style={{
+            backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+            backgroundSize: '4rem 4rem'
+          }}
+        />
+        {/* Soft radial glow in secondary brand colors */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(33,87,152,0.25)_0%,transparent_75%)]" />
       </div>
 
       {/* Main Content Container */}
@@ -258,62 +124,38 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
           <h1 className="sr-only">
             Aarambh '26 - JK Lakshmipat University Student Orientation and Welcome Festival
           </h1>
-          <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-ink/80 mt-4 sm:mt-8 mb-1 select-none text-center block">
+          <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-cloud/80 mt-4 sm:mt-8 mb-1 select-none text-center block">
             JK Lakshmipat University Presents
           </span>
 
-          <div className="mb-2 sm:mb-4 select-none p-1 sm:p-2 max-w-full text-center flex justify-center w-full">
-            <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group z-20 perspective-[1500px]">
-              <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[90px] sm:min-h-[170px] md:min-h-[220px]">
-                <div className="relative w-full aspect-[550/120] z-20 pointer-events-none flex items-center justify-center">
-                  <Image
-                    src="/logos/aarambh_logo_outline.webp"
-                    alt="Aarambh '26 Logo Outline"
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
-                    className="object-contain"
-                    priority
-                  />
-
-                  <div className="absolute inset-0 w-full h-full">
-                    <Image
-                      src="/logos/aarambh_logo_extruded.webp"
-                      alt="Aarambh '26 Logo Extruded - The Signature Welcome Festival of JK Lakshmipat University"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
-                      className="object-contain"
-                      priority
-                      loading="eager"
-                    />
-                  </div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="absolute top-0 -right-2 text-brand-orange z-30"
-                  >
-                    <Sparkles size={40} />
-                  </motion.div>
-                </div>
-              </div>
+          {/* Centered White SVG Logo */}
+          <div className="mb-8 select-none p-2 max-w-full text-center flex justify-center w-full z-20">
+            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl flex justify-center">
+              <Image
+                src="/logos/Aarambh_new_logo_white.svg"
+                alt="Aarambh '26 Welcome Festival"
+                width={1078}
+                height={540}
+                className="h-24 sm:h-32 md:h-36 lg:h-40 w-auto object-contain"
+                priority
+              />
             </div>
           </div>
 
           {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-cloud text-brand-ink p-3 sm:p-4 rounded-lg max-w-4xl w-[95%] sm:w-full shadow-comic bg-halftone-black mb-4 sm:mb-6 mx-auto">
-            <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-sm sm:text-base">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
+          <div className="glass-card p-4 sm:p-5 max-w-2xl w-[95%] sm:w-full mb-6 mx-auto text-brand-cloud">
+            <p className="font-display font-bold text-xs sm:text-sm leading-relaxed tracking-wider uppercase text-center">
+              <span className="text-brand-orange text-sm sm:text-base font-black">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
             </p>
           </div>
 
           {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 w-full max-w-md text-brand-cloud px-2 sm:px-0">
+          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-6 w-full max-w-md text-brand-cloud px-2 sm:px-0">
             {countdownBlocks.map((block) => (
               <div
                 key={block.label}
-                className={`p-1.5 sm:p-3 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+                className={`p-2.5 sm:p-4 rounded-xl border border-white/10 shadow-lg ${block.bg} transition-all duration-300 hover:scale-105 flex flex-col items-center justify-center`}
               >
                 <div className="relative h-6 sm:h-8 overflow-hidden flex items-center justify-center w-full">
                   <AnimatePresence mode="popLayout">
@@ -323,13 +165,13 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
                       animate={{ y: 0, opacity: 1 }}
                       exit={{ y: -24, opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-lg sm:text-2xl font-display font-black tabular-nums absolute"
+                      className="text-lg sm:text-2xl font-display font-bold tabular-nums absolute"
                     >
                       {String(timeLeft[block.valueKey as keyof TimeLeft]).padStart(2, '0')}
                     </motion.span>
                   </AnimatePresence>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-80">
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mt-2.5 opacity-80">
                   {block.label}
                 </span>
               </div>
