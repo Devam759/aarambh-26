@@ -15,14 +15,14 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isLighthouse = navigator.userAgent.includes('Lighthouse') || 
-                           navigator.userAgent.includes('Chrome-Lighthouse') ||
-                           navigator.userAgent.includes('SpeedCurve') ||
-                           navigator.userAgent.includes('GTmetrix') ||
-                           navigator.userAgent.includes('Googlebot');
+      const isLighthouse = navigator.userAgent.includes('Lighthouse') ||
+        navigator.userAgent.includes('Chrome-Lighthouse') ||
+        navigator.userAgent.includes('SpeedCurve') ||
+        navigator.userAgent.includes('GTmetrix') ||
+        navigator.userAgent.includes('Googlebot');
 
       const hasPlayed = (window as any).hasPlayedIntro;
-      
+
       if (pathname === '/' && !hasPlayed && !isLighthouse) {
         setShowPreloader(true);
       } else {
@@ -39,10 +39,10 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
     setShowPreloader(false);
   };
 
-  const isAdminOrScanner = 
-    pathname?.startsWith('/admin') || 
-    pathname?.startsWith('/scanner') || 
-    pathname?.startsWith('/login') || 
+  const isAdminOrScanner =
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/scanner') ||
+    pathname?.startsWith('/login') ||
     pathname?.startsWith('/feedback');
 
   if (isAdminOrScanner) {
@@ -54,7 +54,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   return (
     <>
       <CustomCursor />
-      
+
       <AnimatePresence>
         {showPreloader && (
           <motion.div

@@ -34,14 +34,14 @@ type SetterFn = (v: number | string) => void;
 
 
 const GitHubIcon = ({ size = 12 }: { size?: number }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="square" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="square"
     strokeLinejoin="miter"
   >
     <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -49,14 +49,14 @@ const GitHubIcon = ({ size = 12 }: { size?: number }) => (
 );
 
 const LinkedInIcon = ({ size = 12 }: { size?: number }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="square" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="square"
     strokeLinejoin="miter"
   >
     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -66,14 +66,14 @@ const LinkedInIcon = ({ size = 12 }: { size?: number }) => (
 );
 
 const InstagramIcon = ({ size = 12 }: { size?: number }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="square" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="square"
     strokeLinejoin="miter"
   >
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -83,14 +83,14 @@ const InstagramIcon = ({ size = 12 }: { size?: number }) => (
 );
 
 const EmailIcon = ({ size = 12 }: { size?: number }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="square" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="square"
     strokeLinejoin="miter"
   >
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -297,14 +297,14 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           .toUpperCase();
 
         // Determine alternate rotation for hand-made comic zine feel
-        const rotationClass = i % 3 === 0 
-          ? 'hover:rotate-1' 
-          : i % 3 === 1 
-            ? 'hover:-rotate-1' 
+        const rotationClass = i % 3 === 0
+          ? 'hover:rotate-1'
+          : i % 3 === 1
+            ? 'hover:-rotate-1'
             : 'hover:rotate-[0.5deg]';
 
         const isFlipped = flippedCard === c.title;
-        
+
         return (
           <div
             key={i}
@@ -312,24 +312,21 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
             className={`relative w-[150px] xs:w-[170px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[3/5] [perspective:1000px] select-none transition-all duration-300 hover:scale-[1.01] ${rotationClass} group cursor-pointer sm:cursor-default`}
           >
             <div
-              className={`relative w-full h-full duration-700 [transform-style:preserve-3d] transition-transform ${
-                isFlipped ? '[transform:rotateY(180deg)]' : ''
-              } ${
-                flipTrigger === 'hover' ? 'sm:group-hover:[transform:rotateY(180deg)]' : ''
-              }`}
+              className={`relative w-full h-full duration-700 [transform-style:preserve-3d] transition-transform ${isFlipped ? '[transform:rotateY(180deg)]' : ''
+                } ${flipTrigger === 'hover' ? 'sm:group-hover:[transform:rotateY(180deg)]' : ''
+                }`}
             >
               {/* FRONT SIDE */}
               <div
-                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] flex flex-col p-2.5 xs:p-4 sm:p-6 bg-transparent justify-between select-none transition-all duration-300 ${
-                  flipTrigger === 'hover' ? 'sm:group-hover:opacity-0 sm:group-hover:pointer-events-none' : ''
-                }`}
+                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] flex flex-col p-2.5 xs:p-4 sm:p-6 bg-transparent justify-between select-none transition-all duration-300 ${flipTrigger === 'hover' ? 'sm:group-hover:opacity-0 sm:group-hover:pointer-events-none' : ''
+                  }`}
                 style={{
                   opacity: isFlipped ? 0 : 1,
                   pointerEvents: isFlipped ? 'none' : 'auto'
                 }}
               >
                 {/* 1. Solid drop shadow layer (Torn shape) */}
-                <div 
+                <div
                   className="absolute inset-1.5 xs:inset-2 -z-20 translate-x-1 translate-y-1 xs:translate-x-2 xs:translate-y-2 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
                   style={{
                     backgroundColor: c.borderColor || '#FF188C',
@@ -337,42 +334,42 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                   }}
                 />
                 {/* 2. White fibrous paper core layer */}
-                <div 
+                <div
                   className="absolute inset-1 xs:inset-1.5 bg-[#FEFEFC] -z-10"
                   style={{
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
                 {/* 3. Themed top paper layer */}
-                <div 
+                <div
                   className="absolute inset-1.5 xs:inset-2 -z-10"
                   style={{
                     backgroundColor: theme.bg,
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
-                
+
                 {/* Subtle paper halftone texture on themed paper */}
                 <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Photo Frame */}
                 <div className="flex justify-center w-full mt-1 xs:mt-2 shrink-0 z-10">
-                  <div 
+                  <div
                     className="relative w-[78%] aspect-[3/5] shrink-0 rounded-lg overflow-hidden border bg-[#030404]/5 shadow-[4px_4px_0px_0px_rgba(3,4,4,0.15)]"
                     style={{ borderColor: c.borderColor || '#FF188C' }}
                   >
                     {c.image ? (
-                      <Image 
-                        src={c.image} 
-                        alt={c.title} 
+                      <Image
+                        src={c.image}
+                        alt={c.title}
                         fill
                         unoptimized
                         sizes="(max-width: 640px) 120px, 200px"
                         referrerPolicy="no-referrer"
-                        className="object-cover p-0 hover:scale-105 transition-all duration-300" 
+                        className="object-cover p-0 hover:scale-105 transition-all duration-300"
                       />
                     ) : (
-                      <div 
+                      <div
                         className="w-full h-full flex items-center justify-center font-display font-black text-3xl select-none"
                         style={{ backgroundColor: c.borderColor || '#FF188C', color: '#030404' }}
                       >
@@ -385,7 +382,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 {/* Identity Section */}
                 <div className="flex flex-col items-center text-center mt-2 space-y-1 flex-grow justify-start z-10">
                   {/* Name */}
-                  <h2 
+                  <h2
                     className="text-sm md:text-base font-display font-black uppercase tracking-tight leading-tight line-clamp-2 px-1"
                     style={{ color: theme.text }}
                   >
@@ -393,7 +390,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                   </h2>
 
                   {/* Designation/Role */}
-                  <p 
+                  <p
                     className="font-bold text-[9px] xs:text-[10px] uppercase tracking-wider line-clamp-2 px-1"
                     style={{ color: theme.textAccent }}
                   >
@@ -431,20 +428,20 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     </a>
                   );
                   return (
-                    <div 
+                    <div
                       className="mt-2 pt-2 border-t w-full z-20 shrink-0 hidden sm:flex flex-col items-center gap-1.5"
                       style={{ borderColor: theme.border }}
                     >
                       {count === 4 && (
                         <>
-                          <div className="flex gap-1.5">{frontLinks.slice(0,2).map((l, k) => iconBtn(l, k))}</div>
-                          <div className="flex gap-1.5">{frontLinks.slice(2,4).map((l, k) => iconBtn(l, k+2))}</div>
+                          <div className="flex gap-1.5">{frontLinks.slice(0, 2).map((l, k) => iconBtn(l, k))}</div>
+                          <div className="flex gap-1.5">{frontLinks.slice(2, 4).map((l, k) => iconBtn(l, k + 2))}</div>
                         </>
                       )}
                       {count === 3 && (
                         <>
                           <div className="flex gap-1.5">{iconBtn(frontLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{frontLinks.slice(1,3).map((l, k) => iconBtn(l, k+1))}</div>
+                          <div className="flex gap-1.5">{frontLinks.slice(1, 3).map((l, k) => iconBtn(l, k + 1))}</div>
                         </>
                       )}
                       {count === 2 && (
@@ -463,16 +460,15 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
               {/* BACK SIDE */}
               <div
-                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-2.5 xs:p-4 sm:p-5 bg-transparent justify-between select-none transition-all duration-300 ${
-                  flipTrigger === 'hover' ? 'opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto' : ''
-                }`}
+                className={`absolute inset-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-2.5 xs:p-4 sm:p-5 bg-transparent justify-between select-none transition-all duration-300 ${flipTrigger === 'hover' ? 'opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto' : ''
+                  }`}
                 style={{
                   opacity: isFlipped ? 1 : 0,
                   pointerEvents: isFlipped ? 'auto' : 'none'
                 }}
               >
                 {/* 1. Solid drop shadow layer (Torn shape - flipped direction) */}
-                <div 
+                <div
                   className="absolute inset-1.5 xs:inset-2 -z-20 -translate-x-1 translate-y-1 xs:-translate-x-2 xs:translate-y-2 group-hover:-translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
                   style={{
                     backgroundColor: c.borderColor || '#FF188C',
@@ -480,33 +476,33 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                   }}
                 />
                 {/* 2. White fibrous paper core layer */}
-                <div 
+                <div
                   className="absolute inset-1 xs:inset-1.5 bg-[#FEFEFC] -z-10"
                   style={{
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
                 {/* 3. Themed top paper layer */}
-                <div 
+                <div
                   className="absolute inset-1.5 xs:inset-2 -z-10"
                   style={{
                     backgroundColor: theme.bg,
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
-                
+
                 {/* Subtle paper halftone texture on themed paper */}
                 <div className={`absolute inset-1.5 xs:inset-2 pointer-events-none -z-5 ${theme.halftoneClass}`} style={{ filter: 'url(#torn-card-filter)' }} />
 
                 {/* Top Info Banner (Compact) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-col text-left shrink-0 z-10">
-                  <h3 
+                  <h3
                     className="text-xs xs:text-sm sm:text-base font-display font-black uppercase tracking-tight leading-tight line-clamp-1"
                     style={{ color: theme.text }}
                   >
                     {c.title}
                   </h3>
-                  <p 
+                  <p
                     className="font-bold text-[8px] xs:text-[10px] uppercase tracking-wider truncate mt-0.5"
                     style={{ color: theme.textAccent }}
                   >
@@ -515,22 +511,22 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 </div>
 
                 {/* Thin Divider - Hidden on Mobile */}
-                <div 
-                  className="hidden sm:block border-t my-1 xs:my-2.5 shrink-0 z-10" 
+                <div
+                  className="hidden sm:block border-t my-1 xs:my-2.5 shrink-0 z-10"
                   style={{ borderColor: theme.border }}
                 />
 
                 {/* Description/Bio (tagline) - Hidden on Mobile */}
                 <div className="hidden sm:flex flex-1 min-h-0 flex-col justify-start z-10 relative">
-                  <p 
+                  <p
                     className="text-[8px] xs:text-[11px] font-mono font-bold leading-relaxed line-clamp-4 xs:line-clamp-6"
                     style={{ color: theme.textMuted }}
                   >
                     {getTagline(c.location, c.title)}
                   </p>
-                  
+
                   {/* Decorative Hindi watermark 'सफ़र' */}
-                  <span 
+                  <span
                     className="absolute right-1 bottom-1 text-xl xs:text-3xl font-black font-display select-none pointer-events-none transform rotate-[-8deg] font-hindi opacity-10"
                     style={{ color: theme.textAccent }}
                   >
@@ -569,20 +565,20 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     </a>
                   );
                   return (
-                    <div 
+                    <div
                       className="flex-1 sm:flex-initial flex flex-col items-center justify-center border-t pt-1.5 xs:pt-3 mt-1.5 xs:mt-3 gap-1.5 shrink-0 z-10"
                       style={{ borderColor: theme.border }}
                     >
                       {count === 4 && (
                         <>
-                          <div className="flex gap-1.5">{backLinks.slice(0,2).map((l, k) => iconBtn(l, k))}</div>
-                          <div className="flex gap-1.5">{backLinks.slice(2,4).map((l, k) => iconBtn(l, k+2))}</div>
+                          <div className="flex gap-1.5">{backLinks.slice(0, 2).map((l, k) => iconBtn(l, k))}</div>
+                          <div className="flex gap-1.5">{backLinks.slice(2, 4).map((l, k) => iconBtn(l, k + 2))}</div>
                         </>
                       )}
                       {count === 3 && (
                         <>
                           <div className="flex gap-1.5">{iconBtn(backLinks[0], 0)}</div>
-                          <div className="flex gap-1.5">{backLinks.slice(1,3).map((l, k) => iconBtn(l, k+1))}</div>
+                          <div className="flex gap-1.5">{backLinks.slice(1, 3).map((l, k) => iconBtn(l, k + 1))}</div>
                         </>
                       )}
                       {count === 2 && (

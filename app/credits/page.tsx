@@ -226,8 +226,8 @@ const VOLUNTEERS: TeamMember[] = [
     accentColor: "#10b981",
     icon: <Terminal className="w-4 h-4" />,
     socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:ananya@jklu.edu.in" },
-    imageScale: "scale(2.15)",
-    imagePosition: "translateY(-15px)",
+    imageScale: "scale(1.5)",
+    imagePosition: "translateY(-18px)",
     bgColor: "bg-[#10b981]"
   },
   {
@@ -387,6 +387,34 @@ const VOLUNTEERS: TeamMember[] = [
     imageScale: "scale(0.95)",
     imagePosition: "translateY(8px)",
     bgColor: "bg-[#fbbf24]"
+  },
+  {
+    id: "11",
+    name: "AMRIT AGRAWAL",
+    role: "VOLUNTEER",
+    tagline: "",
+    bio: "Refining user interfaces and packing checklist layouts.",
+    detailedBio: "Amrit focuses on frontend details and user experience. He spearheaded the checklist UI improvements and worked on local storage persistence mechanisms to enhance the usability of tools.",
+    skills: ["React", "TypeScript", "Tailwind CSS", "UI/UX Optimization"],
+    contributions: [
+      "Redesigned the packing checklist user interface",
+      "Implemented local storage persistence for user data",
+      "Polished layout aesthetics and interactive components"
+    ],
+    image: "/images/amrit.png",
+    themeColor: "from-[#06b6d4] to-[#0D21DD]",
+    glowColor: "rgba(6, 182, 212, 0.25)",
+    accentColor: "#06b6d4",
+    icon: <Sparkles className="w-4 h-4" />,
+    socials: {
+      github: "https://github.com/amritagrawal12598-stack",
+      linkedin: "https://linkedin.com",
+      instagram: "https://instagram.com",
+      email: "mailto:amrit@jklu.edu.in"
+    },
+    imageScale: "scale(1.05)",
+    imagePosition: "translateY(5px)",
+    bgColor: "bg-[#06b6d4]"
   }
 ];
 
@@ -662,9 +690,9 @@ function TeamMemberCard({
                       stroke="currentColor"
                       strokeWidth={1.8}
                       initial={{ scale: 0.1, opacity: 0 }}
-                      animate={{ 
-                        scale: 1.8, 
-                        opacity: [0, 0.85, 0.85, 0.4, 0] 
+                      animate={{
+                        scale: 1.8,
+                        opacity: [0, 0.85, 0.85, 0.4, 0]
                       }}
                       transition={{
                         duration: 4,
@@ -792,7 +820,7 @@ function ProfileModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6"
     >
       {/* Dim backdrop with blur */}
       <div
@@ -818,7 +846,7 @@ function ProfileModal({
         </button>
 
         {/* Left: Giant Roster Image panel */}
-        <div className="w-full md:w-[350px] shrink-0 border-b md:border-b-0 md:border-r-[4px] border-[#030404] relative overflow-hidden min-h-[260px] md:min-h-full bg-[#030404] p-3.5 flex items-end justify-center">
+        <div className="w-full md:w-[350px] shrink-0 border-b md:border-b-0 md:border-r-[4px] border-[#030404] relative overflow-hidden min-h-[220px] md:min-h-full bg-[#030404] p-3.5 flex items-end justify-center">
           {/* Inner Poster Card Frame */}
           <div
             className="absolute inset-3.5 border-[3px] border-[#030404] rounded-xl overflow-hidden"
@@ -937,14 +965,14 @@ function ProfileModal({
 
         {/* Right: Roster Info Details Pane */}
         <div
-          className="p-6 md:p-8 grow flex flex-col justify-center overflow-y-auto"
+          className="p-5 md:p-8 grow flex flex-col justify-start overflow-y-auto"
           style={{
             background: `radial-gradient(circle at top right, ${member.accentColor}1c 0%, #F5F1E5 100%)`
           }}
         >
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* Header info */}
-            <div className="space-y-3 text-center md:text-left">
+            <div className="space-y-2 md:space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-2">
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider text-[#030404] bg-[#F5F1E5] border-2 border-[#030404] shadow-[1px_2px_0px_#030404]`}>
                   {member.icon}
@@ -967,7 +995,7 @@ function ProfileModal({
             </div>
 
             {/* Social IDs Coordinate Grid */}
-            <div className="border-t-[3px] border-[#030404] pt-6 space-y-4">
+            <div className="border-t-[3px] border-[#030404] pt-4 md:pt-6 space-y-3 md:space-y-4">
               <h4 className="font-mono text-[10px] font-black uppercase text-[#030404] tracking-widest text-center md:text-left">
                 SYSTEM COORDINATES & IDS
               </h4>
@@ -1068,7 +1096,7 @@ export default function CreditsPage() {
   const closeModal = useCallback(() => setActiveMember(null), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] font-sans select-none text-[#030404] z-10">
+    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] font-sans select-none text-[#030404]">
       {/* Futuristic Background layers wrapping the entire page */}
       <AnimatedBackground />
 
@@ -1087,7 +1115,7 @@ export default function CreditsPage() {
               className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-[#030404] leading-none relative z-10"
               style={{ fontFamily: 'var(--font-devanagari)' }}
             >
-              THE <span className="bg-gradient-to-r from-[#FF188C] via-[#FF9A00] to-[#0D21DD] bg-clip-text text-transparent">TECH</span> TEAM
+              THE TECH TEAM
             </h1>
           </div>
 
@@ -1148,7 +1176,7 @@ export default function CreditsPage() {
               <div className="h-[2px] w-12 bg-[#030404]" />
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 min-[400px]:gap-x-4 md:gap-x-8 gap-y-12 min-[400px]:gap-y-16 md:gap-y-28 max-w-6xl mx-auto overflow-visible relative z-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 min-[400px]:gap-x-4 md:gap-x-8 gap-y-12 min-[400px]:gap-y-16 md:gap-y-28 max-w-6xl mx-auto overflow-visible relative z-10">
               {VOLUNTEERS.map((volunteer, i) => (
                 <TeamMemberCard
                   key={volunteer.id}
