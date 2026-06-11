@@ -116,11 +116,11 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
         <div className="absolute inset-0 w-full h-full">
           <motion.div
             animate={isMobile ? {
-              y: [0, -20, 20, 0],
+              y: 0,
               x: 0,
               skewX: 0,
               skewY: 0,
-              scale: 1.10,
+              scale: 1.35,
             } : {
               y: [0, -35, 25, -25, 15, -15, 0],
               x: [0, 20, -20, 15, -15, 8, 0],
@@ -129,10 +129,7 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
               scale: [1.02, 1.08, 1.01, 1.06, 1.02],
             }}
             transition={isMobile ? {
-              duration: 6,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
+              duration: 0,
             } : {
               duration: 12,
               repeat: Infinity,
