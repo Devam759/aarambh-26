@@ -28,14 +28,14 @@ export default function ScheduleTimeline() {
 
   return (
     <section className="w-full py-24 px-4 bg-brand-cloud text-brand-ink relative overflow-hidden border-t-4 border-brand-ink">
-      <div className="absolute inset-0 bg-halftone-pink opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-halftone-black opacity-[0.06] pointer-events-none" />
       
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="font-display text-5xl md:text-7xl font-black uppercase tracking-tight text-outline-ink text-brand-cloud drop-shadow-[4px_4px_0_#030404]">
-            The Schedule
+          <h2 className="font-display text-5xl md:text-7xl font-black uppercase tracking-tight text-brand-ink drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
+            Schedule
           </h2>
-          <p className="mt-4 font-display font-bold text-xl uppercase tracking-widest text-brand-pink border-comic inline-block px-4 py-2 bg-brand-cloud shadow-comic-sm rotate-2">
+          <p className="mt-4 font-display font-bold text-xl uppercase tracking-widest text-brand-blue border-comic inline-block px-4 py-2 bg-brand-cloud shadow-comic-sm rotate-2">
             3 Days of Madness
           </p>
         </div>
@@ -48,7 +48,7 @@ export default function ScheduleTimeline() {
               onClick={() => setActiveTab(day)}
               className={`font-display font-black text-xl md:text-3xl uppercase px-8 py-4 border-comic transition-all ${
                 activeTab === day 
-                  ? 'bg-brand-pink text-brand-cloud shadow-comic translate-y-1 translate-x-1' 
+                  ? 'bg-[#b4bef4] text-brand-ink shadow-comic translate-y-1 translate-x-1' 
                   : 'bg-brand-cloud text-brand-ink shadow-comic-lg hover:-translate-y-1 hover:-translate-x-1 hover:bg-[#FDE047]'
               }`}
               style={{ transform: activeTab !== day ? `rotate(${idx % 2 === 0 ? '-2deg' : '2deg'})` : '' }}

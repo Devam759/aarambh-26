@@ -8,10 +8,10 @@ import PageGlowBackground from '@/components/ui/PageGlowBackground';
 
 const dayColors = [
   'border-brand-orange hover:shadow-solid-orange',
-  'border-brand-pink hover:shadow-solid-pink',
+  'border-brand-blue hover:shadow-solid-blue',
 ];
 
-const accentBgs = ['bg-brand-orange', 'bg-brand-pink'];
+const accentBgs = ['bg-brand-orange', 'bg-[#b4bef4]'];
 
 export default function SchedulePage() {
   const [activeDayIdx, setActiveDayIdx] = useState(0);
@@ -61,7 +61,7 @@ export default function SchedulePage() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-[10%] left-[5%] text-brand-pink/25 text-6xl hidden md:block"
+          className="absolute top-[10%] left-[5%] text-brand-blue/25 text-6xl hidden md:block"
         >
           ★
         </motion.div>
@@ -123,7 +123,7 @@ export default function SchedulePage() {
             ease: "easeInOut",
             delay: 0.5,
           }}
-          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-pink/20 bg-brand-pink/8 flex items-center justify-center font-display font-black text-brand-pink/25 text-lg hidden md:block"
+          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-blue/20 bg-brand-blue/8 flex items-center justify-center font-display font-black text-brand-blue/25 text-lg hidden md:block"
         >
           !
         </motion.div>
@@ -180,8 +180,8 @@ export default function SchedulePage() {
 
         {/* Retro comic header panel */}
         <header className="text-center mb-8 relative z-10 flex flex-col items-center gap-6">
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C]">
-            AARAMBH SCHEDULE
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tight text-brand-ink text-center drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
+            SCHEDULE
           </h1>
           <a
             href="/schedule.pdf"
@@ -218,7 +218,7 @@ export default function SchedulePage() {
 
         {/* Horizontal Scrollable Neo-Brutalist Tabs */}
         <div className="relative z-20 mb-8 w-full">
-          <div className="flex overflow-x-auto gap-3 py-5 px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-pink scrollbar-track-brand-cloud">
+          <div className="flex overflow-x-auto gap-3 py-5 px-4 md:justify-center scrollbar-thin scrollbar-thumb-brand-blue scrollbar-track-brand-cloud">
             {SCHEDULE_DATA.map((day, idx) => {
               const isActive = activeDayIdx === idx;
               const rotation = idx % 2 === 0 ? 'rotate-1' : '-rotate-1';
@@ -229,7 +229,7 @@ export default function SchedulePage() {
                   onClick={() => setActiveDayIdx(idx)}
                   className={`comic-interactive border-comic-thin px-4 py-3 rounded-lg font-display shrink-0 transition-all select-none min-w-[120px] ${
                     isActive
-                      ? 'bg-brand-pink text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black'
+                      ? 'bg-[#b4bef4] text-brand-ink shadow-solid-ink scale-105 -rotate-2 font-black'
                       : 'bg-white text-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink font-bold ' + rotation
                   }`}
                 >
@@ -245,7 +245,7 @@ export default function SchedulePage() {
         {activeDay.theme && (
           <div className="w-full max-w-4xl mx-auto mb-10 text-center relative z-20">
             <h2 className="font-display font-black text-xl sm:text-2xl uppercase tracking-wider text-brand-ink">
-              THEME: <span className="text-brand-pink">{activeDay.theme}</span>
+              THEME: <span className="text-brand-blue">{activeDay.theme}</span>
             </h2>
           </div>
         )}
@@ -275,11 +275,11 @@ export default function SchedulePage() {
                       key={idx}
                       className="border-comic bg-brand-orange text-brand-ink p-8 sm:p-12 rounded-xl shadow-comic text-center relative overflow-hidden my-8"
                     >
-                      <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-brand-pink/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
+                      <div className="absolute top-3 right-3 text-[10px] font-mono font-black text-brand-ink/50 bg-[#b4bef4]/15 px-2 py-0.5 border-comic-thin rounded rotate-3">
                         LEVEL 5 • COHORT EXCURSION
                       </div>
                       
-                      <div className="relative p-6 mb-6 bg-brand-pink border-comic shadow-comic-sm rounded-lg text-brand-cloud inline-block rotate-[-3deg]">
+                      <div className="relative p-6 mb-6 bg-[#b4bef4] border-comic shadow-comic-sm rounded-lg text-brand-ink inline-block rotate-[-3deg]">
                         <Compass size={48} className="animate-spin-slow" />
                       </div>
 
@@ -296,7 +296,7 @@ export default function SchedulePage() {
                   );
                 }
 
-                const badgeTextColor = accentColor === 'bg-brand-pink' ? 'text-brand-cloud' : 'text-brand-ink';
+                const badgeTextColor = 'text-brand-ink';
 
                 return (
                   <motion.div
