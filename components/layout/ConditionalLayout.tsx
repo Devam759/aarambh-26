@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [showPreloader, setShowPreloader] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -24,7 +24,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
       const hasPlayed = (window as any).hasPlayedIntro;
 
       if (pathname === '/' && !hasPlayed && !isLighthouse) {
-        setShowPreloader(true);
+        setShowPreloader(false); // Changed from true to false to disable preloader
       } else {
         setShowPreloader(false);
       }
@@ -56,6 +56,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
     <>
       <CustomCursor />
 
+      {/* Commented out Preloader to bypass the loading screen
       <AnimatePresence>
         {showPreloader && (
           <motion.div
@@ -69,6 +70,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
           </motion.div>
         )}
       </AnimatePresence>
+      */}
 
       <Navbar />
       <main className={`min-h-screen ${isCreditsPage ? 'bg-[#00a6e6]' : 'bg-brand-cloud'}`}>
