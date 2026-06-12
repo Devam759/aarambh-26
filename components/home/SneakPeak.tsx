@@ -103,7 +103,7 @@ export default function SneakPeak() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="w-full max-w-4xl mx-auto mt-4 sm:mt-8 mb-12 sm:mb-16 bg-brand-cloud border-comic border-brand-ink p-6 sm:p-10 rounded-xl shadow-[6px_6px_0px_0px_#FF188C] transform rotate-1 hover:rotate-0 transition-transform duration-300 relative z-20"
+          className="w-full max-w-4xl mx-auto mt-4 sm:mt-8 mb-12 sm:mb-16 bg-brand-cloud border-comic border-brand-ink p-6 sm:p-10 rounded-xl shadow-[6px_6px_0px_0px_#184176] relative z-20"
         >
           
           <h3 className="font-display font-black text-2xl sm:text-4xl uppercase text-brand-ink mb-4 leading-tight">
@@ -114,7 +114,7 @@ export default function SneakPeak() {
             Watch the Aarambh Aftermovie! From morning treks and pottery sessions to the electrifying DJ night and endless cheering. Witness the efforts, dedication, hard work, and hopes that made the orientation an unforgettable journey for the Batch of 2025 at JKLU.
           </p>
           
-          <p className="font-sans font-black text-lg sm:text-xl text-brand-pink uppercase tracking-wide">
+          <p className="font-sans font-black text-lg sm:text-xl text-brand-orange uppercase tracking-wide">
             Get ready to experience the madness!
           </p>
         </motion.div>
@@ -124,7 +124,7 @@ export default function SneakPeak() {
           {/* Animated Glow effects behind the screen */}
           <motion.div 
             className="hidden md:block absolute -inset-4 sm:-inset-6 rounded-3xl blur-xl"
-            style={{ background: 'linear-gradient(135deg, #FF188C, #FFE600, #00D4FF)' }}
+            style={{ background: 'linear-gradient(135deg, #184176, #FFE600, #00D4FF)' }}
             animate={{ 
               opacity: [0.2, 0.4, 0.2],
               y: [0, -8, 0],
@@ -134,7 +134,7 @@ export default function SneakPeak() {
           />
           <motion.div 
             className="hidden md:block absolute -inset-6 sm:-inset-8 rounded-3xl blur-2xl"
-            style={{ background: 'linear-gradient(315deg, #00D4FF, #FF188C, #FFE600)' }}
+            style={{ background: 'linear-gradient(315deg, #00D4FF, #184176, #FFE600)' }}
             animate={{ 
               opacity: [0.1, 0.25, 0.1],
               y: [0, 10, 0],
@@ -145,7 +145,7 @@ export default function SneakPeak() {
           />
           <motion.div 
             className="hidden md:block absolute -inset-3 sm:-inset-5 rounded-3xl blur-lg"
-            style={{ background: 'linear-gradient(45deg, #00D4FF, #FF188C)' }}
+            style={{ background: 'linear-gradient(45deg, #00D4FF, #184176)' }}
             animate={{ 
               opacity: [0.08, 0.2, 0.08],
               y: [4, -6, 4],
@@ -155,7 +155,7 @@ export default function SneakPeak() {
           />
           
           {/* Main screen frame */}
-          <div className="relative bg-white border-[5px] sm:border-[8px] border-white rounded-2xl sm:rounded-3xl p-1.5 sm:p-2.5 shadow-[0_0_40px_rgba(255,24,140,0.15),0_0_80px_rgba(255,154,0,0.08),8px_8px_0px_0px_#030404]">
+          <div className="relative bg-white border-[5px] sm:border-[8px] border-white rounded-2xl sm:rounded-3xl p-1.5 sm:p-2.5 shadow-[0_0_40px_rgba(24,65,118,0.15),0_0_80px_rgba(255,154,0,0.08),8px_8px_0px_0px_#030404]">
             {/* Inner screen with video */}
             <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden border-[3px] sm:border-[5px] border-brand-ink bg-brand-ink">
               {/* Scan line overlay */}
@@ -177,7 +177,7 @@ export default function SneakPeak() {
             href="https://www.instagram.com/aarambh_jklu"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-white border-comic text-brand-ink px-6 py-3.5 shadow-comic hover:bg-brand-pink hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl cursor-pointer group"
+            className="inline-flex items-center gap-3 bg-white border-comic text-brand-ink px-6 py-3.5 shadow-comic hover:bg-brand-blue hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl cursor-pointer group"
           >
             {/* Custom Instagram vector icon */}
             <svg 
@@ -196,7 +196,7 @@ export default function SneakPeak() {
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
             </svg>
             <span className="font-display font-black text-sm uppercase tracking-wider">
-              FOLLOW <span className="text-brand-pink group-hover:text-white">@AARAMBH_JKLU</span> FOR UPDATES
+              FOLLOW <span className="text-brand-orange group-hover:text-white">@AARAMBH_JKLU</span> FOR UPDATES
             </span>
           </a>
         </div>

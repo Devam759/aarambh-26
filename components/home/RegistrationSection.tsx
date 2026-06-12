@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 export default function RegistrationSection() {
   return (
     <section className="py-24 lg:py-32 px-4 sm:px-6 w-full max-w-5xl relative z-10 mx-auto">
-      <div className="relative border-comic bg-brand-cloud text-brand-ink shadow-comic p-8 sm:p-16 lg:p-20 rounded-xl overflow-hidden flex flex-col items-center text-center gap-12">
+      <div className="relative border-comic bg-brand-cloud text-brand-ink p-8 sm:p-16 lg:p-20 rounded-xl overflow-hidden flex flex-col items-center text-center gap-12">
 
         {/* Upper Section: Clean Typography & Messaging (Centered) */}
         <div className="flex flex-col items-center text-center relative z-10 w-full max-w-3xl">
@@ -27,7 +27,7 @@ export default function RegistrationSection() {
         {/* Skeuomorphic Spiral Diary/Notebook Details Menu */}
         <div className="w-full max-w-4xl relative z-10 my-4 select-none">
           {/* Diary Outer Cover */}
-          <div className="bg-[#5c2d25] border-comic rounded-2xl shadow-comic-lg p-3 sm:p-5 relative md:rotate-[0.5deg]">
+          <div className="bg-[#5c2d25] border-comic rounded-2xl p-3 sm:p-5 relative md:rotate-[0.5deg]">
             {/* Spine edge details (skeuomorphic book spine on left edge) */}
             <div className="absolute top-0 bottom-0 left-0 w-3 bg-[#4a231d] rounded-l-xl z-20" />
             
@@ -64,8 +64,8 @@ export default function RegistrationSection() {
 
                   {/* Ruled Paper Content List */}
                   <ul className="space-y-4 pl-1 text-left">
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Accommodation (Hostels)
@@ -76,8 +76,8 @@ export default function RegistrationSection() {
                       </div>
                     </li>
 
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           All Meals (Mess food)
@@ -88,8 +88,8 @@ export default function RegistrationSection() {
                       </div>
                     </li>
 
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           AARAMBH Kit
@@ -100,8 +100,8 @@ export default function RegistrationSection() {
                       </div>
                     </li>
 
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Full Event Access
@@ -125,11 +125,6 @@ export default function RegistrationSection() {
               {/* Right Page (Important Instructions) */}
               <div className="w-full p-6 pt-10 pb-8 pl-16 pr-8 md:pl-16 md:pr-10 relative z-10 flex flex-col justify-between min-h-[480px]">
                 <div>
-                  {/* Pencil sketch star doodle */}
-                  <svg className="absolute w-10 h-10 text-brand-pink/60 pointer-events-none select-none right-4 top-4 animate-pulse -z-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M12 2l3 6 7 .5-5 4.5 1.5 7-6.5-3.5-6.5 3.5 1.5-7-5-4.5 7-.5 3-6z" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-
                   {/* Header Title (Handwritten double-underlined style) */}
                   <div className="mb-8 relative">
                     <h3 className="font-diary font-black text-2xl md:text-3xl tracking-wide text-brand-pink uppercase rotate-[1deg]">
@@ -141,8 +136,8 @@ export default function RegistrationSection() {
 
                   {/* Ruled Paper Content List */}
                   <ul className="space-y-4 pl-1 text-left">
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Accuracy is Key
@@ -153,8 +148,8 @@ export default function RegistrationSection() {
                       </div>
                     </li>
 
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Strictly Batch &apos;26 Only
@@ -165,8 +160,8 @@ export default function RegistrationSection() {
                       </div>
                     </li>
 
-                    <li className="flex items-start gap-3">
-                      <span className="font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
+                    <li className="flex items-start gap-0 md:gap-3">
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-blue select-none mt-1">✏</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Parent/Guardian Access
@@ -227,7 +222,7 @@ export default function RegistrationSection() {
             <motion.button  
               whileHover={{ scale: 1.03, rotate: -1 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full comic-interactive border-comic py-5 px-6 shadow-comic hover:shadow-solid-ink transition-all font-display font-black text-xl tracking-wide text-brand-cloud bg-brand-pink rounded-lg cursor-pointer flex items-center justify-center gap-2 group"
+              className="w-full comic-interactive border-comic py-5 px-6 shadow-comic hover:shadow-solid-ink transition-all font-display font-black text-xl tracking-wide text-brand-cloud bg-brand-blue rounded-lg cursor-pointer flex items-center justify-center gap-2 group"
             >
               <span>Register Now</span> 
               <span className="transform group-hover:translate-x-2 transition-transform duration-200">→</span>

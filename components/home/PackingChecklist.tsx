@@ -179,7 +179,7 @@ export default function PackingChecklist() {
         {/* Heading Block */}
         <div className="flex flex-col items-center text-center mb-16">
           <h2 className="text-4xl sm:text-6xl md:text-7xl font-bricks font-black uppercase leading-none tracking-wide text-brand-ink mb-4">
-            Essential <span className="text-brand-pink">Packing</span> Checklist
+            Essential <span className="text-brand-orange">Packing</span> Checklist
           </h2>
           <p className="text-sm md:text-base font-display font-bold max-w-xl text-brand-ink/80 uppercase tracking-wide mb-6">
             Gear up for the next chapter. Tick off your items below to track your readiness for the journey.
@@ -189,7 +189,7 @@ export default function PackingChecklist() {
             target="_blank"
             rel="noopener noreferrer"
             download="Essential Packing Checklist.pdf"
-            className="comic-interactive border-comic-thin py-3 px-6 bg-brand-pink text-white font-display font-black text-sm uppercase tracking-wider rounded-lg shadow-comic-sm cursor-pointer hover:shadow-solid-ink active:scale-[0.98] transition-all flex items-center gap-2 z-20"
+            className="comic-interactive border-comic-thin py-3 px-6 bg-brand-orange text-white font-display font-black text-sm uppercase tracking-wider rounded-lg shadow-comic-sm cursor-pointer hover:shadow-solid-ink active:scale-[0.98] transition-all flex items-center gap-2 z-20"
           >
             <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" />

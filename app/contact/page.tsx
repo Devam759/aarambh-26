@@ -14,33 +14,11 @@ export const metadata = {
 export default function ContactPage() {
   const contactDirectory = [
     {
-      department: "Registrar",
-      phone: "+91 141 7107500",
-      email: "registrar@jklu.edu.in",
-      bgColor: "bg-brand-pink text-white"
-    },
-    {
-      department: "Admissions",
-      phone: "+91 830 222 3344",
-      email: "admissions@jklu.edu.in",
-      bgColor: "bg-brand-orange text-brand-ink"
-    },
-    {
-      department: "Placements",
-      phone: "+91 987 172 2735",
-      email: "placements@jklu.edu.in",
+      name: "Mr. Deepak Sogani",
+      department: "Head - Student Affairs",
+      phone: "+91 93140 72153",
+      email: "deepak.sogani@jklu.edu.in",
       bgColor: "bg-brand-blue text-white"
-    },
-    {
-      department: "Human Resources",
-      email: "hr@jklu.edu.in",
-      bgColor: "bg-brand-ink text-white"
-    },
-    {
-      department: "Media",
-      phone: "+91 830 222 3344",
-      email: "gokul.bhagabati@jklu.edu.in",
-      bgColor: "bg-brand-cloud text-brand-ink border-2 border-brand-ink"
     }
   ];
 
@@ -98,17 +76,20 @@ export default function ContactPage() {
             <div className="w-16 h-1 bg-brand-ink mx-auto" />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
             {contactDirectory.map((contact, index) => (
               <div
                 key={index}
                 className="bg-white border-4 border-brand-ink rounded-lg shadow-[6px_6px_0px_0px_#030404] overflow-hidden flex flex-col h-full animate-fadeIn"
               >
                 {/* Department Header */}
-                <div className={`p-5 flex items-center justify-between border-b-4 border-brand-ink ${contact.bgColor}`}>
+                <div className={`p-5 border-b-4 border-brand-ink ${contact.bgColor}`}>
                   <h3 className="font-display font-black uppercase text-base tracking-wider">
-                    {contact.department}
+                    {contact.name}
                   </h3>
+                  <span className="text-[10px] uppercase font-mono font-black opacity-80 block mt-0.5">
+                    {contact.department}
+                  </span>
                 </div>
 
                 {/* Department Contact Details */}

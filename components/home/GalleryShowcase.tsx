@@ -315,8 +315,8 @@ export default function GalleryShowcase() {
             font-weight: 900;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: #F5F1E5;
-            background: #FF188C;
+            color: #030404;
+            background: #f5821e;
             border: 3.5px solid #030404;
             border-radius: 12px;
             padding: 14px 28px;
@@ -326,8 +326,8 @@ export default function GalleryShowcase() {
             transition: all 0.2s ease-in-out;
           }
           .gl-cta:hover {
-            background: #FF9A00;
-            color: #030404;
+            background: #184176;
+            color: #F5F1E5;
           }
           .gl-cta:active {
             opacity: 0.85;

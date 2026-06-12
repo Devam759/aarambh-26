@@ -127,6 +127,19 @@ export default function SpeakersSection() {
   const rafRef = useRef<number | null>(null);
   const containerOffsetRef = useRef(0);
 
+  const handleSpeakerClick = (idx: number) => {
+    if (idx !== currentIndex) {
+      setDirection(idx > currentIndex ? 1 : -1);
+      prevIndexRef.current = idx;
+      setCurrentIndex(idx);
+      playSynthSound('click');
+    }
+    window.scrollTo({
+      top: idx * window.innerHeight * SCROLL_SPEED_FACTOR,
+      behavior: 'smooth'
+    });
+  };
+
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
 
@@ -359,7 +372,7 @@ export default function SpeakersSection() {
                     zIndex: isActive ? 10 : 5,
                   }}
 
-                  onClick={() => window.scrollTo({ top: idx * window.innerHeight * SCROLL_SPEED_FACTOR, behavior: 'smooth' })}
+                  onClick={() => handleSpeakerClick(idx)}
                 >
                   <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
                   {!isActive && <div className="absolute inset-0 rounded-full bg-[#030404]/20" />}
@@ -388,17 +401,14 @@ export default function SpeakersSection() {
                 >
                   {speaker.role}
                 </div>
-                
                 <h2
                   className="text-5xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter text-[#030404] mb-2 leading-none"
-                  style={{ textShadow: `4px 4px 0px ${theme.highlight}` }}
                 >
                   {speaker.name.split(' ').map((word, i) => (
                     <span key={i} className="block">{word}</span>
                   ))}
                 </h2>
                 
-
               </motion.div>
             </AnimatePresence>
           </div>
@@ -440,7 +450,6 @@ export default function SpeakersSection() {
                 </div>
                 <h2
                   className="text-3xl font-black uppercase tracking-tighter text-[#030404] leading-none mb-1"
-                  style={{ textShadow: `2px 2px 0px ${theme.highlight}` }}
                 >
                   {speaker.name}
                 </h2>
@@ -518,7 +527,7 @@ export default function SpeakersSection() {
                     transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                     zIndex: isActive ? 10 : 5,
                   }}
-                  onClick={() => window.scrollTo({ top: idx * window.innerHeight * SCROLL_SPEED_FACTOR, behavior: 'smooth' })}
+                  onClick={() => handleSpeakerClick(idx)}
                 >
                   <img src={sp.image} alt={sp.name} className="w-full h-full object-cover" />
                   {!isActive && <div className="absolute inset-0 rounded-full bg-[#030404]/20" />}
@@ -535,7 +544,6 @@ export default function SpeakersSection() {
 
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -548,7 +556,7 @@ function DossierCard({
   speaker, 
   theme, 
   direction, 
-  currentIndex 
+  currentIndex
 }: { 
   speaker: any; 
   theme: any; 

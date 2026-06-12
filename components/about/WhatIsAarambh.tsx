@@ -60,7 +60,7 @@ export default function WhatIsAarambh() {
             <div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-black text-brand-ink uppercase leading-none tracking-tight text-center lg:text-left">
                 ABOUT<br />
-                <span className="text-brand-pink">AARAMBH</span>
+                <span className="text-brand-orange">AARAMBH</span>
               </h2>
             </div>
 
@@ -71,7 +71,7 @@ export default function WhatIsAarambh() {
               <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-ink/80">
                 More than just an introduction to campus life, it brings together engaging workshops, mentorship sessions, creative activities, and opportunities to build meaningful friendships.
               </p>
-              <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-pink">
+              <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-ink">
                 From Brush & Bond and vibrant DJ nights to team challenges and cultural experiences, Aarambh encourages you to think boldly, explore beyond the familiar, and make every moment count.
               </p>
             </div>
@@ -80,7 +80,7 @@ export default function WhatIsAarambh() {
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
                 href="/rules"
-                className="inline-block border-comic bg-brand-pink text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+                className="inline-block border-comic bg-brand-orange text-brand-ink px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-blue hover:text-brand-cloud transition-colors active:scale-[0.98]"
               >
                 Rules & Regulations
               </Link>
@@ -101,12 +101,11 @@ export default function WhatIsAarambh() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-brand-pink rounded-xl rotate-[3deg] border-comic shadow-comic" />
-            <div className="relative border-comic bg-brand-ink p-2 rounded-xl shadow-comic transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
+            <div className="relative border-comic bg-brand-ink p-2 rounded-xl transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
               {/* Halftone graphic frame border overlay */}
               <div className="w-full aspect-[3/4] rounded-lg border-2 border-brand-ink bg-brand-cloud flex flex-col items-center justify-center p-6 text-center select-none">
                 <span className="font-mono text-xs uppercase tracking-[0.2em] text-brand-ink/40 font-bold mb-2">Aarambh 2026</span>
-                <h3 className="font-display font-black text-2xl sm:text-3xl text-brand-pink uppercase tracking-tight leading-none">
+                <h3 className="font-display font-black text-2xl sm:text-3xl text-brand-blue uppercase tracking-tight leading-none">
                   POSTER<br />COMING SOON
                 </h3>
                 <div className="w-12 h-1 bg-brand-orange mt-4 rounded-sm" />
