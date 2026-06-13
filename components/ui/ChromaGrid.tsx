@@ -195,36 +195,31 @@ const getCardTheme = (borderColor?: string): CardTheme => {
   const hex = (borderColor || '#FF188C').toUpperCase();
   const rgb = hexToRgb(hex);
 
-  if (!rgb) {
-    return {
-      bg: '#fcfbf7',
-      text: '#030404',
-      textAccent: '#4b5563',
-      textMuted: 'rgba(3, 4, 4, 0.75)',
-      border: 'rgba(3, 4, 4, 0.1)',
-      halftoneClass: 'bg-halftone-black opacity-[0.08]',
-    };
-  }
+  // Set card background to black (brand dark ink color)
+  const bg = '#030404';
 
-  // Generate a soft pastel background by blending with white
-  const pastelR = Math.round(rgb.r * 0.35 + 255 * 0.65);
-  const pastelG = Math.round(rgb.g * 0.35 + 255 * 0.65);
-  const pastelB = Math.round(rgb.b * 0.35 + 255 * 0.65);
-  const bg = `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
+  // Set primary text to cloud color (light warm white)
+  const text = '#F5F1E5';
 
-  // Darken for accent text
-  const accentR = Math.round(rgb.r * 0.7);
-  const accentG = Math.round(rgb.g * 0.7);
-  const accentB = Math.round(rgb.b * 0.7);
-  const textAccent = `rgb(${accentR}, ${accentG}, ${accentB})`;
+  // Accent text color uses the department border color
+  const textAccent = hex;
+
+  // Soft muted text for taglines and smaller text
+  const textMuted = 'rgba(245, 241, 229, 0.75)';
+
+  // Border for social divider section
+  const border = rgb ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)` : 'rgba(245, 241, 229, 0.2)';
+
+  // Cloud halftone pattern on the black background
+  const halftoneClass = 'bg-halftone-cloud opacity-15';
 
   return {
     bg,
-    text: '#030404',
+    text,
     textAccent,
-    textMuted: 'rgba(3, 4, 4, 0.75)',
-    border: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`,
-    halftoneClass: 'bg-halftone-black opacity-10',
+    textMuted,
+    border,
+    halftoneClass,
   };
 };
 
@@ -420,7 +415,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 text-[#030404]/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_6px_rgba(3,4,4,0.1)] transition-all rounded flex justify-center items-center cursor-pointer"
+                      className="w-8 h-8 text-[#F5F1E5]/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_6px_rgba(245,241,229,0.1)] transition-all rounded flex justify-center items-center cursor-pointer"
                       style={{ '--hover-color': c.borderColor || '#FF188C' } as React.CSSProperties}
                       aria-label={item.label}
                     >
@@ -557,7 +552,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                           window.location.href = item.href;
                         }
                       }}
-                      className="w-8 h-8 xs:w-9 xs:h-9 border text-[#030404] hover:bg-[#030404] hover:border-[#030404] hover:text-white transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
+                      className="w-8 h-8 xs:w-9 xs:h-9 border text-[#F5F1E5] hover:bg-[#F5F1E5] hover:border-[#F5F1E5] hover:text-[#030404] transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
                       style={{ borderColor: c.borderColor || '#FF188C' }}
                       aria-label={item.label}
                     >
