@@ -4,7 +4,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
-  ArrowLeft 
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { playSynthSound } from '@/lib/sounds';
 
@@ -134,10 +136,12 @@ export default function SpeakersSection() {
       setCurrentIndex(idx);
       playSynthSound('click');
     }
-    window.scrollTo({
-      top: idx * window.innerHeight * SCROLL_SPEED_FACTOR,
-      behavior: 'smooth'
-    });
+    if (isLargeScreen) {
+      window.scrollTo({
+        top: idx * window.innerHeight * SCROLL_SPEED_FACTOR,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const touchStartX = useRef(0);
@@ -223,6 +227,7 @@ export default function SpeakersSection() {
   // RAF-throttled scroll handler — fires at most once per animation frame
   useEffect(() => {
     const onScroll = () => {
+      if (!isLargeScreen) return;
       if (rafRef.current !== null) return; // already a frame pending
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null;
@@ -258,7 +263,7 @@ export default function SpeakersSection() {
       window.removeEventListener('scroll', onScroll);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isLargeScreen]);
 
   const speaker = SPEAKERS_DATA[currentIndex];
   const theme = THEMES[currentIndex % THEMES.length];
@@ -266,11 +271,11 @@ export default function SpeakersSection() {
   return (
     <div 
       ref={containerRef} 
-      className="relative w-full"
-      style={{ height: `${((SPEAKERS_DATA.length - 1) * SCROLL_SPEED_FACTOR * 100) + 100}vh` }} 
+      className="relative w-full h-auto lg:h-auto"
+      style={isLargeScreen ? { height: `${((SPEAKERS_DATA.length - 1) * SCROLL_SPEED_FACTOR * 100) + 100}vh` } : undefined} 
     >
       <div
-        className="sticky top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#FF188C] selection:text-[#F5F1E5]"
+        className="relative lg:sticky lg:top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#FF188C] selection:text-[#F5F1E5]"
         style={{ backgroundImage: 'radial-gradient(rgba(13, 33, 221, 0.07) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}
       >
         {/* Soft Fluid Aura Blobs (Zero Black) */}
@@ -430,7 +435,7 @@ export default function SpeakersSection() {
           onTouchEnd={handleTouchEnd}
         >
           {/* 1. HEADER: role badge + name + event label */}
-          <div className="shrink-0 w-full text-center z-20 select-none pt-16 px-4">
+          <div className="shrink-0 w-full text-center z-20 select-none pt-28 px-4 mt-safe">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={speaker.name + '-header'}
@@ -461,7 +466,17 @@ export default function SpeakersSection() {
           </div>
 
           {/* 2. SPEAKER CARD — explicit width so w-full inside DossierCard works */}
-          <div className="flex-1 flex items-center justify-center z-20 px-6 pb-[155px]">
+          <div className="flex-1 flex items-center justify-center z-20 px-6 pb-[155px] relative">
+            {/* Left navigation arrow for mobile */}
+            <button
+              onClick={() => handleSpeakerClick(Math.max(0, currentIndex - 1))}
+              disabled={currentIndex === 0}
+              className="absolute left-2 xs:left-4 sm:left-12 top-1/2 -translate-y-1/2 -mt-16 w-11 h-11 rounded-full border-[3px] border-[#030404] bg-[#F5F1E5] flex items-center justify-center shadow-[3px_3px_0px_#030404] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_#030404] transition-all disabled:opacity-20 disabled:pointer-events-none z-30 cursor-pointer"
+              aria-label="Previous speaker"
+            >
+              <ChevronLeft size={22} className="text-[#030404]" strokeWidth={3} />
+            </button>
+
             <AnimatePresence mode="wait" custom={direction}>
               {/* Fixed width container — this is the key fix */}
               <motion.div
@@ -477,6 +492,16 @@ export default function SpeakersSection() {
                 <DossierCard speaker={speaker} theme={theme} direction={direction} currentIndex={currentIndex} />
               </motion.div>
             </AnimatePresence>
+
+            {/* Right navigation arrow for mobile */}
+            <button
+              onClick={() => handleSpeakerClick(Math.min(SPEAKERS_DATA.length - 1, currentIndex + 1))}
+              disabled={currentIndex === SPEAKERS_DATA.length - 1}
+              className="absolute right-2 xs:right-4 sm:right-12 top-1/2 -translate-y-1/2 -mt-16 w-11 h-11 rounded-full border-[3px] border-[#030404] bg-[#F5F1E5] flex items-center justify-center shadow-[3px_3px_0px_#030404] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_#030404] transition-all disabled:opacity-20 disabled:pointer-events-none z-30 cursor-pointer"
+              aria-label="Next speaker"
+            >
+              <ChevronRight size={22} className="text-[#030404]" strokeWidth={3} />
+            </button>
           </div>
 
           {/* 3. BOTTOM ARC DIAL — absolutely pinned to bottom */}
@@ -534,7 +559,6 @@ export default function SpeakersSection() {
                 </div>
               );
             })}
-
 
             {/* Swipe indicator strip */}
             <div className="absolute bottom-2 left-4 right-4 flex justify-between items-center text-[9px] font-black uppercase text-[#030404]/40 tracking-wider">
