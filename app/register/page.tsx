@@ -241,7 +241,7 @@ function RegisterContent() {
 
         <div className="max-w-md w-full bg-brand-cloud border-comic p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl shadow-comic-lg relative z-10">
           
-          <h1 className="text-3xl md:text-4xl font-vanilla text-brand-ink mb-4">
+          <h1 className="text-3xl md:text-4xl font-bricks text-brand-ink mb-4">
             Registration Successful!
           </h1>
           <p className="font-sans font-medium text-sm text-brand-ink/70 mb-6 leading-relaxed">
@@ -266,20 +266,46 @@ function RegisterContent() {
       <ComicBackground />
 
       <div className="w-full max-w-3xl relative z-10">
-        <div className="mb-6 sm:mb-8 md:mb-12 text-center flex flex-col items-center">
-          <Image 
-            src="/logos/aarambh-registration.svg" 
-            alt="Aarambh '26 Registration" 
-            width={800} 
-            height={231} 
-            priority
-            unoptimized
-            className="w-full max-w-2xl h-auto object-contain select-none"
-            style={{ 
-              height: 'auto',
-              filter: "drop-shadow(2px 2px 0px #030404) drop-shadow(-2px -2px 0px #030404) drop-shadow(2px -2px 0px #030404) drop-shadow(-2px 2px 0px #030404)" 
+        <div className="relative mb-8 sm:mb-10 md:mb-14 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-0">
+          <h1 
+            className="text-5xl sm:text-7xl md:text-8xl font-bricks font-black uppercase leading-[0.9] text-center tracking-tight select-none py-2"
+            style={{
+              color: '#FF9A00',
+              WebkitTextStroke: '2.5px #030404',
             }}
-          />
+          >
+            Aarambh &apos;26 <br />
+            Registration
+          </h1>
+
+          {/* Hologram Scroll / Badge */}
+          <motion.div 
+            className="flex flex-col items-center z-20 xl:fixed xl:left-[calc(50vw+384px+70px)] xl:top-[190px] xl:translate-y-0"
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {/* Hologram projection beam lines */}
+            <div className="w-[100px] h-[2px] bg-orange-400/50 blur-[2px] opacity-70 animate-pulse mb-1" />
+            <div className="border-2 border-orange-400 bg-orange-950/80 text-orange-400 p-4 rounded-xl shadow-[0_0_15px_rgba(249,115,22,0.4)] w-[160px] text-center relative backdrop-blur-sm">
+              {/* Scanline overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0),rgba(255,255,255,0)_50%,rgba(249,115,22,0.08)_50%,rgba(249,115,22,0.08))] bg-[length:100%_4px] pointer-events-none rounded-xl" />
+              
+              <p className="font-bricks text-[10px] uppercase tracking-wider mb-2.5 text-orange-300 drop-shadow-[0_0_4px_rgba(249,115,22,0.8)]">
+                External Portal
+              </p>
+              
+              <a 
+                href="https://google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full py-2 bg-orange-400 hover:bg-orange-300 text-orange-950 font-display font-black text-xs uppercase tracking-wider rounded-lg shadow-[0_0_8px_rgba(249,115,22,0.6)] transition-all cursor-pointer select-none active:scale-95"
+              >
+                Visit Site
+              </a>
+            </div>
+            {/* Bottom glow */}
+            <div className="w-[70px] h-[3px] bg-orange-400/40 blur-[3px] mt-1" />
+          </motion.div>
         </div>
 
         <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
@@ -301,7 +327,7 @@ function RegisterContent() {
               <div className="space-y-6">
                 <div className="flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
                   <div className="flex items-center gap-3 text-brand-pink">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Student Details</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bricks text-brand-ink">Student Details</h2>
                   </div>
                   {isStudentValid ? (
                     <span className="flex items-center gap-1 px-2 py-0.5 border-2 border-brand-ink bg-green-400 text-brand-ink font-display text-[8px] font-black uppercase rounded shadow-comic-sm rotate-3 whitespace-nowrap text-right">
@@ -459,7 +485,7 @@ function RegisterContent() {
               <div className="space-y-6">
                 <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${!isStudentValid ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-blue">
-                    <h2 className="text-2xl sm:text-3xl font-vanilla text-brand-ink">Parents Details</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bricks text-brand-ink">Parents Details</h2>
                   </div>
                   {isStudentValid ? (
                     isParentsValid ? (
@@ -562,7 +588,7 @@ function RegisterContent() {
               <div className="space-y-6">
                 <div className={`flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4 transition-all duration-300 ${(!isStudentValid || !isParentsValid) ? 'opacity-30' : ''}`}>
                   <div className="flex items-center gap-3 text-brand-orange">
-                    <h2 className="text-xl sm:text-3xl font-vanilla text-brand-ink">Address & Verification</h2>
+                    <h2 className="text-xl sm:text-3xl font-bricks text-brand-ink">Address & Verification</h2>
                   </div>
                   {isStudentValid && isParentsValid ? (
                     isAddressValid ? (
@@ -625,18 +651,6 @@ function RegisterContent() {
                             placeholder="302026" 
                             suppressHydrationWarning 
                           />
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">External Portal (Optional)</label>
-                          <a 
-                            href="https://google.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-3 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-widest rounded-xl comic-interactive cursor-pointer flex items-center justify-center text-center h-[50px] leading-none"
-                          >
-                            Visit Site
-                          </a>
                         </div>
                       </div>
 
