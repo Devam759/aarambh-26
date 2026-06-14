@@ -401,7 +401,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Implemented local storage persistence for user data",
       "Polished layout aesthetics and interactive components"
     ],
-    image: "/images/amrit.png",
+    image: "https://storage.googleapis.com/aarambh-26-assets/images/amrit.png",
     themeColor: "from-[#06b6d4] to-[#0D21DD]",
     glowColor: "rgba(6, 182, 212, 0.25)",
     accentColor: "#06b6d4",

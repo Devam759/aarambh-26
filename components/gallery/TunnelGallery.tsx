@@ -320,7 +320,7 @@ export default function TunnelGallery() {
           border: 1px solid #030404;
           border-radius: 12px;
           overflow: hidden;
-          will-change: transform, opacity;
+          will-change: opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
@@ -334,6 +334,20 @@ export default function TunnelGallery() {
             width: clamp(100px, 45vw, 180px);
             aspect-ratio: 2 / 3;
           }
+        }
+
+        .tunnel-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          pointer-events: none;
+          border-radius: 10px;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: auto;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          transform: translateZ(0);
         }
 
         /* Neo-Brutalism Exit button */

@@ -291,7 +291,7 @@ export default function ExperienceTunnel() {
           border: 1px solid #030404;
           border-radius: 8px;
           overflow: hidden;
-          will-change: transform, opacity;
+          will-change: opacity;
           transform-style: preserve-3d;
           cursor: pointer;
           opacity: 0.15;
@@ -411,6 +411,20 @@ export default function ExperienceTunnel() {
             right: calc(50% - 60px);
             left: auto;
           }
+        }
+
+        .tunnel-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          pointer-events: none;
+          border-radius: 8px;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: auto;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          transform: translateZ(0);
         }
       `}} />
 

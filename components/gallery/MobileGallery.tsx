@@ -178,7 +178,7 @@ export default function MobileGallery() {
                 src={photo.src}
                 alt={photo.label}
                 fill
-                sizes="(max-width: 768px) 50vw, 33vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
                 loading="lazy"
               />
