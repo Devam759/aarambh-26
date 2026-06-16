@@ -13,10 +13,10 @@ export default function AerialView() {
         </div>
         <div className="w-full relative border-2 border-brand-ink/10 rounded-2xl overflow-hidden bg-brand-ink">
           <Image
-            src="/images/jklu_map_v3.webp"
+            src="https://storage.googleapis.com/aarambh-26-assets/images/jklu_campus.webp"
             alt="JKLU Campus Aerial View"
-            width={1920}
-            height={1080}
+            width={3600}
+            height={2025}
             unoptimized
             className="w-full h-auto hover:scale-105 transition-transform duration-700"
             style={{ height: 'auto' }}

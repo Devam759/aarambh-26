@@ -19,13 +19,13 @@ const LinkedInIcon = () => (
 const THEMES = [
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#0D21DD' },
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
-  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
-  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
   { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
-  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
 ];
 
 const CARD_COLORS = [
@@ -61,7 +61,7 @@ const SPEAKERS_DATA = [
   },
   {
     name: 'Mr. Manish Freeman',
-    role: 'Movement Falicitator',
+    role: 'Movement Facilitator',
     time: "Aarambh '26 · JKLU",
     image: 'https://storage.googleapis.com/aarambh-26-assets/images/speakers/Manish%20Freeman%20.webp',
     bio: "Manish Freeman is an experiential learning facilitator, community builder, and corporate wellness expert. Rejecting a conventional engineering path, he dedicated his career to human connection, play-based leadership development, and championing a unique 'Gift Culture' lifestyle. His training programs are trusted by top-tier organizations like she’ll energy, Deloitte, the Indian Army, Tata Trusts, and the National Academy of Customs (NACIN).His workshop in aarambh will help freshers to get along and create amazing memories. ",
