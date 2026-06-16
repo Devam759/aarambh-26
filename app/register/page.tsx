@@ -266,7 +266,7 @@ function RegisterContent() {
       <ComicBackground />
 
       <div className="w-full max-w-3xl relative z-10">
-        <div className="relative mb-8 sm:mb-10 md:mb-14 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-0">
+        <div className="relative mb-8 sm:mb-10 md:mb-14 flex flex-col items-center justify-center gap-4 text-center">
           <h1 
             className="text-5xl sm:text-7xl md:text-8xl font-bricks font-black uppercase leading-[0.9] text-center tracking-tight select-none py-2"
             style={{
@@ -278,33 +278,24 @@ function RegisterContent() {
             Registration
           </h1>
 
-          {/* Hologram Scroll / Badge */}
+          <p className="text-lg sm:text-xl md:text-2xl font-sans font-bold text-brand-ink/80 max-w-2xl px-4 leading-relaxed">
+            Register yourself and be a part of the Aarambh&apos;26 journey
+          </p>
+
+          {/* Visit Link Button */}
           <motion.div 
-            className="flex flex-col items-center z-20 xl:fixed xl:left-[calc(50vw+384px+70px)] xl:top-[190px] xl:translate-y-0"
+            className="z-20 mt-2 xl:mt-0 xl:fixed xl:left-[calc(50vw+384px+70px)] xl:top-[190px] xl:translate-y-0"
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
-            {/* Hologram projection beam lines */}
-            <div className="w-[100px] h-[2px] bg-orange-400/50 blur-[2px] opacity-70 animate-pulse mb-1" />
-            <div className="border-2 border-orange-400 bg-orange-950/80 text-orange-400 p-4 rounded-xl shadow-[0_0_15px_rgba(249,115,22,0.4)] w-[160px] text-center relative backdrop-blur-sm">
-              {/* Scanline overlay */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0),rgba(255,255,255,0)_50%,rgba(249,115,22,0.08)_50%,rgba(249,115,22,0.08))] bg-[length:100%_4px] pointer-events-none rounded-xl" />
-              
-              <p className="font-bricks text-[10px] uppercase tracking-wider mb-2.5 text-orange-300 drop-shadow-[0_0_4px_rgba(249,115,22,0.8)]">
-                External Portal
-              </p>
-              
-              <a 
-                href="https://google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block w-full py-2 bg-orange-400 hover:bg-orange-300 text-orange-950 font-display font-black text-xs uppercase tracking-wider rounded-lg shadow-[0_0_8px_rgba(249,115,22,0.6)] transition-all cursor-pointer select-none active:scale-95"
-              >
-                Visit Site
-              </a>
-            </div>
-            {/* Bottom glow */}
-            <div className="w-[70px] h-[3px] bg-orange-400/40 blur-[3px] mt-1" />
+            <a 
+              href="https://google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-5 py-3 bg-brand-pink hover:bg-brand-pink/90 text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95"
+            >
+              Visit Site
+            </a>
           </motion.div>
         </div>
 
