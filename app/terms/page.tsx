@@ -15,10 +15,10 @@ export default function TermsPage() {
   return (
     <div className="py-28 px-6 max-w-4xl mx-auto min-h-screen relative selection:bg-brand-ink selection:text-brand-cloud text-brand-ink bg-brand-cloud">
       {/* Decorative layout indicators */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 bg-brand-pink/5 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 bg-brand-orange/5 rounded-full blur-[80px] pointer-events-none" />
 
       <header className="text-center mb-16 relative z-10">
-        <span className="text-xs font-mono font-black uppercase tracking-widest text-brand-pink block mb-3">
+        <span className="text-xs font-mono font-black uppercase tracking-widest text-brand-orange block mb-3">
           Official Agreement
         </span>
         <h1 className="text-4xl md:text-5xl font-display font-black uppercase tracking-tight mb-4 drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
@@ -30,7 +30,7 @@ export default function TermsPage() {
       <div className="space-y-8 relative z-10 font-bold">
         {/* Intro */}
         <div className="bg-white border-4 border-brand-ink p-8 rounded-lg shadow-[6px_6px_0px_0px_#030404]">
-          <div className="text-[10px] font-mono font-black uppercase tracking-widest text-brand-pink mb-2">
+          <div className="text-[10px] font-mono font-black uppercase tracking-widest text-brand-orange mb-2">
             Last Updated: May 2026
           </div>
           <p className="font-mono text-sm leading-relaxed text-brand-ink/80">

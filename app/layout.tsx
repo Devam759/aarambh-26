@@ -237,7 +237,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased bg-brand-cloud text-brand-cloud font-sans selection:bg-brand-pink selection:text-brand-cloud">
+      <body className="antialiased bg-brand-cloud text-brand-cloud font-sans selection:bg-brand-orange selection:text-brand-cloud">
         <ConditionalLayout>
           {children}
         </ConditionalLayout>

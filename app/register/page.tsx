@@ -245,14 +245,14 @@ function RegisterContent() {
             Registration Successful!
           </h1>
           <p className="font-sans font-medium text-sm text-brand-ink/70 mb-6 leading-relaxed">
-            Your payment has been processed. A copy of your details has been mailed to <strong className="text-brand-pink font-semibold">{formData.email}</strong>.
+            Your payment has been processed. A copy of your details has been mailed to <strong className="text-brand-orange font-semibold">{formData.email}</strong>.
           </p>
           <div className="bg-white border-comic-thin px-4 py-2.5 rounded-xl font-mono text-xs tracking-wider mb-8 text-brand-ink w-full shadow-comic-sm">
             REGISTRATION ID: {regId}
           </div>
           <button 
             onClick={() => router.push('/')} 
-            className="w-full py-4 bg-brand-pink hover:bg-brand-pink/90 text-brand-cloud border-comic shadow-comic font-sans font-black text-sm uppercase tracking-wider rounded-xl comic-interactive cursor-pointer"
+            className="w-full py-4 bg-brand-orange hover:bg-brand-orange/90 text-brand-cloud border-comic shadow-comic font-sans font-black text-sm uppercase tracking-wider rounded-xl comic-interactive cursor-pointer"
           >
             Back to Home
           </button>
@@ -311,7 +311,7 @@ function RegisterContent() {
         <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
           {isProcessing ? (
             <div className="py-40 flex flex-col items-center justify-center gap-4 min-h-[550px] text-center">
-              <Loader2 size={48} className="text-brand-pink animate-spin stroke-[3]" />
+              <Loader2 size={48} className="text-brand-orange animate-spin stroke-[3]" />
               <p className="text-brand-ink/75 font-semibold animate-pulse font-display uppercase tracking-wider text-xs">
                 Processing your registration...
               </p>
@@ -326,7 +326,7 @@ function RegisterContent() {
               {/* SECTION 1. STUDENT DETAILS */}
               <div className="space-y-6">
                 <div className="flex flex-row items-center justify-between gap-3 border-b-4 border-brand-ink pb-4">
-                  <div className="flex items-center gap-3 text-brand-pink">
+                  <div className="flex items-center gap-3 text-brand-orange">
                     <h2 className="text-2xl sm:text-3xl font-bricks text-brand-ink">Student Details</h2>
                   </div>
                   {isStudentValid ? (
@@ -338,7 +338,7 @@ function RegisterContent() {
                       </span>
                     </span>
                   ) : studentStarted ? (
-                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
+                    <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-orange text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                       IN PROGRESS
                     </span>
                   ) : (
@@ -374,14 +374,14 @@ function RegisterContent() {
                       onBlur={handleBlur}
                       className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
                         touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          ? 'border-2 border-brand-orange bg-[#FFF5F8] focus:border-brand-orange focus:shadow-[2px_2px_0px_#FF9A00]'
                           : 'border-comic-thin focus:border-brand-ink'
                       }`}
                       placeholder="JKLU/BBA/2025/0310" 
                       suppressHydrationWarning 
                     />
                     {touched.registrationNumber && !validateRegistrationNumber(formData.registrationNumber) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-orange mt-1.5">
                         PLEASE ENTER A VALID APPLICATION NUMBER (E.G. JKLU/BBA/2025/0310)
                       </p>
                     )}
@@ -397,14 +397,14 @@ function RegisterContent() {
                       onBlur={handleBlur}
                       className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
                         touched.mobile && !validateMobile(formData.mobile)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          ? 'border-2 border-brand-orange bg-[#FFF5F8] focus:border-brand-orange focus:shadow-[2px_2px_0px_#FF9A00]'
                           : 'border-comic-thin focus:border-brand-ink'
                       }`}
                       placeholder="+91 98765 43210" 
                       suppressHydrationWarning 
                     />
                     {touched.mobile && !validateMobile(formData.mobile) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-orange mt-1.5">
                         PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
                       </p>
                     )}
@@ -420,14 +420,14 @@ function RegisterContent() {
                       onBlur={handleBlur}
                       className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
                         touched.email && !validateEmail(formData.email)
-                          ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                          ? 'border-2 border-brand-orange bg-[#FFF5F8] focus:border-brand-orange focus:shadow-[2px_2px_0px_#FF9A00]'
                           : 'border-comic-thin focus:border-brand-ink'
                       }`}
                       placeholder="Enter your email" 
                       suppressHydrationWarning 
                     />
                     {touched.email && !validateEmail(formData.email) && (
-                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                      <p className="text-[10px] font-black uppercase tracking-wider text-brand-orange mt-1.5">
                         PLEASE ENTER A VALID EMAIL ADDRESS
                       </p>
                     )}
@@ -497,7 +497,7 @@ function RegisterContent() {
                         </span>
                       </span>
                     ) : parentsStarted ? (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-orange text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
@@ -545,14 +545,14 @@ function RegisterContent() {
                             onBlur={handleBlur}
                             className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
                               touched.parentPhone && !validateMobile(formData.parentPhone)
-                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                                ? 'border-2 border-brand-orange bg-[#FFF5F8] focus:border-brand-orange focus:shadow-[2px_2px_0px_#FF9A00]'
                                 : 'border-comic-thin focus:border-brand-ink'
                             }`} 
                             placeholder="Parent's mobile number"
                             suppressHydrationWarning 
                           />
                           {touched.parentPhone && !validateMobile(formData.parentPhone) && (
-                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-orange mt-1.5">
                               PLEASE ENTER A VALID 10-DIGIT MOBILE NUMBER
                             </p>
                           )}
@@ -566,14 +566,14 @@ function RegisterContent() {
                             onBlur={handleBlur}
                             className={`w-full px-4 py-3 bg-white text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl ${
                               formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail)
-                                ? 'border-2 border-brand-pink bg-[#FFF5F8] focus:border-brand-pink focus:shadow-[2px_2px_0px_#FF188C]'
+                                ? 'border-2 border-brand-orange bg-[#FFF5F8] focus:border-brand-orange focus:shadow-[2px_2px_0px_#FF9A00]'
                                 : 'border-comic-thin focus:border-brand-ink'
                             }`} 
                             placeholder="parents@email.com"
                             suppressHydrationWarning 
                           />
                           {formData.parentEmail.trim() !== '' && touched.parentEmail && !validateEmail(formData.parentEmail) && (
-                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-pink mt-1.5">
+                            <p className="text-[10px] font-black uppercase tracking-wider text-brand-orange mt-1.5">
                               PLEASE ENTER A VALID EMAIL ADDRESS
                             </p>
                           )}
@@ -600,7 +600,7 @@ function RegisterContent() {
                         </span>
                       </span>
                     ) : formData.address.trim().length > 0 ? (
-                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-pink text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
+                      <span className="px-2 py-0.5 border-2 border-brand-ink bg-brand-orange text-brand-cloud font-display text-[8px] font-black uppercase rounded shadow-comic-sm -rotate-2 whitespace-nowrap">
                         IN PROGRESS
                       </span>
                     ) : (
@@ -654,7 +654,7 @@ function RegisterContent() {
                         </div>
                       </div>
 
-                      <div className="border-comic bg-brand-pink/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
+                      <div className="border-comic bg-brand-orange/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
                         <div>
                           <p className="text-xs font-black text-brand-ink/60 uppercase tracking-widest mb-1">Registration Fee</p>
                           <div className="flex items-center gap-3">
@@ -667,14 +667,14 @@ function RegisterContent() {
                         </div>
                         <button 
                           type="submit" 
-                          className="px-10 py-5 bg-brand-pink text-brand-cloud border-comic shadow-comic font-display font-black text-lg uppercase tracking-wider rounded-xl comic-interactive flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+                          className="px-10 py-5 bg-brand-orange text-brand-cloud border-comic shadow-comic font-display font-black text-lg uppercase tracking-wider rounded-xl comic-interactive flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
                         >
                           <CreditCard size={24} className="stroke-[3]" /> Pay Now
                         </button>
                       </div>
 
                       <div className="mt-4 border-2 border-brand-ink bg-white p-4 rounded-xl text-center shadow-comic-sm space-y-1.5">
-                        <p className="text-xs font-black uppercase tracking-wider text-brand-pink">
+                        <p className="text-xs font-black uppercase tracking-wider text-brand-orange">
                           Important Note: The registration fee is strictly non-refundable under any circumstances.
                         </p>
                         <p className="text-[10px] font-bold uppercase tracking-wide text-brand-ink/60">
@@ -695,7 +695,7 @@ function RegisterContent() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-brand-ink flex items-center justify-center"><Loader2 className="animate-spin text-brand-pink stroke-[3]" size={48} /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-brand-ink flex items-center justify-center"><Loader2 className="animate-spin text-brand-orange stroke-[3]" size={48} /></div>}>
       <RegisterContent />
     </Suspense>
   );

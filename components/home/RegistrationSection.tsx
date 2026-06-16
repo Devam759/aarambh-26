@@ -58,14 +58,14 @@ export default function RegistrationSection() {
                     <h3 className="font-diary font-black text-2xl md:text-3xl tracking-wide text-brand-blue uppercase rotate-[-1deg]">
                       What the fee includes:
                     </h3>
-                    <div className="h-1 w-44 bg-brand-pink mt-1 opacity-70 transform -skew-x-12" />
-                    <div className="h-0.5 w-32 bg-brand-pink mt-0.5 opacity-50 transform -skew-x-12" />
+                    <div className="h-1 w-44 bg-brand-orange mt-1 opacity-70 transform -skew-x-12" />
+                    <div className="h-0.5 w-32 bg-brand-orange mt-0.5 opacity-50 transform -skew-x-12" />
                   </div>
 
                   {/* Ruled Paper Content List */}
                   <ul className="space-y-4 pl-1 text-left">
                     <li className="flex items-start gap-0 md:gap-3">
-                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-orange select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Accommodation (Hostels)
@@ -77,7 +77,7 @@ export default function RegistrationSection() {
                     </li>
 
                     <li className="flex items-start gap-0 md:gap-3">
-                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-orange select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           All Meals (Mess food)
@@ -89,7 +89,7 @@ export default function RegistrationSection() {
                     </li>
 
                     <li className="flex items-start gap-0 md:gap-3">
-                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-orange select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           AARAMBH Kit
@@ -101,7 +101,7 @@ export default function RegistrationSection() {
                     </li>
 
                     <li className="flex items-start gap-0 md:gap-3">
-                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-pink select-none mt-1">✓</span>
+                      <span className="hidden md:inline-block font-diary font-black text-lg text-brand-orange select-none mt-1">✓</span>
                       <div>
                         <span className="font-diary font-black text-lg md:text-xl text-brand-ink tracking-wide block leading-tight">
                           Full Event Access
@@ -127,7 +127,7 @@ export default function RegistrationSection() {
                 <div>
                   {/* Header Title (Handwritten double-underlined style) */}
                   <div className="mb-8 relative">
-                    <h3 className="font-diary font-black text-2xl md:text-3xl tracking-wide text-brand-pink uppercase rotate-[1deg]">
+                    <h3 className="font-diary font-black text-2xl md:text-3xl tracking-wide text-brand-orange uppercase rotate-[1deg]">
                       Important Instructions:
                     </h3>
                     <div className="h-1 w-48 bg-brand-blue mt-1 opacity-70 transform -skew-x-12" />

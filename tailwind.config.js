@@ -11,14 +11,13 @@ export default {
       colors: {
         brand: {
           orange: '#FF9A00',
-          pink: '#FF188C',
           blue: '#0D21DD',
           ink: '#030404',
           cloud: '#F5F1E5',
         },
         primary: {
-          DEFAULT: '#FF188C',
-          dark: '#E0107A',
+          DEFAULT: '#FF9A00',
+          dark: '#E68A00',
         },
         secondary: {
           DEFAULT: '#0D21DD',
@@ -42,7 +41,6 @@ export default {
         },
         brand: {
           orange: '#FF9A00',
-          pink: '#FF188C',
           blue: '#0D21DD',
           black: '#030404',
           white: '#F5F1E5',
@@ -59,12 +57,11 @@ export default {
         diary: ['"Architects Daughter"', '"Gochi Hand"', 'cursive'],
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #FF9A00 0%, #FF188C 50%, #0D21DD 100%)',
-        'brand-gradient-soft': 'linear-gradient(135deg, rgba(255,154,0,0.15) 0%, rgba(255,24,140,0.15) 50%, rgba(13,33,221,0.15) 100%)',
+        'brand-gradient': 'linear-gradient(135deg, #FF9A00 0%, #0D21DD 100%)',
+        'brand-gradient-soft': 'linear-gradient(135deg, rgba(255,154,0,0.15) 0%, rgba(13,33,221,0.15) 100%)',
         'glass-gradient': 'linear-gradient(to bottom right, rgba(245, 241, 229, 0.08), rgba(245, 241, 229, 0.03))',
       },
       boxShadow: {
-        'brand-pink': '0 0 40px rgba(255, 24, 140, 0.25)',
         'brand-orange': '0 0 40px rgba(255, 154, 0, 0.25)',
         'brand-blue': '0 0 40px rgba(13, 33, 221, 0.25)',
       },

@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 
 const speakers = [
-  { name: 'Dr. John Doe', role: 'Chief Guest', quote: '"The future belongs to the bold."', color: 'bg-brand-pink', img: '/photo-1.jpg' },
+  { name: 'Dr. John Doe', role: 'Chief Guest', quote: '"The future belongs to the bold."', color: 'bg-brand-orange', img: '/photo-1.jpg' },
   { name: 'Jane Smith', role: 'Keynote Speaker', quote: '"Innovate, create, inspire."', color: 'bg-brand-blue', img: '/photo-2.jpg' },
   { name: 'DJ Vortex', role: 'Live Artist', quote: '"Let the music take control."', color: 'bg-brand-orange', img: '/photo-3.jpg' },
   { name: 'Alex Wong', role: 'Tech Visionary', quote: '"Code is poetry."', color: 'bg-[#FDE047]', img: '/photo-4.jpg' },

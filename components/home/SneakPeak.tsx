@@ -82,7 +82,7 @@ export default function SneakPeak() {
           <div className="relative">
             <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-display font-black uppercase leading-none tracking-tighter text-center">
               <span className="text-brand-ink">SNEAK</span>
-              <span className="text-brand-pink">PEAK</span>
+              <span className="text-brand-orange">PEAK</span>
             </h2>
             
             {/* Floating Star */}

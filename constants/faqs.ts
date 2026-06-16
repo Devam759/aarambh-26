@@ -5,8 +5,8 @@ export interface FAQItem {
 }
 
 export const FAQ_CATEGORIES = [
-  { id: 'all', name: 'All Questions', emoji: '', color: 'hover:bg-brand-pink hover:text-brand-cloud hover:border-brand-pink' },
-  { id: 'orientation', name: 'Orientation Week', emoji: '', color: 'hover:bg-brand-pink hover:text-brand-cloud hover:border-brand-pink' },
+  { id: 'all', name: 'All Questions', emoji: '', color: 'hover:bg-brand-orange hover:text-brand-ink hover:border-brand-orange' },
+  { id: 'orientation', name: 'Orientation Week', emoji: '', color: 'hover:bg-brand-blue hover:text-brand-cloud hover:border-brand-blue' },
   { id: 'campus', name: 'Campus Life & Facilities', emoji: '', color: 'hover:bg-brand-orange hover:text-brand-ink hover:border-brand-orange' },
   { id: 'registration', name: 'Fees & Registration', emoji: '', color: 'hover:bg-brand-blue hover:text-brand-cloud hover:border-brand-blue' },
   { id: 'rules', name: 'Rules & Discipline', emoji: '', color: 'hover:bg-brand-ink hover:text-brand-cloud hover:border-brand-ink' }

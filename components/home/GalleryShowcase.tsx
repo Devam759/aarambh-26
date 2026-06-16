@@ -262,7 +262,7 @@ export default function GalleryShowcase() {
             font-weight: 800;
             letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: #FF188C;
+            color: #FF9A00;
             margin-bottom: 18px;
           }
 
@@ -280,10 +280,10 @@ export default function GalleryShowcase() {
           .gl-heading-highlight {
             color: #F5F1E5;
             text-shadow: 
-              2px 2px 0 #FF188C,
-              -2px -2px 0 #FF188C,
-              2px -2px 0 #FF188C,
-              -2px 2px 0 #FF188C,
+              2px 2px 0 #FF9A00,
+              -2px -2px 0 #FF9A00,
+              2px -2px 0 #FF9A00,
+              -2px 2px 0 #FF9A00,
               4px 4px 0 #030404;
           }
 

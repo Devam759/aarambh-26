@@ -814,7 +814,7 @@ export default function FeedbackTeamPortalPage() {
           </div>
           <button 
             onClick={handleLogout}
-            className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-md border-2 border-transparent text-brand-ink/50 hover:border-brand-ink hover:bg-brand-pink/15 hover:text-brand-pink hover:font-black hover:shadow-[3px_3px_0px_0px_#030404] transition-all duration-100 cursor-pointer"
+            className="flex items-center justify-center gap-3 px-4 py-3 w-full rounded-md border-2 border-transparent text-brand-ink/50 hover:border-brand-ink hover:bg-brand-orange/15 hover:text-brand-orange hover:font-black hover:shadow-[3px_3px_0px_0px_#030404] transition-all duration-100 cursor-pointer"
           >
             <CustomLogoutIcon size={18} />
             <span className="text-xs tracking-wide uppercase font-black">Logout</span>
@@ -867,7 +867,7 @@ export default function FeedbackTeamPortalPage() {
                   <select
                     value={selectedDayFilter}
                     onChange={(e) => setSelectedDayFilter(e.target.value)}
-                    className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full md:w-60"
+                    className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full md:w-60"
                   >
                     <option value="all">All Days Combined</option>
                     {SCHEDULE_DATA.map((day) => (
@@ -897,8 +897,8 @@ export default function FeedbackTeamPortalPage() {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white border-4 border-brand-ink p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg flex items-center gap-5">
-                      <div className="p-3 border-2 border-brand-ink bg-brand-pink/15 rounded-md shadow-comic-sm shrink-0">
-                        <CustomMessageIcon size={24} className="text-brand-pink" />
+                      <div className="p-3 border-2 border-brand-ink bg-brand-orange/15 rounded-md shadow-comic-sm shrink-0">
+                        <CustomMessageIcon size={24} className="text-brand-orange" />
                       </div>
                       <div>
                         <span className="block text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">
@@ -956,7 +956,7 @@ export default function FeedbackTeamPortalPage() {
                       <div className="space-y-6">
                         <div className="flex items-center gap-3">
                           <span className="text-xs font-bold uppercase text-brand-ink/50">Average Score for this question:</span>
-                          <span className="text-lg font-black text-brand-pink">{selectedRatingStats.avg} / 5.0</span>
+                          <span className="text-lg font-black text-brand-orange">{selectedRatingStats.avg} / 5.0</span>
                           <span className="text-[10px] font-bold text-brand-ink/35">({selectedRatingStats.total} responses)</span>
                         </div>
                         <PureReactColumnChart data={selectedRatingStats.distribution} />
@@ -974,7 +974,7 @@ export default function FeedbackTeamPortalPage() {
                   <div className="flex-1 overflow-y-auto pr-1 space-y-6">
                     {dynamicTextAnswers.map((group, idx) => (
                       <div key={idx} className="space-y-3">
-                        <h4 className="text-[10px] font-black uppercase text-brand-pink tracking-wider border-b border-brand-pink/20 pb-1 leading-relaxed">
+                        <h4 className="text-[10px] font-black uppercase text-brand-orange tracking-wider border-b border-brand-orange/20 pb-1 leading-relaxed">
                           Q: {group.label}
                         </h4>
                         
@@ -1031,7 +1031,7 @@ export default function FeedbackTeamPortalPage() {
                             <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider">
                               Avg rating
                             </span>
-                            <strong className="text-lg font-black text-brand-pink tabular-nums">
+                            <strong className="text-lg font-black text-brand-orange tabular-nums">
                               {evt.avg}
                             </strong>
                           </div>
@@ -1120,7 +1120,7 @@ export default function FeedbackTeamPortalPage() {
                     <select
                       value={configActiveDayIdx}
                       onChange={(e) => setConfigActiveDayIdx(Number(e.target.value))}
-                      className="bg-white border-2 border-brand-ink text-brand-ink text-sm font-bold rounded-md py-3 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full shadow-inner"
+                      className="bg-white border-2 border-brand-ink text-brand-ink text-sm font-bold rounded-md py-3 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full shadow-inner"
                     >
                       {SCHEDULE_DATA.map((day, idx) => (
                         <option key={day.day} value={idx}>
@@ -1151,7 +1151,7 @@ export default function FeedbackTeamPortalPage() {
                             #{String(qIdx + 1).padStart(2, '0')}
                           </span>
                           <span className={`border-2 border-brand-ink px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shadow-[1px_1px_0px_0px_#030404] ${
-                            q.type === 'rating' ? 'bg-brand-orange/15 text-brand-orange' : 'bg-brand-pink/15 text-brand-pink'
+                            q.type === 'rating' ? 'bg-brand-orange/15 text-brand-orange' : 'bg-brand-orange/15 text-brand-orange'
                           }`}>
                             {q.type === 'rating' ? '★ Rating (1-5)' : '✏️ Open Text'}
                           </span>
@@ -1163,7 +1163,7 @@ export default function FeedbackTeamPortalPage() {
                             type="text"
                             value={q.label}
                             onChange={(e) => handleUpdateQuestionLabel(q.id, e.target.value)}
-                            className="w-full bg-white border-2 border-brand-ink rounded py-2 px-3 focus:outline-none focus:border-brand-pink text-xs text-brand-ink font-semibold"
+                            className="w-full bg-white border-2 border-brand-ink rounded py-2 px-3 focus:outline-none focus:border-brand-orange text-xs text-brand-ink font-semibold"
                             placeholder="Type question text..."
                             required
                           />
@@ -1173,7 +1173,7 @@ export default function FeedbackTeamPortalPage() {
                         <button
                           type="button"
                           onClick={() => handleRemoveQuestion(q.id)}
-                          className="border-2 border-brand-ink hover:bg-brand-pink/15 text-brand-pink text-[10px] font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-3 py-1.5 rounded cursor-pointer uppercase tracking-wider shrink-0 w-full md:w-auto text-center"
+                          className="border-2 border-brand-ink hover:bg-brand-orange/15 text-brand-orange text-[10px] font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-3 py-1.5 rounded cursor-pointer uppercase tracking-wider shrink-0 w-full md:w-auto text-center"
                         >
                           Delete
                         </button>
@@ -1200,7 +1200,7 @@ export default function FeedbackTeamPortalPage() {
                     <button
                       type="button"
                       onClick={() => handleAddQuestion('text')}
-                      className="flex-1 border-2 border-brand-ink bg-brand-pink/15 hover:bg-brand-pink/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
+                      className="flex-1 border-2 border-brand-ink bg-brand-orange/15 hover:bg-brand-orange/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
                     >
                       + Add Written Observation Question (Paragraph Text)
                     </button>
@@ -1264,7 +1264,7 @@ function PureReactColumnChart({ data }: { data: { label: string; count: number; 
               </div>
               <div 
                 style={{ height: `${heightPercent}%` }}
-                className="w-full bg-brand-orange border-2 border-brand-ink shadow-[2px_-2px_0px_0px_#030404] transition-all duration-300 hover:bg-brand-pink cursor-pointer"
+                className="w-full bg-brand-orange border-2 border-brand-ink shadow-[2px_-2px_0px_0px_#030404] transition-all duration-300 hover:bg-brand-orange cursor-pointer"
               />
               <span className="text-[10px] font-black text-brand-ink uppercase tracking-wider mt-3 text-center">
                 {bar.label}

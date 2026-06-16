@@ -151,28 +151,28 @@ export default function PackingChecklist() {
           className="absolute -top-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
-            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+            background: 'repeating-linear-gradient(-45deg, #FF9A00, #FF9A00 6px, #030404 6px, #030404 12px)'
           }}
         />
         <div 
           className="absolute -top-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
-            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+            background: 'repeating-linear-gradient(-45deg, #0D21DD, #0D21DD 6px, #030404 6px, #030404 12px)'
           }}
         />
         <div 
           className="absolute -bottom-4 -left-4 w-28 md:w-36 h-8 md:h-10 z-20 rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
-            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+            background: 'repeating-linear-gradient(-45deg, #0D21DD, #0D21DD 6px, #030404 6px, #030404 12px)'
           }}
         />
         <div 
           className="absolute -bottom-4 -right-4 w-28 md:w-36 h-8 md:h-10 z-20 -rotate-12 pointer-events-none select-none border-y-2 border-brand-ink shadow-[1px_2px_3px_rgba(0,0,0,0.15)]"
           style={{
             clipPath: 'polygon(0% 0%, 100% 0%, 97% 10%, 100% 20%, 98% 30%, 100% 40%, 97% 50%, 100% 60%, 98% 70%, 100% 80%, 97% 90%, 100% 100%, 0% 100%, 3% 90%, 0% 80%, 2% 70%, 0% 60%, 3% 50%, 0% 40%, 2% 30%, 0% 20%, 3% 10%)',
-            background: 'repeating-linear-gradient(-45deg, #FF188C, #FF188C 6px, #030404 6px, #030404 12px)'
+            background: 'repeating-linear-gradient(-45deg, #FF9A00, #FF9A00 6px, #030404 6px, #030404 12px)'
           }}
         />
 
@@ -203,17 +203,17 @@ export default function PackingChecklist() {
 
           {/* Card 1: Clothing & Gear */}
           <div className="relative p-6">
-            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
               <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Clothing & Gear</h3>
             </div>
             <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#FF188C" label="Casual wear (t-shirts, jeans, shorts)" />
-              <ChecklistItem accentColor="#FF188C" label="Formal wear (shirts, trousers, dress)" />
-              <ChecklistItem accentColor="#FF188C" label="Seasonal clothing (jackets, sweaters)" />
-              <ChecklistItem accentColor="#FF188C" label="Undergarments and socks" />
-              <ChecklistItem accentColor="#FF188C" label="Sleepwear and loungewear" />
-              <ChecklistItem accentColor="#FF188C" label="Footwear (sneakers, sandals, formals)" />
+              <ChecklistItem accentColor="#0D21DD" label="Casual wear (t-shirts, jeans, shorts)" />
+              <ChecklistItem accentColor="#0D21DD" label="Formal wear (shirts, trousers, dress)" />
+              <ChecklistItem accentColor="#0D21DD" label="Seasonal clothing (jackets, sweaters)" />
+              <ChecklistItem accentColor="#0D21DD" label="Undergarments and socks" />
+              <ChecklistItem accentColor="#0D21DD" label="Sleepwear and loungewear" />
+              <ChecklistItem accentColor="#0D21DD" label="Footwear (sneakers, sandals, formals)" />
             </ul>
           </div>
 
@@ -279,16 +279,16 @@ export default function PackingChecklist() {
 
           {/* Card 6: Health & Care */}
           <div className="relative p-6">
-            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
               <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Health & Care</h3>
             </div>
             <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#FF188C" label="First aid kit" />
-              <ChecklistItem accentColor="#FF188C" label="Prescription medications" />
-              <ChecklistItem accentColor="#FF188C" label="Vitamins & supplements" />
-              <ChecklistItem accentColor="#FF188C" label="Thermometer" />
-              <ChecklistItem accentColor="#FF188C" label="Hand sanitizer & Face masks" />
+              <ChecklistItem accentColor="#FF9A00" label="First aid kit" />
+              <ChecklistItem accentColor="#FF9A00" label="Prescription medications" />
+              <ChecklistItem accentColor="#FF9A00" label="Vitamins & supplements" />
+              <ChecklistItem accentColor="#FF9A00" label="Thermometer" />
+              <ChecklistItem accentColor="#FF9A00" label="Hand sanitizer & Face masks" />
             </ul>
           </div>
 
@@ -308,16 +308,16 @@ export default function PackingChecklist() {
 
           {/* Card 8: Recreation */}
           <div className="relative p-6">
-            <div className="absolute inset-0 bg-[#ffb7db] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
               <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Recreation</h3>
             </div>
             <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#FF188C" label="Books for leisure reading" />
-              <ChecklistItem accentColor="#FF188C" label="Board games or playing cards" />
-              <ChecklistItem accentColor="#FF188C" label="Sports equipment" />
-              <ChecklistItem accentColor="#FF188C" label="Musical instruments" />
-              <ChecklistItem accentColor="#FF188C" label="Art supplies" />
+              <ChecklistItem accentColor="#0D21DD" label="Books for leisure reading" />
+              <ChecklistItem accentColor="#0D21DD" label="Board games or playing cards" />
+              <ChecklistItem accentColor="#0D21DD" label="Sports equipment" />
+              <ChecklistItem accentColor="#0D21DD" label="Musical instruments" />
+              <ChecklistItem accentColor="#0D21DD" label="Art supplies" />
             </ul>
           </div>
 

@@ -131,7 +131,7 @@ export default function MobileGallery() {
           right: 16px;
           width: 44px;
           height: 44px;
-          background: #FF188C;
+          background: #FF9A00;
           border: 3px solid #030404;
           border-radius: 10px;
           font-size: 1.6rem;

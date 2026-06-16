@@ -58,7 +58,7 @@ export default function Home() {
 
   // Function to create comic dot explosion particles
   const spawnParticles = (x: number, y: number) => {
-    const colors = ['#FF9A00', '#FF188C', '#0D21DD', '#030404', '#F5F1E5'];
+    const colors = ['#FF9A00', '#0D21DD', '#030404', '#F5F1E5'];
     const newParticles = Array.from({ length: 12 }).map((_, i) => ({
       id: Math.random() + Date.now() + i,
       x,
@@ -159,7 +159,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-brand-cloud" />
            <motion.div
             className="hidden md:block absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-            style={{ background: '#FF188C', filter: 'blur(140px)' }}
+            style={{ background: '#FF9A00', filter: 'blur(140px)' }}
             animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
             transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
           />

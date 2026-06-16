@@ -382,7 +382,7 @@ export default function LoginPage() {
             <h1 className="text-xl font-display font-black tracking-wider uppercase text-brand-ink">
               Management Portal
             </h1>
-            <div className="h-1 w-12 bg-brand-pink mx-auto mt-2.5 border-2 border-brand-ink" />
+            <div className="h-1 w-12 bg-brand-orange mx-auto mt-2.5 border-2 border-brand-ink" />
           </div>
 
           {/* Firebase Configuration Warnings */}
@@ -398,8 +398,8 @@ export default function LoginPage() {
 
           {/* Error Message Display */}
           {error && (
-            <div className="mb-6 p-3 bg-brand-pink/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center shadow-comic-sm">
-              <CustomWarningIcon className="text-brand-pink shrink-0" size={16} />
+            <div className="mb-6 p-3 bg-brand-orange/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center shadow-comic-sm">
+              <CustomWarningIcon className="text-brand-orange shrink-0" size={16} />
               <span className="uppercase tracking-wide">{error}</span>
             </div>
           )}
@@ -416,7 +416,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 focus:outline-none focus:border-brand-pink text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
+                  className="w-full bg-white border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
                   placeholder="email@aarambh.jklu.edu.in"
                   required
                   suppressHydrationWarning
@@ -434,7 +434,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white border-2 border-brand-ink rounded-md py-3 pl-11 pr-11 focus:outline-none focus:border-brand-pink text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
+                  className="w-full bg-white border-2 border-brand-ink rounded-md py-3 pl-11 pr-11 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
                   placeholder="••••••••"
                   required
                   suppressHydrationWarning

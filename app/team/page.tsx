@@ -27,7 +27,7 @@ function SectionHeading({ label, sub, accent }: SectionHeadingProps) {
       {sub && (
         <span 
           className="inline-block text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-2.5 sm:px-3.5 py-1 sm:py-1.5 border-comic text-brand-cloud rotate-[-2deg] shadow-comic-sm mb-4"
-          style={{ backgroundColor: accent || '#FF188C' }}
+          style={{ backgroundColor: accent || '#FF9A00' }}
         >
           {sub}
         </span>
@@ -67,8 +67,8 @@ export default function TeamPage() {
       borderColor = '#0D21DD'; // brand.blue
       gradient = 'linear-gradient(145deg, rgba(13, 33, 221, 0.15), rgba(3, 4, 4, 0.98))';
     } else if (type === 'orgHead') {
-      borderColor = '#FF188C'; // brand.pink
-      gradient = 'linear-gradient(145deg, rgba(255, 24, 140, 0.15), rgba(3, 4, 4, 0.98))';
+      borderColor = '#FF9A00'; // brand.pink
+      gradient = 'linear-gradient(145deg, rgba(255, 154, 0, 0.15), rgba(3, 4, 4, 0.98))';
     } else if (type === 'tl') {
       const dept = member.department || '';
       let colorDef = { hex: '#10B981', rgb: '16, 185, 129' }; // default green
@@ -142,7 +142,7 @@ export default function TeamPage() {
 
       {/* Decorative Background Glows */}
       <div className="hero-glow w-[500px] h-[500px] bg-brand-orange/10 -top-20 left-1/4 z-0" />
-      <div className="hero-glow w-[400px] h-[400px] bg-brand-pink/10 top-1/3 -right-20 z-0" />
+      <div className="hero-glow w-[400px] h-[400px] bg-brand-orange/10 top-1/3 -right-20 z-0" />
       <div className="hero-glow w-[600px] h-[600px] bg-brand-blue/10 bottom-0 -left-20 z-0" />
 
       <div className="py-28 px-4 md:px-6 max-w-7xl mx-auto relative z-10">
@@ -192,7 +192,7 @@ export default function TeamPage() {
 
         {/* ── SECTION 2: ORGANIZING HEADS ─────────────────────────────────── */}
         <section className="mb-20 sm:mb-28">
-          <SectionHeading label="Organizing Heads" accent="#FF188C" />
+          <SectionHeading label="Organizing Heads" accent="#FF9A00" />
           <div className="w-full flex justify-center">
             <ChromaGrid items={orgHeadItems} radius={400} flipTrigger="none" className="max-w-[1200px]" />
           </div>

@@ -142,7 +142,7 @@ export default function EntryLogs() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-pink focus:bg-white transition-all uppercase tracking-wider"
+            className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-orange focus:bg-white transition-all uppercase tracking-wider"
             placeholder="Search Attendee Name, Registration ID, or Volunteer..."
           />
         </div>

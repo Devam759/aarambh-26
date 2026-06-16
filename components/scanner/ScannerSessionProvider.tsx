@@ -79,7 +79,7 @@ export function ScannerSessionProvider({ children }: { children: React.ReactNode
     return (
       <div className="min-h-screen bg-[#F5F1E5] flex items-center justify-center p-6 text-center select-none font-adminBody">
         <div className="max-w-md bg-white border-4 border-brand-ink p-8 shadow-[4px_4px_0px_0px_#030404] rounded-md">
-          <ShieldAlert className="text-brand-pink mx-auto mb-4" size={48} />
+          <ShieldAlert className="text-brand-orange mx-auto mb-4" size={48} />
           <h2 className="font-adminHeading text-2xl font-black text-brand-ink mb-4 uppercase tracking-tight">Firebase Unconfigured</h2>
           <p className="text-admin-muted text-xs font-bold uppercase mb-6 leading-relaxed">
             {FIREBASE_SETUP_MESSAGE}

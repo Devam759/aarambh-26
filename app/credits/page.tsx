@@ -139,7 +139,7 @@ const LEADERS: TeamMember[] = [
       "Configured API protection routes and high-speed registration pipelines"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/devam.png",
-    themeColor: "from-[#FF188C] via-pink-500 to-[#FF9A00]",
+    themeColor: "from-[#FF9A00] via-pink-500 to-[#FF9A00]",
     glowColor: "rgba(139, 92, 246, 0.25)",
     accentColor: "#8b5cf6",
     icon: <Cpu className="w-4 h-4" />,
@@ -167,7 +167,7 @@ const LEADERS: TeamMember[] = [
       "Developed high-fidelity page transitions and micro-interaction states"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Team Leaders/yashbansal_standing.webp?v=5",
-    themeColor: "from-[#FF9A00] via-orange-500 to-[#FF188C]",
+    themeColor: "from-[#FF9A00] via-orange-500 to-[#FF9A00]",
     glowColor: "rgba(251, 191, 36, 0.25)",
     accentColor: "#fbbf24",
     icon: <Sparkles className="w-4 h-4" />,
@@ -198,7 +198,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Reviewed click target zones and alignment rules across the app"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/ashutosh.png",
-    themeColor: "from-[#0D21DD] to-[#FF188C]",
+    themeColor: "from-[#0D21DD] to-[#FF9A00]",
     glowColor: "rgba(236, 72, 153, 0.25)",
     accentColor: "#ec4899",
     icon: <Layers className="w-4 h-4" />,
@@ -221,7 +221,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Refined SEO content properties to maximize discovery rates"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/rashi.png",
-    themeColor: "from-[#FF188C] to-[#FF9A00]",
+    themeColor: "from-[#FF9A00] to-[#FF9A00]",
     glowColor: "rgba(16, 185, 129, 0.25)",
     accentColor: "#10b981",
     icon: <Terminal className="w-4 h-4" />,
@@ -272,7 +272,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Configured high-performance vector path animations"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/aalap.png",
-    themeColor: "from-[#0D21DD] to-[#FF188C]",
+    themeColor: "from-[#0D21DD] to-[#FF9A00]",
     glowColor: "rgba(14, 165, 233, 0.25)",
     accentColor: "#0ea5e9",
     icon: <Flame className="w-4 h-4" />,
@@ -300,7 +300,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Audited scan records to prevent double-entry exploits"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/arihant.png",
-    themeColor: "from-[#FF188C] to-[#0D21DD]",
+    themeColor: "from-[#FF9A00] to-[#0D21DD]",
     glowColor: "rgba(249, 115, 22, 0.25)",
     accentColor: "#f97316",
     icon: <ShieldCheck className="w-4 h-4" />,
@@ -328,7 +328,7 @@ const VOLUNTEERS: TeamMember[] = [
       "Identified and cataloged frontend bottlenecks for speedup"
     ],
     image: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Tech Team/mananat.png",
-    themeColor: "from-[#FF9A00] to-[#FF188C]",
+    themeColor: "from-[#FF9A00] to-[#FF9A00]",
     glowColor: "rgba(167, 139, 250, 0.25)",
     accentColor: "#a78bfa",
     icon: <Compass className="w-4 h-4" />,
@@ -479,7 +479,7 @@ function AnimatedBackground() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute -top-40 -left-40 w-96 h-96 bg-[#FF188C]/15 rounded-full blur-[120px]"
+        className="absolute -top-40 -left-40 w-96 h-96 bg-[#FF9A00]/15 rounded-full blur-[120px]"
       />
 
       <motion.div
@@ -1006,7 +1006,7 @@ function ProfileModal({
                     href={member.socials.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#FF188C] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
+                    className="h-14 px-4 bg-[#F5F1E5] border-[3px] border-[#030404] hover:bg-[#FF9A00] hover:text-white text-[#030404] active:scale-95 transition-all rounded-xl flex items-center gap-3 font-mono text-xs font-black shadow-[3px_3px_0px_#030404]"
                   >
                     <InstagramIcon className="w-5 h-5 shrink-0" />
                     <div className="flex flex-col items-start leading-tight">
@@ -1109,7 +1109,7 @@ export default function CreditsPage() {
           {/* ================================================================ */}
           <div className="text-center py-6 md:py-10 max-w-2xl mx-auto space-y-3 relative mb-12">
             {/* Light Streak Background */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[3px] bg-gradient-to-r from-transparent via-[#FF188C]/20 to-transparent blur-[4px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[3px] bg-gradient-to-r from-transparent via-[#FF9A00]/20 to-transparent blur-[4px]" />
 
             <h1
               className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-[#030404] leading-none relative z-10"
@@ -1149,7 +1149,7 @@ export default function CreditsPage() {
           <div className="mb-24 relative">
             {/* Floating magazine-style background decorations to enhance collage depth */}
             <div className="absolute top-1/4 left-[-10%] w-56 h-56 rounded-full bg-[#0D21DD]/10 blur-3xl pointer-events-none hidden md:block" />
-            <div className="absolute bottom-1/4 right-[-10%] w-64 h-64 rounded-full bg-[#FF188C]/10 blur-3xl pointer-events-none hidden md:block" />
+            <div className="absolute bottom-1/4 right-[-10%] w-64 h-64 rounded-full bg-[#FF9A00]/10 blur-3xl pointer-events-none hidden md:block" />
 
             <motion.div
               initial={{ opacity: 0 }}

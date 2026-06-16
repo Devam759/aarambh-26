@@ -397,7 +397,7 @@ export default function CustomVideoPlayer({
           onClick={handleProgressClick}
         >
           <div 
-            className="h-full bg-brand-pink transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(255,24,140,0.8)]"
+            className="h-full bg-brand-orange transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(255,154,0,0.8)]"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -407,13 +407,13 @@ export default function CustomVideoPlayer({
           <div className="flex items-center gap-4">
             <button 
               onClick={togglePlay}
-              className="hover:text-brand-pink transition-colors focus:outline-none"
+              className="hover:text-brand-orange transition-colors focus:outline-none"
             >
               {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current" />}
             </button>
             <button 
               onClick={toggleMute}
-              className="hover:text-brand-pink transition-colors focus:outline-none"
+              className="hover:text-brand-orange transition-colors focus:outline-none"
             >
               {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
             </button>
@@ -421,7 +421,7 @@ export default function CustomVideoPlayer({
           
           <button 
             onClick={handleFullscreen}
-            className="hover:text-brand-pink transition-colors focus:outline-none"
+            className="hover:text-brand-orange transition-colors focus:outline-none"
           >
             <Maximize className="w-6 h-6" />
           </button>

@@ -60,7 +60,7 @@ export default function FAQPage() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-[10%] left-[5%] text-brand-pink/25 text-6xl hidden md:block"
+          className="absolute top-[10%] left-[5%] text-brand-orange/25 text-6xl hidden md:block"
         >
           ★
         </motion.div>
@@ -122,7 +122,7 @@ export default function FAQPage() {
             ease: "easeInOut",
             delay: 0.5,
           }}
-          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-pink/20 bg-brand-pink/8 flex items-center justify-center font-display font-black text-brand-pink/25 text-lg hidden md:block"
+          className="absolute bottom-[20%] left-[8%] w-12 h-12 rounded-full border-4 border-brand-orange/20 bg-brand-orange/8 flex items-center justify-center font-display font-black text-brand-orange/25 text-lg hidden md:block"
         >
           !
         </motion.div>
@@ -162,10 +162,10 @@ export default function FAQPage() {
           <div className="inline-flex items-center gap-2 bg-brand-orange border-comic-thin px-3 py-1.5 rounded-lg text-xs font-black uppercase shadow-comic-sm rotate-2 mb-4">
             <HelpCircle size={16} /> HAVE QUESTIONS?
           </div>
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF188C] mb-4">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-ink text-center drop-shadow-[4px_4px_0px_#FF9A00] mb-4">
             FREQUENTLY ASKED
           </h1>
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-pink text-center drop-shadow-[4px_4px_0px_#030404]">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-none tracking-tighter text-brand-orange text-center drop-shadow-[4px_4px_0px_#030404]">
             QUESTIONS (FAQ)
           </h1>
           <p className="text-brand-ink/80 text-xs sm:text-sm font-bold uppercase tracking-wide mt-4 max-w-md mx-auto leading-relaxed">
@@ -189,7 +189,7 @@ export default function FAQPage() {
                   }}
                   className={`comic-interactive border-comic-thin px-4 py-2.5 rounded-lg font-display shrink-0 transition-all select-none flex items-center gap-2 ${
                     isActive
-                      ? 'bg-brand-pink text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black border-brand-ink'
+                      ? 'bg-brand-orange text-brand-cloud shadow-solid-ink scale-105 -rotate-2 font-black border-brand-ink'
                       : `bg-white text-brand-ink shadow-comic-sm ${cat.color} font-bold ` + rotation
                   }`}
                 >
@@ -234,7 +234,7 @@ export default function FAQPage() {
                         </div>
                         <div
                           className={`p-2 border-2 border-brand-ink rounded-lg shadow-comic-sm shrink-0 transition-all duration-200 ${
-                            isOpen ? 'bg-brand-orange' : 'bg-brand-pink'
+                            isOpen ? 'bg-brand-orange' : 'bg-brand-orange'
                           }`}
                         >
                           {isOpen ? <Minus size={16} className="text-brand-ink" /> : <Plus size={16} className="text-brand-cloud" />}
@@ -268,7 +268,7 @@ export default function FAQPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="border-comic bg-brand-orange text-brand-ink p-10 rounded-xl shadow-comic text-center relative overflow-hidden my-8"
               >
-                <div className="relative p-5 mb-5 bg-brand-pink border-comic shadow-comic-sm rounded-lg text-brand-cloud inline-block rotate-[-3deg]">
+                <div className="relative p-5 mb-5 bg-brand-orange border-comic shadow-comic-sm rounded-lg text-brand-cloud inline-block rotate-[-3deg]">
                   <MessageSquare size={40} className="animate-bounce" />
                 </div>
                 <h3 className="font-display text-2xl sm:text-3xl font-black mb-2 uppercase tracking-tighter">
@@ -285,7 +285,7 @@ export default function FAQPage() {
         {/* Support Section */}
         <section className="mt-20 text-center relative z-10">
           <div className="border-comic bg-white text-brand-ink max-w-xl mx-auto p-6 rounded-xl shadow-comic -rotate-1">
-            <h3 className="font-display font-black text-2xl uppercase mb-2 text-brand-pink drop-shadow-[2px_2px_0px_#030404]">STILL IN A CONFUSION?</h3>
+            <h3 className="font-display font-black text-2xl uppercase mb-2 text-brand-orange drop-shadow-[2px_2px_0px_#030404]">STILL IN A CONFUSION?</h3>
             <p className="text-xs uppercase tracking-wide text-brand-ink/80 mb-5 font-bold">
               Our support team and volunteer student council are active 24/7 to resolve your doubts!
             </p>
@@ -293,7 +293,7 @@ export default function FAQPage() {
               href="https://jklu.edu.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border-comic bg-brand-pink text-brand-cloud px-5 py-2.5 font-display text-xs font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+              className="inline-flex items-center gap-2 border-comic bg-brand-orange text-brand-cloud px-5 py-2.5 font-display text-xs font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
             >
               CONTACT ADMISSIONS/STUDENT AFFAIRS OFFICE
             </a>

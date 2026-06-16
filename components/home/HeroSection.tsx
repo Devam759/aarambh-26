@@ -82,21 +82,11 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
     };
   }, []);
 
-  const stickers = [
-    {
-      src: "/images/july_14_21.webp",
-      alt: "14-21 July Sticker",
-      type: "stamp",
-      rotate: "6deg",
-      floatDelay: 0.7,
-      className: "top-[12%] right-[2%] lg:top-[16%] lg:right-[6%]",
-      imgClassName: "w-[80px] h-[80px] lg:w-[200px] lg:h-[200px]"
-    },
-  ];
+  const stickers: any[] = [];
 
   const countdownBlocks = [
     { label: 'Days', valueKey: 'days', bg: 'bg-brand-orange text-brand-ink', rotate: '-rotate-2' },
-    { label: 'Hours', valueKey: 'hours', bg: 'bg-brand-pink text-brand-cloud', rotate: 'rotate-3' },
+    { label: 'Hours', valueKey: 'hours', bg: 'bg-brand-orange text-brand-cloud', rotate: 'rotate-3' },
     { label: 'Mins', valueKey: 'mins', bg: 'bg-brand-blue text-brand-cloud', rotate: '-rotate-1' },
     { label: 'Secs', valueKey: 'secs', bg: 'bg-brand-cloud text-brand-ink', rotate: 'rotate-2' },
   ];
@@ -106,48 +96,54 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-brand-cloud text-brand-ink selection:bg-brand-pink selection:text-brand-cloud p-4 md:p-8"
+      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-brand-cloud text-brand-ink selection:bg-brand-orange selection:text-brand-cloud p-4 md:p-8"
     >
       {/* Noise overlay and grid ticks */}
       <div className="absolute inset-0 bg-halftone-black opacity-[0.03] pointer-events-none z-0" />
 
-      {/* Full-bleed Translucent Fluid Alcohol Ink Background with motion drift */}
+      {/* Translucent Fluid CSS Gradient Mesh Background with motion drift */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-        <div className="absolute inset-0 w-full h-full">
-          <motion.div
-            animate={isMobile ? {
-              y: 0,
-              x: 0,
-              skewX: 0,
-              skewY: 0,
-              scale: 1.35,
-            } : {
-              y: [0, -35, 25, -25, 15, -15, 0],
-              x: [0, 20, -20, 15, -15, 8, 0],
-              skewX: [0, 4, -4, 2.5, -2.5, 1.2, 0],
-              skewY: [0, 2, -2, 1.2, -1.2, 0.6, 0],
-              scale: [1.02, 1.08, 1.01, 1.06, 1.02],
-            }}
-            transition={isMobile ? {
-              duration: 0,
-            } : {
-              duration: 12,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <Image
-              src="/images/translucent_fluid_ink.webp"
-              alt="Translucent Fluid Alcohol Ink background"
-              fill
-              priority
-              sizes="100vw"
-              className="object-fill sm:object-cover opacity-55 sm:opacity-65 scale-[1.02] sm:scale-[1.08] filter saturate-[1.8] brightness-[1.05] sm:brightness-[1.01] contrast-[1.05] sm:saturate-100 sm:contrast-[0.99]"
-            />
-          </motion.div>
-        </div>
+        <motion.div
+          animate={isMobile ? {
+            scale: 1.25,
+            x: 0,
+            y: 0,
+          } : {
+            scale: [1, 1.15, 0.95, 1.1, 1],
+            x: [0, 50, -30, 20, 0],
+            y: [0, -40, 30, -20, 0],
+          }}
+          transition={isMobile ? {
+            duration: 0,
+          } : {
+            duration: 20,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut"
+          }}
+          className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-brand-orange/15 blur-[120px]"
+        />
+        <motion.div
+          animate={isMobile ? {
+            scale: 1.2,
+            x: 0,
+            y: 0,
+          } : {
+            scale: [1, 0.9, 1.1, 0.95, 1],
+            x: [0, -30, 40, -40, 0],
+            y: [0, 30, -20, 40, 0],
+          }}
+          transition={isMobile ? {
+            duration: 0,
+          } : {
+            duration: 24,
+            repeat: Infinity,
+            repeatType: "mirror",
+            ease: "easeInOut"
+          }}
+          className="absolute -bottom-[20%] -right-[10%] w-[65vw] h-[65vw] rounded-full bg-brand-blue/15 blur-[140px]"
+        />
+        
         {/* Subtle radial gradient overlay */}
         <div className="absolute inset-0 hidden sm:block bg-[radial-gradient(circle_at_center,rgba(245,241,229,0.75)_0%,rgba(245,241,229,0.1)_100%)] pointer-events-none" />
       </div>
@@ -159,7 +155,7 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
           style={{ x: starX1, y: starY1 }}
           animate={{ rotate: [0, 360], scale: [1, 1.12, 1] }}
           transition={{ rotate: { repeat: Infinity, duration: 25, ease: "linear" }, scale: { repeat: Infinity, duration: 6, ease: "easeInOut" } }}
-          className="absolute top-[20%] left-[28%] text-brand-pink/70"
+          className="absolute top-[20%] left-[28%] text-brand-orange/70"
         >
           <SparkleStar size={36} />
         </motion.div>
@@ -262,48 +258,50 @@ export default function HeroSection({ spawnParticles }: HeroSectionProps) {
             JK Lakshmipat University Presents
           </span>
 
-          <div className="mb-2 sm:mb-4 select-none p-1 sm:p-2 max-w-full text-center flex justify-center w-full">
-            <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl group z-20 perspective-[1500px]">
-              <div className="relative z-10 w-full flex items-center justify-center perspective-[1500px] transform-style-3d min-h-[90px] sm:min-h-[170px] md:min-h-[220px]">
-                <div className="relative w-full aspect-[550/120] z-20 pointer-events-none flex items-center justify-center">
-                  <Image
-                    src="/logos/aarambh_logo_outline.webp"
-                    alt="Aarambh '26 Logo Outline"
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
-                    className="object-contain"
-                    priority
-                  />
+          <div className="mb-4 sm:mb-8 select-none p-1 sm:p-2 max-w-full text-center flex justify-center w-full relative">
+            <div className="relative flex flex-col items-center group z-20">
+              {/* Decorative Background Glow Text */}
+              <span className="absolute text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-vanilla font-black uppercase text-brand-blue/5 tracking-wider select-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 scale-[1.15] blur-[1.5px] pointer-events-none">
+                Aarambh
+              </span>
+              
+              {/* Main Typographic Logo */}
+              <motion.h2 
+                whileHover={{ scale: 1.03, rotate: -0.5 }}
+                className="relative text-6xl sm:text-8xl md:text-9xl font-vanilla font-black uppercase tracking-wider leading-none text-brand-ink drop-shadow-[5px_5px_0px_var(--color-brand-blue)] select-none z-10 cursor-default"
+              >
+                Aarambh
+              </motion.h2>
+              
+              {/* Year Stamp Badge */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0, rotate: 12 }}
+                animate={{ opacity: 1, scale: 1, rotate: -6 }}
+                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.1, rotate: -2 }}
+                className="relative -mt-2 sm:-mt-4 z-20 cursor-pointer"
+              >
+                <span className="font-diary font-black text-2xl sm:text-4xl text-brand-orange block px-4 py-1.5 bg-brand-ink text-brand-cloud border-4 border-brand-ink shadow-[3px_3px_0px_0px_var(--color-brand-blue)]">
+                  2026
+                </span>
+              </motion.div>
 
-                  <div className="absolute inset-0 w-full h-full">
-                    <Image
-                      src="/logos/aarambh_logo_extruded.webp"
-                      alt="Aarambh '26 Logo Extruded - The Signature Welcome Festival of JK Lakshmipat University"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 512px, (max-width: 1024px) 672px, 768px"
-                      className="object-contain"
-                      priority
-                      loading="eager"
-                    />
-                  </div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="absolute top-0 -right-2 text-brand-orange z-30"
-                  >
-                    <Sparkles size={40} />
-                  </motion.div>
-                </div>
-              </div>
+              {/* Sparkle Icon Decorator */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="absolute -top-6 -right-6 text-brand-orange z-30 pointer-events-none"
+              >
+                <Sparkles size={32} className="animate-pulse" />
+              </motion.div>
             </div>
           </div>
 
           {/* Narrative Dialogue Box */}
           <div className="border-comic bg-brand-cloud text-brand-ink p-3 sm:p-4 rounded-lg max-w-4xl w-[95%] sm:w-full shadow-comic bg-halftone-black mb-4 sm:mb-6 mx-auto">
             <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-pink text-sm sm:text-base">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
+              <span className="text-brand-orange text-sm sm:text-base">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
               Where strangers become friends and dreams find direction.
             </p>
           </div>

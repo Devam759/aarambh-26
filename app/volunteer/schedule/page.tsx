@@ -130,9 +130,9 @@ export default function VolunteerSchedule() {
 
   if (error) {
     return (
-      <div className="bg-brand-pink/15 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] max-w-xl mx-auto mt-10">
+      <div className="bg-brand-orange/15 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] max-w-xl mx-auto mt-10">
         <div className="flex gap-4 items-center">
-          <AlertCircle className="text-brand-pink shrink-0" size={32} />
+          <AlertCircle className="text-brand-orange shrink-0" size={32} />
           <div>
             <h2 className="font-adminHeading text-xl font-black uppercase text-brand-ink">Schedule Error</h2>
             <p className="text-xs uppercase font-bold text-admin-muted mt-1">{error}</p>
@@ -166,7 +166,7 @@ export default function VolunteerSchedule() {
                 onClick={() => setSelectedDateStr(dateObj.value)}
                 className={`flex-shrink-0 w-28 h-24 border-4 border-brand-ink rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all ${
                   isSelected
-                    ? 'bg-brand-pink text-white shadow-[4px_4px_0px_0px_#030404] -translate-x-[2px] -translate-y-[2px]'
+                    ? 'bg-brand-orange text-white shadow-[4px_4px_0px_0px_#030404] -translate-x-[2px] -translate-y-[2px]'
                     : 'bg-white text-brand-ink hover:bg-brand-cloud shadow-[4px_4px_0px_0px_#030404] hover:-translate-x-[1px] hover:-translate-y-[1px]'
                 }`}
               >
@@ -187,7 +187,7 @@ export default function VolunteerSchedule() {
 
       {/* Selected Date Details */}
       <div className="max-w-3xl bg-white border-4 border-brand-ink p-6 rounded-md shadow-[6px_6px_0px_0px_#030404]">
-        <h2 className="text-xs font-black uppercase tracking-widest text-brand-pink mb-6 border-b-2 border-brand-ink/10 pb-2 flex items-center gap-1.5">
+        <h2 className="text-xs font-black uppercase tracking-widest text-brand-orange mb-6 border-b-2 border-brand-ink/10 pb-2 flex items-center gap-1.5">
           <CalendarIcon size={14} />
           Schedule Details — {formatDateFriendly(selectedDateStr)}
         </h2>

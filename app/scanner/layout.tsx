@@ -20,7 +20,7 @@ export default function ScannerLayout({ children }: { children: React.ReactNode 
           
           {/* Global White Header Bar - Minimal Style */}
           <header className="sticky top-0 left-0 right-0 z-30 bg-white px-6 h-16 flex items-center justify-end border-b-2 border-brand-ink flex-shrink-0">
-            <span className="hidden md:inline-block font-adminHeading text-xs md:text-sm font-black uppercase tracking-widest text-brand-pink border-2 border-brand-ink bg-brand-pink/15 px-3.5 py-1.5 rounded-md shadow-[2px_2px_0px_0px_#030404]">
+            <span className="hidden md:inline-block font-adminHeading text-xs md:text-sm font-black uppercase tracking-widest text-brand-orange border-2 border-brand-ink bg-brand-orange/15 px-3.5 py-1.5 rounded-md shadow-[2px_2px_0px_0px_#030404]">
               Scanner Team
             </span>
           </header>

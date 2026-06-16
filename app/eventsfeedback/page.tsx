@@ -364,7 +364,7 @@ export default function AnonymousFeedbackSubmitPage() {
                   }}
                   className={`comic-interactive border-2 shrink-0 py-2.5 px-5 font-display text-xs font-black uppercase tracking-wider transition-all rounded-md cursor-pointer ${
                     isActive
-                      ? 'bg-brand-pink text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                      ? 'bg-brand-orange text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
                       : 'bg-white text-brand-ink/65 border-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink'
                   }`}
                 >
@@ -443,7 +443,7 @@ export default function AnonymousFeedbackSubmitPage() {
                           type="text"
                           value={currentComment}
                           onChange={(e) => handleRatingCommentChange(q.id, e.target.value)}
-                          className="w-full bg-white border-2 border-brand-ink rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-pink text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
+                          className="w-full bg-white border-2 border-brand-ink rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-orange text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
                           placeholder="What went well or what could be improved?"
                         />
                       </div>
@@ -465,7 +465,7 @@ export default function AnonymousFeedbackSubmitPage() {
                         rows={3}
                         value={textValue}
                         onChange={(e) => handleTextValueChange(q.id, e.target.value)}
-                        className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 focus:outline-none focus:border-brand-pink text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner resize-y min-h-[80px]"
+                        className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner resize-y min-h-[80px]"
                         placeholder="Your response..."
                       />
                     </div>
@@ -477,8 +477,8 @@ export default function AnonymousFeedbackSubmitPage() {
 
           {/* Warnings and errors */}
           {error && (
-            <div className="p-3 bg-brand-pink/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center justify-center shadow-comic-sm max-w-md mx-auto">
-              <CustomWarningIcon className="text-brand-pink shrink-0" size={16} />
+            <div className="p-3 bg-brand-orange/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center justify-center shadow-comic-sm max-w-md mx-auto">
+              <CustomWarningIcon className="text-brand-orange shrink-0" size={16} />
               <span className="uppercase tracking-wide">{error}</span>
             </div>
           )}

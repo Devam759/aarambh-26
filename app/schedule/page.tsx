@@ -318,7 +318,7 @@ export default function SchedulePage() {
                     {/* Event details */}
                     <div className="flex gap-4 items-center flex-grow">
                       <div className="space-y-2 w-full">
-                        <h3 className="font-display text-lg sm:text-xl font-black uppercase leading-tight tracking-tight text-brand-ink hover:text-brand-pink transition-colors pr-20">
+                        <h3 className="font-display text-lg sm:text-xl font-black uppercase leading-tight tracking-tight text-brand-ink hover:text-brand-orange transition-colors pr-20">
                           {event.title}
                         </h3>
                         <div className="flex flex-wrap items-center gap-2 mt-2">

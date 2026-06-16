@@ -268,7 +268,7 @@ export default function VolunteerSidebar() {
         <div className="p-4 border-t-2 border-brand-ink bg-white">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-md border-2 border-transparent text-admin-muted hover:border-brand-ink hover:bg-brand-pink/15 hover:text-brand-pink hover:font-black hover:shadow-[3px_3px_0px_0px_#030404] transition-all duration-100 cursor-pointer"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-md border-2 border-transparent text-admin-muted hover:border-brand-ink hover:bg-brand-orange/15 hover:text-brand-orange hover:font-black hover:shadow-[3px_3px_0px_0px_#030404] transition-all duration-100 cursor-pointer"
           >
             <CustomLogoutIcon size={18} />
             <span className="text-sm tracking-wide uppercase font-black text-xs">Logout</span>

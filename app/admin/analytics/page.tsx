@@ -639,7 +639,7 @@ export default function AdminFeedbackAnalytics() {
             onClick={() => setActiveTab('analytics')}
             className={`px-4 py-2 font-display text-[10px] font-black uppercase tracking-wider rounded-md cursor-pointer transition-all ${
               activeTab === 'analytics'
-                ? 'bg-brand-pink text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                ? 'bg-brand-orange text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
                 : 'text-brand-ink/65 hover:bg-brand-cloud'
             }`}
             id="subnav-toggle-analytics"
@@ -650,7 +650,7 @@ export default function AdminFeedbackAnalytics() {
             onClick={() => setActiveTab('configurator')}
             className={`px-4 py-2 font-display text-[10px] font-black uppercase tracking-wider rounded-md cursor-pointer transition-all ${
               activeTab === 'configurator'
-                ? 'bg-brand-pink text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                ? 'bg-brand-orange text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
                 : 'text-brand-ink/65 hover:bg-brand-cloud'
             }`}
             id="subnav-toggle-configurator"
@@ -675,7 +675,7 @@ export default function AdminFeedbackAnalytics() {
               <select
                 value={selectedDayFilter}
                 onChange={(e) => setSelectedDayFilter(e.target.value)}
-                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full md:w-60"
+                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full md:w-60"
               >
                 <option value="all">All Days Combined</option>
                 {SCHEDULE_DATA.map((day) => (
@@ -704,8 +704,8 @@ export default function AdminFeedbackAnalytics() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white border-4 border-brand-ink p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg flex items-center gap-5">
-                  <div className="p-3 border-2 border-brand-ink bg-brand-pink/15 rounded-md shadow-comic-sm shrink-0">
-                    <CustomMessageIcon size={24} className="text-brand-pink" />
+                  <div className="p-3 border-2 border-brand-ink bg-brand-orange/15 rounded-md shadow-comic-sm shrink-0">
+                    <CustomMessageIcon size={24} className="text-brand-orange" />
                   </div>
                   <div>
                     <span className="block text-[9px] font-black uppercase text-brand-ink/50 tracking-wider">
@@ -830,7 +830,7 @@ export default function AdminFeedbackAnalytics() {
                 <div className="flex-1 overflow-y-auto space-y-6 pr-2 scrollbar-thin">
                   {dynamicTextAnswers.map((stream) => (
                     <div key={stream.qId} className="space-y-3">
-                      <span className="block text-[10px] font-black uppercase text-brand-pink tracking-wider border-b border-brand-ink/10 pb-1 font-mono">
+                      <span className="block text-[10px] font-black uppercase text-brand-orange tracking-wider border-b border-brand-ink/10 pb-1 font-mono">
                         Topic: {stream.label}
                       </span>
                       <div className="space-y-3">
@@ -897,7 +897,7 @@ export default function AdminFeedbackAnalytics() {
                         <td className="p-4 border-r-2 border-brand-ink text-center">
                           <div className="flex items-center justify-center gap-1.5">
                             <div className="w-12 bg-brand-cloud border border-brand-ink/20 rounded h-2 overflow-hidden">
-                              <div className="h-full bg-brand-pink" style={{ width: `${row.fiveStars}%` }} />
+                              <div className="h-full bg-brand-orange" style={{ width: `${row.fiveStars}%` }} />
                             </div>
                             <span className="font-black text-[10px]">{row.fiveStars}%</span>
                           </div>
@@ -942,7 +942,7 @@ export default function AdminFeedbackAnalytics() {
                   const idx = SCHEDULE_DATA.findIndex(d => d.day === e.target.value);
                   if (idx !== -1) setConfigActiveDayIdx(idx);
                 }}
-                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-black rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full uppercase tracking-wider"
+                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-black rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full uppercase tracking-wider"
               >
                 {SCHEDULE_DATA.map((day, idx) => (
                   <option key={day.day} value={day.day}>
@@ -964,7 +964,7 @@ export default function AdminFeedbackAnalytics() {
           {/* Success Dialog Banner */}
           {saveSuccess && (
             <div className="bg-brand-cloud border-4 border-brand-ink p-4 shadow-[4px_4px_0px_0px_#FF9A00] rounded-lg flex items-center gap-3 animate-bounce">
-              <CustomCheckIcon className="text-brand-pink shrink-0" size={20} />
+              <CustomCheckIcon className="text-brand-orange shrink-0" size={20} />
               <p className="text-xs font-mono font-black uppercase tracking-wider text-brand-ink">
                 Questionnaire settings saved successfully to Firestore!
               </p>
@@ -996,7 +996,7 @@ export default function AdminFeedbackAnalytics() {
                 <button
                   type="button"
                   onClick={() => handleAddQuestion('text')}
-                  className="bg-brand-cloud hover:bg-brand-pink/15 border-2 border-brand-ink text-brand-ink font-black py-2 px-3 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md text-[10px] uppercase font-mono tracking-wider cursor-pointer"
+                  className="bg-brand-cloud hover:bg-brand-orange/15 border-2 border-brand-ink text-brand-ink font-black py-2 px-3 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md text-[10px] uppercase font-mono tracking-wider cursor-pointer"
                 >
                   + Add Text Question
                 </button>
@@ -1024,7 +1024,7 @@ export default function AdminFeedbackAnalytics() {
                       <span className={`inline-block border border-brand-ink/20 font-mono text-[8px] font-black uppercase px-2 py-0.5 rounded shrink-0 ${
                         q.type === 'rating' 
                           ? 'bg-brand-orange/10 text-brand-orange' 
-                          : 'bg-brand-pink/10 text-brand-pink'
+                          : 'bg-brand-orange/10 text-brand-orange'
                       }`}>
                         {q.type === 'rating' ? '★ Star Rating' : '✏️ Text Question'}
                       </span>
@@ -1033,7 +1033,7 @@ export default function AdminFeedbackAnalytics() {
                         type="text"
                         value={q.label}
                         onChange={(e) => handleUpdateQuestionLabel(q.id, e.target.value)}
-                        className="bg-white border-b-2 border-brand-ink/20 focus:border-brand-pink text-xs font-bold text-brand-ink px-2 py-1.5 focus:outline-none transition-colors w-full md:w-[480px]"
+                        className="bg-white border-b-2 border-brand-ink/20 focus:border-brand-orange text-xs font-bold text-brand-ink px-2 py-1.5 focus:outline-none transition-colors w-full md:w-[480px]"
                         placeholder="Define item question label here..."
                         required
                       />
@@ -1043,7 +1043,7 @@ export default function AdminFeedbackAnalytics() {
                     <button
                       type="button"
                       onClick={() => handleRemoveQuestion(q.id)}
-                      className="bg-brand-pink/10 text-brand-pink hover:bg-brand-pink hover:text-white border border-brand-pink/30 hover:border-brand-ink py-2 px-4 shadow-[2px_2px_0px_0px_#FF188C] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 rounded text-[9px] uppercase font-mono font-black tracking-wider cursor-pointer shrink-0 self-end md:self-auto"
+                      className="bg-brand-orange/10 text-brand-orange hover:bg-brand-orange hover:text-white border border-brand-orange/30 hover:border-brand-ink py-2 px-4 shadow-[2px_2px_0px_0px_#FF9A00] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 rounded text-[9px] uppercase font-mono font-black tracking-wider cursor-pointer shrink-0 self-end md:self-auto"
                     >
                       Delete Item
                     </button>

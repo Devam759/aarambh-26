@@ -177,20 +177,20 @@ export default function Footer() {
           
           <ul className="space-y-4 text-xs font-mono text-brand-ink leading-relaxed font-bold">
             <li className="flex items-start gap-3">
-              <LocationIcon className="text-brand-pink shrink-0 mt-0.5" size={18} />
+              <LocationIcon className="text-brand-orange shrink-0 mt-0.5" size={18} />
               <span>
                 JK Lakshmipat University, Near Mahindra SEZ, Ajmer Road, Jaipur, Rajasthan 302026
               </span>
             </li>
             <li className="flex items-center gap-3">
-              <PhoneIcon className="text-brand-pink shrink-0" size={16} />
-              <a href="tel:+911417107500" className="hover:text-brand-pink transition-colors">
+              <PhoneIcon className="text-brand-orange shrink-0" size={16} />
+              <a href="tel:+911417107500" className="hover:text-brand-orange transition-colors">
                 +91 141 7107500
               </a>
             </li>
             <li className="flex items-center gap-3">
-              <EmailIcon className="text-brand-pink shrink-0" size={16} />
-              <a href="mailto:info@jklu.edu.in" className="hover:text-brand-pink transition-colors">
+              <EmailIcon className="text-brand-orange shrink-0" size={16} />
+              <a href="mailto:info@jklu.edu.in" className="hover:text-brand-orange transition-colors">
                 info@jklu.edu.in
               </a>
             </li>
@@ -208,17 +208,17 @@ export default function Footer() {
           
           <ul className="grid grid-cols-1 gap-2 text-xs font-mono text-brand-ink/80 font-bold">
             <li>
-              <Link href="/#about" className="hover:text-brand-pink transition-colors">
+              <Link href="/#about" className="hover:text-brand-orange transition-colors">
                 About
               </Link>
             </li>
             <li>
-              <Link href="/schedule" className="hover:text-brand-pink transition-colors">
+              <Link href="/schedule" className="hover:text-brand-orange transition-colors">
                 Schedule
               </Link>
             </li>
             <li>
-              <Link href="/speakers" className="hover:text-brand-pink transition-colors">
+              <Link href="/speakers" className="hover:text-brand-orange transition-colors">
                 Speakers
               </Link>
             </li>
@@ -227,33 +227,33 @@ export default function Footer() {
                 href="https://jklu.edu.in" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="hover:text-brand-pink transition-colors"
+                className="hover:text-brand-orange transition-colors"
               >
                 University Website
               </a>
             </li>
             <li>
-              <Link href="/privacy" className="hover:text-brand-pink transition-colors">
+              <Link href="/privacy" className="hover:text-brand-orange transition-colors">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="hover:text-brand-pink transition-colors">
+              <Link href="/terms" className="hover:text-brand-orange transition-colors">
                 Terms & Conditions
               </Link>
             </li>
             <li>
-              <Link href="/refund" className="hover:text-brand-pink transition-colors">
+              <Link href="/refund" className="hover:text-brand-orange transition-colors">
                 Refund & Cancellation Policy
               </Link>
             </li>
             <li>
-              <Link href="/rules" className="hover:text-brand-pink transition-colors">
+              <Link href="/rules" className="hover:text-brand-orange transition-colors">
                 Rules & Regulations
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-brand-pink transition-colors">
+              <Link href="/contact" className="hover:text-brand-orange transition-colors">
                 Contact Us
               </Link>
             </li>
@@ -284,7 +284,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X (Twitter)"
-              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-pink hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
+              className="w-10 h-10 bg-white border-2 border-brand-ink text-brand-ink hover:bg-brand-orange hover:text-white active:translate-y-1 transition-all rounded-md flex justify-center items-center shadow-[3px_3px_0px_0px_#030404] cursor-pointer"
             >
               <XIcon size={16} />
             </a>
@@ -352,11 +352,11 @@ export default function Footer() {
       <div className="relative z-20 text-center text-[10px] sm:text-xs md:text-sm font-mono text-brand-ink/65 tracking-wider font-bold mb-10 max-w-7xl mx-auto border-b-2 border-brand-ink/10 pb-6 flex flex-wrap items-center justify-center gap-1.5 uppercase">
         <Link 
           href="/credits" 
-          className="hover:text-brand-pink transition-colors flex flex-wrap items-center justify-center gap-1.5 cursor-pointer px-4 py-2 sm:p-0"
+          className="hover:text-brand-orange transition-colors flex flex-wrap items-center justify-center gap-1.5 cursor-pointer px-4 py-2 sm:p-0"
           id="tech-credits-link"
         >
           <span>Designed and Developed with</span>
-          <HeartIcon className="text-brand-pink shrink-0 animate-pulse" size={14} />
+          <HeartIcon className="text-brand-orange shrink-0 animate-pulse" size={14} />
           <span>by Tech Team</span>
         </Link>
       </div>
@@ -397,7 +397,7 @@ export default function Footer() {
           </a>
           <button
             onClick={scrollToTop}
-            className="w-10 h-10 bg-brand-pink text-white border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-orange active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#030404] transition-all rounded-md flex justify-center items-center cursor-pointer"
+            className="w-10 h-10 bg-brand-orange text-white border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-orange active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#030404] transition-all rounded-md flex justify-center items-center cursor-pointer"
             aria-label="Scroll back to top"
             id="scroll-to-top-btn"
           >

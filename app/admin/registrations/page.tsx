@@ -307,9 +307,9 @@ export default function Registrations() {
           )}
         </div>
         
-        <div className="bg-brand-pink/10 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
-          <h2 className="text-xs font-black text-brand-pink uppercase tracking-widest mb-1.5">Today's Registrations</h2>
-          <p className="font-adminHeading text-6xl font-black text-brand-pink">
+        <div className="bg-brand-orange/10 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
+          <h2 className="text-xs font-black text-brand-orange uppercase tracking-widest mb-1.5">Today's Registrations</h2>
+          <p className="font-adminHeading text-6xl font-black text-brand-orange">
             {loading ? '-' : todaysRegistrationsCount}
           </p>
         </div>
@@ -348,7 +348,7 @@ export default function Registrations() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-pink focus:bg-white transition-all uppercase tracking-wider"
+            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-orange focus:bg-white transition-all uppercase tracking-wider"
             placeholder="Search Name, Application Number, or Email..."
           />
         </div>
@@ -379,16 +379,16 @@ export default function Registrations() {
             <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
-                  <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('name')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('name')}>
                     Name {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('rollNumber')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('rollNumber')}>
                     Application Number {sortField === 'rollNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('email')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('email')}>
                     Contact Details {sortField === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-pink select-none" onClick={() => handleSort('registeredAt')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('registeredAt')}>
                     Registration Time {sortField === 'registeredAt' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="p-4">Entry Status</th>

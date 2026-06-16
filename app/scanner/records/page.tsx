@@ -88,15 +88,15 @@ export default function ScanRecordsView() {
 
         {/* Total Declined Card */}
         <div className="bg-white border-4 border-brand-ink p-5 rounded-md shadow-[4px_4px_0px_0px_#030404]">
-          <h3 className="text-[10px] font-black uppercase tracking-wider text-brand-pink mb-2">Declined Entries</h3>
-          <p className="font-adminHeading text-3xl font-black text-brand-pink">{stats.declined}</p>
+          <h3 className="text-[10px] font-black uppercase tracking-wider text-brand-orange mb-2">Declined Entries</h3>
+          <p className="font-adminHeading text-3xl font-black text-brand-orange">{stats.declined}</p>
         </div>
       </div>
 
       {/* Filter and Records Panel */}
       <div className="bg-white border-4 border-brand-ink p-6 rounded-md shadow-[6px_6px_0px_0px_#030404] space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
-          <h2 className="text-xs font-black uppercase tracking-widest text-brand-pink">
+          <h2 className="text-xs font-black uppercase tracking-widest text-brand-orange">
             Processed Ticket Records
           </h2>
 
@@ -139,7 +139,7 @@ export default function ScanRecordsView() {
                       <span className={`inline-flex items-center gap-1.5 text-[9px] font-black uppercase border px-2 py-0.5 rounded-sm shadow-[1.5px_1.5px_0px_0px_#030404] ${
                         isAccepted 
                           ? 'text-green-600 border-green-600/30 bg-green-50 shadow-green-600/40' 
-                          : 'text-brand-pink border-brand-pink/30 bg-brand-pink/5 shadow-brand-pink/40'
+                          : 'text-brand-orange border-brand-orange/30 bg-brand-orange/5 shadow-brand-orange/40'
                       }`}>
                         {isAccepted ? <Check size={10} className="stroke-[3]" /> : <X size={10} className="stroke-[3]" />}
                         {isAccepted ? 'Approved' : 'Declined'}

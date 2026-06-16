@@ -192,7 +192,7 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
 };
 
 const getCardTheme = (borderColor?: string): CardTheme => {
-  const hex = (borderColor || '#FF188C').toUpperCase();
+  const hex = (borderColor || '#FF9A00').toUpperCase();
   const rgb = hexToRgb(hex);
 
   // Set card background to black (brand dark ink color)
@@ -259,7 +259,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       title: 'Morgan Blake',
       subtitle: 'UI/UX Designer',
       handle: '@morganblake',
-      borderColor: '#FF188C',
+      borderColor: '#FF9A00',
       location: 'Design'
     }
   ];
@@ -324,7 +324,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 <div
                   className="absolute inset-1.5 xs:inset-2 -z-20 translate-x-1 translate-y-1 xs:translate-x-2 xs:translate-y-2 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
                   style={{
-                    backgroundColor: c.borderColor || '#FF188C',
+                    backgroundColor: c.borderColor || '#FF9A00',
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
@@ -351,7 +351,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 <div className="flex justify-center w-full mt-1 xs:mt-2 shrink-0 z-10">
                   <div
                     className="relative w-[78%] aspect-[3/5] shrink-0 rounded-lg overflow-hidden border bg-[#030404]/5 shadow-[4px_4px_0px_0px_rgba(3,4,4,0.15)]"
-                    style={{ borderColor: c.borderColor || '#FF188C' }}
+                    style={{ borderColor: c.borderColor || '#FF9A00' }}
                   >
                     {c.image ? (
                       <Image
@@ -366,7 +366,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                     ) : (
                       <div
                         className="w-full h-full flex items-center justify-center font-display font-black text-3xl select-none"
-                        style={{ backgroundColor: c.borderColor || '#FF188C', color: '#030404' }}
+                        style={{ backgroundColor: c.borderColor || '#FF9A00', color: '#030404' }}
                       >
                         {initials}
                       </div>
@@ -416,7 +416,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                         }
                       }}
                       className="w-8 h-8 text-[#F5F1E5]/70 hover:bg-[var(--hover-color)] hover:text-[#030404] hover:shadow-[0px_0px_6px_rgba(245,241,229,0.1)] transition-all rounded flex justify-center items-center cursor-pointer"
-                      style={{ '--hover-color': c.borderColor || '#FF188C' } as React.CSSProperties}
+                      style={{ '--hover-color': c.borderColor || '#FF9A00' } as React.CSSProperties}
                       aria-label={item.label}
                     >
                       {item.icon}
@@ -466,7 +466,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 <div
                   className="absolute inset-1.5 xs:inset-2 -z-20 -translate-x-1 translate-y-1 xs:-translate-x-2 xs:translate-y-2 group-hover:-translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-300"
                   style={{
-                    backgroundColor: c.borderColor || '#FF188C',
+                    backgroundColor: c.borderColor || '#FF9A00',
                     filter: 'url(#torn-card-filter)'
                   }}
                 />
@@ -553,7 +553,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                         }
                       }}
                       className="w-8 h-8 xs:w-9 xs:h-9 border text-[#F5F1E5] hover:bg-[#F5F1E5] hover:border-[#F5F1E5] hover:text-[#030404] transition-all rounded flex justify-center items-center cursor-pointer animate-fadeIn"
-                      style={{ borderColor: c.borderColor || '#FF188C' }}
+                      style={{ borderColor: c.borderColor || '#FF9A00' }}
                       aria-label={item.label}
                     >
                       {item.icon}

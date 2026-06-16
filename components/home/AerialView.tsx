@@ -8,7 +8,7 @@ export default function AerialView() {
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
         <div className="flex justify-center mb-12 select-none">
           <h2 className="font-display font-black text-3xl md:text-5xl uppercase tracking-wider text-brand-black">
-            Aerial View of <span className="text-brand-pink">JKLU</span> Campus
+            Aerial View of <span className="text-brand-orange">JKLU</span> Campus
           </h2>
         </div>
         <div className="w-full relative border-2 border-brand-ink/10 rounded-2xl overflow-hidden bg-brand-ink">

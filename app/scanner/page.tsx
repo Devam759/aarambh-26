@@ -372,7 +372,7 @@ export default function ScannerView() {
             {!cameraActive && (
               <div className="absolute inset-0 h-full w-full flex flex-col items-center justify-center p-6 text-center bg-brand-cloud z-20">
                 <div className="p-3 border-2 border-brand-ink bg-white text-brand-ink rounded-md shadow-[2px_2px_0px_0px_#030404] mb-3 animate-in zoom-in-75">
-                  <AlertCircle className="text-brand-pink" size={24} />
+                  <AlertCircle className="text-brand-orange" size={24} />
                 </div>
                 <h3 className="font-adminHeading text-lg font-black uppercase text-brand-ink">Camera Stopped</h3>
               </div>
@@ -381,7 +381,7 @@ export default function ScannerView() {
             {/* Error Placeholder overlay - z-20 to cover the viewfinder */}
             {cameraActive && cameraError && (
               <div className="absolute inset-0 h-full w-full flex flex-col items-center justify-center p-8 text-center bg-white z-20">
-                <AlertCircle className="text-brand-pink mb-2" size={32} />
+                <AlertCircle className="text-brand-orange mb-2" size={32} />
                 <p className="text-[10px] font-bold text-brand-ink uppercase tracking-widest font-adminBody">Camera Access Blocked</p>
               </div>
             )}

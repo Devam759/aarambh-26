@@ -10,7 +10,7 @@ export default function ThemeBackground() {
       <div className="absolute inset-0 bg-halftone-black opacity-30 pointer-events-none" />
       
       {/* Abstract comic background shapes */}
-      <div className="absolute top-12 left-12 w-64 h-64 bg-brand-pink/15 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute top-12 left-12 w-64 h-64 bg-brand-orange/15 rounded-full blur-[80px] pointer-events-none" />
       <div className="absolute bottom-20 right-20 w-[450px] h-[450px] bg-brand-orange/15 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Huge Tilted आरम्भ 26 Watermark */}

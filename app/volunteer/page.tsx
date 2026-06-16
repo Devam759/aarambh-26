@@ -191,9 +191,9 @@ export default function VolunteerDashboard() {
 
   if (error) {
     return (
-      <div className="bg-brand-pink/15 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] max-w-xl mx-auto mt-10">
+      <div className="bg-brand-orange/15 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] max-w-xl mx-auto mt-10">
         <div className="flex gap-4 items-center">
-          <AlertCircle className="text-brand-pink shrink-0" size={32} />
+          <AlertCircle className="text-brand-orange shrink-0" size={32} />
           <div>
             <h2 className="font-adminHeading text-xl font-black uppercase text-brand-ink">Authentication Error</h2>
             <p className="text-xs uppercase font-bold text-admin-muted mt-1">{error}</p>
@@ -221,7 +221,7 @@ export default function VolunteerDashboard() {
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
             className={`p-2.5 border-2 border-brand-ink rounded-md shadow-[2px_2px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all relative cursor-pointer ${
-              unreadCount > 0 ? 'bg-brand-pink text-white' : 'bg-white text-brand-ink hover:bg-brand-cloud'
+              unreadCount > 0 ? 'bg-brand-orange text-white' : 'bg-white text-brand-ink hover:bg-brand-cloud'
             }`}
             title="Notifications"
           >
@@ -239,8 +239,8 @@ export default function VolunteerDashboard() {
               {/* Notifications Dropdown */}
               <div className="absolute right-0 mt-2.5 w-80 bg-white border-4 border-brand-ink rounded-md shadow-[6px_6px_0px_0px_#030404] z-50 p-4 max-h-96 overflow-y-auto space-y-3">
                 <div className="flex justify-between items-center border-b-2 border-brand-ink/10 pb-1.5">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-brand-pink flex items-center gap-1.5">
-                    <Bell size={13} className="text-brand-pink" />
+                  <h3 className="text-xs font-black uppercase tracking-widest text-brand-orange flex items-center gap-1.5">
+                    <Bell size={13} className="text-brand-orange" />
                     Notifications
                   </h3>
                   {notifications.length > 0 && (
@@ -249,7 +249,7 @@ export default function VolunteerDashboard() {
                         handleClearAllNotifications();
                         setShowNotifications(false);
                       }}
-                      className="text-[9px] font-black uppercase text-brand-pink hover:underline cursor-pointer"
+                      className="text-[9px] font-black uppercase text-brand-orange hover:underline cursor-pointer"
                     >
                       Clear All
                     </button>
@@ -273,7 +273,7 @@ export default function VolunteerDashboard() {
                         }`}
                       >
                         {!notif.read && (
-                          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-pink rounded-full" />
+                          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-orange rounded-full" />
                         )}
                         <h4 className="text-[11px] font-black uppercase tracking-wide pr-3">{notif.title}</h4>
                         <p className="text-[10px] font-bold mt-0.5 leading-relaxed text-brand-ink/80">{notif.message}</p>
@@ -299,7 +299,7 @@ export default function VolunteerDashboard() {
         
         {/* ASSIGNED DUTIES TIMELINE */}
         <div>
-          <h2 className="text-xs font-black uppercase tracking-widest text-brand-pink mb-4 border-b-2 border-brand-ink/10 pb-1">
+          <h2 className="text-xs font-black uppercase tracking-widest text-brand-orange mb-4 border-b-2 border-brand-ink/10 pb-1">
             Assigned Duties Timeline
           </h2>
 
@@ -314,7 +314,7 @@ export default function VolunteerDashboard() {
                   <div key={duty.id} className="relative">
                     {/* Timeline node marker */}
                     <span className={`absolute -left-[42px] top-1.5 w-6 h-6 border-4 border-brand-ink rounded-full flex items-center justify-center shadow-[1px_1px_0px_0px_#030404] ${
-                      isCompleted ? 'bg-brand-pink' : isActive ? 'bg-brand-blue' : 'bg-brand-orange'
+                      isCompleted ? 'bg-brand-orange' : isActive ? 'bg-brand-blue' : 'bg-brand-orange'
                     }`}>
                       <div className="w-1.5 h-1.5 bg-brand-ink rounded-full" />
                     </span>
@@ -323,7 +323,7 @@ export default function VolunteerDashboard() {
                     <div className="bg-white border-4 border-brand-ink p-5 rounded-md shadow-[4px_4px_0px_0px_#030404] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#030404]">
                       <div className="flex justify-between items-start gap-4 flex-wrap mb-3">
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-brand-pink">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-brand-orange">
                             {formatDateFriendly(duty.dutyDate)}
                           </span>
                           {duty.eventTitle && (
@@ -338,7 +338,7 @@ export default function VolunteerDashboard() {
                         </div>
                         <span className={`inline-block px-2.5 py-1 border-2 border-brand-ink rounded-md text-[9px] font-black uppercase tracking-wider shadow-[1px_1px_0px_0px_#030404] ${
                           isCompleted
-                            ? 'bg-brand-pink/15 text-brand-pink'
+                            ? 'bg-brand-orange/15 text-brand-orange'
                             : isActive
                             ? 'bg-brand-blue/15 text-brand-blue'
                             : 'bg-brand-orange/15 text-brand-orange'

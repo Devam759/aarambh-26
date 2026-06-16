@@ -15,9 +15,9 @@ export const RULES_DATA: RuleItem[] = [
     title: "Campus Movement Restrictions",
     description: "Exit from campus is strictly prohibited from the day of hostel check-in until the conclusion of AARAMBH-2026. All students must remain inside the secure campus boundaries at all times.",
     badge: "🚫",
-    color: "bg-brand-pink",
+    color: "bg-brand-blue",
     textColor: "text-brand-cloud",
-    shadowColor: "shadow-solid-pink",
+    shadowColor: "shadow-solid-blue",
     tag: "CAMPUS LOCKDOWN"
   },
   {
@@ -55,9 +55,9 @@ export const RULES_DATA: RuleItem[] = [
     title: "Cooperation with Volunteer Teams",
     description: "Cooperation with Volunteers: All students are expected to cooperate fully with the AARAMBH volunteers and adhere to the instructions and guidelines provided by them throughout the program.",
     badge: "🤝",
-    color: "bg-brand-pink",
-    textColor: "text-brand-cloud",
-    shadowColor: "shadow-solid-pink",
+    color: "bg-brand-orange",
+    textColor: "text-brand-ink",
+    shadowColor: "shadow-solid-orange",
     tag: "TEAM EFFORT"
   }
 ];

@@ -712,7 +712,7 @@ export default function DutyManagement() {
       {/* DUTY ASSIGNMENT FORM CARD */}
       {/* ==================================================================== */}
       <div className="bg-white border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404]">
-        <h2 className="text-xs font-black uppercase tracking-widest text-brand-pink mb-6 border-b-2 border-brand-ink/10 pb-2">
+        <h2 className="text-xs font-black uppercase tracking-widest text-brand-orange mb-6 border-b-2 border-brand-ink/10 pb-2">
           New Duty Assignment Form
         </h2>
 
@@ -739,7 +739,7 @@ export default function DutyManagement() {
                     setSelectedDate(e.target.value);
                     setSelectedEventTitle(''); // Clear selected event on date change
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   {DUTY_DATES.map((dt) => (
                     <option key={dt.value} value={dt.value}>{dt.label}</option>
@@ -774,7 +774,7 @@ export default function DutyManagement() {
                       }
                     }
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   <option value="">No Event / General Duty</option>
                   {eventsForSelectedDate.length === 0 ? (
@@ -806,7 +806,7 @@ export default function DutyManagement() {
                     setSearchLeaderQuery('');
                     setSearchMemberQuery('');
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   <option value="">Choose Team...</option>
                   {dynamicTeams.map((teamName) => (
@@ -830,7 +830,7 @@ export default function DutyManagement() {
                       key={vol.id}
                       className="flex items-center gap-1.5 bg-[#ffffff] border-2 border-brand-ink rounded-md px-2.5 py-1 text-xs font-bold text-brand-ink shadow-[2px_2px_0px_0px_#030404]"
                     >
-                      <User size={12} className="text-brand-pink" />
+                      <User size={12} className="text-brand-orange" />
                       <span>{vol.name}</span>
                       <span className="text-[9px] px-1 bg-brand-cloud border border-brand-ink/30 rounded uppercase font-black text-admin-muted scale-90">
                         {(vol.role === 'Team Leader' && vol.team?.toLowerCase() !== 'organizing head' && vol.team?.toLowerCase() !== 'cohort leader') ? 'Ldr' : 'Mbr'}
@@ -838,7 +838,7 @@ export default function DutyManagement() {
                       <button 
                         type="button" 
                         onClick={() => handleRemoveVolunteer(vol.id)}
-                        className="text-admin-muted hover:text-brand-pink focus:outline-none transition-colors"
+                        className="text-admin-muted hover:text-brand-orange focus:outline-none transition-colors"
                       >
                         <X size={14} />
                       </button>
@@ -856,8 +856,8 @@ export default function DutyManagement() {
                   {/* Left Column: Team Leaders */}
                   <div className="bg-white border-2 border-brand-ink rounded-md shadow-[3px_3px_0px_0px_#030404] p-5 flex flex-col gap-3">
                     <div className="flex justify-between items-center mb-1">
-                      <h3 className="text-xs font-black uppercase text-brand-pink tracking-widest flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-brand-pink border border-brand-ink inline-block" />
+                      <h3 className="text-xs font-black uppercase text-brand-orange tracking-widest flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-brand-orange border border-brand-ink inline-block" />
                         Team Leaders
                       </h3>
                       <span className="text-[10px] font-black uppercase bg-brand-cloud border border-brand-ink px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#030404]">
@@ -873,7 +873,7 @@ export default function DutyManagement() {
                         placeholder="Search leader..."
                         value={searchLeaderQuery}
                         onChange={(e) => setSearchLeaderQuery(e.target.value)}
-                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-orange focus:bg-white transition-colors"
                       />
                     </div>
 
@@ -889,7 +889,7 @@ export default function DutyManagement() {
                               onClick={() => toggleVolunteerSelection(vol)}
                               className={`p-3 border-2 border-brand-ink text-[10px] font-black uppercase rounded-md text-center transition-all cursor-pointer shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[0.5px] hover:translate-y-[0.5px] hover:shadow-[1.5px_1.5px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none min-h-[44px] flex items-center justify-center break-words leading-tight ${
                                 isAssigned 
-                                  ? 'bg-brand-pink text-white shadow-none translate-x-[1px] translate-y-[1px]'
+                                  ? 'bg-brand-orange text-white shadow-none translate-x-[1px] translate-y-[1px]'
                                   : 'bg-white hover:bg-brand-cloud text-brand-ink'
                               }`}
                             >
@@ -925,7 +925,7 @@ export default function DutyManagement() {
                         placeholder="Search member..."
                         value={searchMemberQuery}
                         onChange={(e) => setSearchMemberQuery(e.target.value)}
-                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                        className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-orange focus:bg-white transition-colors"
                       />
                     </div>
 
@@ -975,7 +975,7 @@ export default function DutyManagement() {
                       required
                       value={timeFrom}
                       onChange={(e) => setTimeFrom(e.target.value)}
-                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                     />
                   </div>
                 </div>
@@ -988,7 +988,7 @@ export default function DutyManagement() {
                       required
                       value={timeTo}
                       onChange={(e) => setTimeTo(e.target.value)}
-                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                     />
                   </div>
                 </div>
@@ -1024,7 +1024,7 @@ export default function DutyManagement() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
                 placeholder="e.g. Bring official badge, check-in at main desk 10m early..."
-                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner transition-colors resize-none"
+                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner transition-colors resize-none"
               />
             </div>
           </div>
@@ -1040,7 +1040,7 @@ export default function DutyManagement() {
             </button>
             <button
               type="submit"
-              className="bg-brand-pink hover:bg-[#E0107A] text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
+              className="bg-brand-orange hover:bg-[#E68A00] text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
             >
               <Plus size={14} /> Assign Duty
             </button>
@@ -1066,7 +1066,7 @@ export default function DutyManagement() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-pink focus:bg-white transition-all uppercase tracking-wider"
+            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-orange focus:bg-white transition-all uppercase tracking-wider"
             placeholder="Search Volunteer Name..."
           />
         </div>
@@ -1168,7 +1168,7 @@ export default function DutyManagement() {
                     <td className="p-4 text-center">
                       <span className={`inline-block px-2.5 py-1 border-2 border-brand-ink rounded-md text-[9px] font-black uppercase tracking-wider ${
                         duty.status === 'completed'
-                          ? 'bg-brand-pink/15 text-brand-pink shadow-[1px_1px_0px_0px_#030404]'
+                          ? 'bg-brand-orange/15 text-brand-orange shadow-[1px_1px_0px_0px_#030404]'
                           : duty.status === 'active'
                           ? 'bg-brand-blue/15 text-brand-blue shadow-[1px_1px_0px_0px_#030404]'
                           : 'bg-brand-orange/15 text-brand-orange shadow-[1px_1px_0px_0px_#030404]'
@@ -1196,7 +1196,7 @@ export default function DutyManagement() {
                         </button>
                         <button
                           onClick={() => setDeletingDuty(duty)}
-                          className="p-1.5 border-2 border-transparent hover:border-brand-ink hover:bg-brand-pink/10 text-brand-pink rounded-md transition-all cursor-pointer focus:outline-none"
+                          className="p-1.5 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange/10 text-brand-orange rounded-md transition-all cursor-pointer focus:outline-none"
                           title="Remove Duty"
                         >
                           <Trash2 size={15} />
@@ -1244,7 +1244,7 @@ export default function DutyManagement() {
                   setEditDate(e.target.value);
                   setEditEventTitle(''); // Clear selected event on date change
                 }}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
               >
                 {DUTY_DATES.map((dt) => (
                   <option key={dt.value} value={dt.value}>{dt.label}</option>
@@ -1271,7 +1271,7 @@ export default function DutyManagement() {
                     }
                   }
                 }}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404]"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404]"
               >
                 <option value="">No Event / General Duty</option>
                 {eventsForEditDate.length === 0 ? (
@@ -1294,7 +1294,7 @@ export default function DutyManagement() {
                   required
                   value={editTimeFrom}
                   onChange={(e) => setEditTimeFrom(e.target.value)}
-                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                 />
               </div>
               <div className="space-y-1">
@@ -1304,7 +1304,7 @@ export default function DutyManagement() {
                   required
                   value={editTimeTo}
                   onChange={(e) => setEditTimeTo(e.target.value)}
-                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                 />
               </div>
             </div>
@@ -1328,7 +1328,7 @@ export default function DutyManagement() {
                 required
                 value={editStatus}
                 onChange={(e) => setEditStatus(e.target.value)}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404]"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404]"
               >
                 <option value="upcoming">Upcoming</option>
                 <option value="active">Active</option>
@@ -1342,7 +1342,7 @@ export default function DutyManagement() {
                 value={editNotes}
                 onChange={(e) => setEditNotes(e.target.value)}
                 rows={2}
-                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-2.5 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner resize-none"
+                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-2.5 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner resize-none"
               />
             </div>
 
@@ -1356,7 +1356,7 @@ export default function DutyManagement() {
               </button>
               <button 
                 type="submit" 
-                className="bg-brand-pink text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
+                className="bg-brand-orange text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
               >
                 Save Changes
               </button>
@@ -1374,7 +1374,7 @@ export default function DutyManagement() {
         title="Delete Duty Assignment"
       >
         <div className="space-y-6 text-brand-ink">
-          <div className="flex items-center gap-4 text-brand-pink bg-brand-pink/10 p-4 border-2 border-brand-ink rounded-md">
+          <div className="flex items-center gap-4 text-brand-orange bg-brand-orange/10 p-4 border-2 border-brand-ink rounded-md">
             <AlertCircle size={28} className="shrink-0" />
             <p className="text-xs font-bold uppercase leading-relaxed">
               Are you sure you want to remove the duty assignment for <strong>{deletingDuty?.volunteerName}</strong> at <strong>{deletingDuty?.venue}</strong>? This action cannot be undone.
@@ -1390,7 +1390,7 @@ export default function DutyManagement() {
             </button>
             <button 
               onClick={handleDeleteDuty} 
-              className="bg-brand-pink text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
+              className="bg-brand-orange text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
             >
               Remove Duty
             </button>

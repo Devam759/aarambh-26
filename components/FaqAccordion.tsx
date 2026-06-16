@@ -14,7 +14,7 @@ export default function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="w-full py-24 px-4 bg-brand-pink text-brand-ink relative overflow-hidden border-t-4 border-brand-ink">
+    <section className="w-full py-24 px-4 bg-brand-orange text-brand-ink relative overflow-hidden border-t-4 border-brand-ink">
       <div className="absolute inset-0 bg-halftone-black opacity-10 pointer-events-none" />
       
       <div className="max-w-4xl mx-auto relative z-10">

@@ -17,26 +17,26 @@ const LinkedInIcon = () => (
 );
 
 const THEMES = [
-  { primary: '#FF188C', highlight: '#FF9A00', accent: '#0D21DD' },
-  { primary: '#FF9A00', highlight: '#FF188C', accent: '#030404' },
-  { primary: '#030404', highlight: '#FF9A00', accent: '#FF188C' },
-  { primary: '#FF188C', highlight: '#FF188C', accent: '#FF9A00' },
-  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF188C' },
-  { primary: '#030404', highlight: '#FF188C', accent: '#FF9A00' },
-  { primary: '#FF188C', highlight: '#FF9A00', accent: '#030404' },
-  { primary: '#FF9A00', highlight: '#FF188C', accent: '#030404' },
-  { primary: '#030404', highlight: '#FF9A00', accent: '#FF188C' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#0D21DD' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
+  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
+  { primary: '#FF9A00', highlight: '#FF9A00', accent: '#030404' },
+  { primary: '#030404', highlight: '#FF9A00', accent: '#FF9A00' },
 ];
 
 const CARD_COLORS = [
-  { border: '#FF188C', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
-  { border: '#030404', shadow: '#FF188C', bg: '#FF188C', text: '#F5F1E5' },
-  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#030404' },
-  { border: '#FF188C', shadow: '#FF9A00', bg: '#FF188C', text: '#030404' },
+  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
   { border: '#030404', shadow: '#FF9A00', bg: '#FF9A00', text: '#F5F1E5' },
-  { border: '#FF9A00', shadow: '#FF188C', bg: '#FF188C', text: '#030404' },
-  { border: '#FF188C', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
-  { border: '#030404', shadow: '#FF188C', bg: '#FF188C', text: '#F5F1E5' },
+  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#030404' },
+  { border: '#FF9A00', shadow: '#FF9A00', bg: '#FF9A00', text: '#030404' },
+  { border: '#030404', shadow: '#FF9A00', bg: '#FF9A00', text: '#F5F1E5' },
+  { border: '#FF9A00', shadow: '#FF9A00', bg: '#FF9A00', text: '#030404' },
+  { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#F5F1E5' },
+  { border: '#030404', shadow: '#FF9A00', bg: '#FF9A00', text: '#F5F1E5' },
   { border: '#FF9A00', shadow: '#030404', bg: '#FF9A00', text: '#030404' }
 ];
 
@@ -275,14 +275,14 @@ export default function SpeakersSection() {
       style={isLargeScreen ? { height: `${((SPEAKERS_DATA.length - 1) * SCROLL_SPEED_FACTOR * 100) + 100}vh` } : undefined} 
     >
       <div
-        className="relative lg:sticky lg:top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#FF188C] selection:text-[#F5F1E5]"
+        className="relative lg:sticky lg:top-0 w-full h-[100dvh] bg-[#F5F1E5] overflow-hidden font-sans selection:bg-[#FF9A00] selection:text-[#F5F1E5]"
         style={{ backgroundImage: 'radial-gradient(rgba(13, 33, 221, 0.07) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}
       >
         {/* Soft Fluid Aura Blobs (Zero Black) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
           <motion.div
             className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] rounded-full opacity-[0.08]"
-            style={{ background: '#FF188C', filter: 'blur(120px)' }}
+            style={{ background: '#FF9A00', filter: 'blur(120px)' }}
             animate={{ x: [0, 20, 0], y: [0, 10, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -302,7 +302,7 @@ export default function SpeakersSection() {
             return (
               <div
                 key={idx}
-                className="absolute left-0 top-1/2 h-[1px] bg-brand-pink/20 origin-left"
+                className="absolute left-0 top-1/2 h-[1px] bg-brand-orange/20 origin-left"
                 style={{
                   width: '120vw',
                   transform: `translateY(-50%) rotate(${angle}deg)`,
@@ -336,7 +336,7 @@ export default function SpeakersSection() {
 
             {/* Decorative ring — rotates for visual effect only, no speaker children */}
             <div
-              className="absolute rounded-full border-[8px] border-[#030404] bg-[#F5F1E5]/40 backdrop-blur-sm shadow-[8px_8px_0px_#FF188C]"
+              className="absolute rounded-full border-[8px] border-[#030404] bg-[#F5F1E5]/40 backdrop-blur-sm shadow-[8px_8px_0px_#FF9A00]"
               style={{
                 width: `${2 * R}px`,
                 height: `${2 * R}px`,
@@ -368,9 +368,9 @@ export default function SpeakersSection() {
                     left: `${cx}px`,
                     top: '50%',
                     transform: `translate(-50%, calc(-50% + ${cy}px)) scale(${isActive ? 1.2 : 1})`,
-                    borderColor: isActive ? '#FF188C' : spColor.border,
+                    borderColor: isActive ? '#FF9A00' : spColor.border,
                     boxShadow: isActive
-                      ? `0 0 0 3px #FF188C, 4px 4px 0px ${spColor.shadow}`
+                      ? `0 0 0 3px #FF9A00, 4px 4px 0px ${spColor.shadow}`
                       : `2px 2px 0px ${spColor.shadow}`,
                     transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease',
                     willChange: 'transform',
@@ -458,7 +458,7 @@ export default function SpeakersSection() {
                 >
                   {speaker.name}
                 </h2>
-                <p className="text-brand-pink font-bold text-[9px] uppercase tracking-widest">
+                <p className="text-brand-orange font-bold text-[9px] uppercase tracking-widest">
                   {speaker.time}
                 </p>
               </motion.div>
@@ -545,9 +545,9 @@ export default function SpeakersSection() {
                     left: `calc(50% + ${cxOffset}px)`,
                     top: `${cy}px`,
                     transform: 'translate(-50%, -50%)',
-                    borderColor: isActive ? '#FF188C' : spColor.border,
+                    borderColor: isActive ? '#FF9A00' : spColor.border,
                     boxShadow: isActive
-                      ? `0 0 0 2px #FF188C, 3px 3px 0px ${spColor.shadow}`
+                      ? `0 0 0 2px #FF9A00, 3px 3px 0px ${spColor.shadow}`
                       : `1px 1px 0px ${spColor.shadow}`,
                     transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                     zIndex: isActive ? 10 : 5,
@@ -591,7 +591,7 @@ function DossierCard({
 
   // Cycle the bio reveal background color and text
   const bioBgClass = currentIndex % 3 === 0 
-    ? 'bg-[#FF188C] text-[#F5F1E5]' 
+    ? 'bg-[#FF9A00] text-[#F5F1E5]' 
     : currentIndex % 3 === 1 
       ? 'bg-[#FF9A00] text-[#030404]' 
       : 'bg-[#F5F1E5] text-[#030404]';
@@ -613,7 +613,7 @@ function DossierCard({
       className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-[400px] aspect-[3/4] group z-20"
     >
       {/* FRONT PHOTO BASE */}
-      <div className="absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF188C] md:shadow-[20px_20px_0px_#FF188C] border-[8px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden">
+      <div className="absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF9A00] md:shadow-[20px_20px_0px_#FF9A00] border-[8px] md:border-[12px] border-[#030404] bg-[#030404] overflow-hidden">
         <img
           src={speaker.image}
           alt={speaker.name}
@@ -642,7 +642,7 @@ function DossierCard({
         initial={{ clipPath: 'circle(0% at 10% 90%)' }}
         animate={{ clipPath: showBio ? 'circle(150% at 10% 90%)' : 'circle(0% at 10% 90%)' }}
         transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-        className={`absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF188C] md:shadow-[20px_20px_0px_#FF188C] border-[8px] md:border-[12px] ${bioBgClass} ${bioBorderClass} overflow-hidden p-4 md:p-8 flex flex-col justify-between z-40 cursor-default`}
+        className={`absolute inset-0 w-full h-full shadow-[16px_16px_0px_#FF9A00] md:shadow-[20px_20px_0px_#FF9A00] border-[8px] md:border-[12px] ${bioBgClass} ${bioBorderClass} overflow-hidden p-4 md:p-8 flex flex-col justify-between z-40 cursor-default`}
       >
         <div className="absolute inset-0 opacity-15 mix-blend-luminosity pointer-events-none">
           <img src={speaker.image} className="w-full h-full object-cover blur-[2px]" alt="watermark" />

@@ -32,7 +32,7 @@ export default function ContactPage() {
     >
       <div className="py-28 px-6 max-w-5xl mx-auto relative">
         {/* Decorative layout elements */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-80 h-80 bg-brand-pink/5 rounded-full blur-[90px] pointer-events-none" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-80 h-80 bg-brand-orange/5 rounded-full blur-[90px] pointer-events-none" />
 
       <header className="text-center mb-16 relative z-10">
         <h1 className="text-4xl md:text-5xl font-display font-black uppercase tracking-tight mb-4 drop-shadow-[2px_2px_0px_rgba(3,4,4,0.1)]">
@@ -57,7 +57,7 @@ export default function ContactPage() {
           </div>
           
           <div className="w-full md:w-auto p-5 border-2 border-brand-ink bg-brand-cloud rounded flex items-start gap-3.5 font-mono text-xs font-bold shadow-comic-sm">
-            <MapPin size={20} className="text-brand-pink shrink-0 mt-0.5" />
+            <MapPin size={20} className="text-brand-orange shrink-0 mt-0.5" />
             <div>
               <h4 className="text-brand-ink uppercase font-black tracking-wider mb-1">Campus Address</h4>
               <p className="text-brand-ink/75 leading-relaxed max-w-xs md:max-w-sm">
@@ -101,7 +101,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
-                        <a href={`tel:${contact.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                        <a href={`tel:${contact.phone.replace(/\s+/g, '')}`} className="hover:text-brand-orange transition-colors">
                           {contact.phone}
                         </a>
                       </div>
@@ -114,7 +114,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Email</span>
-                      <a href={`mailto:${contact.email}`} className="hover:text-brand-pink transition-colors break-all">
+                      <a href={`mailto:${contact.email}`} className="hover:text-brand-orange transition-colors break-all">
                         {contact.email}
                       </a>
                     </div>
@@ -134,12 +134,12 @@ export default function ContactPage() {
               <h2 className="text-2xl font-display font-black uppercase tracking-tight mb-2">
                 Organizing Heads
               </h2>
-              <div className="w-16 h-1 bg-brand-pink mx-auto" />
+              <div className="w-16 h-1 bg-brand-orange mx-auto" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { name: "Vedika Agrawal", phone: "+91 97722 19303", email: "vedikaagrawal@jklu.edu.in", bgColor: "bg-brand-pink text-white" },
+                { name: "Vedika Agrawal", phone: "+91 97722 19303", email: "vedikaagrawal@jklu.edu.in", bgColor: "bg-brand-orange text-white" },
                 { name: "Aman Pratap Singh", phone: "+91 94566 08637", email: "amanpratapsingh@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
                 { name: "Vaishnavi Shukla", phone: "+91 87692 76288", email: "vaishnavishukla@jklu.edu.in", bgColor: "bg-brand-blue text-white" },
                 { name: "Tanik Gupta", phone: "+91 99293 96663", email: "tanikgupta@jklu.edu.in", bgColor: "bg-brand-ink text-white" },
@@ -162,7 +162,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
-                        <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                        <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-orange transition-colors">
                           {head.phone}
                         </a>
                       </div>
@@ -173,7 +173,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Email</span>
-                        <a href={`mailto:${head.email}`} className="hover:text-brand-pink transition-colors break-all">
+                        <a href={`mailto:${head.email}`} className="hover:text-brand-orange transition-colors break-all">
                           {head.email}
                         </a>
                       </div>
@@ -196,7 +196,7 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
                 { name: "Devam Gupta", phone: "+91 73400 15201", email: "devamgupta@jklu.edu.in", bgColor: "bg-brand-blue text-white" },
-                { name: "Yash Bansal", phone: "+91 86190 11601", email: "yashbansal@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
+                { name: "Yash Bansal", phone: "+91 86190 11601", email: "yashbansal@jklu.edu.in", bgColor: "bg-brand-orange text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -215,7 +215,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
-                        <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                        <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-orange transition-colors">
                           {head.phone}
                         </a>
                       </div>
@@ -226,7 +226,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Email</span>
-                        <a href={`mailto:${head.email}`} className="hover:text-brand-pink transition-colors break-all">
+                        <a href={`mailto:${head.email}`} className="hover:text-brand-orange transition-colors break-all">
                           {head.email}
                         </a>
                       </div>
@@ -249,7 +249,7 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               {[
                 { name: "Pratigya Bomb", phone: "+91 62646 67506", email: "pratigyabomb@jklu.edu.in", bgColor: "bg-brand-orange text-brand-ink" },
-                { name: "Kartik Sharma", phone: "+91 87693 29369", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-pink text-white" }
+                { name: "Kartik Sharma", phone: "+91 87693 29369", email: "kartiksharma2024@jklu.edu.in", bgColor: "bg-brand-orange text-white" }
               ].map((head, index) => (
                 <div
                   key={index}
@@ -269,7 +269,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                           <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
-                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-orange transition-colors">
                             {head.phone}
                           </a>
                         </div>
@@ -281,7 +281,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Email</span>
-                        <a href={`mailto:${head.email}`} className="hover:text-brand-pink transition-colors break-all">
+                        <a href={`mailto:${head.email}`} className="hover:text-brand-orange transition-colors break-all">
                           {head.email}
                         </a>
                       </div>
@@ -298,7 +298,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-display font-black uppercase tracking-tight mb-2">
                 Feedback & Registration Lead
               </h2>
-              <div className="w-16 h-1 bg-brand-pink mx-auto" />
+              <div className="w-16 h-1 bg-brand-orange mx-auto" />
             </div>
 
             <div className="grid grid-cols-1 gap-6 max-w-sm mx-auto">
@@ -323,7 +323,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                           <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Phone</span>
-                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-pink transition-colors">
+                          <a href={`tel:${head.phone.replace(/\s+/g, '')}`} className="hover:text-brand-orange transition-colors">
                             {head.phone}
                           </a>
                         </div>
@@ -335,7 +335,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <span className="text-[9px] font-black text-brand-ink/40 uppercase block leading-none mb-1">Email</span>
-                        <a href={`mailto:${head.email}`} className="hover:text-brand-pink transition-colors break-all">
+                        <a href={`mailto:${head.email}`} className="hover:text-brand-orange transition-colors break-all">
                           {head.email}
                         </a>
                       </div>

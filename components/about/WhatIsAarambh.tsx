@@ -13,7 +13,7 @@ export default function WhatIsAarambh() {
         {/* Deep sweeping base - Pink */}
         <motion.div
           className="absolute -top-[10%] -right-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-          style={{ background: '#FF188C', filter: 'blur(140px)' }}
+          style={{ background: '#FF9A00', filter: 'blur(140px)' }}
           animate={{
             x: [0, -50, 0],
             y: [0, 30, 0],

@@ -18,7 +18,6 @@
 
 @theme {
   --color-brand-orange: #FF9A00;
-  --color-brand-pink: #FF188C;
   --color-brand-blue: #0D21DD;
   --color-brand-ink: #030404;
   --color-brand-cloud: #F5F1E5;
@@ -30,8 +29,8 @@
   --color-admin-muted: #64748b;
   --color-admin-border: #e2e8f0;
 
-  --color-primary: #FF188C;
-  --color-primary-dark: #E0107A;
+  --color-primary: #FF9A00;
+  --color-primary-dark: #E68A00;
 
   --color-secondary: #0D21DD;
   --color-secondary-dark: #0A1AB8;
@@ -50,14 +49,12 @@
   --font-bricks: var(--font-bricks), "Russo One", "TT Bricks", "Outfit", sans-serif;
   --font-diary: var(--font-architectsDaughter), "Architects Daughter", cursive;
 
-  --shadow-brand-pink: 0 0 40px rgba(255, 24, 140, 0.25);
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);
 
   --shadow-comic-sm: 4px 4px 0px 0px var(--color-brand-ink);
   --shadow-comic: 8px 8px 0px 0px var(--color-brand-ink);
   --shadow-comic-lg: 12px 12px 0px 0px var(--color-brand-ink);
-  --shadow-solid-pink: 6px 6px 0px 0px var(--color-brand-pink);
   --shadow-solid-orange: 6px 6px 0px 0px var(--color-brand-orange);
   --shadow-solid-blue: 6px 6px 0px 0px var(--color-brand-blue);
   --shadow-solid-cloud: 6px 6px 0px 0px var(--color-brand-cloud);
@@ -88,7 +85,7 @@ body {
 }
 
 .btn-primary {
-  @apply bg-brand-pink hover:bg-primary-dark text-brand-cloud font-bold py-2.5 px-6 rounded-md transition-all duration-300 shadow-brand-pink hover:shadow-lg hover:scale-[1.02] active:scale-[0.98];
+  @apply bg-brand-orange hover:bg-accent-dark text-brand-ink font-bold py-2.5 px-6 rounded-md transition-all duration-300 shadow-brand-orange hover:shadow-lg hover:scale-[1.02] active:scale-[0.98];
 }
 
 .btn-accent {
@@ -101,7 +98,7 @@ body {
 
 /* Comic / Neo-Brutalist Action Buttons — used across feedback, admin, eventsfeedback pages */
 .comic-btn-primary {
-  @apply bg-brand-pink hover:bg-primary-dark text-white font-black py-3 px-6 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs;
+  @apply bg-brand-orange hover:bg-accent-dark text-brand-ink font-black py-3 px-6 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed rounded-md uppercase tracking-wider text-xs;
 }
 
 .comic-btn-orange {
@@ -113,7 +110,7 @@ body {
 }
 
 .input-field {
-  @apply bg-brand-cloud/5 border border-brand-cloud/20 rounded-md px-4 py-2.5 text-brand-cloud placeholder:text-brand-cloud/40 focus:outline-none focus:ring-2 focus:ring-brand-pink/50 focus:border-brand-pink/50 transition-all;
+  @apply bg-brand-cloud/5 border border-brand-cloud/20 rounded-md px-4 py-2.5 text-brand-cloud placeholder:text-brand-cloud/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue/50 transition-all;
 }
 
 .page-eyebrow {
@@ -133,11 +130,11 @@ body {
 }
 
 .nav-link {
-  @apply text-sm font-semibold text-brand-cloud/70 hover:text-brand-pink transition-colors;
+  @apply text-sm font-semibold text-brand-cloud/70 hover:text-brand-orange transition-colors;
 }
 
 .nav-link-active {
-  @apply text-brand-pink;
+  @apply text-brand-orange;
 }
 
 .hero-glow {
@@ -173,8 +170,13 @@ body {
   background-size: 16px 16px;
 }
 
-.bg-halftone-pink {
-  background-image: radial-gradient(var(--color-brand-pink)/15% 1.5px, transparent 1.5px);
+.bg-halftone-orange {
+  background-image: radial-gradient(var(--color-brand-orange)/15% 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.bg-halftone-blue {
+  background-image: radial-gradient(var(--color-brand-blue)/15% 1.5px, transparent 1.5px);
   background-size: 20px 20px;
 }
 
@@ -256,8 +258,13 @@ body {
 }
 
 /* Outline Text Utility */
-.text-outline-pink {
-  -webkit-text-stroke: 2px var(--color-brand-pink);
+.text-outline-orange {
+  -webkit-text-stroke: 2px var(--color-brand-orange);
+  color: transparent;
+}
+
+.text-outline-blue {
+  -webkit-text-stroke: 2px var(--color-brand-blue);
   color: transparent;
 }
 
@@ -281,13 +288,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brand-pink);
+  background: var(--color-brand-orange);
   border: 3px solid var(--color-brand-ink);
   box-shadow: inset 1px 1px 0px var(--color-brand-cloud);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand-orange);
+  background: var(--color-brand-blue);
 }
 
 /* Animated Fluid Marble Background */
@@ -299,7 +306,7 @@ body {
   height: 140%;
   overflow: hidden;
   z-index: 0;
-  background-color: #fce4ec;
+  background-color: #fffde6;
   filter: blur(60px);
   pointer-events: none;
 }
@@ -315,7 +322,7 @@ body {
 .fluid-blob-1 {
   width: 80vw;
   height: 80vw;
-  background: radial-gradient(circle, rgba(255, 24, 140, 0.6) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 154, 0, 0.6) 0%, transparent 70%);
   top: 0;
   left: 0;
   animation-duration: 25s;

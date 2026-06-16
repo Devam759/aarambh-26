@@ -686,7 +686,7 @@ export default function TeamLeaderDutyAssignment() {
   if (authLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-pink" />
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-orange" />
       </div>
     );
   }
@@ -709,7 +709,7 @@ export default function TeamLeaderDutyAssignment() {
       {/* DUTY ASSIGNMENT FORM CARD */}
       {/* ==================================================================== */}
       <div className="bg-white border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404]">
-        <h2 className="text-xs font-black uppercase tracking-widest text-brand-pink mb-6 border-b-2 border-brand-ink/10 pb-2">
+        <h2 className="text-xs font-black uppercase tracking-widest text-brand-orange mb-6 border-b-2 border-brand-ink/10 pb-2">
           New Duty Assignment Form
         </h2>
 
@@ -736,7 +736,7 @@ export default function TeamLeaderDutyAssignment() {
                     setSelectedDate(e.target.value);
                     setSelectedEventTitle('');
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   {DUTY_DATES.map((dt) => (
                     <option key={dt.value} value={dt.value}>{dt.label}</option>
@@ -769,7 +769,7 @@ export default function TeamLeaderDutyAssignment() {
                       }
                     }
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   <option value="">No Event / General Duty</option>
                   {eventsForSelectedDate.length === 0 ? (
@@ -800,7 +800,7 @@ export default function TeamLeaderDutyAssignment() {
                     setSelectedVolunteers([]);
                     setSearchMemberQuery('');
                   }}
-                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
+                  className="w-full bg-brand-cloud/45 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-[2px_2px_0px_0px_#030404] transition-colors cursor-pointer"
                 >
                   <option value="">Choose Team...</option>
                   {dynamicTeams.map((teamName) => (
@@ -829,7 +829,7 @@ export default function TeamLeaderDutyAssignment() {
                       <button 
                         type="button" 
                         onClick={() => handleRemoveVolunteer(vol.id)}
-                        className="text-admin-muted hover:text-brand-pink focus:outline-none transition-colors"
+                        className="text-admin-muted hover:text-brand-orange focus:outline-none transition-colors"
                       >
                         <X size={14} />
                       </button>
@@ -862,7 +862,7 @@ export default function TeamLeaderDutyAssignment() {
                       placeholder="Search volunteer by name..."
                       value={searchMemberQuery}
                       onChange={(e) => setSearchMemberQuery(e.target.value)}
-                      className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white transition-colors"
+                      className="w-full bg-brand-cloud/30 border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-orange focus:bg-white transition-colors"
                     />
                   </div>
 
@@ -911,7 +911,7 @@ export default function TeamLeaderDutyAssignment() {
                       required
                       value={timeFrom}
                       onChange={(e) => setTimeFrom(e.target.value)}
-                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                     />
                   </div>
                 </div>
@@ -924,7 +924,7 @@ export default function TeamLeaderDutyAssignment() {
                       required
                       value={timeTo}
                       onChange={(e) => setTimeTo(e.target.value)}
-                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                      className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2.5 pl-9 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                     />
                   </div>
                 </div>
@@ -960,7 +960,7 @@ export default function TeamLeaderDutyAssignment() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
                 placeholder="e.g. Bring official badge, check-in at main desk 10m early..."
-                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner transition-colors resize-none"
+                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-3 text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner transition-colors resize-none"
               />
             </div>
           </div>
@@ -976,7 +976,7 @@ export default function TeamLeaderDutyAssignment() {
             </button>
             <button
               type="submit"
-              className="bg-brand-pink hover:bg-[#E0107A] text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
+              className="bg-brand-orange hover:bg-[#E68A00] text-white font-black py-3 px-6 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 flex items-center gap-2 cursor-pointer rounded-md text-xs uppercase tracking-wider"
             >
               <Plus size={14} /> Assign Duty
             </button>
@@ -1002,7 +1002,7 @@ export default function TeamLeaderDutyAssignment() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-pink focus:bg-white transition-all uppercase tracking-wider"
+            className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-3 pl-11 pr-4 text-sm text-brand-ink font-bold placeholder:text-brand-ink/40 shadow-inner focus:outline-none focus:border-brand-orange focus:bg-white transition-all uppercase tracking-wider"
             placeholder="Search Volunteer Name..."
           />
         </div>
@@ -1104,7 +1104,7 @@ export default function TeamLeaderDutyAssignment() {
                     <td className="p-4 text-center">
                       <span className={`inline-block px-2.5 py-1 border-2 border-brand-ink rounded-md text-[9px] font-black uppercase tracking-wider ${
                         duty.status === 'completed'
-                          ? 'bg-brand-pink/15 text-brand-pink shadow-[1px_1px_0px_0px_#030404]'
+                          ? 'bg-brand-orange/15 text-brand-orange shadow-[1px_1px_0px_0px_#030404]'
                           : duty.status === 'active'
                           ? 'bg-brand-blue/15 text-brand-blue shadow-[1px_1px_0px_0px_#030404]'
                           : 'bg-brand-orange/15 text-brand-orange shadow-[1px_1px_0px_0px_#030404]'
@@ -1132,7 +1132,7 @@ export default function TeamLeaderDutyAssignment() {
                         </button>
                         <button
                           onClick={() => setDeletingDuty(duty)}
-                          className="p-1.5 border-2 border-transparent hover:border-brand-ink hover:bg-brand-pink/10 text-brand-pink rounded-md transition-all cursor-pointer focus:outline-none"
+                          className="p-1.5 border-2 border-transparent hover:border-brand-ink hover:bg-brand-orange/10 text-brand-orange rounded-md transition-all cursor-pointer focus:outline-none"
                           title="Remove Duty"
                         >
                           <Trash2 size={15} />
@@ -1180,7 +1180,7 @@ export default function TeamLeaderDutyAssignment() {
                   setEditDate(e.target.value);
                   setEditEventTitle('');
                 }}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404] transition-colors cursor-pointer"
               >
                 {DUTY_DATES.map((dt) => (
                   <option key={dt.value} value={dt.value}>{dt.label}</option>
@@ -1207,7 +1207,7 @@ export default function TeamLeaderDutyAssignment() {
                     }
                   }
                 }}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404]"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404]"
               >
                 <option value="">No Event / General Duty</option>
                 {eventsForEditDate.length === 0 ? (
@@ -1230,7 +1230,7 @@ export default function TeamLeaderDutyAssignment() {
                   required
                   value={editTimeFrom}
                   onChange={(e) => setEditTimeFrom(e.target.value)}
-                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                 />
               </div>
               <div className="space-y-1">
@@ -1240,7 +1240,7 @@ export default function TeamLeaderDutyAssignment() {
                   required
                   value={editTimeTo}
                   onChange={(e) => setEditTimeTo(e.target.value)}
-                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner"
+                  className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner"
                 />
               </div>
             </div>
@@ -1264,7 +1264,7 @@ export default function TeamLeaderDutyAssignment() {
                 required
                 value={editStatus}
                 onChange={(e) => setEditStatus(e.target.value)}
-                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink shadow-[1px_1px_0px_0px_#030404]"
+                className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange shadow-[1px_1px_0px_0px_#030404]"
               >
                 <option value="upcoming">Upcoming</option>
                 <option value="active">Active</option>
@@ -1278,7 +1278,7 @@ export default function TeamLeaderDutyAssignment() {
                 value={editNotes}
                 onChange={(e) => setEditNotes(e.target.value)}
                 rows={2}
-                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-2.5 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-pink focus:bg-white shadow-inner resize-none"
+                className="w-full bg-brand-cloud/40 border-2 border-brand-ink rounded-md p-2.5 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-orange focus:bg-white shadow-inner resize-none"
               />
             </div>
 
@@ -1292,7 +1292,7 @@ export default function TeamLeaderDutyAssignment() {
               </button>
               <button 
                 type="submit" 
-                className="bg-brand-pink text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
+                className="bg-brand-orange text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
               >
                 Save Changes
               </button>
@@ -1310,7 +1310,7 @@ export default function TeamLeaderDutyAssignment() {
         title="Delete Duty Assignment"
       >
         <div className="space-y-6 text-brand-ink">
-          <div className="flex items-center gap-4 text-brand-pink bg-brand-pink/10 p-4 border-2 border-brand-ink rounded-md">
+          <div className="flex items-center gap-4 text-brand-orange bg-brand-orange/10 p-4 border-2 border-brand-ink rounded-md">
             <AlertCircle size={28} className="shrink-0" />
             <p className="text-xs font-bold uppercase leading-relaxed">
               Are you sure you want to remove the duty assignment for <strong>{deletingDuty?.volunteerName}</strong> at <strong>{deletingDuty?.venue}</strong>? This action cannot be undone.
@@ -1326,7 +1326,7 @@ export default function TeamLeaderDutyAssignment() {
             </button>
             <button 
               onClick={handleDeleteDuty} 
-              className="bg-brand-pink text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
+              className="bg-brand-orange text-white font-black px-5 py-2.5 border-2 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all text-xs uppercase tracking-wider rounded-md"
             >
               Remove Duty
             </button>

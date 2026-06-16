@@ -16,9 +16,9 @@ export default function CheckIn() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-6xl relative z-10">
         <div className="flex flex-col gap-6">
-          <div className="glass-card aspect-square flex flex-col items-center justify-center border-dashed border-2 border-brand-pink/40 relative overflow-hidden">
-            <div className="absolute inset-0 bg-brand-pink/5 animate-pulse" />
-            <Scan size={64} className="text-brand-pink mb-4 relative z-10" />
+          <div className="glass-card aspect-square flex flex-col items-center justify-center border-dashed border-2 border-brand-orange/40 relative overflow-hidden">
+            <div className="absolute inset-0 bg-brand-orange/5 animate-pulse" />
+            <Scan size={64} className="text-brand-orange mb-4 relative z-10" />
             <p className="text-brand-cloud/50 relative z-10">Camera initialization required...</p>
             <button className="btn-primary mt-6 relative z-10">Start Scanner</button>
           </div>
@@ -29,13 +29,13 @@ export default function CheckIn() {
             </h3>
             <div className="space-y-4">
               <ScanItem name="John Doe" status="Valid" time="2 mins ago" />
-              <ScanItem name="Jane Smith" status="Invalid" time="5 mins ago" color="text-brand-pink" />
+              <ScanItem name="Jane Smith" status="Invalid" time="5 mins ago" color="text-brand-orange" />
             </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-8">
-          <div className="glass-card p-8 bg-gradient-to-br from-brand-blue/20 to-brand-pink/10 border-brand-blue/20">
+          <div className="glass-card p-8 bg-gradient-to-br from-brand-blue/20 to-brand-orange/10 border-brand-blue/20">
             <h2 className="text-5xl font-display font-extrabold mb-2 text-brand-cloud">1,248</h2>
             <p className="text-brand-cloud/50 uppercase tracking-widest text-sm">Total Check-ins</p>
           </div>
@@ -43,7 +43,7 @@ export default function CheckIn() {
           <div className="glass-card p-6">
             <h3 className="text-xl font-display font-bold mb-6 text-brand-cloud">Live Attendance</h3>
             <div className="space-y-6">
-              <StatRow label="Main Auditorium" current={450} total={500} color="bg-brand-pink" />
+              <StatRow label="Main Auditorium" current={450} total={500} color="bg-brand-orange" />
               <StatRow label="Workshop Area B" current={120} total={150} color="bg-brand-orange" />
               <StatRow label="Food Court" current={890} total={1000} color="bg-brand-blue" />
             </div>

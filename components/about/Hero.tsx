@@ -14,7 +14,7 @@ export default function Hero() {
         {/* Deep sweeping base - Pink */}
         <motion.div
           className="absolute -top-[10%] -left-[10%] w-[70%] h-[80%] rounded-full opacity-[0.2]"
-          style={{ background: '#FF188C', filter: 'blur(140px)' }}
+          style={{ background: '#FF9A00', filter: 'blur(140px)' }}
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
@@ -65,7 +65,7 @@ export default function Hero() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black leading-none uppercase tracking-tight text-brand-ink mb-3 sm:mb-4">
-              ABOUT <span className="text-brand-pink">AARAMBH</span>
+              ABOUT <span className="text-brand-orange">AARAMBH</span>
             </h1>
 
             <div className="my-4 sm:my-6 border-comic bg-brand-ink p-3 sm:p-4 rounded-lg flex items-center justify-center">
@@ -79,7 +79,7 @@ export default function Hero() {
             <div className="flex gap-4 flex-wrap">
               <a 
                 href="#what-is-aarambh" 
-                className="comic-interactive group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 w-full sm:w-auto border-comic bg-brand-pink text-brand-cloud font-display font-black uppercase tracking-wider text-xs shadow-comic-sm rounded-lg"
+                className="comic-interactive group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 w-full sm:w-auto border-comic bg-brand-orange text-brand-cloud font-display font-black uppercase tracking-wider text-xs shadow-comic-sm rounded-lg"
               >
                 DISCOVER PANELS
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

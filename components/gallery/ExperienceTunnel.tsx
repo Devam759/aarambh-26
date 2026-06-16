@@ -305,7 +305,7 @@ export default function ExperienceTunnel() {
           z-index: 20;
           border-radius: 999px;
           padding: 6px 20px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 24, 140, 0.1);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 154, 0, 0.1);
           transition: all 0.3s ease;
         }
 
@@ -319,10 +319,10 @@ export default function ExperienceTunnel() {
           gap: 16px;
           background: rgba(3, 4, 4, 0.85);
           backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 24, 140, 0.35);
+          border: 1px solid rgba(255, 154, 0, 0.35);
           border-radius: 999px;
           padding: 6px 20px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 24, 140, 0.1);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 154, 0, 0.1);
           transition: all 0.3s ease;
         }
 

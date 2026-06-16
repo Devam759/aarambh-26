@@ -73,7 +73,7 @@ export function SearchableVenueSelect({
   const hasMatches = filteredSuggested.length > 0 || filteredStandard.length > 0 || showCustomGroup;
 
   // Neo-brutalist custom styling classes based on theme and icons
-  const baseTriggerClass = "w-full flex items-center justify-between border-2 border-brand-ink rounded-md text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink transition-colors cursor-pointer text-left relative";
+  const baseTriggerClass = "w-full flex items-center justify-between border-2 border-brand-ink rounded-md text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange transition-colors cursor-pointer text-left relative";
   const paddingClass = hasIcon ? "py-2.5 pl-9 pr-4" : "py-2 px-3";
   const themeClass = theme === 'cloud' 
     ? "bg-brand-cloud/45 focus:bg-white shadow-[2px_2px_0px_0px_#030404]" 
@@ -121,7 +121,7 @@ export function SearchableVenueSelect({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search venue..."
               aria-label="Search venues"
-              className="w-full bg-white border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-pink"
+              className="w-full bg-white border-2 border-brand-ink rounded-md py-1.5 pl-8 pr-3 text-xs text-brand-ink font-bold focus:outline-none focus:border-brand-orange"
               autoFocus
             />
           </div>
@@ -137,7 +137,7 @@ export function SearchableVenueSelect({
                 {/* Suggested Group */}
                 {filteredSuggested.length > 0 && (
                   <div>
-                    <div className="px-3 py-1.5 text-[9px] font-black uppercase text-brand-pink tracking-widest bg-brand-cloud/20 border-y border-brand-ink/5">
+                    <div className="px-3 py-1.5 text-[9px] font-black uppercase text-brand-orange tracking-widest bg-brand-cloud/20 border-y border-brand-ink/5">
                       Suggested (Events in this Time Slot)
                     </div>
                     {filteredSuggested.map((ven) => (
@@ -146,11 +146,11 @@ export function SearchableVenueSelect({
                         type="button"
                         onClick={() => handleSelect(ven)}
                         className={`w-full text-left px-3.5 py-2 text-xs font-bold transition-colors flex items-center justify-between hover:bg-brand-cloud/45 ${
-                          value === ven ? 'text-brand-pink bg-brand-pink/5 font-black' : 'text-brand-ink'
+                          value === ven ? 'text-brand-orange bg-brand-orange/5 font-black' : 'text-brand-ink'
                         }`}
                       >
                         <span>{ven}</span>
-                        {value === ven && <Check size={12} className="text-brand-pink shrink-0" />}
+                        {value === ven && <Check size={12} className="text-brand-orange shrink-0" />}
                       </button>
                     ))}
                   </div>

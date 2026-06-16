@@ -365,7 +365,7 @@ export default function TunnelGallery() {
           transition: all 0.2s ease-in-out;
         }
         .tunnel-exit-btn:hover {
-          background: #FF188C;
+          background: #FF9A00;
         }
         .tunnel-exit-btn:active {
           opacity: 0.85;
@@ -403,7 +403,7 @@ export default function TunnelGallery() {
           cursor: pointer;
           z-index: 100000;
         }
-        .gp-lb-close:hover { color: #FF188C; }
+        .gp-lb-close:hover { color: #FF9A00; }
 
         .gp-lb-arrow {
           position: fixed;
@@ -526,11 +526,11 @@ export default function TunnelGallery() {
                     <span style={{ 
                       fontFamily: "'Syne', sans-serif",
                       fontSize: '13px', 
-                      color: '#FF188C', 
+                      color: '#FF9A00', 
                       fontWeight: 800, 
                       letterSpacing: '0.3em', 
                       textTransform: 'uppercase', 
-                      textShadow: '0 2px 10px rgba(255, 24, 140, 0.3)'
+                      textShadow: '0 2px 10px rgba(255, 154, 0, 0.3)'
                     }}>
                       Aarambh Gallery
                     </span>
