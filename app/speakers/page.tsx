@@ -88,11 +88,11 @@ const SPEAKERS_DATA = [
   },
   {
     name: 'Mrs. Vibhuti Mehra',
-    role: 'Professional Makeup Artist',
+    role: 'Art Of Living',
     time: "Aarambh '26 · JKLU",
     image: 'https://storage.googleapis.com/aarambh-26-assets/images/speakers/Vibhuti%20Mehra.webp',
-    bio: "Vibhuti Mehra is a Professional Makeup Artist based in Jaipur, Rajasthan, and the founder of her own full-time beauty venture, Vibhuti Mehra Makeup. Coming from an educational background at Government Women Engineering College Ajmer, she successfully pivoted to pursue her passion in the beauty industry, bringing a unique blend of technical precision and creative vision to her craft.",
-    expertise: ['Makeup Artistry', 'Beauty & Cosmetics', 'Creative Styling'],
+    bio: "Vibhuti Mehra is a dedicated Art of Living faculty member and wellness advocate committed to helping individuals lead stress-free, balanced lives. An alumna of Government Women Engineering College Ajmer, she exemplifies the harmony between professional ambition and inner peace, successfully balancing her career as a creative professional with spiritual coaching. At Aarambh '26, she leads the Art of Living session, teaching students practical techniques in breathwork and meditation to enhance mental clarity, resilience, and overall well-being.",
+    expertise: ['Meditation & Breathwork', 'Stress Management', 'Holistic Wellness'],
     linkedin: 'https://www.linkedin.com/in/vibhuti-mehra/',
   },
   {
