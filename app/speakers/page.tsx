@@ -458,9 +458,7 @@ export default function SpeakersSection() {
                 >
                   {speaker.name}
                 </h2>
-                <p className="text-brand-orange font-bold text-[9px] uppercase tracking-widest">
-                  {speaker.time}
-                </p>
+
               </motion.div>
             </AnimatePresence>
           </div>
@@ -663,7 +661,6 @@ function DossierCard({
                 <h3 className="font-black text-xl md:text-3xl uppercase tracking-tighter leading-none mb-1.5 md:mb-2">
                   {speaker.name}
                 </h3>
-                <p className="opacity-80 font-bold text-[9px] md:text-xs uppercase tracking-widest mb-2 md:mb-3">{speaker.time}</p>
                 {speaker.linkedin && (
                   <a
                     href={speaker.linkedin}
@@ -684,17 +681,6 @@ function DossierCard({
           <p className="font-medium text-[11px] md:text-sm leading-relaxed mb-4 md:mb-6" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
             {speaker.bio}
           </p>
-
-          <div className="mt-auto">
-            <p className="opacity-60 text-[9px] md:text-xs font-black uppercase tracking-widest mb-2 md:mb-3">Core Focus</p>
-            <div className="flex flex-wrap gap-1.5 md:gap-2">
-              {speaker.expertise.map((skill: string, i: number) => (
-                <span key={i} className="px-1.5 md:px-2 py-0.5 md:py-1 bg-current/10 border border-current/30 text-current text-[8px] md:text-[10px] font-bold uppercase tracking-wider">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </motion.div>
     </motion.div>
