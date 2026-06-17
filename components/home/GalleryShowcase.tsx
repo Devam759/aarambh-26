@@ -45,7 +45,24 @@ export default function GalleryShowcase() {
         });
       };
 
-      await Promise.all(PHOTOS.map(p => preloadImage(p.src)));
+      const sources = PHOTOS.map(p => p.src);
+      const concurrencyLimit = 10;
+      let currentIndex = 0;
+
+      const worker = async (): Promise<void> => {
+        while (currentIndex < sources.length) {
+          const src = sources[currentIndex++];
+          if (src) {
+            await preloadImage(src);
+          }
+        }
+      };
+
+      const workers = Array.from(
+        { length: Math.min(concurrencyLimit, sources.length) },
+        () => worker()
+      );
+      await Promise.all(workers);
     } catch (err) {
       console.error("Failed to preload images:", err);
     }
@@ -53,10 +70,10 @@ export default function GalleryShowcase() {
     router.push('/gallery');
   };
 
-  const col1Images = PHOTOS.slice(0, 8).map(p => p.src);
-  const col2Images = PHOTOS.slice(8, 16).map(p => p.src);
-  const col3Images = PHOTOS.slice(16, 24).map(p => p.src);
-  const col4Images = PHOTOS.slice(24, 32).map(p => p.src);
+  const col1Images = PHOTOS.slice(0, 6).map(p => p.src);
+  const col2Images = PHOTOS.slice(6, 12).map(p => p.src);
+  const col3Images = PHOTOS.slice(12, 18).map(p => p.src);
+  const col4Images = PHOTOS.slice(18, 24).map(p => p.src);
 
   return (
     <section id="gallery-showcase" className="w-full relative z-10 bg-brand-cloud border-t-4 border-brand-ink text-brand-ink">
