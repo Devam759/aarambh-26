@@ -4,6 +4,9 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 export const metadata = {
   title: 'Contact Us | Aarambh \'26',
   description: 'Official contact directory for Aarambh \'26 at JK Lakshmipat University.',
+  alternates: {
+    canonical: '/contact',
+  },
   openGraph: {
     title: 'Contact Us | Aarambh \'26',
     description: 'Official contact directory for Aarambh \'26 at JK Lakshmipat University.',

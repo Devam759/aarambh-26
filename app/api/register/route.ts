@@ -109,7 +109,7 @@ export async function POST(req: Request) {
           order_amount: orderAmount,
           order_currency: 'INR',
           customer_details: {
-            customer_id: data.registrationNumber || `cust_${Date.now()}`,
+            customer_id: (data.registrationNumber || `cust_${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
             customer_name: data.name,
             customer_email: data.email,
             customer_phone: cleanPhone,

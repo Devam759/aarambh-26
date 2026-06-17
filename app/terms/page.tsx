@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Terms & Conditions | Aarambh \'26',
   description: 'Official terms and conditions of participation for Aarambh \'26 event registrations at JK Lakshmipat University.',
+  alternates: {
+    canonical: '/terms',
+  },
   openGraph: {
     title: 'Terms & Conditions | Aarambh \'26',
     description: 'Official terms and conditions of participation for Aarambh \'26 event registrations at JK Lakshmipat University.',

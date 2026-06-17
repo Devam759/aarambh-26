@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Refund & Cancellation Policy | Aarambh \'26',
   description: 'Official refund and cancellation policy for Aarambh \'26 registrations at JK Lakshmipat University.',
+  alternates: {
+    canonical: '/refund',
+  },
   openGraph: {
     title: 'Refund & Cancellation Policy | Aarambh \'26',
     description: 'Official refund and cancellation policy for Aarambh \'26 registrations at JK Lakshmipat University.',

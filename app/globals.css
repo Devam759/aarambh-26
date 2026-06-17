@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display&family=Outfit:wght@100..900&family=Roboto:wght@300;400;500;700&family=Russo+One&family=Tiro+Devanagari+Hindi&display=swap");
 @import "tailwindcss";
 
 @font-face {
@@ -41,13 +42,14 @@
   --color-dark: #030404;
   --color-dark-lighter: #1a1a1a;
 
-  --font-display: var(--font-display), "Outfit", system-ui, sans-serif;
-  --font-sans: "Google Sans", var(--font-sans), Roboto, system-ui, sans-serif;
-  --font-adminHeading: var(--font-adminHeading), "DM Serif Display", serif;
-  --font-adminBody: var(--font-adminBody), "DM Sans", sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-sans: "Google Sans", Roboto, system-ui, sans-serif;
+  --font-adminHeading: "DM Serif Display", serif;
+  --font-adminBody: "DM Sans", sans-serif;
   --font-vanilla: "Vanilla Extract", sans-serif;
-  --font-bricks: var(--font-bricks), "Russo One", "TT Bricks", "Outfit", sans-serif;
-  --font-diary: var(--font-architectsDaughter), "Architects Daughter", cursive;
+  --font-bricks: "Russo One", "TT Bricks", "Outfit", sans-serif;
+  --font-diary: "Architects Daughter", cursive;
+  --font-devanagari: "Tiro Devanagari Hindi", serif;
 
   --shadow-brand-orange: 0 0 40px rgba(255, 154, 0, 0.25);
   --shadow-brand-blue: 0 0 40px rgba(13, 33, 221, 0.25);

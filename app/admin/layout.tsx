@@ -4,6 +4,9 @@ import AdminLayoutWrapper from '@/components/admin/AdminLayoutWrapper';
 export const metadata: Metadata = {
   title: "Admin Panel",
   description: "Organizer administration panel for participant registrations, transactions, and logs for Aarambh '26.",
+  alternates: {
+    canonical: '/admin',
+  },
   robots: {
     index: false,
     follow: false,

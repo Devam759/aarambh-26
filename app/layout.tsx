@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
+import { OrganizationSchema } from '../components/StructuredData'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://aarambh.jklu.edu.in'),
@@ -62,63 +63,6 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
-import { 
-  Tiro_Devanagari_Hindi,
-  Outfit,
-  Roboto,
-  DM_Serif_Display,
-  DM_Sans,
-  Russo_One,
-  Architects_Daughter
-} from 'next/font/google'
-
-const tiroDevanagari = Tiro_Devanagari_Hindi({
-  weight: '400',
-  subsets: ['devanagari'],
-  variable: '--font-devanagari',
-  display: 'swap',
-})
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-display',
-  display: 'swap',
-})
-
-const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
-const dmSerifDisplay = DM_Serif_Display({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-adminHeading',
-  display: 'swap',
-})
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-adminBody',
-  display: 'swap',
-})
-
-const russoOne = Russo_One({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-bricks',
-  display: 'swap',
-})
-
-const architectsDaughter = Architects_Daughter({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-architectsDaughter',
-  display: 'swap',
-})
-
 import ConditionalLayout from '../components/layout/ConditionalLayout'
 
 export default function RootLayout({
@@ -129,53 +73,10 @@ export default function RootLayout({
   return (
     <html 
       lang="en" 
-      className={`${tiroDevanagari.variable} ${outfit.variable} ${roboto.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${russoOne.variable} ${architectsDaughter.variable}`} 
       suppressHydrationWarning
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Event",
-              "name": "Aarambh '26",
-              "startDate": "2026-07-14T09:00:00+05:30",
-              "endDate": "2026-07-21T18:00:00+05:30",
-              "eventStatus": "https://schema.org/EventScheduled",
-              "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-              "location": {
-                "@type": "Place",
-                "name": "JK Lakshmipat University Campus",
-                "address": {
-                  "@type": "PostalAddress",
-                  "streetAddress": "Near Mahindra SEZ, Ajmer Road",
-                  "addressLocality": "Jaipur",
-                  "addressRegion": "Rajasthan",
-                  "postalCode": "302026",
-                  "addressCountry": "IN"
-                }
-              },
-              "image": [
-                "https://aarambh.jklu.edu.in/aarambh-2025-poster.jpg"
-              ],
-              "description": "Aarambh '26 is the signature first-year orientation program and pop-art welcome festival of JK Lakshmipat University (JKLU), Jaipur. Experience engaging workshops, cultural nights, sports tournaments, and student club showcases.",
-              "organizer": {
-                "@type": "EducationalOrganization",
-                "name": "JK Lakshmipat University",
-                "url": "https://jklu.edu.in"
-              },
-              "offers": {
-                "@type": "Offer",
-                "url": "https://aarambh.jklu.edu.in/register",
-                "price": "2500",
-                "priceCurrency": "INR",
-                "availability": "https://schema.org/InStock",
-                "validFrom": "2026-06-01T00:00:00+05:30"
-              }
-            })
-          }}
-        />
+        <OrganizationSchema />
         <script
           dangerouslySetInnerHTML={{
             __html: `

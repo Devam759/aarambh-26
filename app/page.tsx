@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import AboutSection from '@/components/about';
 import HeroSection from '@/components/home/HeroSection';
+import { EventSchema } from '@/components/StructuredData';
 
 const GalleryShowcase = dynamic(() => import('@/components/home/GalleryShowcase'), { ssr: true });
 const SneakPeak = dynamic(() => import('@/components/home/SneakPeak'), { ssr: true });
@@ -101,6 +102,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center overflow-x-hidden relative bg-brand-cloud text-brand-ink font-sans">
+      <EventSchema />
       {/* Noise/Grain Overlay */}
       <div className="noise-overlay" />
 

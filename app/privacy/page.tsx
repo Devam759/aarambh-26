@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Privacy Policy | Aarambh \'26',
   description: 'Official privacy policy for Aarambh \'26 event registrations at JK Lakshmipat University.',
+  alternates: {
+    canonical: '/privacy',
+  },
   openGraph: {
     title: 'Privacy Policy | Aarambh \'26',
     description: 'Official privacy policy for Aarambh \'26 event registrations at JK Lakshmipat University.',

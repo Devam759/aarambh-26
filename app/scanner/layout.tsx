@@ -5,6 +5,9 @@ import { ScannerSessionProvider } from '../../components/scanner/ScannerSessionP
 export const metadata: Metadata = {
   title: "Ticket Scanner",
   description: "QR ticket validator and instant check-in registry validator dashboard for Aarambh '26 check-in desks.",
+  alternates: {
+    canonical: '/scanner',
+  },
   robots: {
     index: false,
     follow: false,

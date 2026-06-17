@@ -4,6 +4,9 @@ import Sidebar from '../../components/volunteer/Sidebar';
 export const metadata: Metadata = {
   title: "Volunteer Portal",
   description: "Scoped operational dashboard for volunteer leaders and discipline controllers of Aarambh '26.",
+  alternates: {
+    canonical: '/volunteer',
+  },
   robots: {
     index: false,
     follow: false,
