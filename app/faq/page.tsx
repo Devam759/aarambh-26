@@ -275,7 +275,7 @@ export default function FAQPage() {
                   NO QUESTIONS FOUND!
                 </h3>
                 <p className="text-brand-ink/80 text-xs sm:text-sm max-w-md mx-auto leading-relaxed font-bold uppercase">
-                  We couldn't find any questions in this category. Try choosing another category above!
+                  We couldn&apos;t find any questions in this category. Try choosing another category above!
                 </p>
               </motion.div>
             )}

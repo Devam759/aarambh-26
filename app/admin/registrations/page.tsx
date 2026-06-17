@@ -308,7 +308,7 @@ export default function Registrations() {
         </div>
         
         <div className="bg-brand-orange/10 border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
-          <h2 className="text-xs font-black text-brand-orange uppercase tracking-widest mb-1.5">Today's Registrations</h2>
+          <h2 className="text-xs font-black text-brand-orange uppercase tracking-widest mb-1.5">Today&apos;s Registrations</h2>
           <p className="font-adminHeading text-6xl font-black text-brand-orange">
             {loading ? '-' : todaysRegistrationsCount}
           </p>

@@ -105,7 +105,7 @@ export default function GlobalSearch() {
             {!hasResults && (
               <div className="text-center py-12 bg-admin-surface rounded-xl border border-admin-border text-admin-muted">
                 <SearchIcon size={48} className="mx-auto mb-4 opacity-50" />
-                <p>No results found for "{searchTerm}"</p>
+                <p>No results found for &quot;{searchTerm}&quot;</p>
               </div>
             )}
 

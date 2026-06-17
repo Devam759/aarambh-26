@@ -66,7 +66,7 @@ export default function WhatIsAarambh() {
 
             <div className="space-y-3 sm:space-y-4 border-comic bg-brand-cloud text-brand-ink p-4 sm:p-6 rounded-lg shadow-comic rotate-0 sm:rotate-1 bg-halftone-black">
               <p className="font-bold text-base sm:text-lg leading-relaxed">
-                Aarambh is JKLU's orientation program, designed to help new students connect, explore, and confidently begin their university journey.
+                Aarambh is JKLU&apos;s orientation program, designed to help new students connect, explore, and confidently begin their university journey.
               </p>
               <p className="font-bold text-base sm:text-lg leading-relaxed text-brand-ink/80">
                 More than just an introduction to campus life, it brings together engaging workshops, mentorship sessions, creative activities, and opportunities to build meaningful friendships.

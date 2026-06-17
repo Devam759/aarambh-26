@@ -45,8 +45,22 @@ export default function ScannerAccounts() {
     
     let secondaryApp;
     try {
+      const generateSecurePassword = (length = 8): string => {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const array = new Uint8Array(length);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, byte => chars[byte % chars.length]).join('');
+      };
+
+      const generateSecureScannerId = (): string => {
+        const array = new Uint16Array(1);
+        window.crypto.getRandomValues(array);
+        const num = array[0] % 10000;
+        return `SCAN-${String(num).padStart(4, '0')}`;
+      };
+
       const generatedEmail = `scanner_${Date.now()}@aarambh.com`;
-      const generatedPassword = Math.random().toString(36).slice(-8);
+      const generatedPassword = generateSecurePassword(8);
       
       // Initialize a secondary app to create a user without signing out the admin
       const secondaryAppName = `secondary_${Date.now()}`;
@@ -56,7 +70,7 @@ export default function ScannerAccounts() {
       const userCredential = await createUserWithEmailAndPassword(secondaryAuth, generatedEmail, generatedPassword);
       const uid = userCredential.user.uid;
       
-      const newScannerId = `SCAN-${Math.floor(Math.random() * 10000)}`;
+      const newScannerId = generateSecureScannerId();
       
       await setDoc(doc(db, 'scannerAccounts', uid), {
         scannerId: newScannerId,

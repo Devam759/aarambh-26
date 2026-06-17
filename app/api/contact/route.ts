@@ -27,9 +27,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validate email format (restricting length and using non-backtracking regex to prevent ReDoS)
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!email || email.length > 254 || !emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 

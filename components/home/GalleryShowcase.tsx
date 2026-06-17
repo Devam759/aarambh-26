@@ -481,7 +481,7 @@ export default function GalleryShowcase() {
               {/* Content Container */}
               <div style={{ position: 'relative', zIndex: 10 }}>
                 {/* Devanagari */}
-                <div className="gl-devanagari">आरम्भ '२६</div>
+                <div className="gl-devanagari">आरम्भ &apos;२६</div>
 
                 {/* Main heading */}
                 <h1 className="gl-heading" style={{ marginBottom: '32px' }}>

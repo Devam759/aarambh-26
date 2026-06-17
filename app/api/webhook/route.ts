@@ -117,7 +117,7 @@ export async function POST(req: Request) {
         
         if (!orderId) continue;
         
-        console.log(`Reconciling payment for Order: ${orderId}, UTR: ${paymentId}`);
+        console.log("Reconciling payment for Order:", orderId, "UTR:", paymentId);
         
         // 1. Update Firestore registration document using Admin SDK
         let docId = "";
@@ -131,12 +131,12 @@ export async function POST(req: Request) {
             await docRef.update({
               settlementId: settlementId
             });
-            console.log(`Firestore registration updated for order ${orderId} with Settlement ID ${settlementId}.`);
+            console.log("Firestore registration updated for order:", orderId, "with Settlement ID:", settlementId);
           } else {
-            console.warn(`No Firestore registration found matching order ${orderId}`);
+            console.warn("No Firestore registration found matching order:", orderId);
           }
         } catch (dbError) {
-          console.error(`Failed to update Firestore settlement for order ${orderId}:`, dbError);
+          console.error("Failed to update Firestore settlement for order:", orderId, dbError);
         }
         
         // 2. Forward reconciliation command to Google Sheets Web App
@@ -153,9 +153,9 @@ export async function POST(req: Request) {
               })
             });
             const sheetResult = await sheetRes.json();
-            console.log(`Google Sheets reconciliation outcome for order ${orderId}:`, sheetResult);
+            console.log("Google Sheets reconciliation outcome for order:", orderId, sheetResult);
           } catch (sheetError) {
-            console.error(`Failed to reconcile Google Sheets for order ${orderId}:`, sheetError);
+            console.error("Failed to reconcile Google Sheets for order:", orderId, sheetError);
           }
         }
       }

@@ -8,14 +8,22 @@ import { Modal } from '../../../components/admin/Modal';
 import { logAdminAction } from '../../../lib/audit';
 import { Plus, Trash2, Pin, Eye, EyeOff, ShieldAlert } from 'lucide-react';
 
-// Basic Markdown parser for preview
+// Basic Markdown parser for preview (HTML escaped to prevent XSS)
 function parseMarkdown(text: string) {
-  let html = text
+  if (!text) return '';
+  const safeText = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  let html = safeText
     .replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold mt-4 mb-2">$1</h3>')
     .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-bold mt-5 mb-3">$1</h2>')
     .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-bold mt-6 mb-4">$1</h1>')
-    .replace(/\\*\\*(.*?)\\*\\*/gim, '<strong>$1</strong>')
-    .replace(/\\*(.*?)\\*/gim, '<em>$1</em>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
     .replace(/\n/gim, '<br />');
   return html;
 }

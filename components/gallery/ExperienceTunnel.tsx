@@ -82,9 +82,10 @@ export default function ExperienceTunnel() {
       scene.appendChild(card);
     }
 
+    const container = tunnelRef.current;
     return () => {
-      if (tunnelRef.current) {
-        tunnelRef.current.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
       }
     };
   }, []);

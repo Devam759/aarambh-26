@@ -349,7 +349,7 @@ export default function AnonymousFeedbackSubmitPage() {
         {/* Dynamic Horizontal Neo-Brutalist Days Selector */}
         <div className="mb-10 space-y-2">
           <span className="block text-[10px] font-black uppercase text-brand-ink/60 tracking-wider">
-            Select Today's Day
+            Select Today&apos;s Day
           </span>
           <div className="flex overflow-x-auto gap-3 pb-3 scrollbar-thin">
             {SCHEDULE_DATA.map((day, idx) => {
@@ -507,7 +507,7 @@ export default function AnonymousFeedbackSubmitPage() {
 
         {/* Page Footer */}
         <p className="mt-12 text-center text-brand-ink/40 text-[9px] uppercase font-black tracking-[0.2em]">
-          JK Lakshmipat University • Aarambh '26
+          JK Lakshmipat University • Aarambh &apos;26
         </p>
       </div>
     </div>

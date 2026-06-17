@@ -520,10 +520,12 @@ function AnimatedBackground() {
 // ============================================================================
 
 const getInstagramHandle = (url: string) => {
-  if (!url || !url.includes("instagram.com")) return "";
+  if (!url) return "";
   try {
-    const cleanUrl = url.split('?')[0];
-    const parts = cleanUrl.replace(/\/$/, "").split('/');
+    const parsed = new URL(url);
+    if (parsed.hostname !== 'instagram.com' && parsed.hostname !== 'www.instagram.com') return "";
+    const cleanPath = parsed.pathname.replace(/\/$/, "");
+    const parts = cleanPath.split('/');
     const handle = parts[parts.length - 1];
     return handle && handle !== "instagram" ? `@${handle}` : "";
   } catch (e) {
@@ -532,10 +534,12 @@ const getInstagramHandle = (url: string) => {
 };
 
 const getGithubHandle = (url: string) => {
-  if (!url || !url.includes("github.com")) return "";
+  if (!url) return "";
   try {
-    const cleanUrl = url.split('?')[0];
-    const parts = cleanUrl.replace(/\/$/, "").split('/');
+    const parsed = new URL(url);
+    if (parsed.hostname !== 'github.com' && parsed.hostname !== 'www.github.com') return "";
+    const cleanPath = parsed.pathname.replace(/\/$/, "");
+    const parts = cleanPath.split('/');
     const handle = parts[parts.length - 1];
     return handle && handle !== "github" ? `${handle}` : "";
   } catch (e) {

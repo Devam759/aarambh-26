@@ -44,19 +44,29 @@ export function isRateLimited(ip: string, limit: number = 5, windowMs: number = 
  */
 export function sanitizeInput(val: any): any {
   if (typeof val === 'string') {
-    return val
-      .trim()
-      .replace(/<[^>]*>?/gm, '') // Remove HTML tags to prevent script execution
-      .replace(/[&<>"']/g, (char) => {
-        const map: { [key: string]: string } = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        };
-        return map[char] || char;
-      });
+    const text = val.trim();
+    let result = '';
+    let inTag = false;
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (char === '<') {
+        inTag = true;
+      } else if (char === '>') {
+        inTag = false;
+      } else if (!inTag) {
+        result += char;
+      }
+    }
+    return result.replace(/[&<>"']/g, (char) => {
+      const map: { [key: string]: string } = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return map[char] || char;
+    });
   }
   return val;
 }
