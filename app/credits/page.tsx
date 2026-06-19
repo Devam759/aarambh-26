@@ -465,7 +465,7 @@ const getStaggerStyle = (index: number) => {
 
 function AnimatedBackground() {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-[#00a6e6]">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-[#F5F1E5] bg-gradient-to-tr from-[#FF9A00]/[0.02] via-[#F5F1E5] to-[#0D21DD]/[0.02]">
       {/* Halftone texture */}
       <div
         className="absolute inset-0 opacity-[0.18] pointer-events-none mix-blend-multiply"
@@ -499,7 +499,7 @@ function AnimatedBackground() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute -top-40 -left-40 w-96 h-96 bg-[#FF9A00]/15 rounded-full blur-[120px]"
+        className="absolute -top-40 -left-40 w-96 h-96 bg-[#FF9A00]/[0.04] rounded-full blur-[140px]"
       />
 
       <motion.div
@@ -513,7 +513,21 @@ function AnimatedBackground() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-1/2 -right-40 w-[450px] h-[450px] bg-[#0D21DD]/20 rounded-full blur-[130px]"
+        className="absolute top-1/2 -right-40 w-[450px] h-[450px] bg-[#0D21DD]/[0.04] rounded-full blur-[150px]"
+      />
+
+      <motion.div
+        animate={{
+          x: [0, 60, -50, 0],
+          y: [0, 80, -60, 0],
+          scale: [1, 1.15, 0.9, 1]
+        }}
+        transition={{
+          duration: 24,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-1/3 -left-40 w-[400px] h-[400px] bg-[#ec4899]/[0.03] rounded-full blur-[145px]"
       />
 
       <motion.div
@@ -527,7 +541,7 @@ function AnimatedBackground() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute -bottom-40 left-1/3 w-[380px] h-[380px] bg-[#FF9A00]/15 rounded-full blur-[110px]"
+        className="absolute -bottom-40 left-1/3 w-[380px] h-[380px] bg-[#FF9A00]/[0.035] rounded-full blur-[130px]"
       />
     </div>
   );
@@ -640,119 +654,137 @@ function TeamMemberCard({
           }}
         />
 
-        {/* Outer Tech Frame Overlay (Clipped to Angled Polygon) */}
+        {/* Outer Tech Frame Overlay (Clipped with perfect flat shadow and border) */}
         <div
-          className={`absolute inset-0 ${member.bgColor || 'bg-[#8b5cf6]'} border-2 md:border-[3px] border-[#030404] transition-all duration-300 overflow-hidden shadow-[2.5px_4px_0px_#030404] md:shadow-[4px_6px_0px_#030404] md:group-hover:shadow-[6px_10px_0px_#030404]`}
+          className="absolute inset-0 transition-all duration-300"
           style={{
-            clipPath: stagger.clip
+            filter: isHovered
+              ? 'drop-shadow(4px 6px 0px #030404)'
+              : 'drop-shadow(2.5px 4px 0px #030404)'
           }}
         >
-          {/* Simple, gorgeous graphic effects that replicate the movie poster panels */}
-          {(() => {
-            if (isPratham) {
-              // Concentric Static Diamonds for Pratham
-              return (
-                <div className="absolute inset-0 opacity-[0.22] pointer-events-none flex items-center justify-center overflow-hidden">
-                  {[0.2, 0.45, 0.7, 0.95, 1.2, 1.45, 1.7].map((scale, i) => (
+          {/* Black Border Base */}
+          <div
+            className="absolute inset-0 bg-[#030404] transition-all duration-300"
+            style={{
+              clipPath: stagger.clip
+            }}
+          >
+            {/* Inner Content Card (Inset to show the black border underneath) */}
+            <div
+              className={`absolute inset-[2.5px] md:inset-[3.5px] ${member.bgColor || 'bg-[#8b5cf6]'} transition-all duration-300 overflow-hidden`}
+              style={{
+                clipPath: stagger.clip
+              }}
+            >
+              {/* Simple, gorgeous graphic effects that replicate the movie poster panels */}
+              {(() => {
+                if (isPratham) {
+                  // Concentric Static Diamonds for Pratham
+                  return (
+                    <div className="absolute inset-0 opacity-[0.22] pointer-events-none flex items-center justify-center overflow-hidden">
+                      {[0.2, 0.45, 0.7, 0.95, 1.2, 1.45, 1.7].map((scale, i) => (
+                        <div
+                          key={i}
+                          className="absolute border-2 border-white"
+                          style={{
+                            width: '75%',
+                            height: '75%',
+                            transform: `rotate(45deg) scale(${scale})`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  );
+                }
+                const effectIndex = index % 5;
+                if (effectIndex === 0) {
+                  // Comic Sunburst Rays
+                  return (
                     <div
-                      key={i}
-                      className="absolute border-2 border-white"
+                      className="absolute inset-0 opacity-[0.16] group-hover:opacity-[0.24] transition-opacity duration-300 pointer-events-none"
                       style={{
-                        width: '75%',
-                        height: '75%',
-                        transform: `rotate(45deg) scale(${scale})`,
+                        backgroundImage: 'conic-gradient(from 0deg at 50% 50%, #fff 0deg 10deg, transparent 10deg 20deg, #fff 20deg 30deg, transparent 30deg 40deg, #fff 40deg 50deg, transparent 50deg 60deg, #fff 60deg 70deg, transparent 70deg 80deg, #fff 80deg 90deg, transparent 90deg 100deg, #fff 100deg 110deg, transparent 110deg 120deg, #fff 120deg 130deg, transparent 130deg 140deg, #fff 140deg 150deg, transparent 150deg 160deg, #fff 160deg 170deg, transparent 170deg 180deg, #fff 180deg 190deg, transparent 190deg 200deg, #fff 200deg 210deg, transparent 210deg 220deg, #fff 220deg 230deg, transparent 230deg 240deg, #fff 240deg 250deg, transparent 250deg 260deg, #fff 260deg 270deg, transparent 270deg 280deg, #fff 280deg 290deg, transparent 290deg 300deg, #fff 300deg 310deg, transparent 310deg 320deg, #fff 320deg 330deg, transparent 330deg 340deg, #fff 340deg 350deg, transparent 350deg 360deg)'
                       }}
                     />
-                  ))}
-                </div>
-              );
-            }
-            const effectIndex = index % 5;
-            if (effectIndex === 0) {
-              // Comic Sunburst Rays
-              return (
-                <div
-                  className="absolute inset-0 opacity-[0.16] group-hover:opacity-[0.24] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: 'conic-gradient(from 0deg at 50% 50%, #fff 0deg 10deg, transparent 10deg 20deg, #fff 20deg 30deg, transparent 30deg 40deg, #fff 40deg 50deg, transparent 50deg 60deg, #fff 60deg 70deg, transparent 70deg 80deg, #fff 80deg 90deg, transparent 90deg 100deg, #fff 100deg 110deg, transparent 110deg 120deg, #fff 120deg 130deg, transparent 130deg 140deg, #fff 140deg 150deg, transparent 150deg 160deg, #fff 160deg 170deg, transparent 170deg 180deg, #fff 180deg 190deg, transparent 190deg 200deg, #fff 200deg 210deg, transparent 210deg 220deg, #fff 220deg 230deg, transparent 230deg 240deg, #fff 240deg 250deg, transparent 250deg 260deg, #fff 260deg 270deg, transparent 270deg 280deg, #fff 280deg 290deg, transparent 290deg 300deg, #fff 300deg 310deg, transparent 310deg 320deg, #fff 320deg 330deg, transparent 330deg 340deg, #fff 340deg 350deg, transparent 350deg 360deg)'
-                  }}
-                />
-              );
-            } else if (effectIndex === 1) {
-              // Vertical Action Speed Lines
-              return (
-                <div
-                  className="absolute inset-0 opacity-[0.12] group-hover:opacity-[0.2] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: 'repeating-linear-gradient(90deg, #fff, #fff 10px, transparent 10px, transparent 20px)'
-                  }}
-                />
-              );
-            } else if (effectIndex === 2) {
-              // Slanted Action Stripes
-              return (
-                <div
-                  className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, #fff, #fff 12px, transparent 12px, transparent 24px)'
-                  }}
-                />
-              );
-            } else if (effectIndex === 3) {
-              // Action Focus Hearts - Concentric and Ripple Outwards
-              return (
-                <div
-                  className="absolute inset-0 opacity-[0.2] group-hover:opacity-[0.32] transition-opacity duration-300 pointer-events-none flex items-center justify-center overflow-hidden"
-                >
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <motion.svg
-                      key={i}
-                      className="absolute text-white"
-                      style={{ width: '85%', height: '85%' }}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                      initial={{ scale: 0.1, opacity: 0 }}
-                      animate={{
-                        scale: 1.8,
-                        opacity: [0, 0.85, 0.85, 0.4, 0]
+                  );
+                } else if (effectIndex === 1) {
+                  // Vertical Action Speed Lines
+                  return (
+                    <div
+                      className="absolute inset-0 opacity-[0.12] group-hover:opacity-[0.2] transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        backgroundImage: 'repeating-linear-gradient(90deg, #fff, #fff 10px, transparent 10px, transparent 20px)'
                       }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        delay: i * 0.8,
-                        ease: "linear"
+                    />
+                  );
+                } else if (effectIndex === 2) {
+                  // Slanted Action Stripes
+                  return (
+                    <div
+                      className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, #fff, #fff 12px, transparent 12px, transparent 24px)'
                       }}
+                    />
+                  );
+                } else if (effectIndex === 3) {
+                  // Action Focus Hearts - Concentric and Ripple Outwards
+                  return (
+                    <div
+                      className="absolute inset-0 opacity-[0.2] group-hover:opacity-[0.32] transition-opacity duration-300 pointer-events-none flex items-center justify-center overflow-hidden"
                     >
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </motion.svg>
-                  ))}
-                </div>
-              );
-            } else {
-              // Cyber Grid Lines (replaces Halftone Action Grid Dots)
-              return (
-                <div
-                  className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
-                  style={{
-                    backgroundImage: `
+                      {[0, 1, 2, 3, 4].map((i) => (
+                        <motion.svg
+                          key={i}
+                          className="absolute text-white"
+                          style={{ width: '85%', height: '85%' }}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.8}
+                          initial={{ scale: 0.1, opacity: 0 }}
+                          animate={{
+                            scale: 1.8,
+                            opacity: [0, 0.85, 0.85, 0.4, 0]
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            delay: i * 0.8,
+                            ease: "linear"
+                          }}
+                        >
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </motion.svg>
+                      ))}
+                    </div>
+                  );
+                } else {
+                  // Cyber Grid Lines (replaces Halftone Action Grid Dots)
+                  return (
+                    <div
+                      className="absolute inset-0 opacity-[0.14] group-hover:opacity-[0.22] transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        backgroundImage: `
                       linear-gradient(to right, #fff 1.5px, transparent 1.5px),
                       linear-gradient(to bottom, #fff 1.5px, transparent 1.5px)
                     `,
-                    backgroundSize: '20px 20px'
-                  }}
-                />
-              );
-            }
-          })()}
+                        backgroundSize: '20px 20px'
+                      }}
+                    />
+                  );
+                }
+              })()}
 
-          {/* Subtle Halftone texture overlay removed to follow no-dots design */}
+              {/* Subtle Halftone texture overlay removed to follow no-dots design */}
 
-          {/* Dynamic lighting gradient overlay */}
-          <div
-            className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none bg-gradient-to-tr from-transparent via-white to-transparent"
-          />
+              {/* Dynamic lighting gradient overlay */}
+              <div
+                className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none bg-gradient-to-tr from-transparent via-white to-transparent"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Character Image - Layered to "Break the Frame" & Clipped Flush at the Bottom */}
@@ -1120,7 +1152,7 @@ export default function CreditsPage() {
   const closeModal = useCallback(() => setActiveMember(null), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#00a6e6] font-sans select-none text-[#030404]">
+    <div className="min-h-screen relative overflow-hidden bg-[#F5F1E5] font-sans select-none text-[#030404]">
       {/* Futuristic Background layers wrapping the entire page */}
       <AnimatedBackground />
 

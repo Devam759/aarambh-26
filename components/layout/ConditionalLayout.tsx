@@ -73,7 +73,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
       */}
 
       <Navbar />
-      <main className={`min-h-screen ${isCreditsPage ? 'bg-[#00a6e6]' : 'bg-brand-cloud'}`}>
+      <main className={`min-h-screen ${isCreditsPage ? 'bg-[#F5F1E5]' : 'bg-brand-cloud'}`}>
         {children}
       </main>
       {!isGalleryPage && <Footer />}
