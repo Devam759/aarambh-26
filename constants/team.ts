@@ -27,7 +27,7 @@ export const TEAM_DATA = {
   osa: [
     {
       name: "Deepak Sogani",
-      designation: "Incharge - Student Affairs",
+      designation: "Head - Student Affairs",
       photo: "https://storage.googleapis.com/aarambh-26-assets/Team Photos/Admin and Student Affairs/Deepak Sogani.webp",
       department: "Office of Student Affairs",
       socials: {
