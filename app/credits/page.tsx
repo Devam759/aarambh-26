@@ -202,7 +202,12 @@ const VOLUNTEERS: TeamMember[] = [
     glowColor: "rgba(236, 72, 153, 0.25)",
     accentColor: "#ec4899",
     icon: <Layers className="w-4 h-4" />,
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:aarav@jklu.edu.in" },
+    socials: {
+      github: "https://github.com/AshutoshYadav510",
+      linkedin: "https://www.linkedin.com/in/ashutosh-yadav-97424137b",
+      instagram: "https://www.instagram.com/ashuutosh510",
+      email: "mailto:ashutoshyadav@jklu.edu.in"
+    },
     imageScale: "scale(1.22)",
     imagePosition: "translateY(8px)",
     bgColor: "bg-[#ec4899]"
@@ -225,7 +230,12 @@ const VOLUNTEERS: TeamMember[] = [
     glowColor: "rgba(16, 185, 129, 0.25)",
     accentColor: "#10b981",
     icon: <Terminal className="w-4 h-4" />,
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:ananya@jklu.edu.in" },
+    socials: {
+      github: "https://github.com/rashioncode08",
+      linkedin: "https://www.linkedin.com/in/rashi-katiyar-2007-sky",
+      instagram: "https://www.instagram.com/rashi_8katiyar",
+      email: "mailto:Rashikatiyar@jklu.edu.in"
+    },
     imageScale: "scale(1.5)",
     imagePosition: "translateY(-18px)",
     bgColor: "bg-[#10b981]"
@@ -279,7 +289,7 @@ const VOLUNTEERS: TeamMember[] = [
     socials: {
       github: "https://github.com/goswamiaalap-svg",
       linkedin: "https://www.linkedin.com/in/aalap-goswami-1b9405377/",
-      instagram: "https://www.instagram.com/goswamiaalap/",
+      instagram: "https://www.instagram.com/_goswami_aalap_/",
       email: "mailto:aalapgoswami2025@jklu.edu.in"
     },
     imageScale: "scale(1.1)",
@@ -332,7 +342,12 @@ const VOLUNTEERS: TeamMember[] = [
     glowColor: "rgba(167, 139, 250, 0.25)",
     accentColor: "#a78bfa",
     icon: <Compass className="w-4 h-4" />,
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:zara@jklu.edu.in" },
+    socials: {
+      github: "https://github.com/ManantSrivastava",
+      linkedin: "https://www.linkedin.com/in/manant-srivastava-64140b365/",
+      instagram: "https://www.instagram.com/manantsrivastava/",
+      email: "mailto:manantsrivastava@jklu.edu.in"
+    },
     imageScale: "scale(1.15)",
     imagePosition: "translateY(6px)",
     bgColor: "bg-[#a78bfa]"
@@ -355,7 +370,12 @@ const VOLUNTEERS: TeamMember[] = [
     glowColor: "rgba(217, 70, 239, 0.25)",
     accentColor: "#d946ef",
     icon: <Zap className="w-4 h-4" />,
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com", email: "mailto:rohan@jklu.edu.in" },
+    socials: {
+      github: "https://github.com/Pratham2k07",
+      linkedin: "https://www.linkedin.com/in/pratham2k07",
+      instagram: "https://www.instagram.com/pratham_lalwani05?utm_source=qr&igsh=MXQ5ZTJyaWh0NThtcA==",
+      email: "mailto:Prathamlalwani@jklu.edu.in"
+    },
     imageScale: "scale(1.12)",
     imagePosition: "translateY(10px)",
     bgColor: "bg-[#d946ef]"
@@ -379,7 +399,7 @@ const VOLUNTEERS: TeamMember[] = [
     accentColor: "#fbbf24",
     icon: <Globe className="w-4 h-4" />,
     socials: {
-      github: "https://github.com",
+      github: "https://github.com/UditMishra2008",
       linkedin: "https://in.linkedin.com/in/udit-mishra-7696ab37a",
       instagram: "https://www.instagram.com/uditt_m_/",
       email: "mailto:uditmishra@jklu.edu.in"
@@ -408,9 +428,9 @@ const VOLUNTEERS: TeamMember[] = [
     icon: <Sparkles className="w-4 h-4" />,
     socials: {
       github: "https://github.com/amritagrawal12598-stack",
-      linkedin: "https://linkedin.com",
-      instagram: "https://instagram.com",
-      email: "mailto:amrit@jklu.edu.in"
+      linkedin: "https://www.linkedin.com/in/amrit-agrawal-b945a8364?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      instagram: "https://www.instagram.com/amrit__agrawal",
+      email: "mailto:amritagrawal@jklu.edu.in"
     },
     imageScale: "scale(1.05)",
     imagePosition: "translateY(5px)",
