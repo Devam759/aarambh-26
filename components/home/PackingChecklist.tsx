@@ -217,22 +217,7 @@ export default function PackingChecklist() {
             </ul>
           </div>
 
-          {/* Card 2: Academics */}
-          <div className="relative p-6">
-            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
-            <div className="border-b-2 border-brand-ink pb-3 mb-3">
-              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Academics</h3>
-            </div>
-            <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#0D21DD" label="Laptop / computer & charger" />
-              <ChecklistItem accentColor="#0D21DD" label="Notebooks and Writing Pads" />
-              <ChecklistItem accentColor="#0D21DD" label="Pens, pencils, and highlighters" />
-              <ChecklistItem accentColor="#0D21DD" label="Calculator (scientific)" />
-              <ChecklistItem accentColor="#0D21DD" label="Laptop Bag" />
-            </ul>
-          </div>
-
-          {/* Card 3: Room & Living */}
+          {/* Card 2: Room & Living */}
           <div className="relative p-6">
             <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
@@ -247,22 +232,22 @@ export default function PackingChecklist() {
             </ul>
           </div>
 
-          {/* Card 4: Kitchen & Food */}
+          {/* Card 3: Academics */}
           <div className="relative p-6">
             <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
-              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Kitchen & Food</h3>
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Academics</h3>
             </div>
             <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#0D21DD" label="Water bottle" />
-              <ChecklistItem accentColor="#0D21DD" label="Coffee/tea mug" />
-              <ChecklistItem accentColor="#0D21DD" label="Basic utensils (for induction)" />
-              <ChecklistItem accentColor="#0D21DD" label="Plates and Bowls" />
-              <ChecklistItem accentColor="#0D21DD" label="Non-perishable snacks" />
+              <ChecklistItem accentColor="#0D21DD" label="Laptop / computer & charger" />
+              <ChecklistItem accentColor="#0D21DD" label="Notebooks and Writing Pads" />
+              <ChecklistItem accentColor="#0D21DD" label="Pens, pencils, and highlighters" />
+              <ChecklistItem accentColor="#0D21DD" label="Calculator (scientific)" />
+              <ChecklistItem accentColor="#0D21DD" label="Laptop Bag" />
             </ul>
           </div>
 
-          {/* Card 5: Official Docs */}
+          {/* Card 4: Official Docs */}
           <div className="relative p-6">
             <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
@@ -274,6 +259,21 @@ export default function PackingChecklist() {
               <ChecklistItem accentColor="#FF9A00" label="Government-issued IDs" />
               <ChecklistItem accentColor="#FF9A00" label="Bank account information" />
               <ChecklistItem accentColor="#FF9A00" label="Emergency contacts" />
+            </ul>
+          </div>
+
+          {/* Card 5: Kitchen & Food */}
+          <div className="relative p-6">
+            <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Kitchen & Food</h3>
+            </div>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#0D21DD" label="Water bottle" />
+              <ChecklistItem accentColor="#0D21DD" label="Coffee/tea mug" />
+              <ChecklistItem accentColor="#0D21DD" label="Basic utensils (for induction)" />
+              <ChecklistItem accentColor="#0D21DD" label="Plates and Bowls" />
+              <ChecklistItem accentColor="#0D21DD" label="Non-perishable snacks" />
             </ul>
           </div>
 
@@ -292,21 +292,7 @@ export default function PackingChecklist() {
             </ul>
           </div>
 
-          {/* Card 7: Tech Gear */}
-          <div className="relative p-6">
-            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
-            <div className="border-b-2 border-brand-ink pb-3 mb-3">
-              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Tech Gear</h3>
-            </div>
-            <ul className="space-y-0.5">
-              <ChecklistItem accentColor="#FF9A00" label="Power Bank" />
-              <ChecklistItem accentColor="#FF9A00" label="Extension cord" />
-              <ChecklistItem accentColor="#FF9A00" label="Headphones or earbuds" />
-              <ChecklistItem accentColor="#FF9A00" label="Speakers (respectful volume)" />
-            </ul>
-          </div>
-
-          {/* Card 8: Recreation */}
+          {/* Card 7: Recreation */}
           <div className="relative p-6">
             <div className="absolute inset-0 bg-[#b4bef4] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
             <div className="border-b-2 border-brand-ink pb-3 mb-3">
@@ -318,6 +304,20 @@ export default function PackingChecklist() {
               <ChecklistItem accentColor="#0D21DD" label="Sports equipment" />
               <ChecklistItem accentColor="#0D21DD" label="Musical instruments" />
               <ChecklistItem accentColor="#0D21DD" label="Art supplies" />
+            </ul>
+          </div>
+
+          {/* Card 8: Tech Gear */}
+          <div className="relative p-6">
+            <div className="absolute inset-0 bg-[#ffe0b0] border border-brand-ink rounded-xl shadow-[2px_2px_0px_0px_var(--color-brand-ink)] -z-10" style={{ filter: 'url(#torn-card-filter)' }} />
+            <div className="border-b-2 border-brand-ink pb-3 mb-3">
+              <h3 className="font-display font-bold text-lg tracking-wide text-brand-ink uppercase">Tech Gear</h3>
+            </div>
+            <ul className="space-y-0.5">
+              <ChecklistItem accentColor="#FF9A00" label="Power Bank" />
+              <ChecklistItem accentColor="#FF9A00" label="Extension cord" />
+              <ChecklistItem accentColor="#FF9A00" label="Headphones or earbuds" />
+              <ChecklistItem accentColor="#FF9A00" label="Speakers (respectful volume)" />
             </ul>
           </div>
 
