@@ -1,339 +1,440 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
-import { playSynthSound } from '@/lib/sounds';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 interface HeroSectionProps {
   spawnParticles?: (x: number, y: number) => void;
 }
 
-interface TimeLeft {
-  days: number;
-  hours: number;
-  mins: number;
-  secs: number;
-}
+/**
+ * Premium "rocket launch" hero entrance.
+ *
+ * Layering (back -> front):
+ *   1. Light left background + cosmic SVG (blue circle, orbit rings, dots, icon badges) — STATIC, visible on load.
+ *   2. Rocket (+ exhaust trail) — launches up from below the viewport.
+ *   3. Animated flame — burst while the rocket is moving, fades as it settles.
+ *   4. Clouds — rise from below the viewport with a layered stagger.
+ *   5. Headline overlay (HTML) on the left.
+ *
+ * The whole scene lives inside ONE SVG so the rocket / clouds stay pixel-aligned
+ * with the circle and orbit rings at any size. Rocket & clouds are <motion.g>
+ * that animate `translateY` only (GPU-friendly), settling exactly at the design
+ * positions with no bounce/overshoot. Plays once per session; respects
+ * prefers-reduced-motion.
+ */
 
-const SparkleStar = ({ className, size = 32 }: { className?: string; size?: number }) => (
-  <svg viewBox="0 0 100 100" width={size} height={size} className={className} fill="currentColor">
-    <path d="M50 0 C50 35, 65 50, 100 50 C65 50, 50 65, 50 100 C50 65, 35 50, 0 50 C35 50, 50 35, 50 0 Z" />
-  </svg>
-);
+// accel at start, smooth deceleration, ends flat -> no overshoot
+const LAUNCH_EASE = [0.32, 0, 0.16, 1] as const;
+// gentle ease-out for the rising clouds / text
+const RISE_EASE = [0.16, 1, 0.3, 1] as const;
+
+// How far (in SVG user units) the rocket starts below its final spot.
+const ROCKET_DROP = 900; // pushes the rocket fully below the viewport
+
+// Cloud bank built from the uploaded cloud cutouts (public/clouds), overlapped
+// across the bottom and anchored below the fold so the floor is gap-free. Ordered
+// back -> front; widths are vw, left/bottom are % of the section.
+const CLOUD_LAYERS = [
+  { src: '/clouds/cloud2.webp', width: '46vw', left: '-12%', bottom: '-13%', delay: 0.5, blur: 1 },
+  { src: '/clouds/cloud4.webp', width: '44vw', left: '14%', bottom: '-15%', delay: 0.46, blur: 0.6 },
+  { src: '/clouds/cloud1.webp', width: '66vw', left: '20%', bottom: '-8%', delay: 0.4, blur: 0 },
+  { src: '/clouds/cloud3.webp', width: '42vw', left: '50%', bottom: '-14%', delay: 0.54, blur: 0.6 },
+  { src: '/clouds/cloud2.webp', width: '44vw', left: '70%', bottom: '-12%', delay: 0.48, blur: 0.8 },
+];
+
+// Portrait needs much wider clouds to fill the narrow viewport bottom.
+const CLOUD_LAYERS_MOBILE = [
+  { src: '/clouds/cloud2.webp', width: '125vw', left: '-30%', bottom: '-5%', delay: 0.5, blur: 1 },
+  { src: '/clouds/cloud4.webp', width: '105vw', left: '-15%', bottom: '-6%', delay: 0.46, blur: 0.6 },
+  { src: '/clouds/cloud1.webp', width: '180vw', left: '-40%', bottom: '-2%', delay: 0.4, blur: 0 },
+  { src: '/clouds/cloud3.webp', width: '110vw', left: '24%', bottom: '-5%', delay: 0.54, blur: 0.6 },
+];
+
+// Continuous smoke puffs from the nozzle (each loops forever; staggered so the
+// stream is unbroken). y/dx are SVG-unit drifts; peak is the max opacity.
+const SMOKE_PUFFS = [
+  { r: 32, peak: 0.78, scale: 2.1, y: 104, dx: -36, dur: 2.2, delay: 0.0 },
+  { r: 28, peak: 0.7, scale: 2.3, y: 124, dx: 32, dur: 2.4, delay: 0.4 },
+  { r: 34, peak: 0.8, scale: 2.0, y: 94, dx: 16, dur: 2.0, delay: 0.8 },
+  { r: 30, peak: 0.74, scale: 2.2, y: 116, dx: -26, dur: 2.3, delay: 1.2 },
+  { r: 29, peak: 0.66, scale: 2.4, y: 130, dx: 38, dur: 2.5, delay: 1.6 },
+  { r: 33, peak: 0.76, scale: 2.1, y: 100, dx: -12, dur: 2.1, delay: 2.0 },
+];
+
+// Module-level flag: resets on a real page load/refresh, but persists across
+// client-side (Link) navigation. So the entrance plays once per actual page load
+// and does NOT replay every time the user navigates back to the homepage.
+let heroEntrancePlayed = false;
 
 export default function HeroSection({ spawnParticles }: HeroSectionProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Play the launch on a fresh page load/reload, but not on client-side navigation
+  // back to home (the module flag above is still set). It never loops and never
+  // re-triggers on scroll. The only opt-out is the OS "reduce motion" setting.
+  const [play] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    if (heroEntrancePlayed) return false;
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    } catch {
+      /* matchMedia unavailable — fall through and play */
+    }
+    return true;
+  });
 
-  // Mouse coordinates tracking for smooth parallax depth
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  // Mark as played shortly after mount. Delayed so React StrictMode's dev-only
+  // unmount/remount doesn't set it before the real entrance runs.
+  useEffect(() => {
+    if (!play) return;
+    const id = window.setTimeout(() => {
+      heroEntrancePlayed = true;
+    }, 600);
+    return () => window.clearTimeout(id);
+  }, [play]);
 
-  const springX = useSpring(mouseX, { stiffness: 60, damping: 22 });
-  const springY = useSpring(mouseY, { stiffness: 60, damping: 22 });
+  // The nozzle smoke loops continuously (even after the entrance settles and on
+  // navigation back) — disabled only for "reduce motion".
+  const [reduce] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch {
+      return false;
+    }
+  });
 
-  // Parallax drifts for background outlined elements
-  const starX1 = useTransform(springX, [-0.5, 0.5], [35, -35]);
-  const starY1 = useTransform(springY, [-0.5, 0.5], [25, -25]);
-  const starX2 = useTransform(springX, [-0.5, 0.5], [-45, 45]);
-  const starY2 = useTransform(springY, [-0.5, 0.5], [-15, 15]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const normalizedX = (e.clientX - rect.left) / rect.width - 0.5;
-    const normalizedY = (e.clientY - rect.top) / rect.height - 0.5;
-    mouseX.set(normalizedX);
-    mouseY.set(normalizedY);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, mins: 0, secs: 0 });
-  const [isMobile, setIsMobile] = useState(false);
+  // "wide" = landscape-ish viewport → banner layout (text left, wide scene).
+  // Otherwise (portrait phones AND portrait tablets) → stacked layout.
+  // Computed synchronously so the first paint already has the right framing
+  // (avoids a one-frame desktop->portrait flash on reload).
+  const [wide, setWide] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.innerWidth / window.innerHeight >= 1.1;
+  });
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    const targetDate = new Date('2026-07-14T09:00:00').getTime();
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-      if (difference < 0) {
-        clearInterval(interval);
-        return;
-      }
-      setTimeLeft({
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        mins: Math.floor((difference / 1000 / 60) % 60),
-        secs: Math.floor((difference / 1000) % 60),
-      });
-    }, 1000);
-
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      clearInterval(interval);
-    };
+    const check = () => setWide(window.innerWidth / window.innerHeight >= 1.1);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
 
-  const stickers: any[] = [];
+  // Animation prop helpers ---------------------------------------------------
+  const launch = (delay: number) =>
+    play
+      ? {
+          initial: { y: ROCKET_DROP },
+          animate: { y: 0 },
+          transition: { duration: 1.15, delay, ease: LAUNCH_EASE },
+        }
+      : { initial: false as const, animate: { y: 0 } };
 
-  const countdownBlocks = [
-    { label: 'Days', valueKey: 'days', bg: 'bg-brand-orange text-brand-ink', rotate: '-rotate-2' },
-    { label: 'Hours', valueKey: 'hours', bg: 'bg-brand-orange text-brand-cloud', rotate: 'rotate-3' },
-    { label: 'Mins', valueKey: 'mins', bg: 'bg-brand-blue text-brand-cloud', rotate: '-rotate-1' },
-    { label: 'Secs', valueKey: 'secs', bg: 'bg-brand-cloud text-brand-ink', rotate: 'rotate-2' },
-  ];
+  // Cloud images rise from below the viewport (translateY by their own height).
+  const riseCloud = (delay: number) =>
+    play
+      ? {
+          initial: { y: '125%' },
+          animate: { y: '0%' },
+          transition: { duration: 1, delay, ease: RISE_EASE },
+        }
+      : { initial: false as const, animate: { y: '0%' } };
+
+  const fadeUp = (delay: number) =>
+    play
+      ? {
+          initial: { opacity: 0, y: 26 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.7, delay, ease: RISE_EASE },
+        }
+      : { initial: false as const, animate: { opacity: 1, y: 0 } };
+
+  const flameAnim = play
+    ? {
+        initial: { opacity: 0, scaleY: 0.35, scaleX: 0.8 },
+        animate: {
+          opacity: [0, 1, 1, 0],
+          scaleY: [0.35, 1.3, 1.05, 0.4],
+          scaleX: [0.8, 1.05, 1, 0.85],
+        },
+        transition: { duration: 1.15, delay: 0.05, ease: 'easeOut' as const, times: [0, 0.18, 0.7, 1] },
+      }
+    : { initial: { opacity: 0 }, animate: { opacity: 0 } };
+
+  // Mobile reframes the wide scene into a portrait crop: light sky at top
+  // (for the headline), blue dome with the rocket in the middle, clouds at the bottom.
+  const sceneViewBox = wide ? '0 0 1600 900' : '900 -80 560 1040';
+
+  const handleRocketTap = (event: MouseEvent | TouchEvent | PointerEvent) => {
+    if (!spawnParticles) return;
+    if ('clientX' in event) spawnParticles(event.clientX, event.clientY);
+  };
 
   return (
-    <section
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden bg-brand-cloud text-brand-ink selection:bg-brand-orange selection:text-brand-cloud p-4 md:p-8"
-    >
-      {/* Noise overlay and grid ticks */}
-      <div className="absolute inset-0 bg-halftone-black opacity-[0.03] pointer-events-none z-0" />
+    <section className="relative w-full min-h-screen overflow-hidden bg-brand-cloud text-brand-ink selection:bg-brand-orange selection:text-brand-cloud">
+      <h1 className="sr-only">
+        Aarambh &apos;26 — JK Lakshmipat University Student Orientation and Welcome Festival
+      </h1>
 
-      {/* Translucent Fluid CSS Gradient Mesh Background with motion drift */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-        <motion.div
-          animate={isMobile ? {
-            scale: 1.25,
-            x: 0,
-            y: 0,
-          } : {
-            scale: [1, 1.15, 0.95, 1.1, 1],
-            x: [0, 50, -30, 20, 0],
-            y: [0, -40, 30, -20, 0],
-          }}
-          transition={isMobile ? {
-            duration: 0,
-          } : {
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut"
-          }}
-          className="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-brand-orange/15 blur-[120px]"
-        />
-        <motion.div
-          animate={isMobile ? {
-            scale: 1.2,
-            x: 0,
-            y: 0,
-          } : {
-            scale: [1, 0.9, 1.1, 0.95, 1],
-            x: [0, -30, 40, -40, 0],
-            y: [0, 30, -20, 40, 0],
-          }}
-          transition={isMobile ? {
-            duration: 0,
-          } : {
-            duration: 24,
-            repeat: Infinity,
-            repeatType: "mirror",
-            ease: "easeInOut"
-          }}
-          className="absolute -bottom-[20%] -right-[10%] w-[65vw] h-[65vw] rounded-full bg-brand-blue/15 blur-[140px]"
-        />
-        
-        {/* Subtle radial gradient overlay */}
-        <div className="absolute inset-0 hidden sm:block bg-[radial-gradient(circle_at_center,rgba(245,241,229,0.75)_0%,rgba(245,241,229,0.1)_100%)] pointer-events-none" />
-      </div>
+      {/* Soft left-side light wash */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(120%_120%_at_15%_30%,#FBF8EF_0%,#EFEBDD_55%,#E7E3D4_100%)]" />
 
-      {/* Floating Y2K Sparkle Stars (Drifts dynamically with cursor) */}
-      <div className="absolute inset-0 pointer-events-none z-20 hidden md:block select-none">
-        {/* Star 1: Bold Pink */}
-        <motion.div
-          style={{ x: starX1, y: starY1 }}
-          animate={{ rotate: [0, 360], scale: [1, 1.12, 1] }}
-          transition={{ rotate: { repeat: Infinity, duration: 25, ease: "linear" }, scale: { repeat: Infinity, duration: 6, ease: "easeInOut" } }}
-          className="absolute top-[20%] left-[28%] text-brand-orange/70"
+      {/* ===================== COSMIC SCENE (single SVG) ===================== */}
+      <svg
+        className="absolute inset-0 z-0 h-full w-full"
+        viewBox={sceneViewBox}
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        <defs>
+          <radialGradient id="blueCircle" cx="42%" cy="34%" r="80%">
+            <stop offset="0%" stopColor="#2B3CEA" />
+            <stop offset="55%" stopColor="#152AD8" />
+            <stop offset="100%" stopColor="#0A1AAE" />
+          </radialGradient>
+          <linearGradient id="exhaustTrail" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFD27A" stopOpacity="0.95" />
+            <stop offset="50%" stopColor="#FF9A00" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#FF8A00" stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="smokePuff" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFF4E2" stopOpacity="0.92" />
+            <stop offset="55%" stopColor="#FFDFAC" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#FFDFAC" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="flameOuter" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFC56B" />
+            <stop offset="60%" stopColor="#FF9A00" />
+            <stop offset="100%" stopColor="#F2851C" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="flameCore" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="70%" stopColor="#FFE9B0" />
+            <stop offset="100%" stopColor="#FFC56B" stopOpacity="0" />
+          </linearGradient>
+
+        </defs>
+
+        {/* ---- Outer faint orbit rings sweeping into the light area (static) ---- */}
+        <g fill="none" stroke="#FF9A00">
+          <circle cx="1195" cy="430" r="565" strokeOpacity="0.28" strokeWidth="1.5" />
+          <circle cx="1195" cy="430" r="665" strokeOpacity="0.2" strokeWidth="1.5" />
+          <circle cx="1195" cy="430" r="775" strokeOpacity="0.14" strokeWidth="1.5" />
+          <circle cx="1195" cy="430" r="895" strokeOpacity="0.09" strokeWidth="1.5" />
+        </g>
+
+        {/* ---- Orange crescent + blue circle (static) ---- */}
+        <circle cx="1172" cy="430" r="478" fill="#FF9A00" />
+        <circle cx="1195" cy="430" r="470" fill="url(#blueCircle)" />
+
+        {/* ---- Inner rings + scattered stars inside the circle (static) ---- */}
+        <g fill="none" stroke="#FFFFFF" strokeOpacity="0.16" strokeWidth="1.5">
+          <circle cx="1195" cy="430" r="150" />
+          <circle cx="1195" cy="430" r="255" />
+          <circle cx="1195" cy="430" r="360" />
+        </g>
+        <g fill="#FFFFFF">
+          <circle cx="1120" cy="170" r="2.5" opacity="0.8" />
+          <circle cx="1330" cy="250" r="2" opacity="0.6" />
+          <circle cx="1430" cy="520" r="2.5" opacity="0.7" />
+          <circle cx="1280" cy="620" r="2" opacity="0.6" />
+          <circle cx="1060" cy="560" r="2.5" opacity="0.7" />
+          <circle cx="1010" cy="300" r="2" opacity="0.55" />
+          <circle cx="1500" cy="360" r="2" opacity="0.5" />
+          <circle cx="1240" cy="120" r="1.8" opacity="0.6" />
+          <circle cx="1150" cy="600" r="1.8" opacity="0.5" />
+          <circle cx="1380" cy="180" r="1.8" opacity="0.5" />
+        </g>
+
+        {/* ---- Icon badges (static) ---- */}
+        {/* Lightbulb — idea (top) */}
+        <g transform="translate(1245 150)">
+          <circle r="34" fill="#FFFFFF" fillOpacity="0.08" stroke="#FFFFFF" strokeOpacity="0.65" strokeWidth="2" />
+          <g fill="#FFFFFF">
+            <circle cx="0" cy="-4" r="11" />
+            <rect x="-6" y="6" width="12" height="3" rx="1" />
+            <rect x="-4.5" y="10" width="9" height="2.6" rx="1" />
+            <rect x="-3" y="13.6" width="6" height="2.2" rx="1" />
+          </g>
+        </g>
+        {/* Briefcase — career (left) */}
+        <g transform="translate(945 405)">
+          <circle r="40" fill="#FFFFFF" fillOpacity="0.08" stroke="#FFFFFF" strokeOpacity="0.65" strokeWidth="2" />
+          <g>
+            <rect x="-16" y="-8" width="32" height="23" rx="3.5" fill="#FFFFFF" />
+            <path d="M-7,-8 v-4 a3,3 0 0 1 3,-3 h8 a3,3 0 0 1 3,3 v4" fill="none" stroke="#FFFFFF" strokeWidth="3" />
+            <rect x="-16" y="0.5" width="32" height="3" fill="#152AD8" fillOpacity="0.25" />
+          </g>
+        </g>
+        {/* Graduation cap — education (right) */}
+        <g transform="translate(1455 405)">
+          <circle r="34" fill="#FFFFFF" fillOpacity="0.08" stroke="#FFFFFF" strokeOpacity="0.65" strokeWidth="2" />
+          <g fill="#FFFFFF">
+            <polygon points="0,-13 17,-5 0,3 -17,-5" />
+            <path d="M-9,-1 v7 a9,4 0 0 0 18,0 v-7 l-9,4 z" />
+            <path d="M16,-5 v10" stroke="#FFFFFF" strokeWidth="1.6" fill="none" />
+            <circle cx="16" cy="6.5" r="2.4" />
+          </g>
+        </g>
+
+        {/* ===================== ROCKET (animated) ===================== */}
+        <motion.g
+          {...launch(0.05)}
+          style={{ willChange: 'transform', cursor: 'pointer' }}
+          onTap={handleRocketTap}
         >
-          <SparkleStar size={36} />
-        </motion.div>
+          {/* Persistent exhaust trail (lower part hidden by clouds) */}
+          <path
+            d="M1176,470 C1182,520 1188,565 1195,640 C1202,565 1208,520 1214,470 Z"
+            fill="url(#exhaustTrail)"
+          />
 
-        {/* Star 2: Electric Blue */}
-        <motion.div
-          style={{ x: starX2, y: starY2 }}
-          animate={{ rotate: [360, 0], scale: [1, 1.15, 1] }}
-          transition={{ rotate: { repeat: Infinity, duration: 20, ease: "linear" }, scale: { repeat: Infinity, duration: 5, ease: "easeInOut" } }}
-          className="absolute bottom-[28%] right-[32%] text-brand-blue"
-        >
-          <SparkleStar size={48} />
-        </motion.div>
-      </div>
-
-      {/* Draggable Pop-Art Stickers */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        {stickers.map((sticker, idx) => (
-          <motion.div
-            key={idx}
-            drag
-            dragConstraints={{ left: -150, right: 150, top: -100, bottom: 100 }}
-            dragTransition={{ bounceStiffness: 600, bounceDamping: 25 }}
-            initial={{
-              filter: "drop-shadow(3px 12px 18px rgba(3, 4, 4, 0.15)) drop-shadow(1px 4px 6px rgba(3, 4, 4, 0.08))"
-            }}
-            animate={{
-              y: [0, -6, 0],
-              rotate: [sticker.rotate, (parseFloat(sticker.rotate) + 1.5) + "deg", sticker.rotate],
-            }}
-            transition={{
-              y: {
-                duration: 4.5 + idx * 0.8,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                delay: sticker.floatDelay,
-              },
-              rotate: {
-                duration: 5.5 + idx * 0.6,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-                delay: sticker.floatDelay,
-              }
-            }}
-            whileHover={{
-              scale: 1.05,
-              y: -12,
-              zIndex: 50,
-              filter: "drop-shadow(8px 24px 32px rgba(3, 4, 4, 0.22)) drop-shadow(2px 8px 12px rgba(3, 4, 4, 0.12))",
-              transition: { type: "spring", stiffness: 300, damping: 15 }
-            }}
-            whileDrag={{
-              scale: 1.1,
-              zIndex: 100,
-              filter: "drop-shadow(12px 36px 48px rgba(3, 4, 4, 0.26)) drop-shadow(4px 12px 18px rgba(3, 4, 4, 0.15))"
-            }}
-            onDragStart={(e) => {
-              playSynthSound(sticker.type as any);
-            }}
-            onClick={(e) => {
-              if (spawnParticles) spawnParticles(e.clientX, e.clientY);
-              playSynthSound(sticker.type as any);
-            }}
-            className={`absolute pointer-events-auto cursor-grab select-none ${sticker.className}`}
-          >
-            <div className={`relative overflow-hidden rounded-xl ${sticker.imgClassName}`}>
-              <Image
-                src={sticker.src}
-                alt={sticker.alt}
-                fill
-                sizes="(max-width: 1023px) 80px, 200px"
-                className="object-contain"
-                priority
-              />
-              <div
-                className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+          {/* Continuous smoke billowing from the nozzle (loops forever) */}
+          {!reduce &&
+            SMOKE_PUFFS.map((p, i) => (
+              <motion.circle
+                key={`smoke-${i}`}
+                cx={1195}
+                cy={488}
+                r={p.r}
+                fill="url(#smokePuff)"
+                style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+                initial={{ opacity: 0, scale: 0.4, x: 0, y: 0 }}
+                animate={{
+                  opacity: [0, p.peak, 0],
+                  scale: [0.4, p.scale],
+                  x: [0, p.dx],
+                  y: [0, p.y],
                 }}
+                transition={{ duration: p.dur, repeat: Infinity, delay: p.delay, ease: 'easeOut' }}
               />
-            </div>
-          </motion.div>
+            ))}
+
+          {/* Animated flame burst — flickers up while launching */}
+          <motion.g {...flameAnim} style={{ transformBox: 'fill-box', transformOrigin: 'center top' }}>
+            <path d="M1173,468 C1180,520 1190,562 1195,592 C1200,562 1210,520 1217,468 Z" fill="url(#flameOuter)" />
+            <path d="M1183,470 C1188,505 1192,532 1195,556 C1198,532 1202,505 1207,470 Z" fill="url(#flameCore)" />
+          </motion.g>
+
+          {/* Fins */}
+          <path d="M1252,392 C1281,408 1298,440 1302,470 L1262,452 C1258,432 1255,412 1252,395 Z" fill="#F4F1E8" />
+          <path d="M1138,392 C1109,408 1092,440 1088,470 L1128,452 C1132,432 1135,412 1138,395 Z" fill="#F4F1E8" />
+
+          {/* Nozzle */}
+          <path d="M1170,448 h50 l-7,24 h-36 z" fill="#E9E5D8" />
+
+          {/* Body */}
+          <path
+            d="M1195,212
+               C1236,248 1259,300 1259,352
+               L1259,414
+               C1259,432 1249,446 1232,453
+               L1158,453
+               C1141,446 1131,432 1131,414
+               L1131,352
+               C1131,300 1154,248 1195,212 Z"
+            fill="#FFFFFF"
+          />
+          {/* Body soft shading on the right for depth */}
+          <path
+            d="M1195,212 C1236,248 1259,300 1259,352 L1259,414 C1259,432 1249,446 1232,453 L1206,453 C1220,446 1228,432 1228,414 L1228,352 C1228,304 1216,258 1195,222 Z"
+            fill="#0A1AAE"
+            fillOpacity="0.06"
+          />
+          {/* Porthole window */}
+          <circle cx="1195" cy="318" r="28" fill="#FF9A00" />
+          <circle cx="1195" cy="318" r="28" fill="none" stroke="#FFFFFF" strokeOpacity="0.85" strokeWidth="4" />
+          <circle cx="1186" cy="309" r="8" fill="#FFFFFF" fillOpacity="0.4" />
+        </motion.g>
+
+      </svg>
+
+      {/* ===================== CLOUD BANK (uploaded images, rise on load) ===================== */}
+      <div className="pointer-events-none absolute inset-0 z-[2] select-none overflow-hidden" aria-hidden="true">
+        {/* solid base so the very bottom edge is always covered (no gap under the clouds) */}
+        <div className="absolute inset-x-0 bottom-0 h-[22%] bg-gradient-to-t from-[#3a1b05] via-[#3a1b05]/70 to-transparent" />
+        {(wide ? CLOUD_LAYERS : CLOUD_LAYERS_MOBILE).map((c, i) => (
+          <motion.img
+            key={i}
+            src={c.src}
+            alt=""
+            draggable={false}
+            {...riseCloud(c.delay)}
+            style={{
+              left: c.left,
+              bottom: c.bottom,
+              width: c.width,
+              filter: c.blur ? `blur(${c.blur}px)` : undefined,
+            }}
+            className="absolute h-auto will-change-transform"
+          />
         ))}
       </div>
 
-      {/* Main Content Container */}
-      <div className="w-full flex-grow flex flex-col items-center justify-center z-20 py-2 sm:py-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-4xl flex flex-col items-center px-4 w-full"
+      {/* Portrait-only light scrim so the dark headline stays legible at the top */}
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 z-[5] h-[46%] bg-gradient-to-b from-brand-cloud via-brand-cloud/85 to-transparent ${
+          wide ? 'hidden' : 'block'
+        }`}
+      />
+      {/* Landscape-only left scrim so the headline stays legible over the dark clouds */}
+      <div
+        className={`pointer-events-none absolute inset-y-0 left-0 z-[3] w-[52%] bg-gradient-to-r from-brand-cloud via-brand-cloud/80 to-transparent ${
+          wide ? 'block' : 'hidden'
+        }`}
+      />
+
+      {/* ===================== HEADLINE OVERLAY ===================== */}
+      <div className={`relative z-10 flex min-h-screen w-full ${wide ? 'items-center' : 'items-start'}`}>
+        <div
+          className={`w-full px-6 sm:px-10 ${
+            wide ? 'pt-0 md:w-[55%] md:pl-16 lg:pl-24' : 'pt-24'
+          }`}
         >
-          <h1 className="sr-only">
-            Aarambh &apos;26 - JK Lakshmipat University Student Orientation and Welcome Festival
-          </h1>
-          <span className="font-display font-black text-xs sm:text-sm tracking-[0.3em] uppercase text-brand-ink/80 mt-4 sm:mt-8 mb-1 select-none text-center block">
-            JK Lakshmipat University Presents
-          </span>
+          <div className={`flex flex-col items-center text-center ${wide ? 'md:items-start md:text-left' : ''}`}>
+            <motion.span
+              {...fadeUp(0.1)}
+              className="mb-2 block font-display text-[11px] font-black uppercase tracking-[0.32em] text-brand-ink/70 sm:text-sm md:mb-3"
+            >
+              JK Lakshmipat University Presents
+            </motion.span>
 
-          <div className="mb-4 sm:mb-8 select-none p-1 sm:p-2 max-w-full text-center flex justify-center w-full relative">
-            <div className="relative flex flex-col items-center group z-20">
-              {/* Decorative Background Glow Text */}
-              <span className="absolute text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-vanilla font-black uppercase text-brand-blue/5 tracking-wider select-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 scale-[1.15] blur-[1.5px] pointer-events-none">
-                Aarambh
+            <motion.h2
+              {...fadeUp(0.2)}
+              className="font-vanilla text-5xl font-black uppercase leading-none tracking-wider text-brand-ink drop-shadow-[4px_4px_0px_var(--color-brand-blue)] sm:text-7xl md:drop-shadow-[5px_5px_0px_var(--color-brand-blue)] lg:text-8xl"
+            >
+              Aarambh
+            </motion.h2>
+
+            <motion.div {...fadeUp(0.3)} className="mt-2">
+              <span className="inline-block -rotate-3 border-4 border-brand-ink bg-brand-ink px-4 py-1 font-diary text-2xl font-black text-brand-cloud shadow-[3px_3px_0px_0px_var(--color-brand-blue)] sm:text-3xl">
+                2026
               </span>
-              
-              {/* Main Typographic Logo */}
-              <motion.h2 
-                whileHover={{ scale: 1.03, rotate: -0.5 }}
-                className="relative text-6xl sm:text-8xl md:text-9xl font-vanilla font-black uppercase tracking-wider leading-none text-brand-ink drop-shadow-[5px_5px_0px_var(--color-brand-blue)] select-none z-10 cursor-default"
-              >
-                Aarambh
-              </motion.h2>
-              
-              {/* Year Stamp Badge */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0, rotate: 12 }}
-                animate={{ opacity: 1, scale: 1, rotate: -6 }}
-                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                whileHover={{ scale: 1.1, rotate: -2 }}
-                className="relative -mt-2 sm:-mt-4 z-20 cursor-pointer"
-              >
-                <span className="font-diary font-black text-2xl sm:text-4xl text-brand-orange block px-4 py-1.5 bg-brand-ink text-brand-cloud border-4 border-brand-ink shadow-[3px_3px_0px_0px_var(--color-brand-blue)]">
-                  2026
-                </span>
-              </motion.div>
+            </motion.div>
 
-              {/* Sparkle Icon Decorator */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7, duration: 0.6 }}
-                className="absolute -top-6 -right-6 text-brand-orange z-30 pointer-events-none"
-              >
-                <Sparkles size={32} className="animate-pulse" />
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Narrative Dialogue Box */}
-          <div className="border-comic bg-brand-cloud text-brand-ink p-3 sm:p-4 rounded-lg max-w-4xl w-[95%] sm:w-full shadow-comic bg-halftone-black mb-4 sm:mb-6 mx-auto">
-            <p className="font-display font-black text-xs sm:text-sm leading-relaxed tracking-wide uppercase text-center">
-              <span className="text-brand-orange text-sm sm:text-base">AARAMBH : THE BEGINNING OF SOMETHING GREATER. </span>
+            <motion.p
+              {...fadeUp(0.42)}
+              className="mt-4 max-w-md font-display text-xs font-bold uppercase leading-relaxed tracking-wide text-brand-ink/80 sm:text-base md:mt-6"
+            >
+              <span className="text-brand-orange">The beginning of something greater.</span>{' '}
               Where strangers become friends and dreams find direction.
-            </p>
-          </div>
+            </motion.p>
 
-          {/* Countdown Clock Panel */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 w-full max-w-md text-brand-cloud px-2 sm:px-0">
-            {countdownBlocks.map((block) => (
-              <div
-                key={block.label}
-                className={`p-1.5 sm:p-3 border-comic rounded-lg shadow-comic-sm sm:shadow-comic ${block.bg} ${block.rotate} transition-transform hover:scale-105`}
+            <motion.div
+              {...fadeUp(0.54)}
+              className="mt-5 flex flex-col items-center gap-3 sm:flex-row md:mt-8 md:items-start"
+            >
+              <Link
+                href="/register"
+                className="bg-brand-orange hover:bg-accent-dark text-brand-ink font-black py-3 px-7 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 rounded-md uppercase tracking-wider text-sm"
               >
-                <div className="relative h-6 sm:h-8 overflow-hidden flex items-center justify-center w-full">
-                  <AnimatePresence mode="popLayout">
-                    <motion.span
-                      key={timeLeft[block.valueKey as keyof TimeLeft]}
-                      initial={{ y: 24, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -24, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-lg sm:text-2xl font-display font-black tabular-nums absolute"
-                    >
-                      {String(timeLeft[block.valueKey as keyof TimeLeft]).padStart(2, '0')}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest mt-1 opacity-80">
-                  {block.label}
-                </span>
-              </div>
-            ))}
+                Register Now
+              </Link>
+              <span className="font-display text-xs font-black uppercase tracking-[0.2em] text-brand-ink/60">
+                July 14, 2026
+              </span>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
