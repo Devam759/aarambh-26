@@ -9,7 +9,7 @@ interface HeroSectionProps {
 /**
  * Static hero — the exact rocket-launch artwork as a full-bleed backdrop.
  * No animation. The Aarambh headline/CTA sits over the artwork's light left area.
- * Backdrop file: public/images/hero-rocket.png
+ * Backdrop file: public/images/hero-rocket.webp
  */
 export default function HeroSection(_props: HeroSectionProps) {
   return (
@@ -21,10 +21,10 @@ export default function HeroSection(_props: HeroSectionProps) {
       {/* Exact artwork backdrop (static): portrait phones get the vertical artwork,
           everything else gets the wide banner. <picture> loads only the match. */}
       <picture aria-hidden="true">
-        <source media="(orientation: portrait)" srcSet="/images/hero-rocket-mobile.png" />
+        <source media="(orientation: portrait)" srcSet="/images/hero-rocket-mobile.webp" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/hero-rocket.png"
+          src="/images/hero-rocket.webp"
           alt=""
           draggable={false}
           className="pointer-events-none absolute inset-0 z-0 h-full w-full select-none object-cover object-center"
