@@ -332,7 +332,7 @@ export default function LoginPage() {
             } else if (role === 'scanner') {
               router.push('/scanner');
             } else if (role === 'feedback') {
-              router.push('/feedback');
+              router.push('/feedback-portal');
             } else if (role === 'volunteer' || role === 'team_leader') {
               router.push('/volunteer');
             } else {

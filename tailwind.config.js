@@ -14,6 +14,7 @@ export default {
           blue: '#0D21DD',
           ink: '#030404',
           cloud: '#F5F1E5',
+          pink: '#FF2E93',
         },
         primary: {
           DEFAULT: '#FF9A00',
@@ -44,6 +45,7 @@ export default {
           blue: '#0D21DD',
           black: '#030404',
           white: '#F5F1E5',
+          pink: '#FF2E93',
         }
       },
       fontFamily: {

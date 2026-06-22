@@ -93,10 +93,26 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    // Complaints collection (public submissions allowed)
+    match /complaints/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (request.auth != null && (getRole(request.auth.uid) == 'feedback' || getRole(request.auth.uid) == 'volunteer' || getRole(request.auth.uid) == 'team_leader'));
+      allow update: if isAdmin() || (request.auth != null && getRole(request.auth.uid) == 'feedback');
+      allow delete: if isAdmin();
+    }
+
+    // Suggestions collection (public submissions allowed)
+    match /suggestions/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (request.auth != null && (getRole(request.auth.uid) == 'feedback' || getRole(request.auth.uid) == 'volunteer' || getRole(request.auth.uid) == 'team_leader'));
+      allow update: if isAdmin() || (request.auth != null && getRole(request.auth.uid) == 'feedback');
+      allow delete: if isAdmin();
+    }
+
     // Settings (e.g. active feedback day settings)
     match /settings/{id} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() || (request.auth != null && getRole(request.auth.uid) == 'feedback');
     }
 
     // Scanner Accounts collection

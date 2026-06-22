@@ -71,6 +71,8 @@ export default function VolunteerDashboard() {
       } else {
         setError("Volunteer profile not found.");
       }
+    }, (err) => {
+      console.warn("Profile snapshot listener error:", err);
     });
 
     // Real-time subscription to Duties
@@ -82,6 +84,8 @@ export default function VolunteerDashboard() {
       const parsedDuties = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setDuties(parsedDuties);
       setLoading(false);
+    }, (err) => {
+      console.warn("Duties snapshot listener error:", err);
     });
 
     // Real-time subscription to Notifications (sorted in-memory to avoid custom index creation requirement)
@@ -98,6 +102,8 @@ export default function VolunteerDashboard() {
         return timeB - timeA;
       });
       setNotifications(parsedNotifs);
+    }, (err) => {
+      console.warn("Notifications snapshot listener error:", err);
     });
 
     return () => {

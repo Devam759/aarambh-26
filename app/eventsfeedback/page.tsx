@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, onSnapshot } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '@/lib/firebase';
 import { SCHEDULE_DATA } from '@/constants/events';
 
@@ -153,6 +153,8 @@ export default function AnonymousFeedbackSubmitPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [loadingSettings, setLoadingSettings] = useState(true);
+  const [activeDayId, setActiveDayId] = useState('Day 01');
+  const [isFormOpen, setIsFormOpen] = useState(true);
 
   const firebaseReady = isFirebaseConfigured();
 
@@ -164,18 +166,20 @@ export default function AnonymousFeedbackSubmitPage() {
       setLoadingSettings(false);
       return;
     }
-    async function loadSettings() {
+    const unsubscribe = onSnapshot(doc(db, 'settings', 'feedback'), (settingsDoc) => {
       try {
-        const settingsDoc = await getDoc(doc(db, 'settings', 'feedback'));
         let activeDayIdx = 0;
         let dbForms: Record<string, any> = {};
+        let dbActiveDayId = 'Day 01';
+        let dbFormOpen = true;
 
         if (settingsDoc.exists()) {
           const data = settingsDoc.data();
-          const activeDayId = data.activeDayId || 'Day 01';
-          const dayIdx = SCHEDULE_DATA.findIndex(d => d.day === activeDayId);
+          dbActiveDayId = data.activeDayId || 'Day 01';
+          const dayIdx = SCHEDULE_DATA.findIndex(d => d.day === dbActiveDayId);
           if (dayIdx !== -1) activeDayIdx = dayIdx;
           dbForms = data.forms || {};
+          dbFormOpen = data.isFormOpen !== undefined ? data.isFormOpen : true;
         }
 
         // Seed defaults if missing
@@ -187,14 +191,20 @@ export default function AnonymousFeedbackSubmitPage() {
 
         setSelectedDayIdx(activeDayIdx);
         setFormsMap(combinedForms);
+        setActiveDayId(dbActiveDayId);
+        setIsFormOpen(dbFormOpen);
       } catch (err) {
         console.error('Error loading feedback settings:', err);
         setFormsMap(generateDefaultFormsMap());
       } finally {
         setLoadingSettings(false);
       }
-    }
-    loadSettings();
+    }, (err) => {
+      console.error('Settings snapshot error:', err);
+      setLoadingSettings(false);
+    });
+
+    return () => unsubscribe();
   }, [firebaseReady]);
 
   // Compute active question list based on selected tab day
@@ -260,6 +270,11 @@ export default function AnonymousFeedbackSubmitPage() {
 
     if (!hasSubmissions) {
       setError('Please answer at least one question before submitting.');
+      return;
+    }
+
+    if (activeDay.day !== activeDayId || !isFormOpen) {
+      setError('Submissions for this day are currently closed.');
       return;
     }
 
@@ -354,6 +369,7 @@ export default function AnonymousFeedbackSubmitPage() {
           <div className="flex overflow-x-auto gap-3 pb-3 scrollbar-thin">
             {SCHEDULE_DATA.map((day, idx) => {
               const isActive = selectedDayIdx === idx;
+              const isDayOpen = day.day === activeDayId && isFormOpen;
               return (
                 <button
                   key={day.day}
@@ -365,10 +381,17 @@ export default function AnonymousFeedbackSubmitPage() {
                   className={`comic-interactive border-2 shrink-0 py-2.5 px-5 font-display text-xs font-black uppercase tracking-wider transition-all rounded-md cursor-pointer ${
                     isActive
                       ? 'bg-brand-orange text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
-                      : 'bg-white text-brand-ink/65 border-brand-ink shadow-comic-sm hover:bg-brand-orange hover:text-brand-ink'
+                      : 'bg-white text-brand-ink/65 border-brand-ink shadow-comic-sm hover:bg-brand-orange/10'
                   }`}
                 >
-                  <div>{day.day}</div>
+                  <div className="flex items-center gap-2.5 justify-between">
+                    <span>{day.day}</span>
+                    {isDayOpen ? (
+                      <span className="text-[7px] bg-green-500 text-white border border-brand-ink px-1 rounded font-black tracking-wide animate-pulse">OPEN</span>
+                    ) : (
+                      <span className="text-[7px] bg-brand-ink/10 text-brand-ink/40 border border-brand-ink/20 px-1 rounded font-black tracking-wide">CLOSED</span>
+                    )}
+                  </div>
                   <div className="text-[9px] font-mono opacity-80 mt-0.5">{day.date}</div>
                 </button>
               );
@@ -377,133 +400,173 @@ export default function AnonymousFeedbackSubmitPage() {
         </div>
 
         {/* Form Submission */}
-        <form onSubmit={handleSubmit} className="space-y-10">
-          
-          {/* STEP 2: DYNAMIC QUESTIONS LIST */}
-          <section className="space-y-6">
-            <div className="border-b-4 border-brand-ink pb-2 mb-4">
-              <h2 className="text-lg font-display font-black uppercase text-brand-ink">
-                Complete the Evaluation Form ({activeDay.day})
-              </h2>
-              <p className="text-brand-ink/50 text-[10px] uppercase font-black tracking-wider">
-                Please evaluate the sessions and provide your honest feedback
-              </p>
+        {activeDay.day !== activeDayId || !isFormOpen ? (
+          <div className="bg-white border-4 border-brand-ink p-8 md:p-12 shadow-[8px_8px_0px_0px_#030404] rounded-lg text-center animate-fade-in my-8">
+            <div className="inline-flex items-center justify-center p-4 border-4 border-brand-ink bg-brand-orange shadow-[4px_4px_0px_0px_#030404] rounded-md mb-8">
+              <CustomWarningIcon size={44} className="text-brand-ink" />
             </div>
+            
+            <h2 className="text-2xl font-display font-black tracking-wider uppercase text-brand-ink mb-4">
+              Feedback Closed
+            </h2>
+            
+            <p className="text-brand-ink/75 font-bold text-sm md:text-base leading-relaxed mb-6">
+              Feedback submissions are currently closed. Only the current active day's form can receive feedback.
+            </p>
+            
+            <div className="p-3 bg-brand-orange/10 border-2 border-brand-orange rounded-md text-[10px] md:text-xs font-black uppercase text-brand-orange tracking-wider">
+              Active Day is: <strong className="text-brand-blue">{activeDayId}</strong>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-10">
+            
+            {/* STEP 2: DYNAMIC QUESTIONS LIST */}
+            <section className="space-y-6">
+              <div className="border-b-4 border-brand-ink pb-2 mb-4">
+                <h2 className="text-lg font-display font-black uppercase text-brand-ink">
+                  Complete the Evaluation Form ({activeDay.day})
+                </h2>
+                <p className="text-brand-ink/50 text-[10px] uppercase font-black tracking-wider">
+                  Please evaluate the sessions and provide your honest feedback
+                </p>
+              </div>
 
-            <div className="space-y-6">
-              {activeQuestions.map((q) => {
-                if (q.type === 'rating') {
-                  const currentRating = answersState[q.id]?.value || 0;
-                  const currentComment = answersState[q.id]?.comment || '';
-                  
-                  return (
-                    <div 
-                      key={q.id} 
-                      className="bg-white border-4 border-brand-ink p-5 md:p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
-                        <div>
-                          <h3 className="text-sm font-black uppercase tracking-tight text-brand-ink">
-                            {q.label}
-                          </h3>
-                        </div>
-                        
-                        {/* Interactive Stars Selector */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          <div className="flex gap-1" role="group" aria-label={`Rate ${q.label}`}>
-                            {[1, 2, 3, 4, 5].map((n) => (
-                              <button
-                                key={n}
-                                type="button"
-                                onClick={() => handleRatingChange(q.id, n)}
-                                className="p-1 transition-transform hover:scale-110 focus:outline-none cursor-pointer"
-                                aria-label={`${n} stars`}
-                                aria-pressed={currentRating === n}
-                              >
-                                <CustomStarIcon
-                                  size={28}
-                                  filled={n <= currentRating}
-                                  className={n <= currentRating ? 'text-brand-ink' : 'text-brand-ink/15'}
-                                />
-                              </button>
-                            ))}
+              <div className="space-y-6">
+                {activeQuestions.map((q) => {
+                  if (q.type === 'rating') {
+                    const currentRating = answersState[q.id]?.value || 0;
+                    const currentComment = answersState[q.id]?.comment || '';
+                    
+                    return (
+                      <div 
+                        key={q.id} 
+                        className="bg-white border-4 border-brand-ink p-5 md:p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4"
+                      >
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+                          <div>
+                            <h3 className="text-sm font-black uppercase tracking-tight text-brand-ink">
+                              {q.label}
+                            </h3>
                           </div>
-                          <span className="text-[10px] font-black text-brand-ink/50 w-20 text-center uppercase tracking-wider">
-                            {currentRating > 0 ? `${currentRating} / 5` : 'Not Rated'}
-                          </span>
+                          
+                          {/* Interactive Stars Selector */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex gap-1" role="group" aria-label={`Rate ${q.label}`}>
+                              {[1, 2, 3, 4, 5].map((n) => (
+                                <button
+                                  key={n}
+                                  type="button"
+                                  onClick={() => handleRatingChange(q.id, n)}
+                                  className="p-1 transition-transform hover:scale-110 focus:outline-none cursor-pointer"
+                                  aria-label={`${n} stars`}
+                                  aria-pressed={currentRating === n}
+                                >
+                                  <CustomStarIcon
+                                    size={28}
+                                    filled={n <= currentRating}
+                                    className={n <= currentRating ? 'text-brand-ink' : 'text-brand-ink/15'}
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                            <span className="text-[10px] font-black text-brand-ink/50 w-20 text-center uppercase tracking-wider">
+                              {currentRating > 0 ? `${currentRating} / 5` : 'Not Rated'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Dynamic rating optional comment field */}
+                        <div className="space-y-1">
+                          <label className="block text-[9px] font-black uppercase tracking-wider text-brand-ink/50">
+                            Optional comment for this session
+                          </label>
+                          <input
+                            type="text"
+                            value={currentComment}
+                            onChange={(e) => handleRatingCommentChange(q.id, e.target.value)}
+                            className="w-full bg-white border-2 border-brand-ink rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-orange text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
+                            placeholder="What went well or what could be improved?"
+                          />
                         </div>
                       </div>
-
-                      {/* Dynamic rating optional comment field */}
-                      <div className="space-y-1">
-                        <label className="block text-[9px] font-black uppercase tracking-wider text-brand-ink/50">
-                          Optional comment for this session
+                    );
+                  } else if (q.type === 'date') {
+                    // Date Input
+                    const dateValue = answersState[q.id]?.value || '';
+                    
+                    return (
+                      <div 
+                        key={q.id} 
+                        className="bg-white border-4 border-brand-ink p-5 md:p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-2"
+                      >
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-brand-ink/70">
+                          {q.label}
                         </label>
                         <input
-                          type="text"
-                          value={currentComment}
-                          onChange={(e) => handleRatingCommentChange(q.id, e.target.value)}
-                          className="w-full bg-white border-2 border-brand-ink rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-orange text-xs text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner"
-                          placeholder="What went well or what could be improved?"
+                          type="date"
+                          value={dateValue}
+                          onChange={(e) => handleTextValueChange(q.id, e.target.value)}
+                          className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-black transition-colors shadow-inner"
                         />
                       </div>
-                    </div>
-                  );
-                } else {
-                  // Paragraph Text Input
-                  const textValue = answersState[q.id]?.value || '';
-                  
-                  return (
-                    <div 
-                      key={q.id} 
-                      className="bg-white border-4 border-brand-ink p-5 md:p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-2"
-                    >
-                      <label className="block text-[10px] font-black uppercase tracking-wider text-brand-ink/70">
-                        {q.label}
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={textValue}
-                        onChange={(e) => handleTextValueChange(q.id, e.target.value)}
-                        className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner resize-y min-h-[80px]"
-                        placeholder="Your response..."
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </div>
-          </section>
+                    );
+                  } else {
+                    // Paragraph Text Input
+                    const textValue = answersState[q.id]?.value || '';
+                    
+                    return (
+                      <div 
+                        key={q.id} 
+                        className="bg-white border-4 border-brand-ink p-5 md:p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-2"
+                      >
+                        <label className="block text-[10px] font-black uppercase tracking-wider text-brand-ink/70">
+                          {q.label}
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={textValue}
+                          onChange={(e) => handleTextValueChange(q.id, e.target.value)}
+                          className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 focus:outline-none focus:border-brand-orange text-sm text-brand-ink font-bold placeholder:text-brand-ink/30 transition-colors shadow-inner resize-y min-h-[80px]"
+                          placeholder="Your response..."
+                        />
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            </section>
 
-          {/* Warnings and errors */}
-          {error && (
-            <div className="p-3 bg-brand-orange/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center justify-center shadow-comic-sm max-w-md mx-auto">
-              <CustomWarningIcon className="text-brand-orange shrink-0" size={16} />
-              <span className="uppercase tracking-wide">{error}</span>
-            </div>
-          )}
+            {/* Warnings and errors */}
+            {error && (
+              <div className="p-3 bg-brand-orange/15 text-brand-ink text-xs font-bold border-2 border-brand-ink rounded-md flex gap-2 items-center justify-center shadow-comic-sm max-w-md mx-auto">
+                <CustomWarningIcon className="text-brand-orange shrink-0" size={16} />
+                <span className="uppercase tracking-wide">{error}</span>
+              </div>
+            )}
 
-          {/* Submission Trigger */}
-          <div className="pt-4 flex justify-center">
-            <button
-              type="submit"
-              disabled={submitting || !firebaseReady}
-              className="comic-btn-primary px-12 py-4 border-4 shadow-[6px_6px_0px_0px_#030404] hover:shadow-[4px_4px_0px_0px_#030404] active:translate-x-[6px] active:translate-y-[6px] tracking-widest"
-            >
-              {submitting ? (
-                <>
-                  <CustomLoaderIcon size={16} className="text-white" />
-                  <span>Registering Feedback...</span>
-                </>
-              ) : (
-                <>
-                  <CustomCheckIcon size={16} className="text-white" />
-                  <span>Submit Anonymous Form</span>
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+            {/* Submission Trigger */}
+            <div className="pt-4 flex justify-center">
+              <button
+                type="submit"
+                disabled={submitting || !firebaseReady}
+                className="comic-btn-primary px-12 py-4 border-4 shadow-[6px_6px_0px_0px_#030404] hover:shadow-[4px_4px_0px_0px_#030404] active:translate-x-[6px] active:translate-y-[6px] tracking-widest"
+              >
+                {submitting ? (
+                  <>
+                    <CustomLoaderIcon size={16} className="text-white" />
+                    <span>Registering Feedback...</span>
+                  </>
+                ) : (
+                  <>
+                    <CustomCheckIcon size={16} className="text-white" />
+                    <span>Submit Anonymous Form</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* Page Footer */}
         <p className="mt-12 text-center text-brand-ink/40 text-[9px] uppercase font-black tracking-[0.2em]">

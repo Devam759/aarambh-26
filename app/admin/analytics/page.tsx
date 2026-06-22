@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { collection, onSnapshot, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured } from '@/lib/firebase';
 import { SCHEDULE_DATA } from '@/constants/events';
 
 // ============================================================================
-// BESPOKE CUSTOM GEOMETRIC SVG ICONS (Gradient-free, Sharp, Heavy-mitre)
+// CUSTOM GEOMETRIC SVG ICONS (Gradient-free, Sharp, Heavy-mitre)
 // ============================================================================
 
 const CustomLoaderIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
@@ -109,7 +108,7 @@ const CustomSettingsIcon = ({ className = '', size = 18 }: { className?: string;
   </svg>
 );
 
-const CustomWarningIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
+const CustomLockIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
   <svg 
     width={size} 
     height={size} 
@@ -121,9 +120,44 @@ const CustomWarningIcon = ({ className = '', size = 18 }: { className?: string; 
     strokeLinejoin="miter" 
     className={className}
   >
-    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
-    <line x1="12" y1="8" x2="12" y2="13" />
-    <line x1="12" y1="17" x2="12.01" y2="17" />
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+const CustomAlertCircleIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="square" 
+    strokeLinejoin="miter" 
+    className={className}
+  >
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
+const CustomLightbulbIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="square" 
+    strokeLinejoin="miter" 
+    className={className}
+  >
+    <path d="M9 21h6" />
+    <path d="M9 18h6" />
+    <path d="M10 15H14c.55 0 1-.45 1-1v-1c1.2-1.2 2-2.8 2-4.5C17 5.02 14.76 3 12 3S7 5.02 7 8.5c0 1.7.8 3.3 2 4.5v1c0 .55.45 1 1 1z" />
   </svg>
 );
 
@@ -176,47 +210,156 @@ function generateDefaultFormsMap(): Record<string, { questions: any[] }> {
   return forms;
 }
 
+const DEFAULT_GLOBAL_QUESTIONS = [
+  { id: 'q_global_rating_1', type: 'rating', label: 'How would you rate your day overall?', required: true },
+  { id: 'q_global_mcq_1', type: 'mcq', label: "How was the day's pace?", options: ['Too Fast', 'Just Right', 'Too Slow'], required: true },
+  { id: 'q_global_mcq_2', type: 'mcq', label: 'Did you feel engaged throughout the day?', options: ['Yes', 'Partially', 'No'], required: true },
+  { id: 'q_global_rating_2', type: 'rating', label: "How relevant and valuable were today's activities for you?", required: true },
+  { id: 'q_global_rating_3', type: 'rating', label: 'How clearly was information communicated throughout the day?', required: true },
+  { id: 'q_global_rating_4', type: 'rating', label: "How comfortable were today's arrangements?", required: true },
+  { id: 'q_global_rating_5', type: 'rating', label: 'How supported did you feel by your Cohort Leader / OH Team today?', required: true },
+  { id: 'q_global_text_1', type: 'text', label: 'What was the highlight of your day?', required: false },
+  { id: 'q_global_text_2', type: 'text', label: 'What could have been better today?', required: false },
+  { id: 'q_global_mcq_3', type: 'mcq', label: 'What was your energy level at the end of the day?', options: ['😴 Exhausted', '😐 Okay', '😃 Pumped Up'], required: true }
+];
+
 export default function AdminFeedbackAnalytics() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'analytics' | 'configurator'>('analytics');
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center p-20 w-full min-h-[400px]">
+        <div className="text-center space-y-4">
+          <CustomLoaderIcon className="text-brand-ink mx-auto" size={40} />
+          <p className="text-brand-ink/50 text-[10px] font-black uppercase tracking-widest animate-pulse">
+            Loading Feedback Hub...
+          </p>
+        </div>
+      </div>
+    }>
+      <FeedbackAnalyticsContent />
+    </Suspense>
+  );
+}
+
+function FeedbackAnalyticsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = (searchParams.get('tab') as any) || 'analytics';
+
+  const [loading, setLoading] = useState(true);
 
   // Data States
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  const [complaints, setComplaints] = useState<any[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedDayFilter, setSelectedDayFilter] = useState<string>('all');
+  const [selectedBatchFilter, setSelectedBatchFilter] = useState<string>('all');
   const [exporting, setExporting] = useState(false);
 
-  // Settings States
-  const [configActiveDayIdx, setConfigActiveDayIdx] = useState<number>(0);
-  const [formsMap, setFormsMap] = useState<Record<string, { questions: any[] }>>({});
+  // Suggestions Filters
+  const [suggestionStatusFilter, setSuggestionStatusFilter] = useState<'all' | 'pending' | 'reviewed'>('all');
+  const [suggestionDateSort, setSuggestionDateSort] = useState<'desc' | 'asc'>('desc');
+  const [suggestionSearch, setSuggestionSearch] = useState<string>('');
+
+  // Complaints Filters
+  const [complaintStatusFilter, setComplaintStatusFilter] = useState<'all' | 'pending' | 'resolved'>('all');
+  const [complaintDepartmentFilter, setComplaintDepartmentFilter] = useState<string>('all');
+  const [complaintDateSort, setComplaintDateSort] = useState<'desc' | 'asc'>('desc');
+  const [complaintSearch, setComplaintSearch] = useState<string>('');
+
+  const pendingComplaintsCount = useMemo(() => {
+    return complaints.filter((item) => item.status !== 'resolved').length;
+  }, [complaints]);
+
+  const pendingSuggestionsCount = useMemo(() => {
+    return suggestions.filter((item) => item.status !== 'reviewed').length;
+  }, [suggestions]);
+
+  const complaintDepartments = useMemo(() => {
+    const depts = new Set<string>();
+    complaints.forEach((item) => {
+      if (item.department) depts.add(item.department);
+    });
+    return Array.from(depts);
+  }, [complaints]);
+
+  const filteredComplaints = useMemo(() => {
+    let list = [...complaints];
+    
+    if (complaintStatusFilter === 'pending') {
+      list = list.filter(item => item.status !== 'resolved');
+    } else if (complaintStatusFilter === 'resolved') {
+      list = list.filter(item => item.status === 'resolved');
+    }
+
+    if (complaintDepartmentFilter !== 'all') {
+      list = list.filter(item => item.department === complaintDepartmentFilter);
+    }
+
+    if (complaintSearch.trim()) {
+      const query = complaintSearch.toLowerCase();
+      list = list.filter(item => 
+        (item.description || '').toLowerCase().includes(query) ||
+        (item.studentName || '').toLowerCase().includes(query) ||
+        (item.department || '').toLowerCase().includes(query)
+      );
+    }
+
+    list.sort((a, b) => {
+      const tA = a.submittedAt?.toMillis?.() ?? 0;
+      const tB = b.submittedAt?.toMillis?.() ?? 0;
+      return complaintDateSort === 'desc' ? tB - tA : tA - tB;
+    });
+
+    return list;
+  }, [complaints, complaintStatusFilter, complaintDepartmentFilter, complaintSearch, complaintDateSort]);
+
+  const filteredSuggestions = useMemo(() => {
+    let list = [...suggestions];
+
+    if (suggestionStatusFilter === 'pending') {
+      list = list.filter(item => item.status !== 'reviewed');
+    } else if (suggestionStatusFilter === 'reviewed') {
+      list = list.filter(item => item.status === 'reviewed');
+    }
+
+    if (suggestionSearch.trim()) {
+      const query = suggestionSearch.toLowerCase();
+      list = list.filter(item => 
+        (item.suggestion || '').toLowerCase().includes(query)
+      );
+    }
+
+    list.sort((a, b) => {
+      const tA = a.submittedAt?.toMillis?.() ?? 0;
+      const tB = b.submittedAt?.toMillis?.() ?? 0;
+      return suggestionDateSort === 'desc' ? tB - tA : tA - tB;
+    });
+
+    return list;
+  }, [suggestions, suggestionStatusFilter, suggestionSearch, suggestionDateSort]);
+
+  // Settings / Form Configurator States
+  const [accessActiveDayIdx, setAccessActiveDayIdx] = useState<number>(0);
+  const [builderActiveDayIdx, setBuilderActiveDayIdx] = useState<number>(0);
+  const [configActiveBatch, setConfigActiveBatch] = useState<string>("Batch 1");
+  const [batchForms, setBatchForms] = useState<Record<string, any[]>>({});
+  const [isFormOpen, setIsFormOpen] = useState(true);
   const [savingSettings, setSavingSettings] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [liveActiveDayId, setLiveActiveDayId] = useState<string>('Day 01');
+  const [liveFormOpen, setLiveFormOpen] = useState<boolean>(true);
 
   // Deep Dive Active Rating Question State
   const [selectedRatingQId, setSelectedRatingQId] = useState<string>('');
 
   const firebaseReady = isFirebaseConfigured();
 
-  // Authentication Setup
+  // Load Feedbacks, Complaints, Suggestions & Configurations
   useEffect(() => {
-    if (!firebaseReady || !auth || !db) {
+    if (!firebaseReady || !db) {
       setLoading(false);
       return;
     }
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        router.push('/login');
-      }
-    });
-    return () => unsubscribe();
-  }, [firebaseReady, router]);
-
-  // Load Feedbacks & Active Configurations
-  useEffect(() => {
-    if (!user || !db) return;
 
     const unsubFeedbacks = onSnapshot(collection(db, 'feedback'), (snap) => {
       const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() })) as any[];
@@ -229,106 +372,177 @@ export default function AdminFeedbackAnalytics() {
       setLoading(false);
     });
 
-    async function loadSettings() {
+    const unsubComplaints = onSnapshot(collection(db, 'complaints'), (snap) => {
+      const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() })) as any[];
+      docs.sort((a, b) => {
+        const tA = a.submittedAt?.toMillis?.() ?? 0;
+        const tB = b.submittedAt?.toMillis?.() ?? 0;
+        return tB - tA;
+      });
+      setComplaints(docs);
+    });
+
+    const unsubSuggestions = onSnapshot(collection(db, 'suggestions'), (snap) => {
+      const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() })) as any[];
+      docs.sort((a, b) => {
+        const tA = a.submittedAt?.toMillis?.() ?? 0;
+        const tB = b.submittedAt?.toMillis?.() ?? 0;
+        return tB - tA;
+      });
+      setSuggestions(docs);
+    });
+
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'feedback'), (settingsDoc) => {
       try {
-        const settingsDoc = await getDoc(doc(db, 'settings', 'feedback'));
         let activeDayIdx = 0;
-        let dbForms: Record<string, any> = {};
+        let dbBatchForms: Record<string, any[]> = {};
+        let dbFormOpen = true;
+        let dbActiveDayId = 'Day 01';
         
         if (settingsDoc.exists()) {
           const data = settingsDoc.data();
-          const activeDayId = data.activeDayId || 'Day 01';
-          const dayIdx = SCHEDULE_DATA.findIndex(d => d.day === activeDayId);
+          dbActiveDayId = data.activeDayId || 'Day 01';
+          const dayIdx = SCHEDULE_DATA.findIndex(d => d.day === dbActiveDayId);
           if (dayIdx !== -1) activeDayIdx = dayIdx;
-          dbForms = data.forms || {};
+          dbBatchForms = data.batchForms || {};
+          dbFormOpen = data.isFormOpen !== undefined ? data.isFormOpen : true;
         }
         
-        const seededForms = generateDefaultFormsMap();
-        const combinedForms: Record<string, any> = {};
-        SCHEDULE_DATA.forEach((daySchedule) => {
-          combinedForms[daySchedule.day] = dbForms[daySchedule.day] || seededForms[daySchedule.day];
+        const seededBatches: Record<string, any[]> = { ...dbBatchForms };
+        ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'].forEach((batch) => {
+          if (!seededBatches[batch]) {
+            seededBatches[batch] = [...DEFAULT_GLOBAL_QUESTIONS];
+          }
         });
         
-        setConfigActiveDayIdx(activeDayIdx);
-        setFormsMap(combinedForms);
+        setLiveActiveDayId(dbActiveDayId);
+        setLiveFormOpen(dbFormOpen);
+
+        // Sync local builder options on DB updates (only when first loading or saved)
+        setAccessActiveDayIdx(activeDayIdx);
+        setBatchForms(seededBatches);
+        setIsFormOpen(dbFormOpen);
       } catch (err) {
         console.error('Error loading settings:', err);
       }
-    }
-    loadSettings();
+    });
 
     return () => {
       unsubFeedbacks();
+      unsubComplaints();
+      unsubSuggestions();
+      unsubSettings();
     };
-  }, [user]);
+  }, [firebaseReady]);
 
-  // Dynamic Backward Compatibility Compiler
+  const handleToggleComplaintStatus = async (id: string, currentStatus: string) => {
+    if (!db) return;
+    try {
+      const nextStatus = currentStatus === 'resolved' ? 'pending' : 'resolved';
+      await setDoc(doc(db, 'complaints', id), { status: nextStatus }, { merge: true });
+    } catch (err) {
+      console.error('Error toggling complaint status:', err);
+    }
+  };
+
+  const handleToggleSuggestionStatus = async (id: string, currentStatus: string) => {
+    if (!db) return;
+    try {
+      const nextStatus = currentStatus === 'reviewed' ? 'pending' : 'reviewed';
+      await setDoc(doc(db, 'suggestions', id), { status: nextStatus }, { merge: true });
+    } catch (err) {
+      console.error('Error toggling suggestion status:', err);
+    }
+  };
+
   const parsedSubmissions = useMemo(() => {
     return feedbacks.map((f) => {
       if (f.answers) return f;
       
+      // Fallback/Legacy parsing for older responses that used the default static fields
       const answers: Record<string, any> = {};
       const ratings = f.ratings || {};
       const comments = f.comments || {};
-      const seeded = generateDefaultFormsMap()[f.day] || { questions: [] };
       
-      seeded.questions.forEach((q) => {
+      const batchKey = f.batch ? (String(f.batch).startsWith('Batch') ? String(f.batch) : `Batch ${f.batch}`) : 'Batch 1';
+      const questions = batchForms[batchKey] || DEFAULT_GLOBAL_QUESTIONS;
+      
+      questions.forEach((q) => {
+        let val: any = undefined;
+        
+        // Map legacy fields
+        const l = q.label.toLowerCase();
         if (q.type === 'rating') {
-          const score = ratings[q.label];
-          if (score !== undefined) {
-            answers[q.id] = {
-              type: 'rating',
-              label: q.label,
-              value: score,
-              comment: comments[q.label] || ''
-            };
+          if (l.includes('rate your day') || l.includes('overall')) {
+            val = f.dayOverallRating || ratings['How would you rate your day overall?'] || ratings[q.label];
+          } else if (l.includes('communicated') || l.includes('clear')) {
+            val = f.infoClear || ratings['How clearly was information communicated?'] || ratings[q.label];
+          } else if (l.includes('arrangements') || l.includes('comfort') || l.includes('facilities')) {
+            val = f.arrangementsComfort || ratings["How comfortable were today's arrangements (venue, food, facilities)?"] || ratings[q.label];
+          } else if (l.includes('supported') || l.includes('cohort')) {
+            val = f.supported || ratings['How supported did you feel by your Cohort Leader / OH Team?'] || ratings[q.label];
+          } else if (l.includes('facilitator') || l.includes('presenter')) {
+            val = f.facilitatorRating || ratings['Facilitator Rating: How would you rate the presenter / facilitator?'] || ratings[q.label];
+          } else {
+            val = ratings[q.label];
           }
         } else if (q.type === 'text') {
-          let val = '';
-          const l = q.label.toLowerCase();
-          if (l.includes('like')) val = f.likedMost || '';
-          else if (l.includes('improve')) val = f.improvements || '';
-          else if (l.includes('suggestion')) val = f.suggestions || '';
-          
-          if (val.trim()) {
-            answers[q.id] = {
-              type: 'text',
-              label: q.label,
-              value: val,
-              comment: ''
-            };
+          if (l.includes('like') || l.includes('highlight')) {
+            val = f.highlight || f.likedMost || comments['What was the highlight of your day?'] || comments[q.label];
+          } else if (l.includes('improve') || l.includes('better')) {
+            val = f.better || f.improvements || comments['What could have been better today?'] || comments[q.label];
+          } else if (l.includes('pace')) {
+            val = f.pace || comments["How was the day's pace?"] || comments[q.label];
+          } else if (l.includes('vibe') || l.includes('energy')) {
+            val = f.energyVibe || f.energyEnd || comments['How was the energy / vibe throughout the day?'] || comments[q.label];
+          } else if (l.includes('engaged')) {
+            val = f.engaged || comments['Did you feel engaged throughout the day?'] || comments[q.label];
+          } else {
+            val = comments[q.label] || f[q.label];
           }
+        }
+        
+        if (val !== undefined && val !== null) {
+          answers[q.id] = {
+            type: q.type,
+            label: q.label,
+            value: val,
+            comment: ''
+          };
         }
       });
       
       return { ...f, answers };
     });
-  }, [feedbacks]);
+  }, [feedbacks, batchForms]);
 
-  // Filtered responses by Day selection
   const filteredSubmissions = useMemo(() => {
-    if (selectedDayFilter === 'all') return parsedSubmissions;
-    return parsedSubmissions.filter((f) => f.day === selectedDayFilter);
-  }, [parsedSubmissions, selectedDayFilter]);
+    let result = parsedSubmissions;
+    if (selectedDayFilter !== 'all') {
+      result = result.filter((f) => f.day === selectedDayFilter);
+    }
+    if (selectedBatchFilter !== 'all') {
+      result = result.filter((f) => f.batch === selectedBatchFilter);
+    }
+    return result;
+  }, [parsedSubmissions, selectedDayFilter, selectedBatchFilter]);
 
   const totalFormsSubmitted = filteredSubmissions.length;
 
   const activeQuestionsForFilter = useMemo(() => {
-    if (selectedDayFilter !== 'all') {
-      return formsMap[selectedDayFilter]?.questions || [];
-    }
     const all: any[] = [];
-    const addedIds = new Set<string>();
-    Object.keys(formsMap).forEach((day) => {
-      (formsMap[day]?.questions || []).forEach((q) => {
-        if (!addedIds.has(q.id)) {
+    const addedLabels = new Set<string>();
+    Object.values(batchForms).forEach((questions) => {
+      (questions || []).forEach((q) => {
+        const normLabel = q.label.trim().toLowerCase();
+        if (!addedLabels.has(normLabel)) {
           all.push(q);
-          addedIds.add(q.id);
+          addedLabels.add(normLabel);
         }
       });
     });
-    return all;
-  }, [formsMap, selectedDayFilter]);
+    return all.length > 0 ? all : DEFAULT_GLOBAL_QUESTIONS;
+  }, [batchForms]);
 
   const ratingQuestionsList = useMemo(() => {
     return activeQuestionsForFilter.filter(q => q.type === 'rating');
@@ -346,7 +560,7 @@ export default function AdminFeedbackAnalytics() {
   }, [ratingQuestionsList, selectedRatingQId]);
 
   const questionStats = useMemo(() => {
-    const stats: Record<string, { ratings: number[]; comments: { rating: number; text: string; date: string }[]; textAnswers: { text: string; date: string }[] }> = {};
+    const stats: Record<string, { ratings: number[]; comments: { rating: number; text: string; date: string }[]; textAnswers: { text: string; date: string }[]; mcqCounts: Record<string, number> }> = {};
 
     filteredSubmissions.forEach((f) => {
       const dateStr = f.submittedAt?.toDate ? f.submittedAt.toDate().toLocaleDateString() : '';
@@ -354,26 +568,32 @@ export default function AdminFeedbackAnalytics() {
 
       Object.keys(answers).forEach((qId) => {
         const ans = answers[qId];
-        if (!stats[qId]) {
-          stats[qId] = { ratings: [], comments: [], textAnswers: [] };
+        const key = ans.label ? ans.label.trim().toLowerCase() : qId.trim().toLowerCase();
+        if (!stats[key]) {
+          stats[key] = { ratings: [], comments: [], textAnswers: [], mcqCounts: {} };
         }
 
         if (ans.type === 'rating') {
           const val = Number(ans.value);
           if (val >= 1 && val <= 5) {
-            stats[qId].ratings.push(val);
+            stats[key].ratings.push(val);
             if (ans.comment?.trim()) {
-              stats[qId].comments.push({
+              stats[key].comments.push({
                 rating: val,
                 text: ans.comment.trim(),
                 date: dateStr
               });
             }
           }
-        } else if (ans.type === 'text') {
+        } else if (ans.type === 'mcq') {
           const val = ans.value?.trim();
           if (val) {
-            stats[qId].textAnswers.push({
+            stats[key].mcqCounts[val] = (stats[key].mcqCounts[val] || 0) + 1;
+          }
+        } else if (ans.type === 'text' || ans.type === 'date') {
+          const val = ans.value?.trim();
+          if (val) {
+            stats[key].textAnswers.push({
               text: val,
               date: dateStr
             });
@@ -387,7 +607,9 @@ export default function AdminFeedbackAnalytics() {
 
   const selectedRatingStats = useMemo(() => {
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    const stats = questionStats[selectedRatingQId] || { ratings: [], comments: [] };
+    const selectedQ = activeQuestionsForFilter.find(q => q.id === selectedRatingQId);
+    const key = selectedQ ? selectedQ.label.trim().toLowerCase() : selectedRatingQId.trim().toLowerCase();
+    const stats = questionStats[key] || { ratings: [], comments: [] };
     let total = 0;
     stats.ratings.forEach((val) => {
       if (val >= 1 && val <= 5) {
@@ -406,13 +628,14 @@ export default function AdminFeedbackAnalytics() {
     const avg = total ? (sum / total).toFixed(1) : '0.0';
 
     return { distribution, avg, total };
-  }, [questionStats, selectedRatingQId]);
+  }, [questionStats, selectedRatingQId, activeQuestionsForFilter]);
 
   const globalAvgRating = useMemo(() => {
     let sum = 0;
     let count = 0;
     ratingQuestionsList.forEach((q) => {
-      const stats = questionStats[q.id] || { ratings: [] };
+      const key = q.label.trim().toLowerCase();
+      const stats = questionStats[key] || { ratings: [] };
       stats.ratings.forEach((val) => {
         sum += val;
         count++;
@@ -423,7 +646,8 @@ export default function AdminFeedbackAnalytics() {
 
   const ratingPerformanceList = useMemo(() => {
     return ratingQuestionsList.map((q) => {
-      const stats = questionStats[q.id] || { ratings: [], comments: [] };
+      const key = q.label.trim().toLowerCase();
+      const stats = questionStats[key] || { ratings: [], comments: [] };
       const totalAnswers = stats.ratings.length;
       const sum = stats.ratings.reduce((a, b) => a + b, 0);
       const avg = totalAnswers ? (sum / totalAnswers).toFixed(1) : '0.0';
@@ -444,8 +668,9 @@ export default function AdminFeedbackAnalytics() {
 
   const dynamicTextAnswers = useMemo(() => {
     const list: any[] = [];
-    activeQuestionsForFilter.filter(q => q.type === 'text').forEach((q) => {
-      const stats = questionStats[q.id] || { textAnswers: [] };
+    activeQuestionsForFilter.filter(q => q.type === 'text' || q.type === 'date').forEach((q) => {
+      const key = q.label.trim().toLowerCase();
+      const stats = questionStats[key] || { textAnswers: [] };
       if (stats.textAnswers.length > 0) {
         list.push({
           qId: q.id,
@@ -455,6 +680,35 @@ export default function AdminFeedbackAnalytics() {
       }
     });
     return list;
+  }, [activeQuestionsForFilter, questionStats]);
+
+  const mcqStatsList = useMemo(() => {
+    return activeQuestionsForFilter
+      .filter((q) => q.type === 'mcq')
+      .map((q) => {
+        const key = q.label.trim().toLowerCase();
+        const stats = questionStats[key] || { mcqCounts: {} };
+        const counts = stats.mcqCounts || {};
+        const options = q.options || [];
+
+        let total = 0;
+        Object.values(counts).forEach((c) => {
+          total += Number(c || 0);
+        });
+
+        const distributions = options.map((opt: string) => {
+          const count = counts[opt] || 0;
+          const percentage = total ? (count / total) * 100 : 0;
+          return { option: opt, count, percentage };
+        });
+
+        return {
+          id: q.id,
+          label: q.label,
+          total,
+          distributions
+        };
+      });
   }, [activeQuestionsForFilter, questionStats]);
 
   const handleExportExcel = async () => {
@@ -472,6 +726,8 @@ export default function AdminFeedbackAnalytics() {
             'Timestamp': dateStr,
             'Evaluated Day': f.day,
             'Date': f.date || '',
+            'Student Name': f.studentName || (f.anonymous ? 'Anonymous' : 'N/A'),
+            'Batch': f.batch || 'N/A',
             'Question ID': qId,
             'Question Label': ans.label,
             'Question Type': ans.type,
@@ -485,6 +741,8 @@ export default function AdminFeedbackAnalytics() {
             'Timestamp': dateStr,
             'Evaluated Day': f.day,
             'Date': f.date || '',
+            'Student Name': f.studentName || (f.anonymous ? 'Anonymous' : 'N/A'),
+            'Batch': f.batch || 'N/A',
             'Question ID': 'N/A',
             'Question Label': 'None Rated',
             'Question Type': 'N/A',
@@ -515,9 +773,9 @@ export default function AdminFeedbackAnalytics() {
       a.click();
       URL.revokeObjectURL(url);
 
-      const performer = user?.email || user?.uid || 'Feedback Operator';
+      const performer = auth?.currentUser?.email || auth?.currentUser?.uid || 'Feedback Operator';
       try {
-        const { logAdminAction } = await import('../../../lib/audit');
+        const { logAdminAction } = await import('@/lib/audit');
         await logAdminAction('FEEDBACK_EXPORT_EXCEL', 'feedbacks', `Exported ${filteredSubmissions.length} feedback submissions to Excel`, performer);
       } catch (err) {
         console.error("Failed to log export action:", err);
@@ -527,59 +785,102 @@ export default function AdminFeedbackAnalytics() {
     }
   };
 
-  const activeConfigDay = SCHEDULE_DATA[configActiveDayIdx].day;
-  const configQuestionsList = useMemo(() => {
-    return formsMap[activeConfigDay]?.questions || [];
-  }, [formsMap, activeConfigDay]);
+  const activeConfigDay = SCHEDULE_DATA[builderActiveDayIdx].day;
+  const activeConfigDate = SCHEDULE_DATA[builderActiveDayIdx].date;
+  const builderActiveKey = `${activeConfigDay}_${configActiveBatch}`;
+  const configQuestionsList = batchForms[builderActiveKey] || batchForms[configActiveBatch] || [];
 
-  const handleAddQuestion = (type: 'rating' | 'text') => {
+  const handleAddQuestion = (type: 'rating' | 'text' | 'mcq' | 'date') => {
     const newQuestion = {
       id: `q_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       type,
-      label: type === 'rating' ? 'New Star Rating Question' : 'New Written Question',
+      label: type === 'rating' ? 'New Star Rating Question' : type === 'text' ? 'New Written Question' : type === 'mcq' ? 'New Multiple Choice Question' : 'New Date Question',
+      options: type === 'mcq' ? ['Option 1', 'Option 2'] : undefined,
       required: false
     };
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [...DEFAULT_GLOBAL_QUESTIONS];
+      return { ...prev, [builderActiveKey]: [...current, newQuestion] };
+    });
+  };
 
-    setFormsMap((prev) => {
-      const dayData = prev[activeConfigDay] || { questions: [] };
-      return {
-        ...prev,
-        [activeConfigDay]: {
-          ...dayData,
-          questions: [...dayData.questions, newQuestion]
+  const handleAddMCQOption = (qId: string) => {
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [...DEFAULT_GLOBAL_QUESTIONS];
+      const updated = current.map((q) => {
+        if (q.id === qId) {
+          const opts = q.options || [];
+          return { ...q, options: [...opts, `Option ${opts.length + 1}`] };
         }
-      };
+        return q;
+      });
+      return { ...prev, [builderActiveKey]: updated };
+    });
+  };
+
+  const handleUpdateMCQOption = (qId: string, optIdx: number, val: string) => {
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [...DEFAULT_GLOBAL_QUESTIONS];
+      const updated = current.map((q) => {
+        if (q.id === qId) {
+          const opts = [...(q.options || [])];
+          opts[optIdx] = val;
+          return { ...q, options: opts };
+        }
+        return q;
+      });
+      return { ...prev, [builderActiveKey]: updated };
+    });
+  };
+
+  const handleRemoveMCQOption = (qId: string, optIdx: number) => {
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [...DEFAULT_GLOBAL_QUESTIONS];
+      const updated = current.map((q) => {
+        if (q.id === qId) {
+          const opts = (q.options || []).filter((_: any, idx: number) => idx !== optIdx);
+          return { ...q, options: opts };
+        }
+        return q;
+      });
+      return { ...prev, [builderActiveKey]: updated };
     });
   };
 
   const handleUpdateQuestionLabel = (qId: string, label: string) => {
-    setFormsMap((prev) => {
-      const dayData = prev[activeConfigDay] || { questions: [] };
-      const updated = dayData.questions.map((q) => {
-        if (q.id === qId) return { ...q, label };
-        return q;
-      });
-      return {
-        ...prev,
-        [activeConfigDay]: {
-          ...dayData,
-          questions: updated
-        }
-      };
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [];
+      const updated = current.map((q) => (q.id === qId ? { ...q, label } : q));
+      return { ...prev, [builderActiveKey]: updated };
+    });
+  };
+
+  const handleToggleQuestionRequired = (qId: string) => {
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [];
+      const updated = current.map((q) => (q.id === qId ? { ...q, required: !q.required } : q));
+      return { ...prev, [builderActiveKey]: updated };
     });
   };
 
   const handleRemoveQuestion = (qId: string) => {
-    setFormsMap((prev) => {
-      const dayData = prev[activeConfigDay] || { questions: [] };
-      const filtered = dayData.questions.filter((q) => q.id !== qId);
-      return {
-        ...prev,
-        [activeConfigDay]: {
-          ...dayData,
-          questions: filtered
-        }
-      };
+    setBatchForms((prev) => {
+      const current = prev[builderActiveKey] || prev[configActiveBatch] || [];
+      const filtered = current.filter((q) => q.id !== qId);
+      return { ...prev, [builderActiveKey]: filtered };
+    });
+  };
+
+  const handleMoveQuestion = (index: number, direction: 'up' | 'down') => {
+    setBatchForms((prev) => {
+      const current = [...(prev[builderActiveKey] || prev[configActiveBatch] || [])];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex >= 0 && targetIndex < current.length) {
+        const temp = current[index];
+        current[index] = current[targetIndex];
+        current[targetIndex] = temp;
+      }
+      return { ...prev, [builderActiveKey]: current };
     });
   };
 
@@ -589,12 +890,22 @@ export default function AdminFeedbackAnalytics() {
     setSaveSuccess(false);
 
     try {
-      const activeDayId = SCHEDULE_DATA[configActiveDayIdx].day;
+      const activeDayId = SCHEDULE_DATA[accessActiveDayIdx].day;
       await setDoc(doc(db, 'settings', 'feedback'), {
         activeDayId: activeDayId,
-        forms: formsMap,
+        batchForms: batchForms,
+        isFormOpen: isFormOpen,
         updatedAt: serverTimestamp(),
-      });
+      }, { merge: true });
+
+      const performer = auth?.currentUser?.email || auth?.currentUser?.uid || 'Admin';
+      try {
+        const { logAdminAction } = await import('@/lib/audit');
+        await logAdminAction('FEEDBACK_SAVE_SETTINGS', 'settings/feedback', `Saved feedback settings: set active day to ${activeDayId}, form open: ${isFormOpen}`, performer);
+      } catch (err) {
+        console.error("Failed to log save settings action:", err);
+      }
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
@@ -620,70 +931,80 @@ export default function AdminFeedbackAnalytics() {
   return (
     <div className="space-y-8 animate-fade-in select-none">
       
-      {/* Dynamic Sub-Navbar / Page Toggle Headers */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-4 border-brand-ink pb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-display font-black uppercase text-brand-ink tracking-tight">
-            Feedback Control Hub
-          </h1>
-          <p className="text-brand-ink/50 text-[10px] font-black uppercase tracking-wider font-mono">
-            {activeTab === 'analytics' 
-              ? 'Real-time sentiment analyzer & statistics' 
-              : 'Interactive form designer & active days configurator'}
-          </p>
-        </div>
-
-        {/* Dynamic Navigation Toggle Buttons inside Page Header Sub-Navbar */}
-        <div className="flex gap-2 bg-white border-2 border-brand-ink p-1 shadow-[3px_3px_0px_0px_#030404] rounded-md shrink-0 self-start sm:self-auto">
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`px-4 py-2 font-display text-[10px] font-black uppercase tracking-wider rounded-md cursor-pointer transition-all ${
-              activeTab === 'analytics'
-                ? 'bg-brand-orange text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
-                : 'text-brand-ink/65 hover:bg-brand-cloud'
-            }`}
-            id="subnav-toggle-analytics"
-          >
-            Sentiment Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab('configurator')}
-            className={`px-4 py-2 font-display text-[10px] font-black uppercase tracking-wider rounded-md cursor-pointer transition-all ${
-              activeTab === 'configurator'
-                ? 'bg-brand-orange text-white border-2 border-brand-ink shadow-[2px_2px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
-                : 'text-brand-ink/65 hover:bg-brand-cloud'
-            }`}
-            id="subnav-toggle-configurator"
-          >
-            Form Builder
-          </button>
-        </div>
-      </div>
-
       {/* ============================================================================
           TAB: SENTIMENT ANALYSIS (ANALYTICS)
           ============================================================================ */}
       {activeTab === 'analytics' && (
         <div className="space-y-8 animate-fade-in">
           
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+            <div>
+              <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
+                Feedback Responses
+              </h1>
+              <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
+                Real-time feedback statistics and satisfaction analysis
+              </p>
+            </div>
+            
+            {/* Live status badge */}
+            <div className="flex items-center gap-2 text-xs shrink-0">
+              <span className="hidden sm:inline font-bold text-brand-ink/50 uppercase">Live Form:</span>
+              <div className="flex items-center gap-2 border-2 border-brand-ink px-3 py-1 rounded bg-brand-cloud shadow-comic-sm bg-white">
+                {liveFormOpen ? (
+                  <>
+                    <span className="font-black uppercase text-brand-ink text-[11px]">{liveActiveDayId}</span>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-green-500 animate-pulse" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">OPEN</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-red-500" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">CLOSED</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          
           {/* Day Filters & Export Button */}
           <div className="bg-white border-4 border-brand-ink p-5 shadow-[6px_6px_0px_0px_#030404] rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <span className="text-xs font-black uppercase text-brand-ink/65 tracking-wider shrink-0 font-mono">
-                Select Evaluated Day:
-              </span>
-              <select
-                value={selectedDayFilter}
-                onChange={(e) => setSelectedDayFilter(e.target.value)}
-                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full md:w-60"
-              >
-                <option value="all">All Days Combined</option>
-                {SCHEDULE_DATA.map((day) => (
-                  <option key={day.day} value={day.day}>
-                    {day.day} ({day.date})
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <span className="text-xs font-black uppercase text-brand-ink/65 tracking-wider shrink-0 font-mono">
+                  Day:
+                </span>
+                <select
+                  value={selectedDayFilter}
+                  onChange={(e) => setSelectedDayFilter(e.target.value)}
+                  className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full md:w-48"
+                >
+                  <option value="all">All Days Combined</option>
+                  {SCHEDULE_DATA.map((day) => (
+                    <option key={day.day} value={day.day}>
+                      {day.day} ({day.date})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <span className="text-xs font-black uppercase text-brand-ink/65 tracking-wider shrink-0 font-mono">
+                  Batch:
+                </span>
+                <select
+                  value={selectedBatchFilter}
+                  onChange={(e) => setSelectedBatchFilter(e.target.value)}
+                  className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full md:w-48"
+                >
+                  <option value="all">All Batches</option>
+                  <option value="Batch 1">Batch 1</option>
+                  <option value="Batch 2">Batch 2</option>
+                  <option value="Batch 3">Batch 3</option>
+                  <option value="Batch 4">Batch 4</option>
+                </select>
+              </div>
             </div>
 
             <button
@@ -692,14 +1013,13 @@ export default function AdminFeedbackAnalytics() {
               className="comic-btn-primary shrink-0"
             >
               <CustomDownloadIcon size={14} />
-              <span>{exporting ? 'Exporting Report...' : 'Download Excel Sheets'}</span>
+              <span>{exporting ? 'Exporting Report...' : 'Download Excel Report'}</span>
             </button>
           </div>
 
           {/* Quick Metrics & Chart Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Quick stats and selection graphs */}
             <div className="lg:col-span-2 space-y-6">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -723,7 +1043,7 @@ export default function AdminFeedbackAnalytics() {
                   </div>
                   <div>
                     <span className="block text-[9px] font-black uppercase text-brand-ink/50 tracking-wider">
-                      Dynamic Global Average
+                      Global Average Rating
                     </span>
                     <strong className="text-3xl font-display font-black text-brand-ink leading-tight">
                       {globalAvgRating} <span className="text-xs text-brand-ink/40 font-bold uppercase tracking-wider font-mono">/ 5.0</span>
@@ -757,61 +1077,25 @@ export default function AdminFeedbackAnalytics() {
                   )}
                 </div>
 
-                {ratingQuestionsList.length === 0 ? (
+                {totalFormsSubmitted === 0 || !selectedRatingQId ? (
                   <div className="text-center p-8 bg-brand-cloud border-2 border-brand-ink border-dashed rounded-md text-brand-ink/50 text-xs font-bold uppercase font-mono">
-                    No active star rating questions configured for this selection.
+                    No active star rating responses logged for this selection.
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                    
-                    {/* Average Metric Circle Box */}
-                    <div className="border-4 border-brand-ink bg-white p-6 shadow-[4px_4px_0px_0px_#FF9A00] rounded-md text-center space-y-2">
-                      <span className="block text-[9px] font-black uppercase tracking-wider text-brand-ink/50">
-                        Item Rating Average
-                      </span>
-                      <strong className="text-5xl font-display font-black text-brand-ink block">
-                        {selectedRatingStats.avg}
-                      </strong>
-                      <div className="flex justify-center gap-1">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <CustomStarIcon
-                            key={s}
-                            size={16}
-                            filled={s <= Math.round(Number(selectedRatingStats.avg))}
-                            className={s <= Math.round(Number(selectedRatingStats.avg)) ? 'text-brand-orange' : 'text-brand-ink/15'}
-                          />
-                        ))}
-                      </div>
-                      <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-widest font-mono">
-                        Based on {selectedRatingStats.total} responses
-                      </span>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-bold uppercase text-brand-ink/50">Average Score:</span>
+                      <span className="text-lg font-black text-brand-pink">{selectedRatingStats.avg} / 5.0</span>
+                      <span className="text-[10px] font-bold text-brand-ink/35">({selectedRatingStats.total} responses)</span>
                     </div>
-
-                    {/* Flat Neobrutalist Bar Graph Column */}
-                    <div className="md:col-span-2 space-y-3.5">
-                      {selectedRatingStats.distribution.slice().reverse().map((bar) => (
-                        <div key={bar.label} className="space-y-1.5">
-                          <div className="flex justify-between text-[10px] font-mono font-bold uppercase text-brand-ink">
-                            <span>{bar.label}</span>
-                            <span>{bar.count} answers ({Math.round(bar.percentage)}%)</span>
-                          </div>
-                          <div className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md h-5 overflow-hidden p-0.5 relative shadow-inner">
-                            <div
-                              className="h-full bg-brand-orange border border-brand-ink rounded transition-all duration-500"
-                              style={{ width: `${Math.max(bar.percentage, 2)}%` }}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
+                    <PureReactColumnChart data={selectedRatingStats.distribution} />
                   </div>
                 )}
               </div>
 
             </div>
 
-            {/* Side Column: Dynamic Open Observations Comment Streams */}
+            {/* Side Column: Dynamic Paragraph Written Summary Observations */}
             <div className="bg-white border-4 border-brand-ink p-6 shadow-[8px_8px_0px_0px_#030404] rounded-lg flex flex-col max-h-[560px] overflow-hidden">
               <div className="border-b-2 border-brand-ink pb-3 mb-4 shrink-0">
                 <h2 className="text-sm font-display font-black uppercase text-brand-ink">
@@ -856,11 +1140,45 @@ export default function AdminFeedbackAnalytics() {
 
           </div>
 
-          {/* Dynamic star rating items metrics grid overview */}
+          {/* MCQ Responses Distribution Graph */}
+          {mcqStatsList.length > 0 && (
+            <div className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg space-y-6">
+              <h2 className="text-base font-display font-black uppercase text-brand-ink border-b-2 border-brand-ink pb-3">
+                Multiple Choice Question (MCQ) Distribution
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {mcqStatsList.map((mcq) => (
+                  <div key={mcq.id} className="space-y-4 border-2 border-brand-ink/10 p-4 rounded-md">
+                    <h3 className="text-xs font-black uppercase text-brand-pink tracking-wider leading-relaxed">
+                      {mcq.label} <span className="text-[10px] font-bold text-brand-ink/40">({mcq.total} responses)</span>
+                    </h3>
+                    <div className="space-y-3">
+                      {mcq.distributions.map((dist, dIdx) => (
+                        <div key={dIdx} className="space-y-1">
+                          <div className="flex justify-between text-xs font-bold text-brand-ink">
+                            <span>{dist.option}</span>
+                            <span>{dist.count} ({Math.round(dist.percentage)}%)</span>
+                          </div>
+                          <div className="w-full bg-brand-cloud border-2 border-brand-ink h-4 rounded-md overflow-hidden relative shadow-comic-sm">
+                            <div 
+                              className="bg-brand-pink h-full border-r-2 border-brand-ink transition-all duration-300"
+                              style={{ width: `${dist.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Dynamic star rating items comparisons table */}
           <div className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg space-y-6">
             <div className="border-b-2 border-brand-ink pb-3">
               <h2 className="text-base font-display font-black uppercase text-brand-ink">
-                Stars Rating Elements Comparison Table
+                Session Performance & Attendee Comments
               </h2>
             </div>
 
@@ -869,48 +1187,67 @@ export default function AdminFeedbackAnalytics() {
                 No star rating elements compiled for this selection.
               </div>
             ) : (
-              <div className="overflow-x-auto border-2 border-brand-ink rounded-lg shadow-comic-sm">
-                <table className="w-full border-collapse bg-white text-left text-xs font-mono text-brand-ink font-bold">
-                  <thead>
-                    <tr className="bg-brand-cloud border-b-2 border-brand-ink uppercase text-[10px] font-black tracking-wider text-brand-ink/80">
-                      <th className="p-4 border-r-2 border-brand-ink">Evaluated Item / Title</th>
-                      <th className="p-4 border-r-2 border-brand-ink text-center">Responses</th>
-                      <th className="p-4 border-r-2 border-brand-ink text-center">Score Average</th>
-                      <th className="p-4 border-r-2 border-brand-ink text-center">5-Star Ratio</th>
-                      <th className="p-4">Recent Notes Stream</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y-2 divide-brand-ink/10">
-                    {ratingPerformanceList.map((row) => (
-                      <tr key={row.id} className="hover:bg-brand-cloud/25 transition-colors">
-                        <td className="p-4 border-r-2 border-brand-ink font-black uppercase max-w-xs truncate">
-                          {row.title}
-                        </td>
-                        <td className="p-4 border-r-2 border-brand-ink text-center font-black">
-                          {row.totalAnswers}
-                        </td>
-                        <td className="p-4 border-r-2 border-brand-ink text-center">
-                          <span className="inline-block bg-brand-orange/15 text-brand-ink border border-brand-orange/40 font-black px-2.5 py-1 rounded text-xs">
-                            {row.avg} ★
-                          </span>
-                        </td>
-                        <td className="p-4 border-r-2 border-brand-ink text-center">
-                          <div className="flex items-center justify-center gap-1.5">
-                            <div className="w-12 bg-brand-cloud border border-brand-ink/20 rounded h-2 overflow-hidden">
-                              <div className="h-full bg-brand-orange" style={{ width: `${row.fiveStars}%` }} />
+              <div className="space-y-6">
+                {ratingPerformanceList.map((evt) => (
+                  <div 
+                    key={evt.id}
+                    className="border-2 border-brand-ink p-5 shadow-[4px_4px_0px_0px_#030404] rounded-lg bg-white space-y-4"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+                      <div>
+                        <h3 className="text-sm font-black uppercase tracking-tight text-brand-ink">
+                          {evt.title}
+                        </h3>
+                      </div>
+
+                      <div className="flex gap-6 items-center">
+                        <div className="text-center shrink-0">
+                          <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Answers</span>
+                          <strong className="text-lg font-black text-brand-ink tabular-nums">{evt.totalAnswers}</strong>
+                        </div>
+                        <div className="text-center shrink-0">
+                          <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Avg Rating</span>
+                          <strong className="text-lg font-black text-brand-pink tabular-nums">{evt.avg}</strong>
+                        </div>
+                        <div className="text-center shrink-0">
+                          <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">5-Star Ratio</span>
+                          <strong className="text-lg font-black text-green-600 tabular-nums">{evt.fiveStars}%</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="block text-[9px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Attendee Notes Feed:</span>
+                      <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        {evt.comments.map((comment: any, cIdx: number) => (
+                          <div key={cIdx} className="bg-brand-cloud/40 border border-brand-ink/10 p-3 rounded-md text-xs leading-relaxed text-brand-ink font-bold relative shadow-comic-sm">
+                            <div className="flex justify-between items-center mb-1">
+                              <div className="flex gap-0.5">
+                                {[1, 2, 3, 4, 5].map((s) => (
+                                  <CustomStarIcon
+                                    key={s}
+                                    size={8}
+                                    filled={s <= comment.rating}
+                                    className={s <= comment.rating ? 'text-brand-ink' : 'text-brand-ink/10'}
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-[8px] font-black text-brand-ink/40 uppercase tracking-widest font-mono">
+                                {comment.date}
+                              </span>
                             </div>
-                            <span className="font-black text-[10px]">{row.fiveStars}%</span>
+                            &ldquo;{comment.text}&rdquo;
                           </div>
-                        </td>
-                        <td className="p-4 max-w-sm truncate text-brand-ink/70">
-                          {row.comments.length > 0 
-                            ? `"${row.comments[0].text}"`
-                            : '—'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        ))}
+                        {evt.comments.length === 0 && (
+                          <p className="text-[10px] font-bold text-brand-ink/35 uppercase tracking-wide">
+                            No written comments logged for this evaluation item.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -919,144 +1256,795 @@ export default function AdminFeedbackAnalytics() {
       )}
 
       {/* ============================================================================
-          TAB: FORM CONFIGURATOR (GOOGLE FORMS BUILDER)
+          TAB: COMPLAINTS
           ============================================================================ */}
-      {activeTab === 'configurator' && (
-        <form onSubmit={handleSaveSettings} className="space-y-8 animate-fade-in">
+      {activeTab === 'complaints' && (
+        <div className="space-y-8 animate-fade-in">
           
-          {/* Active Settings Panel */}
-          <div className="bg-white border-4 border-brand-ink p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-            <div className="space-y-2">
-              <label className="block text-[10px] font-black uppercase text-brand-ink/50 tracking-wider font-mono">
-                Current Active Event Day (Public Route Form Target):
-              </label>
-              <p className="text-xs text-brand-ink/70 font-mono font-bold leading-normal">
-                This dictates which custom questionnaire renders dynamically at the student feedback URL.
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+            <div>
+              <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
+                Student Complaints
+              </h1>
+              <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
+                Manage and route student grievances submitted through the Complaint Portal
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <select
-                value={SCHEDULE_DATA[configActiveDayIdx].day}
-                onChange={(e) => {
-                  const idx = SCHEDULE_DATA.findIndex(d => d.day === e.target.value);
-                  if (idx !== -1) setConfigActiveDayIdx(idx);
-                }}
-                className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-black rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-orange transition-colors w-full uppercase tracking-wider"
-              >
-                {SCHEDULE_DATA.map((day, idx) => (
-                  <option key={day.day} value={day.day}>
-                    {day.day} ({day.date})
-                  </option>
-                ))}
-              </select>
-
-              <button
-                type="submit"
-                disabled={savingSettings}
-                className="comic-btn-primary shrink-0"
-              >
-                {savingSettings ? 'Saving...' : 'Save Changes'}
-              </button>
+            {/* Quick Metrics */}
+            <div className="flex gap-4 shrink-0">
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Total</span>
+                <strong className="text-base font-black text-brand-ink">{complaints.length}</strong>
+              </div>
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Pending</span>
+                <strong className="text-base font-black text-brand-pink">{pendingComplaintsCount}</strong>
+              </div>
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Resolved</span>
+                <strong className="text-base font-black text-green-600">{complaints.length - pendingComplaintsCount}</strong>
+              </div>
             </div>
           </div>
 
-          {/* Success Dialog Banner */}
-          {saveSuccess && (
-            <div className="bg-brand-cloud border-4 border-brand-ink p-4 shadow-[4px_4px_0px_0px_#FF9A00] rounded-lg flex items-center gap-3 animate-bounce">
-              <CustomCheckIcon className="text-brand-orange shrink-0" size={20} />
-              <p className="text-xs font-mono font-black uppercase tracking-wider text-brand-ink">
-                Questionnaire settings saved successfully to Firestore!
-              </p>
-            </div>
-          )}
-
-          {/* Main live questionnaire editor box */}
-          <div className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg space-y-6">
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-brand-ink pb-3">
-              <div>
-                <h2 className="text-sm font-display font-black uppercase text-brand-ink">
-                  Questionnaire Item Editor ({activeConfigDay})
-                </h2>
-                <p className="text-brand-ink/40 text-[9px] uppercase tracking-wider font-black font-mono">
-                  Add, edit, rename, or delete items instantly for {activeConfigDay}
-                </p>
+          {/* Filter Bar */}
+          <div className="bg-white border-4 border-brand-ink p-4 md:p-5 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
+            <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 items-center flex-1">
+              <div className="col-span-1 flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">Status:</span>
+                <select
+                  value={complaintStatusFilter}
+                  onChange={(e) => setComplaintStatusFilter(e.target.value as any)}
+                  className="bg-brand-cloud border-2 border-brand-ink text-brand-ink text-xs font-bold rounded p-1.5 focus:outline-none w-full md:w-auto"
+                >
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="resolved">Resolved</option>
+                </select>
               </div>
 
-              {/* Form item creators dropdown actions panel */}
-              <div className="flex gap-2">
+              <div className="col-span-1 flex items-center gap-2 md:order-3">
+                <span className="text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">Sort:</span>
+                <select
+                  value={complaintDateSort}
+                  onChange={(e) => setComplaintDateSort(e.target.value as any)}
+                  className="bg-brand-cloud border-2 border-brand-ink text-brand-ink text-xs font-bold rounded p-1.5 focus:outline-none w-full md:w-auto"
+                >
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+
+              <div className="col-span-2 flex items-center gap-2 md:order-2 md:min-w-[160px]">
+                <span className="text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">Dept:</span>
+                <select
+                  value={complaintDepartmentFilter}
+                  onChange={(e) => setComplaintDepartmentFilter(e.target.value)}
+                  className="bg-brand-cloud border-2 border-brand-ink text-brand-ink text-xs font-bold rounded p-1.5 focus:outline-none w-full md:w-auto"
+                >
+                  <option value="all">All Departments</option>
+                  {complaintDepartments.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="w-full md:w-64">
+              <input
+                type="text"
+                value={complaintSearch}
+                onChange={(e) => setComplaintSearch(e.target.value)}
+                placeholder="Search complaints..."
+                className="w-full bg-white border-2 border-brand-ink rounded py-1.5 px-3 focus:outline-none focus:border-brand-pink text-xs font-bold text-brand-ink placeholder:text-brand-ink/30"
+              />
+            </div>
+          </div>
+
+          {/* List */}
+          <div className="space-y-6">
+            {filteredComplaints.length === 0 ? (
+              <div className="bg-white border-4 border-brand-ink p-12 shadow-[6px_6px_0px_0px_#030404] rounded-lg text-center">
+                <p className="text-sm font-black text-brand-ink/40 uppercase tracking-widest font-mono">
+                  No matching complaints found
+                </p>
+              </div>
+            ) : (
+              filteredComplaints.map((item) => {
+                const dateStr = item.submittedAt?.toDate ? item.submittedAt.toDate().toLocaleString() : 'N/A';
+                const isPending = item.status !== 'resolved';
+                
+                return (
+                  <div 
+                    key={item.id} 
+                    className="bg-white border-4 border-brand-ink p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4 animate-fade-in"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="bg-brand-pink/15 text-brand-pink border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404]">
+                          {item.department || 'General'}
+                        </span>
+                        <span className={`border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] ${
+                          isPending ? 'bg-brand-orange/15 text-brand-orange' : 'bg-green-100 text-green-600'
+                        }`}>
+                          {item.status || 'pending'}
+                        </span>
+                        {item.anonymous ? (
+                          <span className="bg-brand-cloud border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider text-brand-ink/60">
+                            Anonymous
+                          </span>
+                        ) : (
+                          <span className="bg-brand-blue/15 text-brand-blue border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404]">
+                            {item.studentName} ({item.studentBatch})
+                          </span>
+                        )}
+                      </div>
+                      
+                      <span className="text-[10px] font-black text-brand-ink/40 uppercase tracking-widest sm:text-right font-mono">
+                        {dateStr}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-bold text-brand-ink leading-relaxed bg-brand-cloud/30 border-2 border-brand-ink/5 p-4 rounded-md">
+                      {item.description}
+                    </div>
+
+                    {/* Attachments */}
+                    {item.attachmentUrls && item.attachmentUrls.length > 0 && (
+                      <div className="space-y-2">
+                        <span className="block text-[9px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">
+                          Attachments ({item.attachmentUrls.length}):
+                        </span>
+                        <div className="flex flex-wrap gap-3">
+                          {item.attachmentUrls.map((url: string, index: number) => {
+                            const isVideo = url.includes('.mp4') || url.includes('.webm') || url.includes('.mov');
+                            return (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 border-2 border-brand-ink bg-brand-cloud hover:bg-brand-cloud/80 text-brand-ink text-[10px] font-black px-3 py-1.5 shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] transition-all rounded cursor-pointer"
+                              >
+                                <CustomDownloadIcon size={12} />
+                                <span>Attachment {index + 1} ({isVideo ? 'Video' : 'Image'})</span>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={() => handleToggleComplaintStatus(item.id, item.status)}
+                        className={`border-2 border-brand-ink font-display text-[11px] font-black px-4 py-2.5 rounded shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-none transition-all duration-100 cursor-pointer uppercase tracking-wider ${
+                          isPending 
+                            ? 'bg-green-500 hover:bg-green-600 text-white' 
+                            : 'bg-brand-orange hover:bg-brand-orange/90 text-brand-ink'
+                        }`}
+                      >
+                        {isPending ? 'Mark as Resolved' : 'Mark as Pending'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================================
+          TAB: SUGGESTIONS
+          ============================================================================ */}
+      {activeTab === 'suggestions' && (
+        <div className="space-y-8 animate-fade-in">
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+            <div>
+              <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
+                Student Suggestions
+              </h1>
+              <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
+                Suggestions collected from the Idea Capsule Suggestion Box
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-4 shrink-0">
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Total</span>
+                <strong className="text-base font-black text-brand-ink">{suggestions.length}</strong>
+              </div>
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Pending</span>
+                <strong className="text-base font-black text-brand-orange">{pendingSuggestionsCount}</strong>
+              </div>
+              <div className="bg-white border-2 border-brand-ink px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#030404] text-center min-w-[70px]">
+                <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Reviewed</span>
+                <strong className="text-base font-black text-green-600">{suggestions.length - pendingSuggestionsCount}</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="bg-white border-4 border-brand-ink p-4 md:p-5 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
+            <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 items-center flex-1">
+              <div className="col-span-1 flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">Status:</span>
+                <select
+                  value={suggestionStatusFilter}
+                  onChange={(e) => setSuggestionStatusFilter(e.target.value as any)}
+                  className="bg-brand-cloud border-2 border-brand-ink text-brand-ink text-xs font-bold rounded p-1.5 focus:outline-none w-full md:w-auto"
+                >
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="reviewed">Reviewed</option>
+                </select>
+              </div>
+
+              <div className="col-span-1 flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase text-brand-ink/50 tracking-wider">Sort:</span>
+                <select
+                  value={suggestionDateSort}
+                  onChange={(e) => setSuggestionDateSort(e.target.value as any)}
+                  className="bg-brand-cloud border-2 border-brand-ink text-brand-ink text-xs font-bold rounded p-1.5 focus:outline-none w-full md:w-auto"
+                >
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="w-full md:w-64">
+              <input
+                type="text"
+                value={suggestionSearch}
+                onChange={(e) => setSuggestionSearch(e.target.value)}
+                placeholder="Search suggestions..."
+                className="w-full bg-white border-2 border-brand-ink rounded py-1.5 px-3 focus:outline-none focus:border-brand-pink text-xs font-bold text-brand-ink placeholder:text-brand-ink/30"
+              />
+            </div>
+          </div>
+
+          {/* List */}
+          <div className="space-y-6">
+            {filteredSuggestions.length === 0 ? (
+              <div className="bg-white border-4 border-brand-ink p-12 shadow-[6px_6px_0px_0px_#030404] rounded-lg text-center">
+                <p className="text-sm font-black text-brand-ink/40 uppercase tracking-widest font-mono">
+                  No matching suggestions found
+                </p>
+              </div>
+            ) : (
+              filteredSuggestions.map((item) => {
+                const dateStr = item.submittedAt?.toDate ? item.submittedAt.toDate().toLocaleString() : 'N/A';
+                const isPending = item.status !== 'reviewed';
+                
+                return (
+                  <div 
+                    key={item.id} 
+                    className="bg-white border-4 border-brand-ink p-6 shadow-[6px_6px_0px_0px_#030404] rounded-lg space-y-4 animate-fade-in"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="bg-brand-orange/15 text-brand-orange border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404]">
+                          Idea Capsule
+                        </span>
+                        <span className={`border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] ${
+                          isPending ? 'bg-brand-orange/15 text-brand-orange' : 'bg-green-100 text-green-600'
+                        }`}>
+                          {item.status || 'pending'}
+                        </span>
+                      </div>
+                      
+                      <span className="text-[10px] font-black text-brand-ink/40 uppercase tracking-widest sm:text-right font-mono">
+                        {dateStr}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-bold text-brand-ink leading-relaxed bg-brand-cloud/30 border-2 border-brand-ink/5 p-4 rounded-md">
+                      {item.suggestion}
+                    </div>
+
+                    {/* Attachments */}
+                    {item.attachmentUrls && item.attachmentUrls.length > 0 && (
+                      <div className="space-y-2">
+                        <span className="block text-[9px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">
+                          Attachments ({item.attachmentUrls.length}):
+                        </span>
+                        <div className="flex flex-wrap gap-3">
+                          {item.attachmentUrls.map((url: string, index: number) => {
+                            const isVideo = url.includes('.mp4') || url.includes('.webm') || url.includes('.mov');
+                            return (
+                              <a
+                                key={index}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 border-2 border-brand-ink bg-brand-cloud hover:bg-brand-cloud/80 text-brand-ink text-[10px] font-black px-3 py-1.5 shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] transition-all rounded cursor-pointer"
+                              >
+                                <CustomDownloadIcon size={12} />
+                                <span>Attachment {index + 1} ({isVideo ? 'Video' : 'Image'})</span>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={() => handleToggleSuggestionStatus(item.id, item.status)}
+                        className={`border-2 border-brand-ink font-display text-[11px] font-black px-4 py-2.5 rounded shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[0px] active:translate-y-[0px] active:shadow-none transition-all duration-100 cursor-pointer uppercase tracking-wider ${
+                          isPending 
+                            ? 'bg-green-500 hover:bg-green-600 text-white' 
+                            : 'bg-brand-orange hover:bg-brand-orange/90 text-brand-ink'
+                        }`}
+                      >
+                        {isPending ? 'Mark as Reviewed' : 'Mark as Pending'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================================
+          TAB: FORM ACCESS CONTROL
+          ============================================================================ */}
+      {activeTab === 'access' && (
+        <div className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
+            <div>
+              <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
+                Form Access Control
+              </h1>
+              <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
+                Configure active evaluation day and toggle form visibility for students
+              </p>
+            </div>
+            
+            {/* Live status badge */}
+            <div className="flex items-center gap-2 text-xs shrink-0">
+              <span className="hidden sm:inline font-bold text-brand-ink/50 uppercase">Live Form:</span>
+              <div className="flex items-center gap-2 border-2 border-brand-ink px-3 py-1 rounded bg-brand-cloud shadow-comic-sm bg-white">
+                {liveFormOpen ? (
+                  <>
+                    <span className="font-black uppercase text-brand-ink text-[11px]">{liveActiveDayId}</span>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-green-500 animate-pulse" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">OPEN</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-red-500" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">CLOSED</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveSettings} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Active Day Selection */}
+              <div className="bg-brand-cloud/40 border-2 border-brand-ink p-6 rounded-md shadow-comic-sm space-y-4 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-brand-ink">
+                    Select Active Day
+                  </h3>
+                  <p className="text-[10px] text-brand-ink/50 font-bold uppercase mt-1">
+                    Choose which day's form students can access
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <select
+                    value={accessActiveDayIdx}
+                    onChange={(e) => setAccessActiveDayIdx(Number(e.target.value))}
+                    className="bg-white border-2 border-brand-ink text-brand-ink text-sm font-bold rounded-md py-3 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full shadow-inner"
+                  >
+                    {SCHEDULE_DATA.map((day, idx) => (
+                      <option key={day.day} value={idx}>
+                        {day.day} ({day.date})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Form Status Open/Close Selection */}
+              <div className="bg-brand-cloud/40 border-2 border-brand-ink p-6 rounded-md shadow-comic-sm space-y-4 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-brand-ink">
+                    Form Visibility Status
+                  </h3>
+                  <p className="text-[10px] text-brand-ink/50 font-bold uppercase mt-1">
+                    Open or close submissions for the active day
+                  </p>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <button
+                    key="open"
+                    type="button"
+                    onClick={() => setIsFormOpen(true)}
+                    className={`flex-1 py-2.5 px-4 font-display text-xs font-black uppercase tracking-wider transition-all rounded-md cursor-pointer border-2 ${
+                      isFormOpen
+                        ? 'bg-green-500 text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                        : 'bg-white text-brand-ink/65 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-cloud'
+                    }`}
+                  >
+                    Open
+                  </button>
+                  <button
+                    key="closed"
+                    type="button"
+                    onClick={() => setIsFormOpen(false)}
+                    className={`flex-1 py-2.5 px-4 font-display text-xs font-black uppercase tracking-wider transition-all rounded-md cursor-pointer border-2 ${
+                      !isFormOpen
+                        ? 'bg-red-500 text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                        : 'bg-white text-brand-ink/65 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-cloud'
+                    }`}
+                  >
+                    Closed
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex items-center gap-4 border-t-2 border-brand-ink/10 pt-6">
+              <button
+                type="submit"
+                disabled={savingSettings}
+                className="comic-btn-primary border-4 shadow-[4px_4px_0px_0px_#030404]"
+              >
+                {savingSettings ? 'Saving Settings...' : 'Save Settings'}
+              </button>
+              {saveSuccess && (
+                <span className="text-xs font-black uppercase text-brand-pink tracking-wider animate-bounce">
+                  Settings Saved Successfully!
+                </span>
+              )}
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* ============================================================================
+          TAB: FORM CONFIGURATOR (FORM BUILDER)
+          ============================================================================ */}
+      {activeTab === 'configurator' && (
+        <div className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4 mb-6">
+            <div>
+              <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
+                Form Builder
+              </h1>
+              <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
+                Configuring active day: <span className="text-brand-blue font-black font-mono">{activeConfigDay}</span> ({activeConfigDate})
+              </p>
+            </div>
+            
+            {/* Live status badge */}
+            <div className="flex items-center gap-2 text-xs shrink-0">
+              <span className="hidden sm:inline font-bold text-brand-ink/50 uppercase">Live Form:</span>
+              <div className="flex items-center gap-2 border-2 border-brand-ink px-3 py-1 rounded bg-brand-cloud shadow-comic-sm bg-white">
+                {liveFormOpen ? (
+                  <>
+                    <span className="font-black uppercase text-brand-ink text-[11px]">{liveActiveDayId}</span>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-green-500 animate-pulse" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">OPEN</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 rounded-full border border-brand-ink bg-red-500" />
+                    <span className="font-black uppercase text-brand-ink text-[9px] tracking-wider">CLOSED</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveSettings} className="space-y-8">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+              {/* Day Selection */}
+              <div className="bg-brand-cloud/40 border-2 border-brand-ink p-6 rounded-md shadow-comic-sm space-y-4">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-brand-ink">
+                    Select Day to Edit Questions
+                  </h3>
+                </div>
+                <div className="pt-2">
+                  <select
+                    value={builderActiveDayIdx}
+                    onChange={(e) => setBuilderActiveDayIdx(Number(e.target.value))}
+                    className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2.5 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full shadow-inner"
+                  >
+                    {SCHEDULE_DATA.map((day, idx) => (
+                      <option key={day.day} value={idx}>
+                        {day.day} ({day.date})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Batch Selection */}
+              <div className="bg-brand-cloud/40 border-2 border-brand-ink p-6 rounded-md shadow-comic-sm space-y-4">
+                <div>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-brand-ink">
+                    Select Batch to Edit Questions
+                  </h3>
+                </div>
+                <div className="flex gap-2 flex-wrap pt-2">
+                  {['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'].map((batch) => (
+                    <button
+                      key={batch}
+                      type="button"
+                      onClick={() => setConfigActiveBatch(batch)}
+                      className={`py-2.5 px-5 font-display text-xs font-black uppercase tracking-wider transition-all rounded-md cursor-pointer border-2 ${
+                        configActiveBatch === batch
+                          ? 'bg-brand-blue text-white border-brand-ink shadow-[3px_3px_0px_0px_#030404] translate-x-[-1px] translate-y-[-1px]'
+                          : 'bg-white text-brand-ink/65 border-brand-ink shadow-[3px_3px_0px_0px_#030404] hover:bg-brand-cloud'
+                      }`}
+                    >
+                      {batch}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Questions List */}
+            <div className="space-y-6">
+              <div className="border-b-2 border-brand-ink pb-2">
+                <h3 className="text-xs font-black uppercase text-brand-ink/75 tracking-wider">
+                  Questions on this Form ({configActiveBatch})
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                {configQuestionsList.map((q, qIdx) => (
+                  <div 
+                    key={q.id}
+                    className="bg-brand-cloud/30 border-2 border-brand-ink p-4 rounded-md shadow-comic-sm flex flex-col gap-4 animate-fade-in"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-xs font-mono font-black text-brand-ink">
+                          #{String(qIdx + 1).padStart(2, '0')}
+                        </span>
+                        <span className={`border-2 border-brand-ink px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider shadow-[1px_1px_0px_0px_#030404] ${
+                          q.type === 'rating' ? 'bg-brand-orange/15 text-brand-orange' : q.type === 'mcq' ? 'bg-brand-blue/15 text-brand-blue' : q.type === 'text' ? 'bg-brand-pink/15 text-brand-pink' : 'bg-purple-500/15 text-purple-600'
+                        }`}>
+                          {q.type === 'rating' ? '★ Rating' : q.type === 'mcq' ? '☰ MCQ' : q.type === 'text' ? '✏️ Text' : '📅 Date'}
+                        </span>
+                        <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={!!q.required}
+                            onChange={() => handleToggleQuestionRequired(q.id)}
+                            className="w-3.5 h-3.5 border-2 border-brand-ink accent-brand-blue rounded cursor-pointer"
+                          />
+                          <span className="text-[9px] font-bold uppercase text-brand-ink tracking-wider font-mono">Mandatory</span>
+                        </label>
+                      </div>
+
+                      <div className="flex-1 w-full">
+                        <input
+                          type="text"
+                          value={q.label}
+                          onChange={(e) => handleUpdateQuestionLabel(q.id, e.target.value)}
+                          className="w-full bg-white border-2 border-brand-ink rounded py-2 px-3 focus:outline-none focus:border-brand-pink text-xs text-brand-ink font-black"
+                          placeholder="Type question text..."
+                          required
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 w-full md:w-auto">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveQuestion(qIdx, 'up')}
+                          disabled={qIdx === 0}
+                          className="border-2 border-brand-ink disabled:opacity-30 disabled:pointer-events-none hover:bg-brand-cloud text-brand-ink text-xs font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-2 py-1 rounded cursor-pointer"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveQuestion(qIdx, 'down')}
+                          disabled={qIdx === configQuestionsList.length - 1}
+                          className="border-2 border-brand-ink disabled:opacity-30 disabled:pointer-events-none hover:bg-brand-cloud text-brand-ink text-xs font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-2 py-1 rounded cursor-pointer"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveQuestion(q.id)}
+                          className="border-2 border-brand-ink hover:bg-brand-pink/15 text-brand-pink text-[10px] font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-3 py-1.5 rounded cursor-pointer uppercase tracking-wider shrink-0 w-full md:w-auto text-center"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* MCQ Options */}
+                    {q.type === 'mcq' && (
+                      <div className="pl-6 pt-2 border-t border-brand-ink/10 space-y-2">
+                        <div className="text-[10px] font-black uppercase text-brand-ink/65 tracking-wider font-mono">
+                          Configure Choices
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {(q.options || []).map((opt: string, optIdx: number) => (
+                            <div key={optIdx} className="flex items-center gap-1">
+                              <input
+                                type="text"
+                                value={opt}
+                                onChange={(e) => handleUpdateMCQOption(q.id, optIdx, e.target.value)}
+                                className="flex-1 bg-white border-2 border-brand-ink rounded py-1 px-2 focus:outline-none focus:border-brand-pink text-xs text-brand-ink font-semibold"
+                                placeholder={`Option ${optIdx + 1}`}
+                                required
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveMCQOption(q.id, optIdx)}
+                                disabled={(q.options || []).length <= 2}
+                                className="border-2 border-brand-ink bg-white disabled:opacity-30 disabled:pointer-events-none hover:bg-brand-pink/15 text-brand-pink text-[10px] font-black p-1.5 rounded cursor-pointer shrink-0"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleAddMCQOption(q.id)}
+                          className="inline-flex items-center text-[10px] font-black uppercase text-brand-blue hover:text-brand-blue/80 gap-1 cursor-pointer font-mono"
+                        >
+                          + Add Choice Option
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {configQuestionsList.length === 0 && (
+                  <p className="text-center py-12 text-xs font-black text-brand-ink/40 uppercase tracking-widest font-mono">
+                    This form is empty. Add a question below to start building!
+                  </p>
+                )}
+              </div>
+
+              {/* Add Question Controls */}
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-brand-ink/10">
                 <button
                   type="button"
                   onClick={() => handleAddQuestion('rating')}
-                  className="bg-brand-cloud hover:bg-brand-orange/15 border-2 border-brand-ink text-brand-ink font-black py-2 px-3 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md text-[10px] uppercase font-mono tracking-wider cursor-pointer"
+                  className="flex-1 border-2 border-brand-ink bg-brand-orange/15 hover:bg-brand-orange/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
                 >
                   + Add Star Rating
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAddQuestion('text')}
-                  className="bg-brand-cloud hover:bg-brand-orange/15 border-2 border-brand-ink text-brand-ink font-black py-2 px-3 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md text-[10px] uppercase font-mono tracking-wider cursor-pointer"
+                  className="flex-1 border-2 border-brand-ink bg-brand-pink/15 hover:bg-brand-pink/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
                 >
-                  + Add Text Question
+                  + Add Written Question
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddQuestion('mcq')}
+                  className="flex-1 border-2 border-brand-ink bg-brand-blue/15 hover:bg-brand-blue/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
+                >
+                  + Add MCQ Option
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddQuestion('date')}
+                  className="flex-1 border-2 border-brand-ink bg-purple-500/15 hover:bg-purple-500/30 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
+                >
+                  + Add Date Question
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const suffix = configActiveBatch.toLowerCase().replace(' ', '_');
+                    setBatchForms((prev) => ({
+                      ...prev,
+                      [builderActiveKey]: [
+                        { id: `q_${suffix}_rating_1`, type: 'rating', label: 'How would you rate your day overall?', required: true },
+                        { id: `q_${suffix}_mcq_1`, type: 'mcq', label: "How was the day's pace?", options: ['Too Fast', 'Just Right', 'Too Slow'], required: true },
+                        { id: `q_${suffix}_mcq_2`, type: 'mcq', label: 'Did you feel engaged throughout the day?', options: ['Yes', 'Partially', 'No'], required: true },
+                        { id: `q_${suffix}_rating_2`, type: 'rating', label: "How relevant and valuable were today's activities for you?", required: true },
+                        { id: `q_${suffix}_rating_3`, type: 'rating', label: 'How clearly was information communicated throughout the day?', required: true },
+                        { id: `q_${suffix}_rating_4`, type: 'rating', label: "How comfortable were today's arrangements?", required: true },
+                        { id: `q_${suffix}_rating_5`, type: 'rating', label: 'How supported did you feel by your Cohort Leader / OH Team today?', required: true },
+                        { id: `q_${suffix}_text_1`, type: 'text', label: 'What was the highlight of your day?', required: false },
+                        { id: `q_${suffix}_text_2`, type: 'text', label: 'What could have been better today?', required: false },
+                        { id: `q_${suffix}_mcq_3`, type: 'mcq', label: 'What was your energy level at the end of the day?', options: ['😴 Exhausted', '😐 Okay', '😃 Pumped Up'], required: true }
+                      ]
+                    }));
+                  }}
+                  className="flex-1 border-2 border-brand-ink bg-brand-cloud hover:bg-brand-ink/10 text-brand-ink text-xs font-black py-3 px-4 shadow-[3px_3px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 rounded-md cursor-pointer uppercase tracking-wider text-center"
+                >
+                  Reset Defaults
                 </button>
               </div>
             </div>
 
-            {configQuestionsList.length === 0 ? (
-              <div className="text-center p-12 bg-brand-cloud border-2 border-brand-ink border-dashed rounded-md text-brand-ink/50 text-xs font-bold uppercase font-mono">
-                No questionnaire questions configured yet for this day. Click buttons above to start building!
+            {/* Save controls */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-brand-ink">
+              <div className="shrink-0 text-center md:text-left">
+                {saveSuccess && (
+                  <span className="text-xs font-black uppercase text-green-600 tracking-wider flex items-center gap-1.5 justify-center md:justify-start font-mono">
+                    <CustomCheckIcon size={14} className="text-green-600 shrink-0" />
+                    <span>Form Builder settings saved live in database!</span>
+                  </span>
+                )}
               </div>
-            ) : (
-              <div className="space-y-4">
-                {configQuestionsList.map((q, idx) => (
-                  <div
-                    key={q.id}
-                    className="border-2 border-brand-ink bg-white p-4 rounded-md shadow-comic-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
-                  >
-                    
-                    {/* Index, badge and editor label inputs */}
-                    <div className="flex items-center gap-3 w-full md:w-auto">
-                      <span className="font-mono text-xs font-black text-brand-ink/35 select-none shrink-0">
-                        #{String(idx + 1).padStart(2, '0')}
-                      </span>
-                      
-                      <span className={`inline-block border border-brand-ink/20 font-mono text-[8px] font-black uppercase px-2 py-0.5 rounded shrink-0 ${
-                        q.type === 'rating' 
-                          ? 'bg-brand-orange/10 text-brand-orange' 
-                          : 'bg-brand-orange/10 text-brand-orange'
-                      }`}>
-                        {q.type === 'rating' ? '★ Star Rating' : '✏️ Text Question'}
-                      </span>
 
-                      <input
-                        type="text"
-                        value={q.label}
-                        onChange={(e) => handleUpdateQuestionLabel(q.id, e.target.value)}
-                        className="bg-white border-b-2 border-brand-ink/20 focus:border-brand-orange text-xs font-bold text-brand-ink px-2 py-1.5 focus:outline-none transition-colors w-full md:w-[480px]"
-                        placeholder="Define item question label here..."
-                        required
-                      />
-                    </div>
+              <button
+                type="submit"
+                disabled={savingSettings}
+                className="comic-btn-primary px-12 py-4 border-4 shadow-[6px_6px_0px_0px_#030404] hover:shadow-[4px_4px_0px_0px_#030404] active:translate-x-[6px] active:translate-y-[6px] tracking-widest w-full md:w-auto font-black"
+              >
+                {savingSettings ? (
+                  <>
+                    <CustomLoaderIcon size={16} className="text-white animate-spin" />
+                    <span>Saving Configuration...</span>
+                  </>
+                ) : (
+                  <>
+                    <CustomCheckIcon size={16} className="text-white" />
+                    <span>Save Configuration Settings</span>
+                  </>
+                )}
+              </button>
+            </div>
 
-                    {/* Question deletion button action */}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveQuestion(q.id)}
-                      className="bg-brand-orange/10 text-brand-orange hover:bg-brand-orange hover:text-white border border-brand-orange/30 hover:border-brand-ink py-2 px-4 shadow-[2px_2px_0px_0px_#FF9A00] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 rounded text-[9px] uppercase font-mono font-black tracking-wider cursor-pointer shrink-0 self-end md:self-auto"
-                    >
-                      Delete Item
-                    </button>
-
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-        </form>
+          </form>
+        </div>
       )}
 
+    </div>
+  );
+}
+
+// ============================================================================
+// COMPONENT: PURE REACT COLUMN CHART
+// ============================================================================
+function PureReactColumnChart({ data }: { data: { label: string; count: number; percentage: number }[] }) {
+  const maxCount = Math.max(...data.map(d => d.count), 1);
+  return (
+    <div className="space-y-4">
+      <div className="flex items-end justify-between gap-3 h-48 pt-6 border-b-2 border-brand-ink">
+        {data.map((bar, i) => {
+          const heightPercent = Math.max((bar.count / maxCount) * 100, 4);
+          return (
+            <div key={i} className="flex-1 flex flex-col items-center group h-full justify-end select-none">
+              <div className="opacity-0 group-hover:opacity-100 bg-brand-ink text-white text-[9px] font-black px-2 py-1 rounded border border-white/20 mb-2 transition-all duration-100 pointer-events-none uppercase tracking-wide shrink-0">
+                {bar.count} Ratings ({Math.round(bar.percentage)}%)
+              </div>
+              <div 
+                style={{ height: `${heightPercent}%` }}
+                className="w-full bg-brand-orange border-2 border-brand-ink shadow-[2px_-2px_0px_0px_#030404] transition-all duration-300 hover:bg-brand-pink cursor-pointer"
+              />
+              <span className="text-[10px] font-black text-brand-ink uppercase tracking-wider mt-3 text-center">
+                {bar.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-between text-[9px] font-black text-brand-ink/50 uppercase tracking-widest pt-1 font-mono">
+        <span>Lowest Rating</span>
+        <span>Highest Rating</span>
+      </div>
     </div>
   );
 }

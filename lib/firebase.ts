@@ -42,6 +42,10 @@ export const db: Firestore | null = app
     })
   : null;
 export const storage: FirebaseStorage | null = app ? getStorage(app) : null;
+if (storage) {
+  storage.maxUploadRetryTime = 6000;
+  storage.maxOperationRetryTime = 6000;
+}
 
 export let appCheck: any = null;
 

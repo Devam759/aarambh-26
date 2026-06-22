@@ -161,6 +161,8 @@ export default function VolunteerSidebar() {
             const data = docSnap.data();
             setIsTeamLeader(data.role === 'Team Leader');
           }
+        }, (err) => {
+          console.warn("Sidebar volunteer snapshot listener error:", err);
         });
       }
     });

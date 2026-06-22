@@ -279,12 +279,16 @@ export default function TeamLeaderDutyAssignment() {
       // Synchronize Volunteers
       unsubVolunteers = onSnapshot(collection(db, 'volunteers'), (snap) => {
         setVolunteers(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      }, (err) => {
+        console.warn("Volunteers snapshot listener error:", err);
       });
 
       // Synchronize Duties
       unsubDuties = onSnapshot(collection(db, 'dutyAssignments'), (snap) => {
         setDutyAssignments(snap.docs.map(d => ({ id: d.id, ...d.data() })));
         setDutiesLoading(false);
+      }, (err) => {
+        console.warn("Duties snapshot listener error:", err);
       });
     });
 

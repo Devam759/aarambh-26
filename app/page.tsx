@@ -185,10 +185,8 @@ export default function Home() {
         <div className="relative z-20">
           {/* Aerial View Section */}
           <AerialView />
-
           {/* Packing Checklist Section */}
           <PackingChecklist />
-
 
           {/* Registration Section */}
           <RegistrationSection />

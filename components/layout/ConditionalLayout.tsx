@@ -43,7 +43,8 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
     pathname?.startsWith('/admin') ||
     pathname?.startsWith('/scanner') ||
     pathname?.startsWith('/login') ||
-    pathname?.startsWith('/feedback');
+    pathname?.startsWith('/feedback') ||
+    pathname?.startsWith('/complaint');
 
   if (isAdminOrScanner) {
     return <>{children}</>;
