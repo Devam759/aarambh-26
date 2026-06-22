@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldCheck, Home as HomeIcon, Lock, Unlock, Check } from 'lucide-react';
+import { CheckCircle2, Loader2, CreditCard, ArrowLeft, ArrowRight, User, ShieldCheck, Home as HomeIcon, Lock, Unlock, Check, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ComicBackground from '@/components/ComicBackground';
@@ -16,6 +16,7 @@ function RegisterContent() {
   const [regId, setRegId] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState('');
   const [couponMessage, setCouponMessage] = useState('');
+  const [showPopup, setShowPopup] = useState(true);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -54,6 +55,18 @@ function RegisterContent() {
       verifyPayment(oId);
     }
   }, [searchParams]);
+
+  // Lock body scroll when popup is open
+  useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showPopup]);
 
   const verifyPayment = async (oId: string) => {
     setIsProcessing(true);
@@ -281,24 +294,6 @@ function RegisterContent() {
           <p className="text-lg sm:text-xl md:text-2xl font-sans font-bold text-brand-ink/80 max-w-2xl px-4 leading-relaxed">
             Register yourself and be a part of the Aarambh&apos;26 journey
           </p>
-
-          {/* Visit Link Button */}
-          <motion.div 
-            className="z-20 mt-2 xl:mt-0 xl:fixed xl:left-[calc(50vw+384px+70px)] xl:top-[190px] xl:translate-y-0"
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <a 
-              href="https://google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-5 py-3 bg-brand-pink hover:bg-brand-pink/90 text-brand-ink border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95 text-center"
-            >
-              Complete your <br />
-              registration documentation <br />
-              online
-            </a>
-          </motion.div>
         </div>
 
         <div className="border-comic bg-brand-cloud/80 backdrop-blur-md text-brand-ink p-4 sm:p-6 md:p-12 rounded-2xl shadow-comic-lg relative overflow-hidden bg-halftone-black">
@@ -682,6 +677,76 @@ function RegisterContent() {
           )}
         </div>
       </div>
+
+      {/* Pop-up Modal */}
+      <AnimatePresence>
+        {showPopup && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPopup(false)}
+              className="absolute inset-0 bg-slate-950/40 backdrop-blur-md cursor-pointer"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative w-full max-w-md bg-brand-cloud border-[4px] border-brand-ink p-6 sm:p-8 rounded-2xl shadow-[8px_16px_0px_#030404] z-10 text-center flex flex-col items-center gap-6"
+            >
+              {/* Close Button 'X' */}
+              <button
+                onClick={() => setShowPopup(false)}
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-brand-cloud border-2 border-brand-ink shadow-[1px_2px_0px_#030404] hover:bg-brand-orange hover:text-brand-ink active:scale-95 transition-all flex justify-center items-center cursor-pointer text-brand-ink"
+                aria-label="Close"
+              >
+                <X size={16} className="stroke-[3]" />
+              </button>
+
+              {/* Icon / Badge */}
+              <div className="px-3 py-1 bg-brand-orange text-brand-ink border-comic-thin shadow-comic-sm font-bricks text-xs uppercase tracking-wider rotate-[-2deg] select-none">
+                Important
+              </div>
+
+              {/* Title */}
+              <h3 className="text-2xl sm:text-3xl font-bricks text-brand-ink leading-tight uppercase">
+                Complete your <br />
+                registration <br />
+                documentation online
+              </h3>
+
+              {/* Description */}
+              <p className="font-sans font-semibold text-sm text-brand-ink/70 leading-relaxed">
+                Before completing the registration form and paying the fee, make sure you fill out the required documentation online.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
+                <a
+                  href="https://google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowPopup(false)}
+                  className="flex-1 py-3 px-4 bg-brand-pink hover:bg-brand-pink/90 text-brand-ink border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95 text-center flex items-center justify-center"
+                >
+                  Go to Documentation
+                </a>
+                <button
+                  onClick={() => setShowPopup(false)}
+                  className="flex-1 py-3 px-4 bg-white hover:bg-brand-cloud text-brand-ink border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
