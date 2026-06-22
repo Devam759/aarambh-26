@@ -292,9 +292,11 @@ function RegisterContent() {
               href="https://google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-5 py-3 bg-brand-pink hover:bg-brand-pink/90 text-brand-cloud border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95"
+              className="inline-block px-5 py-3 bg-brand-pink hover:bg-brand-pink/90 text-brand-ink border-comic shadow-comic font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive cursor-pointer select-none active:scale-95 text-center"
             >
-              Visit Site
+              Complete your <br />
+              registration documentation <br />
+              online
             </a>
           </motion.div>
         </div>
