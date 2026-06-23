@@ -59,6 +59,21 @@ const CustomLoaderIcon = ({ className = '', size = 18 }: { className?: string; s
   </svg>
 );
 
+const COHORTS = [
+  "A1", "A2", "A3", "A4", "A5",
+  "B1", "B2", "B3", "B4",
+  "C1", "C2", "C3", "C4",
+  "D1", "D2", "D3", "D4", "D5",
+  "E1", "E2", "E3", "E4", "E5",
+  "F1", "F2", "F3", "F4", "F5",
+  "G1", "G2", "G3", "G4", "G5",
+  "H1", "H2", "H3", "H4", "H5",
+  "I1", "I2", "I3",
+  "J1", "J2", "J3",
+  "K1", "K2", "K3",
+  "L1", "L2", "L3"
+];
+
 export default function ComplaintPortalPage() {
   const router = useRouter();
   const firebaseReady = isFirebaseConfigured();
@@ -70,6 +85,7 @@ export default function ComplaintPortalPage() {
   const [identityMode, setIdentityMode] = useState<'anonymous' | 'named'>('anonymous');
   const [studentName, setStudentName] = useState('');
   const [studentBatch, setStudentBatch] = useState('Batch 1');
+  const [studentCohort, setStudentCohort] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   
   const [submitting, setSubmitting] = useState(false);
@@ -152,6 +168,11 @@ export default function ComplaintPortalPage() {
       return;
     }
 
+    if (identityMode === 'named' && !studentCohort.trim()) {
+      setFormError('Please enter your cohort.');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const attachmentUrls: string[] = [];
@@ -172,6 +193,7 @@ export default function ComplaintPortalPage() {
         anonymous: identityMode === 'anonymous',
         studentName: identityMode === 'anonymous' ? 'Anonymous' : studentName.trim(),
         studentBatch: identityMode === 'anonymous' ? null : studentBatch,
+        studentCohort: identityMode === 'anonymous' ? null : studentCohort.trim(),
         status: 'pending',
         attachmentUrl: attachmentUrls[0] || null,
         attachmentUrls: attachmentUrls,
@@ -235,6 +257,7 @@ export default function ComplaintPortalPage() {
                   setSubmitted(false);
                   setDescription('');
                   setStudentName('');
+                  setStudentCohort('');
                   setSelectedFiles([]);
                   setFormError('');
                 }}
@@ -258,9 +281,6 @@ export default function ComplaintPortalPage() {
                     <h2 className="text-xl font-display font-black uppercase text-brand-ink">
                       File a Complaint
                     </h2>
-                    <p className="text-[10px] font-black uppercase tracking-wider text-brand-ink/40 mt-1">
-                      Route directly to Feedback Team Volunteers
-                    </p>
                   </div>
 
                   <form onSubmit={handleComplaintSubmit} className="space-y-5">
@@ -280,7 +300,7 @@ export default function ComplaintPortalPage() {
                               : 'bg-white text-brand-ink/65 border-brand-ink shadow-[2px_2px_0px_0px_#030404] hover:bg-brand-cloud'
                           }`}
                         >
-                          Anonymous Mode
+                          Anonymous
                         </button>
                         <button
                           type="button"
@@ -291,14 +311,13 @@ export default function ComplaintPortalPage() {
                               : 'bg-white text-brand-ink/65 border-brand-ink shadow-[2px_2px_0px_0px_#030404] hover:bg-brand-cloud'
                           }`}
                         >
-                          Named Mode
+                          Enter Name
                         </button>
                       </div>
                     </div>
 
-                    {/* Student Name & Batch */}
                     {identityMode === 'named' && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 animate-fade-in">
                         <div className="space-y-2">
                           <label className="block text-[10px] font-black uppercase text-brand-ink tracking-wider">
                             Your Full Name <span className="text-brand-pink font-black">*</span>
@@ -325,6 +344,24 @@ export default function ComplaintPortalPage() {
                             {["Batch 1", "Batch 2", "Batch 3", "Batch 4"].map((b) => (
                               <option key={b} value={b}>
                                 {b}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="block text-[10px] font-black uppercase text-brand-ink tracking-wider">
+                            Select Cohort <span className="text-brand-pink font-black">*</span>
+                          </label>
+                          <select
+                            value={studentCohort}
+                            onChange={(e) => setStudentCohort(e.target.value)}
+                            className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-3 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full shadow-inner"
+                            required
+                          >
+                            <option value="" disabled>Select Cohort</option>
+                            {COHORTS.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
                               </option>
                             ))}
                           </select>
@@ -724,8 +761,8 @@ export default function ComplaintPortalPage() {
                   </h2>
                   <ul className="space-y-2.5">
                     {[
-                      "Choose submission mode: Anonymous Mode or Named Mode.",
-                      "If Named Mode is chosen, enter your Full Name and Select your Batch.",
+                      "Choose submission mode: Anonymous or Enter Name.",
+                      "If Enter Name is chosen, enter your Full Name, select your Batch, and enter your Cohort.",
                       "Select the Department related to your complaint. If 'Other' is chosen, specify the department name.",
                       "Describe your issue in the 'Description of issue' text box.",
                       "Optionally, attach photos or videos under 'Attach Photos or Videos'.",

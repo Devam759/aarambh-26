@@ -7,6 +7,21 @@ import { collection, onSnapshot, doc, getDoc, setDoc, serverTimestamp } from 'fi
 import { auth, db, isFirebaseConfigured } from '@/lib/firebase';
 import { SCHEDULE_DATA } from '@/constants/events';
 
+const COHORTS = [
+  "A1", "A2", "A3", "A4", "A5",
+  "B1", "B2", "B3", "B4",
+  "C1", "C2", "C3", "C4",
+  "D1", "D2", "D3", "D4", "D5",
+  "E1", "E2", "E3", "E4", "E5",
+  "F1", "F2", "F3", "F4", "F5",
+  "G1", "G2", "G3", "G4", "G5",
+  "H1", "H2", "H3", "H4", "H5",
+  "I1", "I2", "I3",
+  "J1", "J2", "J3",
+  "K1", "K2", "K3",
+  "L1", "L2", "L3"
+];
+
 // ============================================================================
 // CUSTOM GEOMETRIC SVG ICONS (Gradient-free, Sharp, Heavy-mitre)
 // ============================================================================
@@ -306,6 +321,7 @@ export default function FeedbackPortalManagementPage() {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [selectedDayFilter, setSelectedDayFilter] = useState<string>('all');
   const [selectedBatchFilter, setSelectedBatchFilter] = useState<string>('all');
+  const [selectedCohortFilter, setSelectedCohortFilter] = useState<string>('all');
   const [exporting, setExporting] = useState(false);
 
   // Suggestions Filters
@@ -451,6 +467,8 @@ export default function FeedbackPortalManagementPage() {
       });
       setFeedbacks(docs);
       setLoading(false);
+    }, (err) => {
+      console.warn("Feedbacks snapshot connection error / permission denied:", err);
     });
 
     const unsubComplaints = onSnapshot(collection(db, 'complaints'), (snap) => {
@@ -461,6 +479,8 @@ export default function FeedbackPortalManagementPage() {
         return tB - tA;
       });
       setComplaints(docs);
+    }, (err) => {
+      console.warn("Complaints snapshot connection error / permission denied:", err);
     });
 
     const unsubSuggestions = onSnapshot(collection(db, 'suggestions'), (snap) => {
@@ -471,6 +491,8 @@ export default function FeedbackPortalManagementPage() {
         return tB - tA;
       });
       setSuggestions(docs);
+    }, (err) => {
+      console.warn("Suggestions snapshot connection error / permission denied:", err);
     });
 
     const unsubSettings = onSnapshot(doc(db, 'settings', 'feedback'), (settingsDoc) => {
@@ -506,6 +528,8 @@ export default function FeedbackPortalManagementPage() {
       } catch (err) {
         console.error('Error loading settings:', err);
       }
+    }, (err) => {
+      console.warn("Settings snapshot connection error / permission denied:", err);
     });
 
     return () => {
@@ -606,8 +630,11 @@ export default function FeedbackPortalManagementPage() {
     if (selectedBatchFilter !== 'all') {
       result = result.filter((f) => f.batch === selectedBatchFilter);
     }
+    if (selectedCohortFilter !== 'all') {
+      result = result.filter((f) => f.studentCohort === selectedCohortFilter);
+    }
     return result;
-  }, [parsedSubmissions, selectedDayFilter, selectedBatchFilter]);
+  }, [parsedSubmissions, selectedDayFilter, selectedBatchFilter, selectedCohortFilter]);
 
   const totalFormsSubmitted = filteredSubmissions.length;
 
@@ -810,6 +837,7 @@ export default function FeedbackPortalManagementPage() {
             'Date': f.date || '',
             'Student Name': f.studentName || (f.anonymous ? 'Anonymous' : 'N/A'),
             'Batch': f.batch || 'N/A',
+            'Cohort': f.studentCohort || (f.anonymous ? 'Anonymous' : 'N/A'),
             'Question ID': qId,
             'Question Label': ans.label,
             'Question Type': ans.type,
@@ -825,6 +853,7 @@ export default function FeedbackPortalManagementPage() {
             'Date': f.date || '',
             'Student Name': f.studentName || (f.anonymous ? 'Anonymous' : 'N/A'),
             'Batch': f.batch || 'N/A',
+            'Cohort': f.studentCohort || (f.anonymous ? 'Anonymous' : 'N/A'),
             'Question ID': 'N/A',
             'Question Label': 'None Rated',
             'Question Type': 'N/A',
@@ -1087,7 +1116,7 @@ export default function FeedbackPortalManagementPage() {
             }`}
           >
             <CustomAnalyticsIcon size={18} />
-            <span className="text-xs tracking-wide uppercase font-black">Sentiment</span>
+            <span className="text-xs tracking-wide uppercase font-black">Responses</span>
           </button>
 
           <button
@@ -1188,10 +1217,10 @@ export default function FeedbackPortalManagementPage() {
             <div className="space-y-8">
               <div>
                 <h1 className="text-3xl font-display font-black uppercase text-brand-ink mb-2">
-                  Feedback Analytics
+                  Feedback Responses
                 </h1>
                 <p className="text-brand-ink/50 text-xs font-bold uppercase tracking-wider">
-                  Real-time sentiment overview of daily dynamic evaluations
+                  Real-time responses overview of daily dynamic evaluations
                 </p>
               </div>
 
@@ -1230,6 +1259,22 @@ export default function FeedbackPortalManagementPage() {
                       <option value="Batch 2">Batch 2</option>
                       <option value="Batch 3">Batch 3</option>
                       <option value="Batch 4">Batch 4</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <span className="text-xs font-black uppercase text-brand-ink/65 tracking-wider shrink-0">
+                      Cohort:
+                    </span>
+                    <select
+                      value={selectedCohortFilter}
+                      onChange={(e) => setSelectedCohortFilter(e.target.value)}
+                      className="bg-white border-2 border-brand-ink text-brand-ink text-xs font-bold rounded-md py-2 px-4 focus:outline-none focus:border-brand-pink transition-colors w-full md:w-48"
+                    >
+                      <option value="all">All Cohorts</option>
+                      {COHORTS.map((cohort) => (
+                        <option key={cohort} value={cohort}>{cohort}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -1601,7 +1646,7 @@ export default function FeedbackPortalManagementPage() {
                               </span>
                             ) : (
                               <span className="bg-brand-blue/15 text-brand-blue border-2 border-brand-ink px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404]">
-                                {item.studentName} ({item.studentBatch})
+                                {item.studentName} ({item.studentBatch}{item.studentCohort ? `, ${item.studentCohort}` : ''})
                               </span>
                             )}
                           </div>

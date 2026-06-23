@@ -75,6 +75,21 @@ const CustomLoaderIcon = ({ className = '', size = 18 }: { className?: string; s
   </svg>
 );
 
+const COHORTS = [
+  "A1", "A2", "A3", "A4", "A5",
+  "B1", "B2", "B3", "B4",
+  "C1", "C2", "C3", "C4",
+  "D1", "D2", "D3", "D4", "D5",
+  "E1", "E2", "E3", "E4", "E5",
+  "F1", "F2", "F3", "F4", "F5",
+  "G1", "G2", "G3", "G4", "G5",
+  "H1", "H2", "H3", "H4", "H5",
+  "I1", "I2", "I3",
+  "J1", "J2", "J3",
+  "K1", "K2", "K3",
+  "L1", "L2", "L3"
+];
+
 export default function StudentFeedbackPage() {
   const router = useRouter();
 
@@ -82,6 +97,7 @@ export default function StudentFeedbackPage() {
   const [showSetupModal, setShowSetupModal] = useState(true);
   const [submissionType, setSubmissionType] = useState<'anonymous' | 'named'>('anonymous');
   const [studentName, setStudentName] = useState('');
+  const [studentCohort, setStudentCohort] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
   const [modalError, setModalError] = useState('');
 
@@ -231,6 +247,7 @@ export default function StudentFeedbackPage() {
         date: studentActiveDayDate || '',
         anonymous: submissionType === 'anonymous',
         studentName: submissionType === 'anonymous' ? 'Anonymous' : studentName,
+        studentCohort: submissionType === 'anonymous' ? null : studentCohort.trim(),
         batch: `Batch ${selectedBatch}`,
         submittedAt: serverTimestamp(),
         answers: answersToSubmit
@@ -250,6 +267,10 @@ export default function StudentFeedbackPage() {
     setModalError('');
     if (submissionType === 'named' && !studentName.trim()) {
       setModalError('Please enter your name.');
+      return;
+    }
+    if (submissionType === 'named' && !studentCohort.trim()) {
+      setModalError('Please enter your cohort.');
       return;
     }
     if (!selectedBatch) {
@@ -297,6 +318,8 @@ export default function StudentFeedbackPage() {
               onClick={() => {
                 setStudentSubmitted(false);
                 setStudentAnswers({});
+                setStudentName('');
+                setStudentCohort('');
                 setShowSetupModal(true);
               }}
               className="comic-btn-primary mx-auto"
@@ -386,20 +409,40 @@ export default function StudentFeedbackPage() {
               </div>
             </div>
 
-            {/* Name Input Box if Name selected */}
+            {/* Name & Cohort Input Box if Name selected */}
             {submissionType === 'named' && (
-              <div className="space-y-2 animate-fade-in">
-                <label className="block text-xs font-black uppercase text-brand-ink/70">
-                  Your Full Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={studentName}
-                  onChange={(e) => setStudentName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-blue"
-                />
+              <div className="grid grid-cols-2 gap-4 animate-fade-in">
+                <div className="space-y-2">
+                  <label className="block text-xs font-black uppercase text-brand-ink/70">
+                    Your Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
+                    placeholder="Enter your name"
+                    className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-blue"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs font-black uppercase text-brand-ink/70">
+                    Select Cohort
+                  </label>
+                  <select
+                    value={studentCohort}
+                    onChange={(e) => setStudentCohort(e.target.value)}
+                    className="w-full bg-white border-2 border-brand-ink rounded-md py-2 px-3 text-xs font-bold text-brand-ink focus:outline-none focus:border-brand-blue"
+                    required
+                  >
+                    <option value="" disabled>Select Cohort</option>
+                    {COHORTS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             )}
 
@@ -472,7 +515,7 @@ export default function StudentFeedbackPage() {
               className="bg-brand-blue/10 border-2 border-brand-blue text-brand-blue font-black uppercase text-[10px] tracking-wider py-1.5 px-3 rounded shadow-comic-sm cursor-pointer hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-colors"
               title="Click to change batch or identity details"
             >
-              {submissionType === 'anonymous' ? 'Anonymous Mode' : `Name: ${studentName}`}
+              {submissionType === 'anonymous' ? 'Anonymous Mode' : `${studentName} (${studentCohort})`}
             </button>
           </div>
         </div>
