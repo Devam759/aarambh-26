@@ -371,7 +371,7 @@ export default function StudentFeedbackPage() {
           <form onSubmit={handleStartForm} className="bg-white border-4 border-brand-ink p-6 md:p-8 shadow-[8px_8px_0px_0px_#030404] rounded-lg w-full max-w-[500px] space-y-6">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-display font-black uppercase text-brand-ink">
-                Aarambh '26 Feedback
+                Aarambh &apos;26 Feedback
               </h2>
               <p className="text-brand-ink/60 text-xs font-bold uppercase">
                 Submit feedback for {studentActiveDayId} ({studentActiveDayDate})
@@ -637,7 +637,7 @@ export default function StudentFeedbackPage() {
 
         {/* Footer */}
         <p className="mt-12 text-center text-brand-ink/40 text-[9px] uppercase font-black tracking-[0.2em]">
-          JK Lakshmipat University • Aarambh '26
+          JK Lakshmipat University • Aarambh &apos;26
         </p>
       </div>
     </div>

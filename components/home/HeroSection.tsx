@@ -20,7 +20,7 @@ export default function HeroSection(_props: HeroSectionProps) {
 
       {/* Exact artwork backdrop (static): portrait phones get the vertical artwork,
           everything else gets the wide banner. <picture> loads only the match. */}
-      <picture aria-hidden="true">
+      <picture>
         <source media="(orientation: portrait)" srcSet="/images/hero-rocket-mobile.webp" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

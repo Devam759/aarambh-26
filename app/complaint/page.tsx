@@ -233,7 +233,7 @@ export default function ComplaintPortalPage() {
               Complaint Portal
             </h1>
             <p className="text-xs md:text-sm font-bold uppercase tracking-wider text-brand-ink/50 mt-1">
-              Aarambh '26 Student Grievance Resolution & Routing System
+              Aarambh &apos;26 Student Grievance Resolution & Routing System
             </p>
           </div>
 
@@ -848,7 +848,7 @@ export default function ComplaintPortalPage() {
                   Suggestion Box
                 </h3>
                 <p className="text-[10px] font-black uppercase tracking-wider text-brand-ink/40 mt-1">
-                  Help us improve Aarambh '26
+                  Help us improve Aarambh &apos;26
                 </p>
               </div>
 

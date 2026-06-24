@@ -1881,7 +1881,7 @@ export default function FeedbackPortalManagementPage() {
                         Select Active Day
                       </h3>
                       <p className="text-[10px] text-brand-ink/50 font-bold uppercase mt-1">
-                        Choose which day's form students can access
+                        Choose which day&apos;s form students can access
                       </p>
                     </div>
                     <div className="pt-2">

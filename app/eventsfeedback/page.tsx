@@ -411,7 +411,7 @@ export default function AnonymousFeedbackSubmitPage() {
             </h2>
             
             <p className="text-brand-ink/75 font-bold text-sm md:text-base leading-relaxed mb-6">
-              Feedback submissions are currently closed. Only the current active day's form can receive feedback.
+              Feedback submissions are currently closed. Only the current active day&apos;s form can receive feedback.
             </p>
             
             <div className="p-3 bg-brand-orange/10 border-2 border-brand-orange rounded-md text-[10px] md:text-xs font-black uppercase text-brand-orange tracking-wider">
