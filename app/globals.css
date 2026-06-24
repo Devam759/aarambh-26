@@ -357,3 +357,9 @@ body {
   66% { transform: translate(-10vw, 15vh) scale(0.9) rotate(-30deg); }
   100% { transform: translate(5vw, 5vh) scale(1.2) rotate(15deg); }
 }html.hide-navbar #main-navbar { opacity: 0 !important; pointer-events: none !important; transform: translateY(-100%) !important; }
+
+/* Remove all box shadows inside internal team portals for a cleaner, flatter layout */
+.internal-team-portal [class*="shadow"] {
+  box-shadow: none !important;
+}
+

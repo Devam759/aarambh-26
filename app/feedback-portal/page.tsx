@@ -1060,7 +1060,7 @@ export default function FeedbackPortalManagementPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-brand-cloud text-brand-ink font-sans relative">
+    <div className="flex min-h-screen bg-brand-cloud text-brand-ink font-sans relative internal-team-portal">
       
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
@@ -1078,7 +1078,7 @@ export default function FeedbackPortalManagementPage() {
       >
         <div className="h-16 flex items-center px-6 border-b-2 border-brand-ink bg-white">
           <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Aarambh Logo" className="h-10 w-auto object-contain" />
+            <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-16 w-auto object-contain" />
           </div>
         </div>
 

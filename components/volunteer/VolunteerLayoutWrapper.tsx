@@ -113,7 +113,7 @@ export default function VolunteerLayoutWrapper({ children }: { children: React.R
   }
 
   return (
-    <div className="flex min-h-screen bg-[#F5F1E5] text-brand-ink font-sans relative">
+    <div className="flex min-h-screen bg-[#F5F1E5] text-brand-ink font-sans relative internal-team-portal">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen w-full md:w-[calc(100%-16rem)] overflow-y-auto">
         {/* Global White Header Bar - Minimal Style */}

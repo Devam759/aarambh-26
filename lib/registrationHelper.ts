@@ -57,7 +57,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     );
     const aarambhLogoBytes = await fs.readFile(aarambhLogoPath);
     aarambhLogoImage = await pdfDoc.embedPng(aarambhLogoBytes);
-    const targetHeight = 50;
+    const targetHeight = 35;
     const scaleFactor = targetHeight / aarambhLogoImage.height;
     aarambhScaledWidth = aarambhLogoImage.width * scaleFactor;
     aarambhScaledHeight = aarambhLogoImage.height * scaleFactor;
@@ -79,7 +79,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   if (aarambhLogoImage) {
     page.drawImage(aarambhLogoImage, {
       x: width - 40 - aarambhScaledWidth,
-      y: height - 95,
+      y: height - 90,
       width: aarambhScaledWidth,
       height: aarambhScaledHeight,
     });

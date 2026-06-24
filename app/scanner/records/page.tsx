@@ -29,6 +29,8 @@ export default function ScanRecordsView() {
         return timeB - timeA;
       });
       setLogs(parsedLogs);
+    }, (err) => {
+      console.warn("Scanner records snapshot listener error:", err);
     });
 
     return () => unsubscribe();

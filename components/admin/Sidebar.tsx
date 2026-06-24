@@ -322,11 +322,15 @@ export default function Sidebar() {
     const unsubComplaints = onSnapshot(collection(db, 'complaints'), (snap) => {
       const pending = snap.docs.filter((d) => d.data().status !== 'resolved').length;
       setPendingComplaintsCount(pending);
+    }, (err) => {
+      console.warn("Sidebar complaints snapshot listener error:", err);
     });
 
     const unsubSuggestions = onSnapshot(collection(db, 'suggestions'), (snap) => {
       const pending = snap.docs.filter((d) => d.data().status !== 'reviewed').length;
       setPendingSuggestionsCount(pending);
+    }, (err) => {
+      console.warn("Sidebar suggestions snapshot listener error:", err);
     });
 
     return () => {
@@ -374,7 +378,7 @@ export default function Sidebar() {
       {/* Mobile Hamburger Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
         <Link href="/admin" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
+          <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
           <span className="font-adminHeading text-md font-black text-brand-ink hidden">Admin</span>
         </Link>
         <button 
@@ -402,7 +406,7 @@ export default function Sidebar() {
         {/* Desktop Sidebar Logo */}
         <div className="h-16 flex items-center px-6 border-b-2 border-brand-ink bg-white hidden md:flex">
           <Link href="/admin" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Aarambh Logo" className="h-10 w-auto object-contain" />
+            <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-16 w-auto object-contain" />
           </Link>
         </div>
 

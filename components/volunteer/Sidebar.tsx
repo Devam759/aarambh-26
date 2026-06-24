@@ -210,7 +210,7 @@ export default function VolunteerSidebar() {
       {/* Mobile Hamburger Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
         <Link href="/volunteer" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
+          <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
           <span className="font-adminHeading text-md font-black text-brand-ink hidden">Volunteer</span>
         </Link>
         <button 
@@ -238,7 +238,7 @@ export default function VolunteerSidebar() {
         {/* Desktop Sidebar Logo */}
         <div className="h-16 flex items-center px-6 border-b-2 border-brand-ink bg-white hidden md:flex">
           <Link href="/volunteer" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Aarambh Logo" className="h-10 w-auto object-contain" />
+            <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-16 w-auto object-contain" />
           </Link>
         </div>
 

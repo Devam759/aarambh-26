@@ -367,18 +367,16 @@ export default function LoginPage() {
           
           {/* Header & Logo */}
           <div className="text-center mb-8">
-            <div className="inline-block p-1 border-2 border-brand-ink bg-white shadow-[3px_3px_0px_0px_#030404] rounded-md mb-6">
-              <Image 
-                src="/logo.svg" 
-                alt="AARAMBH '26" 
-                width={834} 
-                height={193} 
-                priority
-                unoptimized
-                className="h-10 w-auto object-contain"
-                style={{ width: 'auto' }}
-              />
-            </div>
+            <Image 
+              src="/logos/Aarambh_new_logo.svg" 
+              alt="AARAMBH '26" 
+              width={1222} 
+              height={482} 
+              priority
+              unoptimized
+              className="h-20 w-auto object-contain mx-auto mb-6"
+              style={{ width: 'auto' }}
+            />
             <h1 className="text-xl font-display font-black tracking-wider uppercase text-brand-ink">
               Management Portal
             </h1>

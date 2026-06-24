@@ -23,6 +23,8 @@ export default function AdminDashboard() {
       const allRegs = snap.docs.map(d => d.data());
       const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
       setStats(s => ({ ...s, totalRegistrations: validRegs.length, loading: false }));
+    }, (err) => {
+      console.warn("Overview regs snapshot listener error:", err);
     });
 
     const today = new Date();
@@ -33,16 +35,22 @@ export default function AdminDashboard() {
       const allRegs = snap.docs.map(d => d.data());
       const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
       setStats(s => ({ ...s, todayRegistrations: validRegs.length }));
+    }, (err) => {
+      console.warn("Overview todayRegs snapshot listener error:", err);
     });
 
     // Fetch entries today
     const unsubScans = onSnapshot(query(collection(db, 'scanLogs'), where('timestamp', '>=', today), where('result', '==', 'accepted')), (snap) => {
       setStats(s => ({ ...s, totalEntriesToday: snap.size }));
+    }, (err) => {
+      console.warn("Overview scans snapshot listener error:", err);
     });
 
     // Fetch total entries of all time
     const unsubTotalEntries = onSnapshot(query(collection(db, 'registrations'), where('hasEntered', '==', true)), (snap) => {
       setStats(s => ({ ...s, totalEntries: snap.size }));
+    }, (err) => {
+      console.warn("Overview totalEntries snapshot listener error:", err);
     });
 
     return () => {
