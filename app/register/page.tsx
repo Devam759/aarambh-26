@@ -7,6 +7,88 @@ import Image from 'next/image';
 import ComicBackground from '@/components/ComicBackground';
 import { validateRegistrationNumber, formatRegistrationNumber } from '@/lib/utils';
 
+const INDIAN_STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 
+  'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 
+  'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 
+  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 
+  'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh', 
+  'Dadra and Nagar Haveli and Daman and Diu', 'Delhi NCR', 'Jammu and Kashmir', 
+  'Ladakh', 'Lakshadweep', 'Puducherry', 'International / Other'
+];
+
+const PINCODE_STATE_MAP: { [key: string]: string } = {
+  '11': 'Delhi NCR',
+  '12': 'Haryana',
+  '13': 'Haryana',
+  '14': 'Punjab',
+  '15': 'Punjab',
+  '16': 'Chandigarh',
+  '17': 'Himachal Pradesh',
+  '18': 'Jammu and Kashmir',
+  '19': 'Jammu and Kashmir',
+  '20': 'Uttar Pradesh',
+  '21': 'Uttar Pradesh',
+  '22': 'Uttar Pradesh',
+  '23': 'Uttar Pradesh',
+  '24': 'Uttar Pradesh',
+  '25': 'Uttar Pradesh',
+  '26': 'Uttar Pradesh',
+  '27': 'Uttar Pradesh',
+  '28': 'Uttar Pradesh',
+  '30': 'Rajasthan',
+  '31': 'Rajasthan',
+  '32': 'Rajasthan',
+  '33': 'Rajasthan',
+  '34': 'Rajasthan',
+  '36': 'Gujarat',
+  '37': 'Gujarat',
+  '38': 'Gujarat',
+  '39': 'Gujarat',
+  '40': 'Maharashtra',
+  '41': 'Maharashtra',
+  '42': 'Maharashtra',
+  '43': 'Maharashtra',
+  '44': 'Maharashtra',
+  '45': 'Madhya Pradesh',
+  '46': 'Madhya Pradesh',
+  '47': 'Madhya Pradesh',
+  '48': 'Madhya Pradesh',
+  '49': 'Chhattisgarh',
+  '50': 'Telangana',
+  '51': 'Andhra Pradesh',
+  '52': 'Andhra Pradesh',
+  '53': 'Andhra Pradesh',
+  '56': 'Karnataka',
+  '57': 'Karnataka',
+  '58': 'Karnataka',
+  '59': 'Karnataka',
+  '60': 'Tamil Nadu',
+  '61': 'Tamil Nadu',
+  '62': 'Tamil Nadu',
+  '63': 'Tamil Nadu',
+  '64': 'Tamil Nadu',
+  '67': 'Kerala',
+  '68': 'Kerala',
+  '69': 'Kerala',
+  '70': 'West Bengal',
+  '71': 'West Bengal',
+  '72': 'West Bengal',
+  '73': 'West Bengal',
+  '74': 'West Bengal',
+  '75': 'Odisha',
+  '76': 'Odisha',
+  '77': 'Odisha',
+  '78': 'Assam',
+  '79': 'Assam',
+  '80': 'Bihar',
+  '81': 'Bihar',
+  '82': 'Bihar',
+  '83': 'Jharkhand',
+  '84': 'Bihar',
+  '85': 'Bihar',
+};
+
 function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,8 +112,75 @@ function RegisterContent() {
     parentEmail: '',
     address: '',
     pincode: '',
+    region: '',
+    city: '',
     coupon: '',
   });
+
+  const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+  const [pincodeStatus, setPincodeStatus] = useState('');
+
+  useEffect(() => {
+    const pin = (formData.pincode || '').trim();
+    
+    // 1. Instant State suggestion on 2+ digit prefix matching
+    if (pin.length >= 2 && /^\d+$/.test(pin.slice(0, 2))) {
+      const prefix = pin.slice(0, 2);
+      const suggestedState = PINCODE_STATE_MAP[prefix];
+      if (suggestedState) {
+        setFormData(prev => {
+          const matchingState = INDIAN_STATES.find(s => s.toLowerCase() === suggestedState.toLowerCase());
+          return { ...prev, region: matchingState || suggestedState };
+        });
+      }
+    }
+
+    // 2. Background city lookup on entering a complete 6-digit pincode
+    if (pin.length === 6 && /^\d+$/.test(pin)) {
+      const fetchAddress = async () => {
+        setIsFetchingPincode(true);
+        setPincodeStatus('');
+        try {
+          const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'VERIFY_PINCODE', pincode: pin })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice[0]) {
+              const po = data[0].PostOffice[0];
+              const resolvedState = po.State || '';
+              const resolvedCity = po.District || po.Division || po.Region || '';
+              
+              setFormData(prev => {
+                const updated = { ...prev };
+                updated.city = resolvedCity;
+                const matchingState = INDIAN_STATES.find(s => s.toLowerCase() === resolvedState.toLowerCase());
+                if (matchingState) {
+                  updated.region = matchingState;
+                }
+                return updated;
+              });
+              setPincodeStatus(`Detected: ${resolvedCity}, ${resolvedState}`);
+            } else {
+              setPincodeStatus('No records found');
+            }
+          } else {
+            setPincodeStatus('Failed to verify pincode');
+          }
+        } catch (err) {
+          console.error("Error auto-fetching pincode details:", err);
+          setPincodeStatus('Failed to verify pincode');
+        } finally {
+          setIsFetchingPincode(false);
+        }
+      };
+      fetchAddress();
+    } else {
+      setPincodeStatus('');
+    }
+  }, [formData.pincode]);
 
   const [touched, setTouched] = useState({
     mobile: false,
@@ -121,14 +270,29 @@ function RegisterContent() {
     }
   };
 
-  const handleApplyCoupon = () => {
-    const isProduction = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
-    if (couponInput.toUpperCase() === 'TESTTEST') {
-      setFormData(prev => ({ ...prev, coupon: couponInput.toUpperCase() }));
-      setCouponMessage('Coupon applied successfully!');
-    } else {
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) {
+      setCouponMessage('Please enter a coupon code.');
+      return;
+    }
+    setCouponMessage('Verifying...');
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'VERIFY_COUPON', coupon: couponInput })
+      });
+      const result = await res.json();
+      if (res.ok && result.valid) {
+        setFormData(prev => ({ ...prev, coupon: couponInput.trim().toUpperCase() }));
+        setCouponMessage('Coupon applied successfully!');
+      } else {
+        setFormData(prev => ({ ...prev, coupon: '' }));
+        setCouponMessage('Invalid coupon code');
+      }
+    } catch (err) {
       setFormData(prev => ({ ...prev, coupon: '' }));
-      setCouponMessage('Invalid coupon code');
+      setCouponMessage('Error verifying coupon');
     }
   };
 
@@ -245,7 +409,9 @@ function RegisterContent() {
 
   const isAddressValid = 
     formData.address.trim().length >= 10 &&
-    formData.pincode.trim().length === 6;
+    formData.pincode.trim().length === 6 &&
+    formData.city.trim() !== '' &&
+    formData.region.trim() !== '';
 
   if (isSuccess) {
     return (
@@ -619,14 +785,14 @@ function RegisterContent() {
                           name="address" 
                           value={formData.address} 
                           onChange={handleChange} 
-                      rows={3} 
+                          rows={3} 
                           className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl resize-none" 
                           placeholder="House No, Street, Landmark, City, State, Pincode" 
                           suppressHydrationWarning 
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-brand-ink/75 block mb-1">Pincode *</label>
                           <input 
@@ -639,14 +805,89 @@ function RegisterContent() {
                             placeholder="302026" 
                             suppressHydrationWarning 
                           />
+                          {isFetchingPincode && (
+                            <p className="text-[10px] font-bold text-brand-ink/50 animate-pulse mt-1">
+                              Fetching...
+                            </p>
+                          )}
+                          {pincodeStatus && !isFetchingPincode && (
+                            <p className={`text-[10px] font-bold mt-1 ${pincodeStatus.startsWith('Detected') ? 'text-green-700' : 'text-brand-orange'}`}>
+                              {pincodeStatus}
+                            </p>
+                          )}
                         </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">City *</label>
+                          <input 
+                            required={isStudentValid && isParentsValid}
+                            name="city" 
+                            value={formData.city} 
+                            onChange={handleChange} 
+                            className="w-full px-4 py-3 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/40 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl"
+                            placeholder="Jaipur" 
+                            suppressHydrationWarning
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold text-brand-ink/75 block mb-1">Region / State *</label>
+                          <select
+                            required={isStudentValid && isParentsValid}
+                            name="region"
+                            value={formData.region}
+                            onChange={handleChange}
+                            className={`w-full px-4 py-3 bg-white border-comic-thin font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl appearance-none cursor-pointer pr-10 ${
+                              formData.region ? 'text-brand-ink' : 'text-brand-ink/40'
+                            }`}
+                            style={{
+                              backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23030404' stroke-width='3' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e")`,
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 1rem center',
+                              backgroundSize: '1.25rem',
+                            }}
+                          >
+                            <option value="" disabled hidden>Select Region / State</option>
+                            {INDIAN_STATES.map((state) => (
+                              <option key={state} value={state} className="text-brand-ink font-bold">
+                                {state}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Coupon Code Section */}
+                      <div className="border-2 border-brand-ink/10 p-4 rounded-2xl bg-brand-cloud/20 space-y-3">
+                        <label className="text-xs font-bold text-brand-ink/75 block">Have a Coupon / Discount Code?</label>
+                        <div className="flex gap-3">
+                          <input 
+                            type="text"
+                            placeholder="ENTER CODE" 
+                            value={couponInput}
+                            onChange={(e) => setCouponInput(e.target.value)}
+                            className="flex-1 px-4 py-2.5 bg-white border-comic-thin text-brand-ink placeholder:text-brand-ink/30 font-bold focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-comic-sm transition-all rounded-xl uppercase text-xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleApplyCoupon}
+                            className="px-6 py-2.5 bg-brand-orange text-brand-cloud border-comic shadow-comic-sm font-display font-black text-xs uppercase tracking-wider rounded-xl comic-interactive flex items-center justify-center cursor-pointer active:translate-x-[1px] active:translate-y-[1px]"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {couponMessage && (
+                          <p className={`text-[10px] font-bold ${couponMessage.includes('successfully') ? 'text-green-700' : 'text-brand-orange'}`}>
+                            {couponMessage}
+                          </p>
+                        )}
                       </div>
 
                       <div className="border-comic bg-brand-orange/5 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-comic bg-halftone-black opacity-95">
                         <div>
                           <p className="text-xs font-black text-brand-ink/60 uppercase tracking-widest mb-1">Registration Fee</p>
                           <div className="flex items-center gap-3">
-                            {formData.coupon.toUpperCase() === 'TESTTEST' ? (
+                            {formData.coupon !== '' ? (
                               <p className="text-2xl sm:text-3xl font-sans font-bold text-brand-ink">₹ 1</p>
                             ) : (
                               <p className="text-2xl sm:text-3xl font-sans font-bold text-brand-ink">₹ 2,500</p>

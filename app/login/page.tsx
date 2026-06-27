@@ -335,6 +335,8 @@ export default function LoginPage() {
               router.push('/feedback-portal');
             } else if (role === 'volunteer' || role === 'team_leader') {
               router.push('/volunteer');
+            } else if (role === 'warden') {
+              router.push('/warden');
             } else {
               setError('Access denied: Invalid account role.');
               await auth.signOut();

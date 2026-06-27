@@ -194,8 +194,13 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   let amountStr = '2,500.00';
   if (data.paymentAmount !== undefined) {
     amountStr = Number(data.paymentAmount).toFixed(2);
-  } else if (data.coupon?.toUpperCase() === 'TESTTEST') {
-    amountStr = '1.00';
+  } else {
+    const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
+      .split(',')
+      .map(c => c.trim().toUpperCase());
+    if (allowedCoupons.includes((data.coupon || '').trim().toUpperCase())) {
+      amountStr = '1.00';
+    }
   }
   drawField('Amount Paid', `Rs. ${amountStr}`, 40, 178);
   drawField('Mode of Payment', 'Online Transfer / UPI', 220, 178);
@@ -388,6 +393,11 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
 export async function finalizeRegistration(formData: any, paymentId: string, orderId: string) {
   console.log("Saving registration to Firestore...");
   
+  const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
+    .split(',')
+    .map(c => c.trim().toUpperCase());
+  const isTestCoupon = allowedCoupons.includes((formData.coupon || '').trim().toUpperCase());
+  
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const rawDate = new Date();
   const day = rawDate.getDate();
@@ -422,11 +432,13 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     gender: formData.gender || 'N/A',
     course: formData.course || 'N/A',
     pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
+    region: formData.region || 'N/A',
+    city: formData.city || 'N/A',
     parentName: parentName,
     parentPhone: parentPhone,
     parentEmail: parentEmail,
-    paymentAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
-    receivedAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
+    paymentAmount: isTestCoupon ? 1 : 2500,
+    receivedAmount: isTestCoupon ? 1 : 2500,
     dateOfPayment: dateOfPayment,
     dateGroup: dateGroup,
     hasEntered: false,
@@ -436,156 +448,157 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   });
   console.log("Registration saved. Firestore ID:", docRef.id);
 
-  // Schedule all heavy post-registration tasks to run after the HTTP response has been sent to the client.
-  // This uses Next.js 15 after() API which keeps the server instance active in Cloud Run but responds to the user instantly.
-  after(async () => {
-    try {
-      console.log("Starting post-registration tasks in Next.js after() callback...");
-      
-      const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
+  // In serverless/Firebase environments, we must await all background tasks before returning the HTTP response.
+  // Otherwise, the VM container suspends execution immediately and kills pending event loop tasks (e.g. nodemailer/webhooks).
+  try {
+    console.log("Starting post-registration tasks...");
+    const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
 
-      // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
-      const excelSyncPromise = (async () => {
-        if (!excelWebhook) {
-          console.log("Skipping Excel sync: EXCEL_SYNC_WEBHOOK_URL is not defined.");
-          return;
-        }
-        console.log("Syncing registration details to Microsoft Excel...");
-        try {
-        let lastDate = "";
-        try {
-          const querySnapshot = await adminDb.collection('registrations')
-            .orderBy('registeredAt', 'desc')
-            .limit(5)
-            .get();
-          for (const docSnap of querySnapshot.docs) {
-            if (docSnap.id !== docRef.id) {
-              lastDate = docSnap.data().dateOfPayment || "";
-              break;
-            }
+    // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
+    const excelSyncPromise = (async () => {
+      if (!excelWebhook) {
+        console.log("Skipping Excel sync: EXCEL_SYNC_WEBHOOK_URL is not defined.");
+        return;
+      }
+      console.log("Syncing registration details to Microsoft Excel...");
+      try {
+      let lastDate = "";
+      try {
+        const querySnapshot = await adminDb.collection('registrations')
+          .orderBy('registeredAt', 'desc')
+          .limit(5)
+          .get();
+        for (const docSnap of querySnapshot.docs) {
+          if (docSnap.id !== docRef.id) {
+            lastDate = docSnap.data().dateOfPayment || "";
+            break;
           }
-        } catch (err) {
-          console.warn("Could not query last registration date:", err);
         }
+      } catch (err) {
+        console.warn("Could not query last registration date:", err);
+      }
 
-        let studentIndex = 1;
-        try {
-          const countSnapshot = await adminDb.collection('registrations').count().get();
-          studentIndex = countSnapshot.data().count;
-        } catch (err) {
-          console.warn("Could not count registrations:", err);
-        }
+      let studentIndex = 1;
+      try {
+        const countSnapshot = await adminDb.collection('registrations').count().get();
+        studentIndex = countSnapshot.data().count;
+      } catch (err) {
+        console.warn("Could not count registrations:", err);
+      }
 
-          if (lastDate && lastDate !== dateOfPayment) {
-            console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
-            try {
-              await fetch(excelWebhook, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  id: dateGroup,
-                  isSeparator: true,
-                  name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
-                  gender: '', course: '',
-                  parentName: '', parentPhone: '', parentEmail: '',
-                  address: '', pincode: '',
-                  paymentAmount: 0, receivedAmount: 0,
-                  dateOfPayment: '', dateGroup: dateGroup,
-                  paymentId: '', orderId: ''
-                })
-              });
-            } catch (sepErr) {
-              console.warn("Failed to send separator to Excel:", sepErr);
-            }
+        if (lastDate && lastDate !== dateOfPayment) {
+          console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
+          try {
+            await fetch(excelWebhook, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: dateGroup,
+                isSeparator: true,
+                name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
+                gender: '', course: '',
+                parentName: '', parentPhone: '', parentEmail: '',
+                address: '', pincode: '', region: '', city: '', state: '',
+                paymentAmount: 0, receivedAmount: 0,
+                dateOfPayment: '', dateGroup: dateGroup,
+                paymentId: '', orderId: '', settlementId: ''
+              })
+            });
+          } catch (sepErr) {
+            console.warn("Failed to send separator to Excel:", sepErr);
           }
-
-          const escapeForSheets = (val: string) => {
-            if (typeof val === 'string' && val.startsWith('+')) {
-              return `'${val}`;
-            }
-            return val;
-          };
-
-          await fetch(excelWebhook, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              id: studentIndex.toString(),
-              name: formData.name,
-              email: formData.email,
-              phone: escapeForSheets(formData.mobile),
-              rollNumber: formData.registrationNumber,
-              registeredAt: new Date().toISOString(),
-              gender: formData.gender || 'N/A',
-              course: formData.course || 'N/A',
-              parentName: parentName,
-              parentPhone: escapeForSheets(parentPhone),
-              parentEmail: parentEmail,
-              fatherName: fatherName || formData.parentName || 'N/A',
-              fatherMobile: escapeForSheets(fatherMobile || formData.parentPhone || 'N/A'),
-              fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
-              motherName: motherName || 'N/A',
-              motherMobile: escapeForSheets(motherMobile || 'N/A'),
-              motherEmail: motherEmail || 'N/A',
-              address: formData.address || 'N/A',
-              pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
-              paymentAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
-              receivedAmount: formData.coupon?.toUpperCase() === 'TESTTEST' ? 1 : 2500,
-              dateOfPayment: dateOfPayment,
-              dateGroup: dateGroup,
-              paymentId: paymentId,
-              orderId: orderId
-            })
-          });
-          console.log("Excel sync webhook fired successfully.");
-        } catch (excelError) {
-          console.error("Excel sync webhook failed:", excelError);
         }
-      })();
 
-      // 2. Generate PDF Receipt & Send Email using SMTP
-      const emailAndPdfPromise = (async () => {
-        try {
-          console.log("Generating PDF receipt...");
-          const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
-          console.log("PDF receipt generated.");
+        const escapeForSheets = (val: string) => {
+          if (typeof val === 'string' && val.startsWith('+')) {
+            return `'${val}`;
+          }
+          return val;
+        };
 
-          const isProduction = process.env.NODE_ENV === 'production' || 
-                               (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
-          console.log("Attempting to send confirmation email to:", isProduction ? maskEmail(formData.email) : formData.email);
-          await sendEmail(formData.email, formData.name, pdfBytes);
-          console.log("Email sent successfully.");
-        } catch (emailError) {
-          console.error("Email generation/delivery failed:", emailError);
-        }
-      })();
+        await fetch(excelWebhook, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: studentIndex.toString(),
+            name: formData.name,
+            email: formData.email,
+            phone: escapeForSheets(formData.mobile),
+            rollNumber: formData.registrationNumber,
+            registeredAt: new Date().toISOString(),
+            gender: formData.gender || 'N/A',
+            course: formData.course || 'N/A',
+            parentName: parentName,
+            parentPhone: escapeForSheets(parentPhone),
+            parentEmail: parentEmail,
+            fatherName: fatherName || formData.parentName || 'N/A',
+            fatherMobile: escapeForSheets(fatherMobile || formData.parentPhone || 'N/A'),
+            fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
+            motherName: motherName || 'N/A',
+            motherMobile: escapeForSheets(motherMobile || 'N/A'),
+            motherEmail: motherEmail || 'N/A',
+            address: formData.address || 'N/A',
+            pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
+            region: formData.region || 'N/A',
+            city: formData.city || 'N/A',
+            state: formData.region || 'N/A',
+            paymentAmount: isTestCoupon ? 1 : 2500,
+            receivedAmount: isTestCoupon ? 1 : 2500,
+            dateOfPayment: dateOfPayment,
+            dateGroup: dateGroup,
+            paymentId: paymentId,
+            orderId: orderId,
+            settlementId: 'Pending'
+          })
+        });
+        console.log("Excel sync webhook fired successfully.");
+      } catch (excelError) {
+        console.error("Excel sync webhook failed:", excelError);
+      }
+    })();
 
-      // 3. Create Audit Log using Admin SDK
-      const auditLogPromise = (async () => {
-        try {
-          console.log("Recording audit log...");
-          await adminDb.collection('auditLogs').add({
-            timestamp: FieldValue.serverTimestamp(),
-            action: 'REGISTRATION_COMPLETE',
-            performedBy: formData.email,
-            targetEntity: `registration/${docRef.id}`,
-            details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
-          });
-          console.log("Audit log recorded.");
-        } catch (auditError) {
-          console.error("Audit logging failed:", auditError);
-        }
-      })();
+    // 2. Generate PDF Receipt & Send Email using SMTP
+    const emailAndPdfPromise = (async () => {
+      try {
+        console.log("Generating PDF receipt...");
+        const pdfBytes = await generatePDF(formData, docRef.id, paymentId, orderId, dateOfPayment);
+        console.log("PDF receipt generated.");
 
-      // Wait for all concurrent pipelines to resolve in the background
-      await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
-      console.log("All background post-registration tasks resolved.");
-    } catch (bgError) {
-      console.error("Critical error inside Next.js after() callback:", bgError);
-    }
-  });
+        const isProduction = process.env.NODE_ENV === 'production' || 
+                             (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+        console.log("Attempting to send confirmation email to:", isProduction ? maskEmail(formData.email) : formData.email);
+        await sendEmail(formData.email, formData.name, pdfBytes);
+        console.log("Email sent successfully.");
+      } catch (emailError) {
+        console.error("Email generation/delivery failed:", emailError);
+      }
+    })();
+
+    // 3. Create Audit Log using Admin SDK
+    const auditLogPromise = (async () => {
+      try {
+        console.log("Recording audit log...");
+        await adminDb.collection('auditLogs').add({
+          timestamp: FieldValue.serverTimestamp(),
+          action: 'REGISTRATION_COMPLETE',
+          performedBy: formData.email,
+          targetEntity: `registration/${docRef.id}`,
+          details: `New registration for ${formData.name} (${formData.registrationNumber}) completed via ${paymentId === 'mock_payment_id' ? 'MOCK' : 'CASHFREE'}`
+        });
+        console.log("Audit log recorded.");
+      } catch (auditError) {
+        console.error("Audit logging failed:", auditError);
+      }
+    })();
+
+    // Wait for all concurrent pipelines to resolve in parallel to minimize latency
+    await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
+    console.log("All post-registration tasks resolved.");
+  } catch (bgError) {
+    console.error("Error executing post-registration tasks:", bgError);
+  }
 
   return docRef.id;
 }

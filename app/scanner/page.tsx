@@ -267,29 +267,22 @@ export default function ScannerView() {
         if (scannedData.hasEntered) {
           setStatus({ type: 'error', message: 'ALREADY ENTERED' });
         } else {
-          await updateDoc(doc(db, 'registrations', scannedData.id), {
-            hasEntered: true,
-            enteredAt: serverTimestamp(),
-            enteredBy: scannerAccount.volunteerName
-          });
-          
-          await addDoc(collection(db, 'scanLogs'), {
-            scannerId: scannerAccount.scannerId,
-            volunteerName: scannerAccount.volunteerName,
-            registrationID: scannedData.id,
-            attendeeName: scannedData.name,
-            timestamp: serverTimestamp(),
-            result: 'accepted'
+          const res = await fetch('/api/check-in/approve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              registrationID: scannedData.id,
+              scannerId: scannerAccount.scannerId,
+              volunteerName: scannerAccount.volunteerName
+            })
           });
 
-          try {
-            const { logAdminAction } = await import('../../lib/audit');
-            await logAdminAction('SCANNER_APPROVE', `registrations/${scannedData.id}`, `Approved entry for attendee ${scannedData.name}`, scannerAccount.volunteerName || scannerAccount.scannerId);
-          } catch (err) {
-            console.error("Failed to log scanner approval:", err);
+          const result = await res.json();
+          if (res.ok && result.success) {
+            setStatus({ type: 'success', message: 'ENTRY APPROVED' });
+          } else {
+            setStatus({ type: 'error', message: result.error || 'ACTION FAILED' });
           }
-          
-          setStatus({ type: 'success', message: 'ENTRY APPROVED' });
         }
       } else {
         await addDoc(collection(db, 'scanLogs'), {
@@ -466,12 +459,23 @@ export default function ScannerView() {
                 
                 <div className="grid grid-cols-2 gap-4 border-t border-brand-ink/10 pt-3">
                   <div>
-                    <span className="text-[8px] font-bold text-admin-muted uppercase tracking-widest block mb-0.5">Email</span>
-                    <span className="text-xs font-bold text-brand-ink truncate block">{scannedData.email}</span>
+                    <span className="text-[8px] font-bold text-admin-muted uppercase tracking-widest block mb-0.5">Application Number</span>
+                    <span className="text-xs font-bold text-brand-ink block">{scannedData.registrationNumber || scannedData.rollNumber || scannedData.id}</span>
                   </div>
                   <div>
                     <span className="text-[8px] font-bold text-admin-muted uppercase tracking-widest block mb-0.5">Mobile</span>
-                    <span className="text-xs font-bold text-brand-ink block">{scannedData.phone || 'N/A'}</span>
+                    <span className="text-xs font-bold text-brand-ink block">{scannedData.phone || scannedData.mobile || 'N/A'}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-brand-ink/10 pt-3">
+                  <div>
+                    <span className="text-[8px] font-bold text-admin-muted uppercase tracking-widest block mb-0.5">Parent&apos;s Name</span>
+                    <span className="text-xs font-bold text-brand-ink block">{scannedData.parentName || scannedData.fatherName || 'N/A'}</span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] font-bold text-admin-muted uppercase tracking-widest block mb-0.5">Region / State</span>
+                    <span className="text-xs font-bold text-brand-ink block">{scannedData.region || 'N/A'}</span>
                   </div>
                 </div>
               </div>

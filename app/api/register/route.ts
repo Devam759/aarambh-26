@@ -15,6 +15,9 @@ const cashfree = new Cashfree(
 );
 cashfree.XApiVersion = '2023-08-01';
 
+// Server-side in-memory cache for resolved pincodes to ensure 0ms latency on repeated queries
+const pincodeCache = new Map<string, any>();
+
 export async function POST(req: Request) {
   try {
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
@@ -46,6 +49,55 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Bot detected' }, { status: 400 });
     }
 
+    const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
+      .split(',')
+      .map(c => c.trim().toUpperCase());
+
+    if (action === 'VERIFY_COUPON') {
+      const code = (data.coupon || '').trim().toUpperCase();
+      const isValid = allowedCoupons.includes(code);
+      return NextResponse.json({
+        valid: isValid,
+        amount: isValid ? 1 : 2500
+      });
+    }
+    if (action === 'VERIFY_PINCODE') {
+      const pin = (data.pincode || '').trim();
+      if (pin.length === 6 && /^\d+$/.test(pin)) {
+        // 1. Check in-memory cache
+        if (pincodeCache.has(pin)) {
+          console.log(`Pincode cache hit for ${pin}.`);
+          return NextResponse.json(pincodeCache.get(pin));
+        }
+
+        try {
+          console.log(`Proxying pincode request for ${pin} to India Post API...`);
+          
+          // Enforce a strict 2.5-second API timeout so client is not blocked indefinitely
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+          const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`, {
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const postalData = await res.json();
+            // Store successful lookup in cache
+            if (postalData && postalData[0]?.Status === 'Success') {
+              pincodeCache.set(pin, postalData);
+            }
+            return NextResponse.json(postalData);
+          }
+        } catch (err: any) {
+          console.error("Error proxying pincode API request:", err.name === 'AbortError' ? 'Timeout (took > 2.5s)' : err);
+        }
+      }
+      return NextResponse.json([{ Status: 'Error', Message: 'Failed to verify pincode or timeout' }]);
+    }
+
+
     if (action === 'CREATE_ORDER') {
       try {
         if (!data.registrationNumber || !validateRegistrationNumber(data.registrationNumber)) {
@@ -54,7 +106,9 @@ export async function POST(req: Request) {
         }
 
         const orderId = `order_${Date.now()}`;
-        const orderAmount = (data.coupon?.toUpperCase() === 'TESTTEST') ? 1 : 2500;
+        const couponCode = (data.coupon || '').trim().toUpperCase();
+        const isTestCoupon = allowedCoupons.includes(couponCode);
+        const orderAmount = isTestCoupon ? 1 : 2500;
 
         console.log("Saving pending registration for order ID:", orderId);
         // 1. Save pending registration details under pendingRegistrations using Admin SDK

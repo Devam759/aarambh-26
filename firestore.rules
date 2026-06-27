@@ -22,6 +22,11 @@ service cloud.firestore {
         getRole(request.auth.uid) == 'team_leader'
       );
     }
+    
+    function isWarden() {
+      return request.auth != null && getRole(request.auth.uid) == 'warden';
+    }
+
 
     // Roles collection rules
     match /roles/{uid} {
@@ -31,9 +36,10 @@ service cloud.firestore {
 
     // Registrations collection
     match /registrations/{id} {
-      allow read: if isAdmin() || isScanner();
+      allow read: if isAdmin() || isScanner() || (isWarden() && resource.data.hasEntered == true);
       allow create: if request.resource.data.paymentId != null && request.resource.data.orderId != null;
-      allow update, delete: if isAdmin();
+      allow update: if isAdmin() || isWarden();
+      allow delete: if isAdmin();
     }
 
     // Pending Registrations collection
@@ -68,8 +74,8 @@ service cloud.firestore {
 
     // Scan logs collection
     match /scanLogs/{id} {
-      allow read: if isAdmin() || isScanner();
-      allow write: if isAdmin() || isScanner();
+      allow read: if isAdmin() || isScanner() || isWarden();
+      allow write: if isAdmin() || isScanner() || isWarden();
     }
 
     // Events (public schedule)
@@ -117,6 +123,12 @@ service cloud.firestore {
 
     // Scanner Accounts collection
     match /scannerAccounts/{id} {
+      allow read: if request.auth != null && (request.auth.uid == id || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Warden Accounts collection
+    match /wardenAccounts/{id} {
       allow read: if request.auth != null && (request.auth.uid == id || isAdmin());
       allow write: if isAdmin();
     }
