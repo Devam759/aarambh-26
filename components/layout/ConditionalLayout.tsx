@@ -74,7 +74,9 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
       </AnimatePresence>
       */}
 
-      <Navbar />
+      <div className={pathname?.startsWith('/volunteer') ? 'hidden md:block' : ''}>
+        <Navbar />
+      </div>
       <main className={`min-h-screen ${isCreditsPage ? 'bg-[#F5F1E5]' : 'bg-brand-cloud'}`}>
         {children}
       </main>

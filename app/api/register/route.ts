@@ -20,7 +20,8 @@ const pincodeCache = new Map<string, any>();
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const rawIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = rawIp.split(',')[0].trim(); // Take only the first (leftmost) IP — prevent x-forwarded-for spoofing
     
     // Use unified security rate limiting: max 5 requests per minute
     if (isRateLimited(ip, 5, 60 * 1000)) {
@@ -49,17 +50,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Bot detected' }, { status: 400 });
     }
 
-    const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
-      .split(',')
-      .map(c => c.trim().toUpperCase());
+    const checkCoupon = async (code: string) => {
+      if (!code) return { valid: false, amount: 2500 };
+      try {
+        const docSnap = await adminDb.collection('coupons').doc(code).get();
+        if (docSnap.exists && docSnap.data()?.active) {
+          return { valid: true, amount: docSnap.data()?.amount ?? 2500 };
+        }
+      } catch (err) {
+        console.error("Error fetching coupon:", err);
+      }
+      return { valid: false, amount: 2500 };
+    };
 
     if (action === 'VERIFY_COUPON') {
       const code = (data.coupon || '').trim().toUpperCase();
-      const isValid = allowedCoupons.includes(code);
-      return NextResponse.json({
-        valid: isValid,
-        amount: isValid ? 1 : 2500
-      });
+      const couponStatus = await checkCoupon(code);
+      return NextResponse.json(couponStatus);
     }
     if (action === 'VERIFY_PINCODE') {
       const pin = (data.pincode || '').trim();
@@ -107,8 +114,8 @@ export async function POST(req: Request) {
 
         const orderId = `order_${Date.now()}`;
         const couponCode = (data.coupon || '').trim().toUpperCase();
-        const isTestCoupon = allowedCoupons.includes(couponCode);
-        const orderAmount = isTestCoupon ? 1 : 2500;
+        const couponStatus = await checkCoupon(couponCode);
+        const orderAmount = couponStatus.valid ? couponStatus.amount : 2500;
 
         console.log("Saving pending registration for order ID:", orderId);
         // 1. Save pending registration details under pendingRegistrations using Admin SDK
@@ -121,8 +128,8 @@ export async function POST(req: Request) {
         });
         console.log("Pending registration saved.");
 
-        // MOCK MODE: If no keys, return a mock session for testing
-        if (!cashfreeAppId) {
+        // MOCK MODE: If no keys OR if order amount is 0 (100% discount coupon), return a mock session
+        if (!cashfreeAppId || orderAmount === 0) {
           return NextResponse.json({ 
             order_id: orderId,
             payment_session_id: "mock_session_id",
@@ -186,38 +193,45 @@ export async function POST(req: Request) {
 
     if (action === 'VERIFY_PAYMENT') {
       const { orderId } = data;
-      console.log("Verifying payment securely for order:", orderId);
+
+      // Validate orderId format before using as a Firestore document ID
+      // Cashfree order IDs must match: order_<digits> (e.g. order_1234567890)
+      if (!orderId || typeof orderId !== 'string' || !/^order_[0-9a-zA-Z_\-]{1,50}$/.test(orderId.trim())) {
+        console.warn('Invalid orderId format rejected:', orderId);
+        return NextResponse.json({ error: 'Invalid order ID format' }, { status: 400 });
+      }
+      const sanitizedOrderId = orderId.trim();
+      console.log("Verifying payment securely for order:", sanitizedOrderId);
       
       // Fetch the secure pending registration details from Firestore using Admin SDK
-      const pendingRef = adminDb.collection('pendingRegistrations').doc(orderId);
+      const pendingRef = adminDb.collection('pendingRegistrations').doc(sanitizedOrderId);
       const pendingSnap = await pendingRef.get();
       if (!pendingSnap.exists) {
-        console.warn(`No pending registration details found in Firestore for order ${orderId}`);
+        console.warn(`No pending registration details found in Firestore for order ${sanitizedOrderId}`);
         return NextResponse.json({ error: 'Pending registration details not found' }, { status: 404 });
       }
 
       const pendingData = pendingSnap.data();
       const dbFormData = pendingData.formData;
 
-      // If we are in development and don't have keys, allow bypass for testing UI
-      // If we are in development and don't have keys, allow bypass for testing UI
-      if (!cashfreeAppId) {
-        console.warn("Cashfree App ID missing, bypassing verification for testing.");
-        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", orderId);
+      // If we are in development and don't have keys, or if it's a 100% discount, allow bypass
+      if (!cashfreeAppId || pendingData.amount === 0) {
+        console.warn("Cashfree App ID missing or amount is 0, bypassing verification.");
+        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId);
         return NextResponse.json({ success: true, id: regId });
       }
 
-      const response = await cashfree.PGOrderFetchPayments(orderId);
+      const response = await cashfree.PGOrderFetchPayments(sanitizedOrderId);
       const payments = response.data;
       const successPayment = payments?.find((p: any) => p.payment_status === 'SUCCESS');
 
       if (!successPayment) {
-        console.warn("No successful payment found for order:", orderId);
+        console.warn("No successful payment found for order:", sanitizedOrderId);
         return NextResponse.json({ error: 'Payment not successful' }, { status: 400 });
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), orderId);
+      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId);
       return NextResponse.json({ success: true, id: regId });
     }
 

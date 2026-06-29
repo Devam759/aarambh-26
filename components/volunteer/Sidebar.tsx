@@ -125,6 +125,31 @@ export default function VolunteerSidebar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (isOpen) {
+        setIsVisible(true);
+        return;
+      }
+
+      if (currentScrollY < 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        setIsVisible(false); // Scroll down
+      } else {
+        setIsVisible(true); // Scroll up
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, isOpen]);
 
   useEffect(() => {
     if (!isFirebaseConfigured() || !auth || !db) return;
@@ -208,7 +233,7 @@ export default function VolunteerSidebar() {
   return (
     <>
       {/* Mobile Hamburger Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
+      <div className={`md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <Link href="/volunteer" className="flex items-center gap-2">
           <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
           <span className="font-adminHeading text-md font-black text-brand-ink hidden">Volunteer</span>

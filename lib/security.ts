@@ -6,6 +6,11 @@ const rateLimitMap = new Map<string, { count: number; firstRequest: number }>();
 /**
  * Custom in-memory rate limiting mechanism.
  * Limits the number of requests per IP within a specified time window.
+ *
+ * NOTE: This map is process-local. On serverless platforms like Cloud Run, each
+ * new instance starts with an empty map, so very short bursts across cold-starts can
+ * bypass the limit. For production-grade enforcement, replace this with a Redis-backed
+ * limiter (e.g., Upstash). For Aarambh-scale traffic this is sufficient.
  */
 export function isRateLimited(ip: string, limit: number = 5, windowMs: number = 60000): boolean {
   const now = Date.now();
@@ -40,13 +45,19 @@ export function isRateLimited(ip: string, limit: number = 5, windowMs: number = 
 
 /**
  * XSS & Script injection sanitation helper.
- * Strips HTML tags and escapes special characters.
+ * Strips HTML tags then escapes special characters.
+ *
+ * This function is idempotent — calling it twice on the same string
+ * produces the same result. Tag-stripping removes < and > first; only then are
+ * residual special chars (& " ') escaped. This avoids double-encoding issues
+ * like &amp; → &amp;amp; on a second pass.
  */
 export function sanitizeInput(val: any): any {
   if (typeof val === 'string') {
-    const text = val.trim();
+    // Step 1: strip HTML/XML tags by removing everything between < and >
     let result = '';
     let inTag = false;
+    const text = val.trim();
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
       if (char === '<') {
@@ -57,16 +68,13 @@ export function sanitizeInput(val: any): any {
         result += char;
       }
     }
-    return result.replace(/[&<>"']/g, (char) => {
-      const map: { [key: string]: string } = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      };
-      return map[char] || char;
-    });
+    // Step 2: escape only the chars that survive tag-stripping.
+    // Ampersand must be escaped first to avoid double-encoding (& → &amp;, not &&amp;).
+    result = result
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+    return result;
   }
   return val;
 }
@@ -103,6 +111,7 @@ export const cashfreeSecretKey = isProd
 /**
  * Verifies the validity of the signature sent by Cashfree Webhooks.
  * Uses SHA-256 HMAC of (timestamp + rawBody) computed with the active Cashfree secret key.
+ * Uses crypto.timingSafeEqual to prevent timing side-channel attacks.
  */
 export function verifyCashfreeSignature(signature: string, rawBody: string, timestamp: string): boolean {
   const secretKey = cashfreeSecretKey;
@@ -121,8 +130,15 @@ export function verifyCashfreeSignature(signature: string, rawBody: string, time
     .createHmac('sha256', secretKey)
     .update(data)
     .digest('base64');
-  
-  return computedSignature === signature;
+
+  // Use constant-time comparison to prevent timing side-channel attacks
+  try {
+    const expectedBuf = Buffer.from(computedSignature, 'base64');
+    const receivedBuf = Buffer.from(signature, 'base64');
+    return expectedBuf.length === receivedBuf.length && crypto.timingSafeEqual(expectedBuf, receivedBuf);
+  } catch {
+    return false;
+  }
 }
 
 /**

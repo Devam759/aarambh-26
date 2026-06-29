@@ -37,7 +37,9 @@ service cloud.firestore {
     // Registrations collection
     match /registrations/{id} {
       allow read: if isAdmin() || isScanner() || (isWarden() && resource.data.hasEntered == true);
-      allow create: if request.resource.data.paymentId != null && request.resource.data.orderId != null;
+      // All registrations are created server-side via Admin SDK which bypasses rules.
+      // Disallow direct client creates to prevent fake paid-registration injection.
+      allow create: if false;
       allow update: if isAdmin() || isWarden();
       allow delete: if isAdmin();
     }
@@ -48,10 +50,15 @@ service cloud.firestore {
     }
 
     // Volunteers collection
-    // Unauthenticated reads are allowed because the login page must query this
-    // collection to verify volunteer credentials BEFORE a Firebase Auth session exists.
+    // Credentials (passwordHash) must not be publicly readable.
+    // Each volunteer can read their own document (Firebase custom token sets uid = volunteers doc id).
+    // Team Leaders and Admins can read all volunteers for duty-management.
     match /volunteers/{id} {
-      allow read: if true;
+      allow read: if request.auth != null && (
+        request.auth.uid == id || 
+        isAdmin() || 
+        getRole(request.auth.uid) == 'team_leader'
+      );
       allow write: if isAdmin() || isVolunteerOrTL();
     }
 
@@ -87,9 +94,9 @@ service cloud.firestore {
     // Audit logs collection
     match /auditLogs/{id} {
       allow read, update, delete: if isAdmin();
-      // Allow unauthenticated creates so volunteer login events can be logged
-      // before any Firebase Auth session exists (volunteer auth is localStorage-based)
-      allow create: if true;
+      // Only authenticated users can create audit log entries.
+      // Server-side routes use the Admin SDK (bypasses rules); client-side uses Firebase Auth sessions.
+      allow create: if request.auth != null;
     }
 
     // Feedback collection (public anonymous submissions allowed)
@@ -131,6 +138,11 @@ service cloud.firestore {
     match /wardenAccounts/{id} {
       allow read: if request.auth != null && (request.auth.uid == id || isAdmin());
       allow write: if isAdmin();
+    }
+
+    // Coupons collection
+    match /coupons/{id} {
+      allow read, write: if isAdmin();
     }
 
     // Contact Messages collection (public anonymous submissions allowed)

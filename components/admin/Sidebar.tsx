@@ -10,6 +10,12 @@ import { auth, db, isFirebaseConfigured } from '../../lib/firebase';
 // BESPOKE CUSTOM GEOMETRIC SVG ICONS FOR SIDEBAR (Gradient-free, Sharp, Heavy-mitre)
 // ============================================================================
 
+const CustomShieldIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </svg>
+);
+
 const CustomDashboardIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
   <svg 
     width={size} 
@@ -138,6 +144,23 @@ const CustomLogoutIcon = ({ className = '', size = 18 }: { className?: string; s
     <path d="M10 22H3V2H10" />
     <path d="M21 12H9" />
     <path d="M16 7L21 12L16 17" />
+  </svg>
+);
+
+const CustomTagIcon = ({ className = '', size = 18 }: { className?: string; size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="square" 
+    strokeLinejoin="miter" 
+    className={className}
+  >
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+    <line x1="7" y1="7" x2="7.01" y2="7" />
   </svg>
 );
 
@@ -303,12 +326,37 @@ export default function Sidebar() {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab');
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const [pendingComplaintsCount, setPendingComplaintsCount] = useState(0);
   const [pendingSuggestionsCount, setPendingSuggestionsCount] = useState(0);
 
   const isFeedbackActive = pathname === '/admin/analytics';
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (isOpen) {
+        setIsVisible(true);
+        return;
+      }
+
+      if (currentScrollY < 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        setIsVisible(false); // Scroll down
+      } else {
+        setIsVisible(true); // Scroll up
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, isOpen]);
 
   useEffect(() => {
     if (isFeedbackActive) {
@@ -346,6 +394,8 @@ export default function Sidebar() {
     { name: 'Entry Logs', href: '/admin/entry-logs', icon: CustomEntryLogsIcon },
     { name: 'Audit Logs', href: '/admin/audit', icon: CustomAuditIcon },
     { name: 'Duty Management', href: '/admin/duty-management', icon: CustomDutyIcon },
+    { name: 'Coupons', href: '/admin/coupons', icon: CustomTagIcon },
+    { name: 'Warden Portal', href: '/admin/warden', icon: CustomShieldIcon },
   ];
 
   const feedbackSubItems = [
@@ -376,7 +426,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Hamburger Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50">
+      <div className={`md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b-2 border-brand-ink flex items-center justify-between px-4 z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <Link href="/admin" className="flex items-center gap-2">
           <img src="/logos/Aarambh_new_logo.svg" alt="Aarambh Logo" className="h-8 w-auto object-contain" />
           <span className="font-adminHeading text-md font-black text-brand-ink hidden">Admin</span>

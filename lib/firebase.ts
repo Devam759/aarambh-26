@@ -57,7 +57,7 @@ if (app) {
     // Client-side initialization (requires public siteKey)
     if (siteKey) {
       if (process.env.NODE_ENV === 'development') {
-        (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+        (window as any).FIREBASE_APPCHECK_DEBUG_TOKEN = process.env.NEXT_PUBLIC_APP_CHECK_DEBUG_TOKEN || true;
       }
       try {
         appCheck = initializeAppCheck(app, {
@@ -73,7 +73,11 @@ if (app) {
     }
   } else {
     // Server-side initialization (Node.js environment)
-    if (debugToken) {
+    // Only use the debug token in non-production environments.
+    // In production, the Admin SDK bypasses App Check natively — debug tokens must not be used.
+    const isProductionEnv = process.env.NODE_ENV === 'production' ||
+                            (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+    if (debugToken && !isProductionEnv) {
       (global as any).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
       try {
         appCheck = initializeAppCheck(app, {
@@ -89,7 +93,7 @@ if (app) {
       } catch (err) {
         console.error("Failed to initialize App Check on server:", err);
       }
-    } else {
+    } else if (!isProductionEnv) {
       console.warn("Skipping App Check server initialization: APP_CHECK_DEBUG_TOKEN is missing. Server-side writes to Firestore may fail if App Check is enforced.");
     }
   }

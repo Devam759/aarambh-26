@@ -1,6 +1,6 @@
 import { adminDb } from './firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs/promises';
 import path from 'path';
@@ -85,18 +85,30 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
     });
   }
 
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  
+  const titleText = 'Registration Receipt';
+  const titleSize = 20;
+  const titleWidth = helveticaFont.widthOfTextAtSize(titleText, titleSize);
+
+  const subtitleText = 'Aarambh Registration · JK Lakshmipat University';
+  const subtitleSize = 8.5;
+  const subtitleWidth = helveticaFont.widthOfTextAtSize(subtitleText, subtitleSize);
+
   // Center-aligned Header Title text on white background
-  page.drawText('Registration Receipt', {
-    x: 200,
+  page.drawText(titleText, {
+    x: (width - titleWidth) / 2,
     y: height - 70,
-    size: 20,
+    size: titleSize,
     color: darkColor,
+    font: helveticaFont,
   });
-  page.drawText('Aarambh Registration · JK Lakshmipat University', {
-    x: 185,
+  page.drawText(subtitleText, {
+    x: (width - subtitleWidth) / 2,
     y: height - 85,
-    size: 8.5,
+    size: subtitleSize,
     color: greyColor,
+    font: helveticaFont,
   });
 
   // Solid Black Divider line under header
@@ -194,14 +206,8 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   let amountStr = '2,500.00';
   if (data.paymentAmount !== undefined) {
     amountStr = Number(data.paymentAmount).toFixed(2);
-  } else {
-    const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
-      .split(',')
-      .map(c => c.trim().toUpperCase());
-    if (allowedCoupons.includes((data.coupon || '').trim().toUpperCase())) {
-      amountStr = '1.00';
-    }
   }
+
   drawField('Amount Paid', `Rs. ${amountStr}`, 40, 178);
   drawField('Mode of Payment', 'Online Transfer / UPI', 220, 178);
   
@@ -306,21 +312,23 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
         </div>
         <div class="content">
           <div class="success-badge">✓ Registration Confirmed</div>
-          <h2 style="margin-top: 0;">Hello ${name}!</h2>
-          <p>Your registration for <strong>Aarambh '26</strong> at JK Lakshmipat University has been successfully processed.</p>
-          <p>We are thrilled to have you as part of our signature event. Your attendance contributes to the vibrant spirit of this celebration.</p>
+          <h2 style="margin-top: 0;">Dear ${name},</h2>
+          <p>Congratulations! 🎉</p>
+          <p>Your registration for <strong>AARAMBH 2026</strong>, the Orientation Program at JK Lakshmipat University, has been successfully completed.</p>
+          <p>Please find your unique QR Code attached to this email. This QR code will serve as your entry pass and will be required during the check-in process on campus.</p>
           
           <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <p style="margin: 0; font-size: 14px; color: #64748b;">What's next?</p>
+            <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Important:</strong></p>
             <ul style="margin: 10px 0 0 0; padding-left: 20px; font-size: 14px;">
-              <li>Keep the attached PDF receipt safe.</li>
-              <li>Show the QR code at the check-in desk for instant entry.</li>
-              <li>Check our website for the latest schedule updates.</li>
+              <li>Save this email for future reference.</li>
+              <li>Keep your QR code safe and easily accessible.</li>
+              <li>You may either carry a digital copy on your phone or a printed copy during reporting.</li>
             </ul>
           </div>
 
-          <p>See you at the event!</p>
-          <p>Best Regards,<br/><strong>Team Aarambh</strong></p>
+          <p>We look forward to welcoming you to the JKLU family and helping you begin this exciting new chapter.</p>
+          <p>If you have any questions, please feel free to reach out to us.</p>
+          <p>Warm regards,<br/><strong>AARAMBH 2026 Team</strong><br/>JK Lakshmipat University</p>
         </div>
         <div class="footer">
           <div class="social-icons">
@@ -366,7 +374,7 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
   const mailOptions: any = {
     from: `"Aarambh Team" <${process.env.SMTP_FROM || ''}>`,
     to: to,
-    subject: "Aarambh'26 | Your Registration is Confirmed!",
+    subject: "Welcome to Aarambh 2026 – Registration Confirmed!",
     html: htmlContent,
     attachments: [
       {
@@ -392,12 +400,18 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
 // ============================================================================
 export async function finalizeRegistration(formData: any, paymentId: string, orderId: string) {
   console.log("Saving registration to Firestore...");
-  
-  const allowedCoupons = (process.env.ALLOWED_TEST_COUPONS || 'TESTTEST,TESTTEST1')
-    .split(',')
-    .map(c => c.trim().toUpperCase());
-  const isTestCoupon = allowedCoupons.includes((formData.coupon || '').trim().toUpperCase());
-  
+  let paymentAmount = 2500;
+  const couponCode = (formData.coupon || '').trim().toUpperCase();
+  if (couponCode) {
+    try {
+      const docSnap = await adminDb.collection('coupons').doc(couponCode).get();
+      if (docSnap.exists && docSnap.data()?.active) {
+        paymentAmount = docSnap.data()?.amount ?? 2500;
+      }
+    } catch (err) {
+      console.error("Error fetching coupon during finalizeRegistration:", err);
+    }
+  }
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const rawDate = new Date();
   const day = rawDate.getDate();
@@ -437,8 +451,8 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     parentName: parentName,
     parentPhone: parentPhone,
     parentEmail: parentEmail,
-    paymentAmount: isTestCoupon ? 1 : 2500,
-    receivedAmount: isTestCoupon ? 1 : 2500,
+    paymentAmount: paymentAmount,
+    receivedAmount: paymentAmount,
     dateOfPayment: dateOfPayment,
     dateGroup: dateGroup,
     hasEntered: false,
@@ -448,10 +462,11 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   });
   console.log("Registration saved. Firestore ID:", docRef.id);
 
-  // In serverless/Firebase environments, we must await all background tasks before returning the HTTP response.
-  // Otherwise, the VM container suspends execution immediately and kills pending event loop tasks (e.g. nodemailer/webhooks).
-  try {
-    console.log("Starting post-registration tasks...");
+  // Use Next.js 15 after() to schedule post-registration tasks in the background.
+  // This allows the route handler to immediately respond to the user with 200 OK after
+  // successfully writing to Firestore, avoiding proxy timeouts (503/504 errors).
+  after(() => {
+    console.log("Starting post-registration tasks in background via after()...");
     const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
 
     // 1. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
@@ -462,29 +477,29 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       }
       console.log("Syncing registration details to Microsoft Excel...");
       try {
-      let lastDate = "";
-      try {
-        const querySnapshot = await adminDb.collection('registrations')
-          .orderBy('registeredAt', 'desc')
-          .limit(5)
-          .get();
-        for (const docSnap of querySnapshot.docs) {
-          if (docSnap.id !== docRef.id) {
-            lastDate = docSnap.data().dateOfPayment || "";
-            break;
+        let lastDate = "";
+        try {
+          const querySnapshot = await adminDb.collection('registrations')
+            .orderBy('registeredAt', 'desc')
+            .limit(5)
+            .get();
+          for (const docSnap of querySnapshot.docs) {
+            if (docSnap.id !== docRef.id) {
+              lastDate = docSnap.data().dateOfPayment || "";
+              break;
+            }
           }
+        } catch (err) {
+          console.warn("Could not query last registration date:", err);
         }
-      } catch (err) {
-        console.warn("Could not query last registration date:", err);
-      }
 
-      let studentIndex = 1;
-      try {
-        const countSnapshot = await adminDb.collection('registrations').count().get();
-        studentIndex = countSnapshot.data().count;
-      } catch (err) {
-        console.warn("Could not count registrations:", err);
-      }
+        let studentIndex = 1;
+        try {
+          const countSnapshot = await adminDb.collection('registrations').count().get();
+          studentIndex = countSnapshot.data().count;
+        } catch (err) {
+          console.warn("Could not count registrations:", err);
+        }
 
         if (lastDate && lastDate !== dateOfPayment) {
           console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
@@ -544,8 +559,8 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
             region: formData.region || 'N/A',
             city: formData.city || 'N/A',
             state: formData.region || 'N/A',
-            paymentAmount: isTestCoupon ? 1 : 2500,
-            receivedAmount: isTestCoupon ? 1 : 2500,
+            paymentAmount: paymentAmount,
+            receivedAmount: paymentAmount,
             dateOfPayment: dateOfPayment,
             dateGroup: dateGroup,
             paymentId: paymentId,
@@ -593,12 +608,13 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       }
     })();
 
-    // Wait for all concurrent pipelines to resolve in parallel to minimize latency
-    await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
-    console.log("All post-registration tasks resolved.");
-  } catch (bgError) {
-    console.error("Error executing post-registration tasks:", bgError);
-  }
+    // Wait for background tasks to complete and log results
+    Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]).then(() => {
+      console.log("All background post-registration tasks resolved successfully.");
+    }).catch(bgError => {
+      console.error("Error in background post-registration tasks:", bgError);
+    });
+  });
 
   return docRef.id;
 }

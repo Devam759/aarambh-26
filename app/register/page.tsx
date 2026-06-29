@@ -220,14 +220,12 @@ function RegisterContent() {
   const verifyPayment = async (oId: string) => {
     setIsProcessing(true);
     try {
-      const savedData = localStorage.getItem('pending_registration_data');
-      const data = savedData ? JSON.parse(savedData) : formData;
-      if (savedData) setFormData(data);
-
+      // Only orderId is stored in localStorage, not full PII form data.
+      // The server retrieves the full formData from Firestore's pendingRegistrations collection.
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'VERIFY_PAYMENT', orderId: oId, formData: data })
+        body: JSON.stringify({ action: 'VERIFY_PAYMENT', orderId: oId })
       });
 
       const text = await res.text();
@@ -243,7 +241,7 @@ function RegisterContent() {
       if (result.success) {
         setIsSuccess(true);
         setRegId(result.id);
-        localStorage.removeItem('pending_registration_data');
+        localStorage.removeItem('pending_registration_id');
       } else {
         alert(result.error || 'Payment verification failed');
       }
@@ -323,7 +321,8 @@ function RegisterContent() {
       }
       if (!order.payment_session_id) throw new Error('Failed to create payment session');
 
-      localStorage.setItem('pending_registration_data', JSON.stringify(formData));
+      // Store only orderId — full form data is safely in Firestore's pendingRegistrations
+      localStorage.setItem('pending_registration_id', order.order_id);
 
       if (order.is_mock) {
         console.log("Mock mode enabled: Bypassing payment");
@@ -969,7 +968,7 @@ function RegisterContent() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
                 <a
-                  href="https://google.com"
+                  href="https://sahayak.jklu.edu.in"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowPopup(false)}

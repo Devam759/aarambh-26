@@ -3,10 +3,19 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 
-import { verifyCashfreeSignature, cashfreeSecretKey, isProd } from '@/lib/security';
+import { verifyCashfreeSignature, cashfreeSecretKey, isProd, isRateLimited } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
+    // Rate limit webhook endpoint — legitimate Cashfree traffic is low volume;
+    // this guards against DoS floods even before signature verification.
+    const rawIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = rawIp.split(',')[0].trim();
+    if (isRateLimited(ip, 60, 60 * 1000)) {
+      console.warn('Webhook rate limit exceeded for IP:', ip);
+      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+    }
+
     const rawBody = await req.text();
     
     // Extract signature headers to prevent webhook spoofing attacks

@@ -1,10 +1,13 @@
-import * as admin from 'firebase-admin';
+import { getApps, initializeApp, cert, applicationDefault } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
+import * as fs from 'fs';
+import * as path from 'path';
 
 function initFirebaseAdmin() {
-  if (admin.apps.length > 0) {
-    return admin.apps[0]!;
+  const apps = getApps();
+  if (apps.length > 0) {
+    return apps[0]!;
   }
 
   try {
@@ -18,28 +21,26 @@ function initFirebaseAdmin() {
         serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
       }
       
-      const app = admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
+      const app = initializeApp({
+        credential: cert(serviceAccount)
       });
-      console.log("Firebase Admin SDK initialized successfully via FIREBASE_SERVICE_ACCOUNT env variable.");
+      console.log('Firebase Admin SDK initialized successfully via FIREBASE_SERVICE_ACCOUNT env var.');
       return app;
     } else {
       // Try loading local service-account.json if present
-      const fs = require('fs');
-      const path = require('path');
       const serviceAccountPath = path.join(process.cwd(), 'service-account.json');
       
       if (fs.existsSync(serviceAccountPath)) {
         const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-        const app = admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount)
-        });
-        console.log("Firebase Admin SDK initialized successfully via local service-account.json.");
-        return app;
+        const app = initializeApp({
+        credential: cert(serviceAccount)
+      });
+      console.log('Firebase Admin SDK initialized successfully via local service-account.json.');
+      return app;
       } else {
         // Fallback to Application Default Credentials with explicit Project ID
-        const app = admin.initializeApp({
-          credential: admin.credential.applicationDefault(),
+        const app = initializeApp({
+          credential: applicationDefault(),
           projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'aarambh-26'
         });
         console.log("Firebase Admin SDK initialized using Default Application Credentials (production fallback).");
@@ -55,4 +56,3 @@ function initFirebaseAdmin() {
 export const adminApp = initFirebaseAdmin();
 export const adminDb = getFirestore(adminApp);
 export const adminAuth = getAuth(adminApp);
-export default admin;

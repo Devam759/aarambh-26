@@ -93,6 +93,19 @@ export async function getStudentBatchDetails(studentData: any, regId: string): P
 }
 
 /**
+ * Minimal HTML escaper for values interpolated directly into email HTML.
+ * Prevents HTML injection in case upstream sanitization was bypassed.
+ */
+function htmlEscape(str: string): string {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Sends check-in email attaching the respective batch schedule PDF.
  */
 export async function sendCheckInEmail(
@@ -108,21 +121,34 @@ export async function sendCheckInEmail(
   // 1. Locate/generate the attachment PDF
   let pdfBytes: Buffer | Uint8Array;
   const schedulesDir = path.join(process.cwd(), 'public', 'schedules');
-  const filePath = path.join(schedulesDir, pdfFileName);
-  
+
+  // Sanitize pdfFileName to prevent path traversal: only allow safe basenames (letters, digits, dashes, underscores, dots)
+  const rawBasename = path.basename(pdfFileName);
+  const safeBasename = rawBasename.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
+  const hasValidPdfExtension = safeBasename.endsWith('.pdf');
+  if (!hasValidPdfExtension) {
+    console.error(`Invalid PDF filename rejected (path traversal guard): "${pdfFileName}". Falling back to generated PDF.`);
+  }
+  const filePath = hasValidPdfExtension ? path.join(schedulesDir, safeBasename) : null;
+
   try {
     // Ensure public/schedules directory exists
     await fs.mkdir(schedulesDir, { recursive: true });
-    
-    // Check if the physical PDF schedule has been provided/stored on disk
-    try {
-      pdfBytes = await fs.readFile(filePath);
-      console.log(`Loaded physical schedule PDF from disk: ${filePath}`);
-    } catch {
-      console.log(`Physical schedule PDF not found on disk. Generating fallback on the fly: ${pdfFileName}`);
+
+    if (filePath) {
+      // Check if the physical PDF schedule has been provided/stored on disk
+      try {
+        pdfBytes = await fs.readFile(filePath);
+        console.log(`Loaded physical schedule PDF from disk: ${filePath}`);
+      } catch {
+        console.log(`Physical schedule PDF not found on disk. Generating fallback on the fly: ${safeBasename}`);
+        pdfBytes = await generateFallbackSchedulePDF(batchName);
+        // Write to disk so next scans can read it directly
+        await fs.writeFile(filePath, pdfBytes);
+      }
+    } else {
+      // Invalid filename was rejected — use a generated fallback directly
       pdfBytes = await generateFallbackSchedulePDF(batchName);
-      // Write to disk so next scans can read it directly
-      await fs.writeFile(filePath, pdfBytes);
     }
   } catch (err) {
     console.error("Failed to resolve or save PDF file:", err);
@@ -152,6 +178,10 @@ export async function sendCheckInEmail(
   } catch (err) {
     console.warn("Failed to load branding logos for check-in email:", err);
   }
+
+  const safeName = htmlEscape(studentName);
+  const safeAppNum = htmlEscape(appNumber);
+  const safeBatch = htmlEscape(batchName);
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -185,33 +215,26 @@ export async function sendCheckInEmail(
           </table>
         </div>
         <div class="content">
-          <div class="success-badge">✓ Gate Check-in Successful</div>
-          <h2 style="margin-top: 0;">Welcome, ${studentName}!</h2>
-          <p>You have successfully checked in at the university gate for <strong>Aarambh '26</strong> — the orientation and welcome program at JK Lakshmipat University, Jaipur.</p>
+          <h2 style="margin-top: 0;">Dear ${safeName},</h2>
+          <p>Thank you for completing your Check-in.</p>
           
-          <div class="details-box">
-            <h3 style="margin-top: 0; margin-bottom: 15px; color: #0f172a; font-size: 16px;">Your Check-in Details:</h3>
-            <table width="100%" cellpadding="5" cellspacing="0" style="font-size: 14px;">
-              <tr>
-                <td width="40%" style="font-weight: bold; color: #64748b;">Student Name:</td>
-                <td style="color: #0f172a;">${studentName}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: bold; color: #64748b;">Application Number:</td>
-                <td style="color: #0f172a;">${appNumber}</td>
-              </tr>
-              <tr>
-                <td style="font-weight: bold; color: #64748b;">Assigned Batch:</td>
-                <td style="color: #0f172a; font-weight: bold; color: #FF9A00;">${batchName}</td>
-              </tr>
-            </table>
-          </div>
+          <p>Your registration details are as follows:</p>
+          <ul style="line-height: 1.8;">
+            <li><strong>Student Name:</strong> ${safeName}</li>
+            <li><strong>Application Number:</strong> ${safeAppNum}</li>
+            <li><strong>Assigned Batch:</strong> ${safeBatch}</li>
+          </ul>
 
-          <p>Please find attached the official PDF schedule for your assigned batch. We request you to review it carefully as you begin your Aarambh '26 journey.</p>
-          <p>Should you require any assistance on campus, please approach the registration desk or reach out to volunteer team leaders.</p>
+          <p>Please find attached the schedule PDF for your assigned batch. We recommend reviewing it carefully.</p>
+          <p>If you have any questions or require further assistance, please feel free to contact your cohort leader.</p>
           
-          <p>We are excited to see you thrive!</p>
-          <p>Warm Regards,<br/><strong>Team Aarambh & Warden Administration</strong></p>
+          <p>
+            <strong>Name:</strong> [Cohort Leader’s Name]<br/>
+            <strong>Phone Number:</strong> [Their Phone Number]
+          </p>
+          
+          <p>We look forward to seeing you!</p>
+          <p>Best regards,<br/><strong>AARAMBH Team</strong></p>
         </div>
         <div class="footer">
           <div class="social-icons">
@@ -232,7 +255,7 @@ export async function sendCheckInEmail(
   const mailOptions: any = {
     from: `"Aarambh Team" <${process.env.SMTP_FROM || ''}>`,
     to: toEmail,
-    subject: `Aarambh'26 | Gate Check-in Confirmed — ${batchName} Schedule`,
+    subject: "Check-In Confirmation – Batch Details & Schedule",
     html: htmlContent,
     attachments: [
       {

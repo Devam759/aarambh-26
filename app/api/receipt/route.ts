@@ -5,7 +5,8 @@ import { isRateLimited } from '@/lib/security';
 
 export async function GET(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const rawIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = rawIp.split(',')[0].trim(); // Take only the first (leftmost) IP — prevent x-forwarded-for spoofing
     
     // Rate limit PDF receipt downloads to 10 requests per minute per IP
     if (isRateLimited(ip, 10, 60 * 1000)) {
@@ -39,11 +40,15 @@ export async function GET(req: Request) {
       data.dateOfPayment
     );
     
+    // Sanitize filename to prevent Content-Disposition header injection.
+    // Strip all chars except alphanumerics, underscore, hyphen; cap at 50 chars.
+    const rawName = data.name || id;
+    const safeName = String(rawName).replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 50);
     // Return PDF stream directly
     return new Response(Buffer.from(pdfBytes), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Aarambh_Receipt_${data.name ? data.name.replace(/ /g, '_') : id}.pdf"`
+        'Content-Disposition': `attachment; filename="Aarambh_Receipt_${safeName}.pdf"`
       }
     });
   } catch (error: any) {

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
@@ -150,46 +150,48 @@ export default function Navbar() {
           >
             {/* Links */}
             <div className="flex items-center gap-1 xl:gap-3">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                const isHovered = hoveredPath === link.href;
-                const isRegister = link.href === '/register';
+              <LayoutGroup>
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  const isHovered = hoveredPath === link.href;
+                  const isRegister = link.href === '/register';
 
-                const textColor = isRegister 
-                  ? (isHovered ? 'text-brand-cloud' : 'text-brand-ink')
-                  : (isHovered ? 'text-brand-ink' : (isActive ? 'text-brand-orange' : 'text-brand-cloud/70 hover:text-brand-cloud'));
+                  const textColor = isRegister 
+                    ? (isHovered ? 'text-brand-cloud' : 'text-brand-ink')
+                    : (isHovered ? 'text-brand-ink' : (isActive ? 'text-brand-orange' : 'text-brand-cloud/70 hover:text-brand-cloud'));
 
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    onMouseEnter={() => setHoveredPath(link.href)}
-                    className={`relative py-1.5 px-2.5 xl:px-4 text-[11px] xl:text-xs font-bold tracking-wide xl:tracking-widest uppercase transition-colors duration-200 rounded-full z-10 flex items-center justify-center ${textColor}`}
-                  >
-                    {isHovered && (
-                      <motion.div
-                        layoutId="navHoverPill"
-                        className={`absolute inset-0 rounded-full -z-10 ${
-                          isRegister 
-                            ? 'bg-brand-blue shadow-[0_4px_16px_rgba(13,33,221,0.5)]' 
-                            : isActive
-                              ? 'bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)]'
-                              : 'bg-brand-orange/75 backdrop-blur-md shadow-[0_4px_16px_rgba(255,154,0,0.4)]'
-                        }`}
-                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                    
-                    {/* Register button static fallback CTA background */}
-                    {isRegister && (
-                       <div className="absolute inset-0 rounded-full bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)] -z-20" />
-                    )}
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      onMouseEnter={() => setHoveredPath(link.href)}
+                      className={`relative py-1.5 px-2.5 xl:px-4 text-[11px] xl:text-xs font-bold tracking-wide xl:tracking-widest uppercase transition-colors duration-200 rounded-full z-10 flex items-center justify-center ${textColor}`}
+                    >
+                      {isHovered && (
+                        <motion.div
+                          layoutId="navHoverPill"
+                          className={`absolute inset-0 rounded-full -z-10 ${
+                            isRegister 
+                              ? 'bg-brand-blue shadow-[0_4px_16px_rgba(13,33,221,0.5)]' 
+                              : isActive
+                                ? 'bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)]'
+                                : 'bg-brand-orange/75 backdrop-blur-md shadow-[0_4px_16px_rgba(255,154,0,0.4)]'
+                          }`}
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      
+                      {/* Register button static fallback CTA background */}
+                      {isRegister && (
+                         <div className="absolute inset-0 rounded-full bg-brand-orange shadow-[0_4px_16px_rgba(255,154,0,0.5)] -z-20" />
+                      )}
 
-                    <span className="relative z-10">{link.name}</span>
-                  </Link>
-                );
-              })}
+                      <span className="relative z-10">{link.name}</span>
+                    </Link>
+                  );
+                })}
+              </LayoutGroup>
             </div>
           </div>
 

@@ -53,6 +53,7 @@ export default function AuditLogs() {
   const [filterAction, setFilterAction] = useState('');
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -102,60 +103,81 @@ export default function AuditLogs() {
         <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Chronological record of system mutations</p>
       </div>
 
-      {/* Structured Filter Card */}
-      <div className="bg-white border-4 border-brand-ink p-6 rounded-md shadow-[4px_4px_0px_0px_#030404] flex flex-wrap gap-6 items-end">
-        <div className="flex items-center gap-2.5 text-brand-ink mb-2 md:mb-0 w-full lg:w-auto">
-          <div className="p-2 border-2 border-brand-ink bg-brand-cloud text-brand-ink rounded-md shadow-[2px_2px_0px_0px_#030404]">
-            <CustomFilterIcon size={16} />
-          </div>
-          <span className="text-xs font-black uppercase tracking-wider">Filter Registry</span>
-        </div>
-        
-        {/* Action filter */}
-        <div className="flex-1 min-w-[150px]">
-          <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">Action Type</label>
-          <select 
-            value={filterAction} 
-            onChange={e => setFilterAction(e.target.value)}
-            className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2.5 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white cursor-pointer transition-colors shadow-inner"
-          >
-            <option value="">ALL MUTATIONS</option>
-            {uniqueActions.map(a => <option key={a} value={a}>{a}</option>)}
-          </select>
-        </div>
-
-        {/* Date From */}
-        <div className="flex-grow min-w-[130px]">
-          <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">From Date</label>
-          <input 
-            type="date" 
-            value={filterDateFrom} 
-            onChange={e => setFilterDateFrom(e.target.value)}
-            className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white transition-colors shadow-inner uppercase tracking-wider"
-          />
-        </div>
-
-        {/* Date To */}
-        <div className="flex-grow min-w-[130px]">
-          <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">To Date</label>
-          <input 
-            type="date" 
-            value={filterDateTo} 
-            onChange={e => setFilterDateTo(e.target.value)}
-            className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white transition-colors shadow-inner uppercase tracking-wider"
-          />
-        </div>
-
-        {/* Clear buttons */}
+      {/* Mobile Filter Toggle Button */}
+      <div className="md:hidden mt-4">
         <button 
-          onClick={() => { setFilterAction(''); setFilterDateFrom(''); setFilterDateTo(''); }}
-          className="px-4 py-2.5 border-2 border-brand-ink bg-white text-xs font-black uppercase text-brand-ink hover:bg-brand-cloud rounded-md transition-colors cursor-pointer focus:outline-none shadow-[2px_2px_0px_0px_#030404]"
+          onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+          className="w-full bg-brand-cloud border-4 border-brand-ink p-4 rounded-md shadow-[4px_4px_0px_0px_#030404] flex items-center justify-between text-brand-ink active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer focus:outline-none"
         >
-          Clear
+          <div className="flex items-center gap-2">
+            <CustomFilterIcon size={16} />
+            <span className="font-adminHeading text-sm font-black uppercase tracking-widest mt-1">Search & Filters</span>
+          </div>
+          <span className="text-xs font-bold uppercase tracking-widest text-brand-orange">
+            {isMobileFiltersOpen ? 'Hide' : 'Show'}
+          </span>
         </button>
       </div>
 
-      {/* Main Table logs grid */}
+      {/* Structured Filter Card */}
+      <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-in-out md:grid-rows-[1fr] md:opacity-100 md:mt-6 ${isMobileFiltersOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
+        <div className="overflow-hidden">
+          <div className="bg-white border-4 border-brand-ink p-6 rounded-md shadow-[4px_4px_0px_0px_#030404] flex flex-wrap gap-6 items-end">
+
+            <div className="flex items-center gap-2.5 text-brand-ink mb-2 md:mb-0 w-full lg:w-auto">
+              <div className="p-2 border-2 border-brand-ink bg-brand-cloud text-brand-ink rounded-md shadow-[2px_2px_0px_0px_#030404]">
+                <CustomFilterIcon size={16} />
+              </div>
+              <span className="text-xs font-black uppercase tracking-wider">Filter Registry</span>
+            </div>
+            
+            {/* Action filter */}
+            <div className="flex-1 min-w-[150px]">
+              <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">Action Type</label>
+              <select 
+                value={filterAction} 
+                onChange={e => setFilterAction(e.target.value)}
+                className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2.5 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white cursor-pointer transition-colors shadow-inner"
+              >
+                <option value="">ALL MUTATIONS</option>
+                {uniqueActions.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            </div>
+
+            {/* Date From */}
+            <div className="flex-grow min-w-[130px]">
+              <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">From Date</label>
+              <input 
+                type="date" 
+                value={filterDateFrom} 
+                onChange={e => setFilterDateFrom(e.target.value)}
+                className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white transition-colors shadow-inner uppercase tracking-wider"
+              />
+            </div>
+
+            {/* Date To */}
+            <div className="flex-grow min-w-[130px]">
+              <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">To Date</label>
+              <input 
+                type="date" 
+                value={filterDateTo} 
+                onChange={e => setFilterDateTo(e.target.value)}
+                className="w-full bg-brand-cloud border-2 border-brand-ink rounded-md py-2 px-3 text-xs text-brand-ink font-bold focus:outline-none focus:bg-white transition-colors shadow-inner uppercase tracking-wider"
+              />
+            </div>
+
+            {/* Clear buttons */}
+            <button 
+              onClick={() => { setFilterAction(''); setFilterDateFrom(''); setFilterDateTo(''); }}
+              className="px-4 py-2.5 border-2 border-brand-ink bg-white text-xs font-black uppercase text-brand-ink hover:bg-brand-cloud rounded-md transition-colors cursor-pointer focus:outline-none shadow-[2px_2px_0px_0px_#030404]"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Table Grid */}
       {loading ? (
         <SkeletonTable rows={10} />
       ) : (

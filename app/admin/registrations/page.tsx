@@ -130,8 +130,9 @@ export default function Registrations() {
   // Filters State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'entered' | 'pending' | 'declined'>('all');
-  
-  // Pagination & Sorting
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // 1. Fetch Registrations Data& Sorting
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState('registeredAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -340,8 +341,26 @@ export default function Registrations() {
         </div>
       </div>
 
+      {/* Mobile Filter Toggle Button */}
+      <div className="md:hidden mt-4">
+        <button 
+          onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+          className="w-full bg-brand-cloud border-4 border-brand-ink p-4 rounded-md shadow-[4px_4px_0px_0px_#030404] flex items-center justify-between text-brand-ink active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer focus:outline-none"
+        >
+          <div className="flex items-center gap-2">
+            <CustomFilterIcon size={16} />
+            <span className="font-adminHeading text-sm font-black uppercase tracking-widest mt-1">Search & Filters</span>
+          </div>
+          <span className="text-xs font-bold uppercase tracking-widest text-brand-orange">
+            {isMobileFiltersOpen ? 'Hide' : 'Show'}
+          </span>
+        </button>
+      </div>
+
       {/* Structured Filters Option Bar */}
-      <div className="bg-white border-4 border-brand-ink p-6 rounded-md shadow-[4px_4px_0px_0px_#030404] flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+      <div className={`grid transition-[grid-template-rows,opacity,margin] duration-300 ease-in-out md:grid-rows-[1fr] md:opacity-100 md:mt-6 ${isMobileFiltersOpen ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
+        <div className="overflow-hidden">
+          <div className="bg-white border-4 border-brand-ink p-6 rounded-md shadow-[4px_4px_0px_0px_#030404] flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
         <div className="flex-1 relative">
           <CustomSearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-ink/40" size={16} />
           <input
@@ -368,6 +387,8 @@ export default function Registrations() {
             <option value="declined">Declined / Blocked</option>
           </select>
         </div>
+      </div>
+      </div>
       </div>
 
       {/* Main Table Segment */}

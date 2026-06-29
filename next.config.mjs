@@ -14,6 +14,7 @@ const nextConfig = {
       }
     ],
   },
+
   async headers() {
     return [
       {
@@ -24,7 +25,7 @@ const nextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.cashfree.com https://apis.google.com https://www.gstatic.com https://www.google.com https://www.recaptcha.net; connect-src 'self' https://*.cashfree.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src 'self' https://*.cashfree.com https://*.google.com https://*.google.co.in https://www.google.com https://www.recaptcha.net; img-src 'self' data: https: blob:; media-src 'self' blob: https://storage.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; object-src 'none';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.cashfree.com https://apis.google.com https://www.gstatic.com https://www.google.com https://www.recaptcha.net; connect-src 'self' https://*.cashfree.com https://*.googleapis.com https://apis.google.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src 'self' https://*.cashfree.com https://*.google.com https://*.google.co.in https://www.google.com https://www.recaptcha.net https://aarambh-26.firebaseapp.com; img-src 'self' data: https: blob:; media-src 'self' blob: https://storage.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; object-src 'none';"
           },
           {
             key: 'Strict-Transport-Security',
