@@ -131,6 +131,8 @@ export default function Registrations() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'entered' | 'pending' | 'declined'>('all');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [syncState, setSyncState] = useState<'idle' | 'syncing' | 'done' | 'error'>('idle');
+  const [syncMessage, setSyncMessage] = useState('');
 
   // 1. Fetch Registrations Data& Sorting
   const [currentPage, setCurrentPage] = useState(1);
@@ -292,6 +294,27 @@ export default function Registrations() {
     await logAdminAction('EXPORT_REGISTRATIONS', 'registrations', `Exported ${registrations.length} registrations to CSV`);
   };
 
+  const handleSyncSheet = async () => {
+    setSyncState('syncing');
+    setSyncMessage('Syncing to Google Sheet...');
+    try {
+      const res = await fetch('/api/admin/sync-sheet', { method: 'POST' });
+      const result = await res.json();
+      if (!res.ok) {
+        setSyncState('error');
+        setSyncMessage(result.error || 'Sync failed');
+      } else {
+        setSyncState('done');
+        setSyncMessage(result.message);
+      }
+    } catch (err: any) {
+      setSyncState('error');
+      setSyncMessage(err.message || 'Network error');
+    } finally {
+      setTimeout(() => { setSyncState('idle'); setSyncMessage(''); }, 6000);
+    }
+  };
+
   return (
     <div className="space-y-8 ">
       {/* Live Counter Cards */}
@@ -331,6 +354,20 @@ export default function Registrations() {
           >
             <CustomSheetIcon size={16} /> Google Sheet
           </a>
+          <button
+            onClick={handleSyncSheet}
+            disabled={loading || syncState === 'syncing'}
+            className={`comic-btn-blue flex items-center gap-2 ${
+              syncState === 'syncing' ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
+          >
+            {syncState === 'syncing' ? (
+              <svg className="animate-spin" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            ) : (
+              <CustomSheetIcon size={16} />
+            )}
+            {syncState === 'syncing' ? 'Syncing...' : 'Sync to Sheet'}
+          </button>
           <button 
             onClick={exportCSV}
             disabled={loading || registrations.length === 0}
@@ -340,6 +377,17 @@ export default function Registrations() {
           </button>
         </div>
       </div>
+
+      {/* Sync status feedback banner */}
+      {syncState !== 'idle' && (
+        <div className={`border-4 border-brand-ink rounded-md px-5 py-3 text-sm font-bold shadow-[4px_4px_0px_0px_#030404] ${
+          syncState === 'syncing' ? 'bg-blue-100 text-blue-900' :
+          syncState === 'done' ? 'bg-green-100 text-green-900' :
+          'bg-red-100 text-red-900'
+        }`}>
+          {syncMessage}
+        </div>
+      )}
 
       {/* Mobile Filter Toggle Button */}
       <div className="md:hidden mt-4">

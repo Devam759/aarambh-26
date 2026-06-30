@@ -15,7 +15,7 @@ const col2Images = PHOTOS.slice(16, 32).map(p => p.src)
 const col3Images = PHOTOS.slice(32, 48).map(p => p.src)
 const col4Images = PHOTOS.slice(48, 64).map(p => p.src)
 
-// 3D Tunnel Position Map
+// 3D Tunnel Position Map — Desktop (landscape)
 const WALL_POSITIONS = [
   { left: '10%',  top: '-10%' },
   { left: '36%',  top: '-10%' },
@@ -35,7 +35,22 @@ const WALL_POSITIONS = [
   { left: '-10%', top: '15%'  },
 ]
 
-// Increased card count and reduced step size to make the tunnel much denser (eliminating empty gaps)
+// Mobile wall positions tuned for portrait 9:16 screens
+const WALL_POSITIONS_MOBILE = [
+  { left: '-15%', top: '5%'   },
+  { left: '30%',  top: '-15%' },
+  { left: '70%',  top: '-15%' },
+  { left: '115%', top: '5%'  },
+  { left: '115%', top: '30%' },
+  { left: '115%', top: '55%' },
+  { left: '115%', top: '80%' },
+  { left: '70%',  top: '115%' },
+  { left: '30%',  top: '115%' },
+  { left: '-15%', top: '80%'  },
+  { left: '-15%', top: '55%'  },
+  { left: '-15%', top: '30%'  },
+]
+
 const CARD_COUNT = 64
 const BASE_Z_STEP = 90
 const BASE_Z_FAR = -5760
@@ -87,9 +102,10 @@ export default function GalleryLanding() {
     if (!mounted || !tunnelRef.current) return
 
     const isMobile = window.innerWidth <= 768
-    const cardCount = isMobile ? 32 : CARD_COUNT
-    const zStep = isMobile ? 120 : BASE_Z_STEP
-    const zFar = isMobile ? -3840 : BASE_Z_FAR
+    const cardCount = isMobile ? 48 : CARD_COUNT
+    const zStep = isMobile ? 100 : BASE_Z_STEP
+    const zFar = isMobile ? -4800 : BASE_Z_FAR
+    const wallPositions = isMobile ? WALL_POSITIONS_MOBILE : WALL_POSITIONS
 
     recycleCounterRef.current = cardCount % PHOTOS.length
 
@@ -97,7 +113,7 @@ export default function GalleryLanding() {
     scene.innerHTML = ''
 
     for (let i = 0; i < cardCount; i++) {
-      const wallIdx = i % WALL_POSITIONS.length
+      const wallIdx = i % wallPositions.length
       const baseZ = zFar + (i * zStep)
       const photoIdx = i % PHOTOS.length
       const photo = PHOTOS[photoIdx]
@@ -147,11 +163,8 @@ export default function GalleryLanding() {
 
     const tick = () => {
       try {
-        // Auto-scroll removed to make gallery scrolling entirely manual
-
-
         const diff = targetZOffsetRef.current - zOffsetRef.current
-        zOffsetRef.current += diff * 0.15
+        zOffsetRef.current += diff * (isMobile ? 0.35 : 0.15)
 
         if (Math.abs(zOffsetRef.current) > 60) {
           setShowScrollHint(false)
@@ -175,7 +188,7 @@ export default function GalleryLanding() {
             z = newBaseZ + zOffsetRef.current
 
             const oldWallPos = parseInt(card.dataset.wallIdx || '0')
-            const newWallPos = (oldWallPos + 3) % WALL_POSITIONS.length
+            const newWallPos = (oldWallPos + 3) % wallPositions.length
             card.dataset.wallIdx = String(newWallPos)
 
             // Use sequential counter — NOT random — so images never jump unexpectedly
@@ -195,7 +208,7 @@ export default function GalleryLanding() {
             z = newBaseZ + zOffsetRef.current
 
             const oldWallPos = parseInt(card.dataset.wallIdx || '0')
-            const newWallPos = (oldWallPos - 3 + WALL_POSITIONS.length) % WALL_POSITIONS.length
+            const newWallPos = (oldWallPos - 3 + wallPositions.length) % wallPositions.length
             card.dataset.wallIdx = String(newWallPos)
 
             // Sequential counter for backward scrolling too
@@ -210,7 +223,7 @@ export default function GalleryLanding() {
             }
           }
 
-          const wallPos = WALL_POSITIONS[parseInt(card.dataset.wallIdx || '0')]
+          const wallPos = wallPositions[parseInt(card.dataset.wallIdx || '0')]
           const depthFactor = Math.max(0, Math.min(1, (z + 3600) / 3600))
           const easeInCubic = Math.pow(depthFactor, 3)
 
@@ -297,7 +310,8 @@ export default function GalleryLanding() {
       e.preventDefault()
       const touchY = e.touches[0].clientY
       const deltaY = touchStartY - touchY
-      targetZOffsetRef.current += deltaY * 0.8
+      // Increased sensitivity on mobile for a snappier feel
+      targetZOffsetRef.current += deltaY * 4.5
       touchStartY = touchY
     }
 
@@ -612,8 +626,8 @@ export default function GalleryLanding() {
 
         @media (max-width: 768px) {
           .tunnel-card {
-            width: clamp(100px, 45vw, 180px);
-            aspect-ratio: 2 / 3;
+            width: clamp(90px, 36vw, 160px);
+            aspect-ratio: 3 / 4;
           }
         }
 

@@ -465,6 +465,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       hasEntered: false,
       paymentId: paymentId,
       orderId: orderId,
+      sheetSynced: false,
       registeredAt: FieldValue.serverTimestamp(),
     });
     docId = docRef.id;
@@ -503,120 +504,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     throw err;
   }
 
-  // 2. Synchronize Registration Data to Microsoft Excel Online (Power Automate Webhook)
-  const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
-  const excelSyncPromise = (async () => {
-    if (!excelWebhook) {
-      console.log("Skipping Excel sync: EXCEL_SYNC_WEBHOOK_URL is not defined.");
-      return;
-    }
-    console.log("Syncing registration details to Microsoft Excel...");
-    try {
-      let lastDate = "";
-      try {
-        const querySnapshot = await adminDb.collection('registrations')
-          .orderBy('registeredAt', 'desc')
-          .limit(5)
-          .get();
-        for (const docSnap of querySnapshot.docs) {
-          if (docSnap.id !== docId) {
-            lastDate = docSnap.data().dateOfPayment || "";
-            break;
-          }
-        }
-      } catch (err) {
-        console.warn("Could not query last registration date:", err);
-      }
-
-      let studentIndex = 1;
-      try {
-        const countSnapshot = await adminDb.collection('registrations').count().get();
-        studentIndex = countSnapshot.data().count;
-      } catch (err) {
-        console.warn("Could not count registrations:", err);
-      }
-
-      if (lastDate && lastDate !== dateOfPayment) {
-        console.log(`Date changed from ${lastDate} to ${dateOfPayment}. Sending Excel date separator...`);
-        try {
-          await fetch(excelWebhook, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: dateGroup,
-              isSeparator: true,
-              name: '', email: '', phone: '', rollNumber: '', registeredAt: '',
-              gender: '', course: '',
-              parentName: '', parentPhone: '', parentEmail: '',
-              address: '', pincode: '', region: '', city: '', state: '',
-              paymentAmount: 0, receivedAmount: 0,
-              dateOfPayment: '', dateGroup: dateGroup,
-              paymentId: '', orderId: '', settlementId: ''
-            })
-          });
-        } catch (sepErr) {
-          console.warn("Failed to send separator to Excel:", sepErr);
-        }
-      }
-
-      const escapeForSheets = (val: string) => {
-        if (typeof val === 'string' && val.startsWith('+')) {
-          return `'${val}`;
-        }
-        return val;
-      };
-
-      await fetch(excelWebhook, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: studentIndex.toString(),
-          name: formData.name,
-          email: formData.email,
-          phone: escapeForSheets(formData.mobile),
-          rollNumber: formData.registrationNumber,
-          registeredAt: new Date().toISOString(),
-          gender: formData.gender || 'N/A',
-          course: formData.course || 'N/A',
-          parentName: parentName,
-          parentPhone: escapeForSheets(parentPhone),
-          parentEmail: parentEmail,
-          fatherName: fatherName || formData.parentName || 'N/A',
-          fatherMobile: escapeForSheets(fatherMobile || formData.parentPhone || 'N/A'),
-          fatherEmail: fatherEmail || formData.parentEmail || 'N/A',
-          motherName: motherName || 'N/A',
-          motherMobile: escapeForSheets(motherMobile || 'N/A'),
-          motherEmail: motherEmail || 'N/A',
-          address: formData.address || 'N/A',
-          pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
-          region: formData.region || 'N/A',
-          city: formData.city || 'N/A',
-          state: formData.region || 'N/A',
-          paymentAmount: paymentAmount,
-          receivedAmount: paymentAmount,
-          dateOfPayment: dateOfPayment,
-          dateGroup: dateGroup,
-          paymentId: paymentId,
-          orderId: orderId,
-          settlementId: 'Pending'
-        })
-      });
-      console.log("Excel sync webhook fired successfully.");
-    } catch (excelError: any) {
-      console.error("Excel sync webhook failed:", excelError);
-      await adminDb.collection('auditLogs').add({
-        timestamp: FieldValue.serverTimestamp(),
-        action: 'SYSTEM_ERROR',
-        performedBy: 'System (Excel Webhook)',
-        targetEntity: `registration/${docId}`,
-        details: `Failed to sync registration to Google Sheets: ${excelError.message}`
-      }).catch(() => {});
-    }
-  })();
-
-  // 3. Generate PDF Receipt & Send Email using SMTP
+  // 2. Generate PDF Receipt & Send Email using SMTP
   const emailAndPdfPromise = (async () => {
     try {
       console.log("Generating PDF receipt...");
@@ -659,7 +547,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
 
   // Wait for all tasks to complete so Vercel doesn't kill the function early
   try {
-    await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
+    await Promise.all([emailAndPdfPromise, auditLogPromise]);
     console.log("All post-registration tasks resolved successfully.");
   } catch (bgError: any) {
     console.error("Error in post-registration tasks:", bgError);
