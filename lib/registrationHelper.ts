@@ -465,7 +465,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   // Use Next.js 15 after() to schedule post-registration tasks in the background.
   // This allows the route handler to immediately respond to the user with 200 OK after
   // successfully writing to Firestore, avoiding proxy timeouts (503/504 errors).
-  after(() => {
+  after(async () => {
     console.log("Starting post-registration tasks in background via after()...");
     const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
 
@@ -609,11 +609,12 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     })();
 
     // Wait for background tasks to complete and log results
-    Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]).then(() => {
+    try {
+      await Promise.all([excelSyncPromise, emailAndPdfPromise, auditLogPromise]);
       console.log("All background post-registration tasks resolved successfully.");
-    }).catch(bgError => {
+    } catch (bgError) {
       console.error("Error in background post-registration tasks:", bgError);
-    });
+    }
   });
 
   return docRef.id;

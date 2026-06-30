@@ -62,7 +62,7 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="space-y-10 select-none">
+    <div className="space-y-10 ">
       {/* Title Header */}
       <div>
         <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Overview</h1>

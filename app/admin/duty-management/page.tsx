@@ -692,7 +692,7 @@ export default function DutyManagement() {
   };
 
   return (
-    <div className="space-y-10 select-none font-adminBody">
+    <div className="space-y-10  font-adminBody">
       {/* Title Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -1001,7 +1001,7 @@ export default function DutyManagement() {
                 Venue Selection
               </label>
               <div className="space-y-1">
-                <span className="hidden md:block text-[10px] font-black text-transparent uppercase select-none">Spacer</span>
+                <span className="hidden md:block text-[10px] font-black text-transparent uppercase ">Spacer</span>
                 <SearchableVenueSelect
                   required
                   value={selectedVenue}

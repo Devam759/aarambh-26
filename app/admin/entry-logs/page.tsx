@@ -126,7 +126,7 @@ export default function EntryLogs() {
   const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
 
   return (
-    <div className="space-y-8 select-none">
+    <div className="space-y-8 ">
       {/* Title Header */}
       <div>
         <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Entry Logs</h1>

@@ -293,7 +293,7 @@ export default function Registrations() {
   };
 
   return (
-    <div className="space-y-8 select-none">
+    <div className="space-y-8 ">
       {/* Live Counter Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-admin-surface border-4 border-brand-ink p-8 rounded-md shadow-[6px_6px_0px_0px_#030404] flex flex-col items-center justify-center text-center">
@@ -400,16 +400,16 @@ export default function Registrations() {
             <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
-                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('name')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('name')}>
                     Name {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('rollNumber')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('rollNumber')}>
                     Application Number {sortField === 'rollNumber' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('email')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('email')}>
                     Contact Details {sortField === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th className="p-4 cursor-pointer hover:text-brand-orange select-none" onClick={() => handleSort('registeredAt')}>
+                  <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('registeredAt')}>
                     Registration Time {sortField === 'registeredAt' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="p-4">Entry Status</th>

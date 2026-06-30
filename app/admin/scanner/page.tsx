@@ -385,7 +385,7 @@ export default function AdminScannerView() {
   if (!authorized) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-14rem)] select-none font-adminBody animate-in fade-in duration-200">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-14rem)]  font-adminBody animate-in fade-in duration-200">
       
       {/* Centered Work Container */}
       <div className="w-full max-w-lg">

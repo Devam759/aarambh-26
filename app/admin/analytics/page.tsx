@@ -958,7 +958,7 @@ function FeedbackAnalyticsContent() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in select-none">
+    <div className="space-y-8 animate-fade-in ">
       
       {/* ============================================================================
           TAB: SENTIMENT ANALYSIS (ANALYTICS)
@@ -1869,7 +1869,7 @@ function FeedbackAnalyticsContent() {
                         }`}>
                           {q.type === 'rating' ? '★ Rating' : q.type === 'mcq' ? '☰ MCQ' : q.type === 'text' ? '✏️ Text' : '📅 Date'}
                         </span>
-                        <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                        <label className="inline-flex items-center gap-1.5 cursor-pointer ">
                           <input
                             type="checkbox"
                             checked={!!q.required}
@@ -2071,7 +2071,7 @@ function PureReactColumnChart({ data }: { data: { label: string; count: number; 
         {data.map((bar, i) => {
           const heightPercent = Math.max((bar.count / maxCount) * 100, 4);
           return (
-            <div key={i} className="flex-1 flex flex-col items-center group h-full justify-end select-none">
+            <div key={i} className="flex-1 flex flex-col items-center group h-full justify-end ">
               <div className="opacity-0 group-hover:opacity-100 bg-brand-ink text-white text-[9px] font-black px-2 py-1 rounded border border-white/20 mb-2 transition-all duration-100 pointer-events-none uppercase tracking-wide shrink-0">
                 {bar.count} Ratings ({Math.round(bar.percentage)}%)
               </div>
