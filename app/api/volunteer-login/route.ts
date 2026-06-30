@@ -53,6 +53,7 @@ async function verifyScryptHash(password: string, stored: string): Promise<boole
 function verifyLegacySha256(password: string, stored: string): boolean {
   const normalizedStored = stored.toLowerCase();
   if (!/^[0-9a-f]{64}$/.test(normalizedStored)) return false;
+  // codeql[js/insufficient-password-hash] - This is a temporary legacy fallback used strictly to migrate old users to scrypt.
   const hash = crypto.createHash("sha256").update(password).digest("hex");
   try {
     return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(normalizedStored, "hex"));
