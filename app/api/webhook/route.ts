@@ -64,10 +64,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
     }
     
-    console.log("Cashfree Webhook Received:", payload.event);
+    const eventType = payload.event || payload.type || '';
+    console.log("Cashfree Webhook Received:", eventType);
 
     // 1. Check if it is a payment success event (Fail-safe for closed tabs)
-    if (payload.event === 'payment.success' || payload.event === 'PAYMENT_SUCCESS') {
+    if (eventType === 'payment.success' || eventType === 'PAYMENT_SUCCESS' || eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
       const data = payload.data || {};
       const order = data.order || {};
       const payment = data.payment || {};
@@ -111,7 +112,7 @@ export async function POST(req: Request) {
     
     // 2. Check if it is a settlement success event
     // Support both older (SETTLEMENT_SUCCESS) and newer (settlement.success) event types
-    if (payload.event === 'SETTLEMENT_SUCCESS' || payload.event === 'settlement.success') {
+    if (eventType === 'SETTLEMENT_SUCCESS' || eventType === 'settlement.success' || eventType === 'SETTLEMENT_SUCCESS_WEBHOOK') {
       const data = payload.data || {};
       const settlementId = data.settlement_id || data.settlementId || "N/A";
       const transactions = data.transactions || [];
