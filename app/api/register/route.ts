@@ -219,7 +219,7 @@ export async function POST(req: Request) {
         console.warn("Cashfree App ID missing or amount is 0, bypassing verification.");
         // For free tickets, there is no webhook, so the frontend MUST run the background tasks.
         const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId, false);
-        return NextResponse.json({ success: true, id: regId });
+        return NextResponse.json({ success: true, id: regId, email: dbFormData.email });
       }
 
       const response = await cashfree.PGOrderFetchPayments(sanitizedOrderId);
@@ -232,9 +232,10 @@ export async function POST(req: Request) {
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      // Skip background tasks here; the Cashfree webhook will handle them!
-      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId, true);
-      return NextResponse.json({ success: true, id: regId });
+      // Run ALL background tasks (sheet + email). The backgroundTaskLock inside finalizeRegistration
+      // guarantees they will only execute once even if the Cashfree webhook also fires.
+      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId, false);
+      return NextResponse.json({ success: true, id: regId, email: dbFormData.email });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

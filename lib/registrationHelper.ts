@@ -4,7 +4,6 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import fs from 'fs/promises';
 import path from 'path';
-import { after } from 'next/server';
 import { formatPhoneNumber, maskEmail } from './security';
 
 
@@ -198,8 +197,10 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   // 3. PERMANENT ADDRESS Section
   drawSectionHeader('PERMANENT ADDRESS', 298);
   drawField('Street / Locality', data.address || 'N/A', 40, 275);
-  const pinCode = data.pincode || (data.address ? (data.address.match(/\b\d{6}\b/)?.[0] || '302017') : '302017');
-  drawField('City / State / PIN', `Jaipur, Rajasthan - ${pinCode}`, 40, 242);
+  const pinCode = data.pincode || (data.address ? (data.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A');
+  const cityName = data.city || 'N/A';
+  const stateName = data.region || 'N/A';
+  drawField('City / State / PIN', `${cityName}, ${stateName} - ${pinCode}`, 40, 242);
 
   // 4. PAYMENT SUMMARY Section
   drawSectionHeader('PAYMENT SUMMARY', 201);
@@ -466,7 +467,7 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       orderId: orderId,
       registeredAt: FieldValue.serverTimestamp(),
     });
-    docId = docId;
+    docId = docRef.id;
     console.log("Registration saved. Firestore ID:", docId);
   } catch (err: any) {
     if (err.code === 6 || err.message?.includes('ALREADY_EXISTS')) {

@@ -241,6 +241,9 @@ function RegisterContent() {
       if (result.success) {
         setIsSuccess(true);
         setRegId(result.id);
+        if (result.email) {
+          setFormData(prev => ({ ...prev, email: result.email }));
+        }
         localStorage.removeItem('pending_registration_id');
       } else {
         alert(result.error || 'Payment verification failed');
