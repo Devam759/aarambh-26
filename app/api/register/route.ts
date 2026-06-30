@@ -217,7 +217,8 @@ export async function POST(req: Request) {
       // If we are in development and don't have keys, or if it's a 100% discount, allow bypass
       if (!cashfreeAppId || pendingData.amount === 0) {
         console.warn("Cashfree App ID missing or amount is 0, bypassing verification.");
-        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId);
+        // For free tickets, there is no webhook, so the frontend MUST run the background tasks.
+        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId, false);
         return NextResponse.json({ success: true, id: regId });
       }
 
@@ -231,7 +232,8 @@ export async function POST(req: Request) {
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId);
+      // Skip background tasks here; the Cashfree webhook will handle them!
+      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId, true);
       return NextResponse.json({ success: true, id: regId });
     }
 
