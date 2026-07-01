@@ -38,46 +38,35 @@ Aarambh '26 is a full-stack web application built to manage all aspects of the u
 ## Key Features
 
 ### Public Portal
-- **Landing Page** — Animated comic/pop-art themed homepage with a live countdown timer, photo gallery, speakers carousel, event schedule timeline, and FAQ accordion
-- **Event Schedule** — Day-by-day event timeline with category filters
-- **Speakers** — Carousel showcasing guest speakers and their profiles
-- **FAQ** — Interactive accordion for common student queries
-- **Gallery** — Masonry photo gallery from the event
-- **Rules & Guidelines** — Complete program rules page
-- **Contact** — Contact form that saves messages to Firestore
-- **Legal Pages** — Privacy Policy, Terms of Service, Refund Policy
+- **Landing Page** — Animated comic/pop-art themed homepage with a live countdown timer, photo gallery, guest speakers carousel, event schedule timeline, and FAQ accordion
+- **Onload Documentation Modal** — Auto-popups instructional guidelines to students upon opening the registration flow
+- **Event Schedule** — Day-by-day interactive orientation schedule with category filtering
+- **Rules & Guidelines** — Complete portal rules and campus code of conduct page
+- **Contact & Support** — Public query submission form storing tickets directly in Firestore
+- **Legal Pages** — Standard legal declarations including Privacy Policy, Terms of Service, and Refund Policy
 
 ### Registration & Payments
-- **Student Registration Form** — Multi-step form collecting student, parent, and address details
-- **Cashfree Integration** — Secure online payment processing (INR 2,500 registration fee)
-- **PDF Receipt Generation** — Auto-generated A4 registration receipt with QR code embedded (via pdf-lib)
-- **Confirmation Email** — Automated email with the PDF receipt attached (Nodemailer + SMTP)
-- **Excel Sync** — Webhook-based sync of each new registration to a Google Sheet / Microsoft Excel via Apps Script
-- **Coupon Support** — Developer test coupon for sandbox verification
+- **Multi-Step Registration** — User-friendly form collecting student profile, parent contacts, and cohort preferences (automatically saving clean "N/A" indicators for empty parent inputs)
+- **Cashfree PG Integration** — Secure payments checkout supporting new API webhook signatures and automatic lock resolution to prevent duplicates
+- **PDF Receipt & Ticket** — Auto-generated A4 receipt containing event details and a unique entry QR code
+- **Automated Delivery Engine** — High-speed confirmation email dispatch with the receipt attached, optimized with connection pooling and timeout recovery
 
 ### Admin Dashboard (`/admin`)
-- **Overview & Analytics** — Registration counts, revenue summary, daily trends
-- **Registrations Management** — Full registrations table with search, filter by date, and export to Excel
-- **Check-in Scanner** — QR code scanner for entry management; marks attendance in real time
-- **Entry Logs** — Live log of all check-ins with timestamps
-- **Event Management** — Create and manage scheduled events in Firestore
-- **Announcements** — Push announcements visible across the platform
-- **Volunteer Management** — Assign volunteers to duties, manage team leaders
-- **Duty Management** — Structured duty assignment system per event day
-- **Audit Logs** — Immutable log of all admin actions
-- **Search** — Global search across registrations
+- **Real-Time Analytics** — Graphical metrics displaying check-in rates, registration counts, cohort distributions, and revenue logs
+- **Registrations & Email Control Hub** — Complete search/filter data grid with Google Sheets sync, CSV exportation, email delivery tracking badges, and manual bulk/individual email resending buttons
+- **Check-in Scanner** — Web-based QR code validator updating attendance status instantaneously
+- **System Error Logs & Alerts** — Logs client-side exceptions and server errors in Firestore, with automatic email notifications dispatched to the developer for critical alerts
+- **Volunteer & Duty Shifts** — Shift assignments, volunteer role configurations, and team leader duty management
+- **Audit Trail** — Immutable chronological logging of all administrative actions
 
-### Scanner Portal (`/scanner`)
-- Dedicated, minimal QR scanner interface for on-ground volunteers
-- Validates registrations and marks entry in real time
-- Role-based access — only `scanner` role users can access this portal
+### Warden Portal (`/warden`, `/admin/warden`)
+- **Hostel Check-in Monitoring** — Dedicated portal for wardens to oversee hostel arrivals and check student details
+- **Accommodation Controls** — Track room allocations and filter check-in logs by cohort (Hosteller vs. Day Scholar)
 
-### Volunteer Portal (`/volunteer`)
-- Volunteer-facing view for duty schedules and announcements
-
-### Feedback System (`/feedback`, `/eventsfeedback`)
-- Per-day anonymous feedback collection
-- Admin-accessible feedback export to Excel
+### Complaint & Feedback System (`/complaint`, `/feedback`, `/eventsfeedback`)
+- **Complaint Portal** — Dedicated submission page for student grievances and complaints
+- **Cohort-Based Feedback** — Daily orientation feedback forms filtered by student cohorts
+- **Feedback Control Hub** — Admin panel to dynamically open/close feedback forms and export compiled response sheets to Excel
 
 ---
 
@@ -307,6 +296,7 @@ EXCEL_SYNC_WEBHOOK_URL=
 | `npm run build` | Build production bundle |
 | `npm run start` | Start production server locally |
 | `npm run lint` | Run ESLint |
+| `npx tsx scripts/resend_email.ts <query>` | Administrative CLI tool to manually regenerate receipt PDF and resend confirmation email by student Email or Order ID |
 
 ---
 

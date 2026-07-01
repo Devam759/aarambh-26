@@ -100,7 +100,7 @@ export function FaqSchema() {
     {
       question: "What are the daily themes for Aarambh 2026?",
       answer:
-        "Aarambh 2026 has a different theme each day: Open Skies Day (July 14), Bollywood Day (July 15), Canvas Day (July 16), Anime & Toons Day (July 17), Ethnic Day (July 18), Black & White 90s Day (July 19), Healthy & Happy Day (July 20), and Formal Day (July 21).",
+        "Aarambh 2026 has a different theme each day: Open Skies Day (July 14), Bollywood Day (July 15), Canvas Day (July 16), Anime & Toons Day (July 17), Ethnic Day (July 18), Black & White 90s Day (July 19), Fresh and fun day (July 20), and Formal Day (July 21).",
     },
     {
       question: "Who organizes Aarambh 2026?",

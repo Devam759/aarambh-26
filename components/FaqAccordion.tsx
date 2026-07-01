@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
-  { question: "When and where is Aarambh '26 happening?", answer: "The mega welcome fest will take place from July 14-16, 2026, across the entire JKLU campus in Jaipur. Pack your bags for 3 days of absolute madness!" },
+  { question: "When and where is Aarambh '26 happening?", answer: "The mega welcome fest will take place from July 14-21, 2026, across the entire JKLU campus in Jaipur. Pack your bags for 8 days of absolute madness!" },
   { question: "Who can attend the orientation?", answer: "Aarambh is exclusively for the incoming students (Class of 2029). Seniors and faculty will be there as mentors, organizers, and cheerleaders." },
   { question: "Do I need to register for specific events?", answer: "Your main registration pass covers entry to all major events, DJ nights, and food stalls. Specific workshops or hackathons might require a quick sign-up on the app later." },
   { question: "What should I wear?", answer: "Dress code is smart casual for the day events. For the cultural night, bring out your best party outfits! And don't forget comfortable shoes—you'll be walking and dancing a lot." },

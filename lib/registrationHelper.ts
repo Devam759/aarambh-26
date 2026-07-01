@@ -258,16 +258,23 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
 // ============================================================================
 // SMTP EMAIL NOTIFICATION helper (Nodemailer STARTTLS Client)
 // ============================================================================
-export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) {
-  const nodemailer = await import('nodemailer');
+let cachedTransporter: any = null;
 
+async function getTransporter() {
+  if (cachedTransporter) return cachedTransporter;
+
+  const nodemailer = await import('nodemailer');
   const isProduction = process.env.NODE_ENV === 'production' || 
                        (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
 
-  const transporter = nodemailer.createTransport({
+  cachedTransporter = nodemailer.createTransport({
+    pool: true,             // Enable connection pooling
+    maxConnections: 3,      // Max concurrent connections
+    maxMessages: 100,       // Max messages on a single connection before closing
+    rateLimit: 1,           // Max messages per second
     host: process.env.SMTP_HOST || 'smtp.office365.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: false, // true for 465, false for 587 (STARTTLS)
+    secure: false,          // true for 465, false for 587 (STARTTLS)
     auth: {
       user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || '',
@@ -276,8 +283,17 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
       rejectUnauthorized: true
     } : {
       rejectUnauthorized: false
-    }
+    },
+    connectionTimeout: 8000, // Timeout after 8s if connection hangs
+    greetingTimeout: 5000,   // Timeout after 5s if greeting hangs
+    socketTimeout: 10000,    // Timeout after 10s if socket is idle
   });
+
+  return cachedTransporter;
+}
+
+export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) {
+  const transporter = await getTransporter();
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -398,24 +414,7 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
 
 export async function sendSystemErrorEmail(performedBy: string, targetEntity: string, details: string) {
   try {
-    const nodemailer = await import('nodemailer');
-    const isProduction = process.env.NODE_ENV === 'production' || 
-                         (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.office365.com',
-      port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: false, // true for 465, false for 587 (STARTTLS)
-      auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
-      },
-      tls: isProduction ? {
-        rejectUnauthorized: true
-      } : {
-        rejectUnauthorized: false
-      }
-    });
+    const transporter = await getTransporter();
 
     const mailOptions = {
       from: `"Aarambh System Monitor" <${process.env.SMTP_FROM || ''}>`,
@@ -489,16 +488,9 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
   if (formData.motherMobile) formData.motherMobile = formatPhoneNumber(formData.motherMobile);
   if (formData.parentPhone) formData.parentPhone = formatPhoneNumber(formData.parentPhone);
 
-  const fatherName = formData.fatherName || '';
-  const fatherMobile = formData.fatherMobile || '';
-  const fatherEmail = formData.fatherEmail || '';
-  const motherName = formData.motherName || '';
-  const motherMobile = formData.motherMobile || '';
-  const motherEmail = formData.motherEmail || '';
-
-  const parentName = formData.parentName || `Father: ${fatherName} | Mother: ${motherName}`;
-  const parentPhone = formData.parentPhone || `Father: ${fatherMobile} | Mother: ${motherMobile}`;
-  const parentEmail = formData.parentEmail || `Father: ${fatherEmail || 'N/A'} | Mother: ${motherEmail || 'N/A'}`;
+  const parentName = (formData.parentName || formData.fatherName || formData.motherName || 'N/A').trim() || 'N/A';
+  const parentPhone = (formData.parentPhone || formData.fatherMobile || formData.motherMobile || 'N/A').trim() || 'N/A';
+  const parentEmail = (formData.parentEmail || formData.fatherEmail || formData.motherEmail || 'N/A').trim() || 'N/A';
   
   // 1. Prevent duplicate database entries using an atomic lock
   let docId = "";
