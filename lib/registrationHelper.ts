@@ -396,6 +396,69 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
   await transporter.sendMail(mailOptions);
 }
 
+export async function sendSystemErrorEmail(performedBy: string, targetEntity: string, details: string) {
+  try {
+    const nodemailer = await import('nodemailer');
+    const isProduction = process.env.NODE_ENV === 'production' || 
+                         (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.office365.com',
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: false, // true for 465, false for 587 (STARTTLS)
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
+      },
+      tls: isProduction ? {
+        rejectUnauthorized: true
+      } : {
+        rejectUnauthorized: false
+      }
+    });
+
+    const mailOptions = {
+      from: `"Aarambh System Monitor" <${process.env.SMTP_FROM || ''}>`,
+      to: 'devamgupta@jklu.edu.in',
+      subject: `🚨 [Aarambh Error] SYSTEM_ERROR Alert`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #ef4444; color: white; padding: 20px; text-align: center;">
+            <h2 style="margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">🚨 System Error Detected</h2>
+          </div>
+          <div style="padding: 25px; background-color: #ffffff; color: #333333; line-height: 1.6;">
+            <p>An automated system error has been logged in the Aarambh event registration portal.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 120px; color: #666;">Source:</td>
+                <td style="padding: 8px 0;">${performedBy}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #666;">Target:</td>
+                <td style="padding: 8px 0; font-family: monospace;">${targetEntity}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #666;">Timestamp:</td>
+                <td style="padding: 8px 0;">${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td>
+              </tr>
+            </table>
+            <h4 style="margin: 15px 0 5px 0; color: #ef4444;">Error Details:</h4>
+            <pre style="background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; margin: 0;">${details}</pre>
+          </div>
+          <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #777777; border-top: 1px solid #e2e8f0;">
+            This is an automated alert from the Aarambh Event Management Portal.
+          </div>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("System error email alert sent successfully to devamgupta@jklu.edu.in");
+  } catch (err) {
+    console.error("Failed to send system error email alert:", err);
+  }
+}
+
 // ============================================================================
 // REGISTRATION COMPLETION PIPELINE (reconciles DB, Webhooks, Receipts, Emails)
 // ============================================================================
@@ -466,6 +529,9 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       paymentId: paymentId,
       orderId: orderId,
       sheetSynced: false,
+      emailSent: false,
+      emailSentAt: null,
+      emailError: null,
       registeredAt: FieldValue.serverTimestamp(),
     });
     docId = docRef.id;
@@ -516,8 +582,24 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       console.log("Attempting to send confirmation email to:", isProduction ? maskEmail(formData.email) : formData.email);
       await sendEmail(formData.email, formData.name, pdfBytes);
       console.log("Email sent successfully.");
+
+      if (docId) {
+        await adminDb.collection('registrations').doc(docId).update({
+          emailSent: true,
+          emailSentAt: FieldValue.serverTimestamp(),
+          emailError: null
+        }).catch(err => console.error("Failed to update emailSent status in Firestore:", err));
+      }
     } catch (emailError: any) {
       console.error("Email generation/delivery failed:", emailError);
+      
+      if (docId) {
+        await adminDb.collection('registrations').doc(docId).update({
+          emailSent: false,
+          emailError: emailError.message || String(emailError)
+        }).catch(err => console.error("Failed to update emailError status in Firestore:", err));
+      }
+
       await adminDb.collection('auditLogs').add({
         timestamp: FieldValue.serverTimestamp(),
         action: 'SYSTEM_ERROR',
@@ -525,6 +607,12 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
         targetEntity: `registration/${docId}`,
         details: `Failed to generate PDF or send email to ${formData.email}: ${emailError.message}`
       }).catch(() => {});
+
+      sendSystemErrorEmail(
+        'System (Email/PDF)',
+        `registration/${docId}`,
+        `Failed to generate PDF or send email to ${formData.email}: ${emailError.message}`
+      ).catch(() => {});
     }
   })();
 
@@ -558,6 +646,12 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       targetEntity: `registration/${docId}`,
       details: `Unexpected error in background pipeline: ${bgError.message}`
     }).catch(() => {});
+
+    sendSystemErrorEmail(
+      'System (Background Tasks)',
+      `registration/${docId}`,
+      `Unexpected error in background pipeline: ${bgError.message}`
+    ).catch(() => {});
   }
 
   return docId;

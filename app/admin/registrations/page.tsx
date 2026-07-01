@@ -118,6 +118,23 @@ const CustomFilterIcon = ({ className = '', size = 18 }: { className?: string; s
   </svg>
 );
 
+const CustomMailIcon = ({ className = '', size = 16 }: { className?: string; size?: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="square" 
+    strokeLinejoin="miter" 
+    className={className}
+  >
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
 // ============================================================================
 // REGISTRATIONS VIEW Component
 // ============================================================================
@@ -130,9 +147,12 @@ export default function Registrations() {
   // Filters State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'entered' | 'pending' | 'declined'>('all');
+  const [emailFilter, setEmailFilter] = useState<'all' | 'sent' | 'unsent'>('all');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [syncState, setSyncState] = useState<'idle' | 'syncing' | 'done' | 'error'>('idle');
   const [syncMessage, setSyncMessage] = useState('');
+  const [emailSendingState, setEmailSendingState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [emailSendingMessage, setEmailSendingMessage] = useState('');
 
   // 1. Fetch Registrations Data& Sorting
   const [currentPage, setCurrentPage] = useState(1);
@@ -175,14 +195,19 @@ export default function Registrations() {
         (statusFilter === 'pending' && !reg.hasEntered && reg.status !== 'declined') ||
         (statusFilter === 'declined' && reg.status === 'declined');
 
-      return matchesSearch && matchesStatus;
+      const matchesEmail = 
+        emailFilter === 'all' ||
+        (emailFilter === 'sent' && reg.emailSent) ||
+        (emailFilter === 'unsent' && !reg.emailSent);
+
+      return matchesSearch && matchesStatus && matchesEmail;
     });
-  }, [registrations, searchQuery, statusFilter]);
+  }, [registrations, searchQuery, statusFilter, emailFilter]);
 
   // Reset pagination on search query or filter change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter]);
+  }, [searchQuery, statusFilter, emailFilter]);
 
   // 2. Apply sorting
   const sortedRegistrations = useMemo(() => {
@@ -315,6 +340,40 @@ export default function Registrations() {
     }
   };
 
+  const unsentCount = useMemo(() => {
+    return registrations.filter(reg => !reg.emailSent).length;
+  }, [registrations]);
+
+  const handleSendUnsentEmails = async () => {
+    if (confirm(`Are you sure you want to send confirmation emails to all ${unsentCount} unsent users?`)) {
+      setEmailSendingState('sending');
+      setEmailSendingMessage(`Sending emails to ${unsentCount} users...`);
+      try {
+        const res = await fetch('/api/admin/resend-emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sendAllUnsent: true })
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          setEmailSendingState('error');
+          setEmailSendingMessage(result.error || 'Failed to send emails.');
+        } else {
+          setEmailSendingState('done');
+          setEmailSendingMessage(result.message);
+        }
+      } catch (err: any) {
+        setEmailSendingState('error');
+        setEmailSendingMessage(err.message || 'Network error');
+      } finally {
+        setTimeout(() => {
+          setEmailSendingState('idle');
+          setEmailSendingMessage('');
+        }, 6000);
+      }
+    }
+  };
+
   return (
     <div className="space-y-8 ">
       {/* Live Counter Cards */}
@@ -346,6 +405,22 @@ export default function Registrations() {
           <p className="text-admin-muted font-bold text-xs uppercase tracking-wider mt-1">Student orientation portal listings</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          {unsentCount > 0 && (
+            <button
+              onClick={handleSendUnsentEmails}
+              disabled={loading || emailSendingState === 'sending'}
+              className={`comic-btn-orange flex items-center gap-2 ${
+                emailSendingState === 'sending' ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
+            >
+              {emailSendingState === 'sending' ? (
+                <svg className="animate-spin" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              ) : (
+                <CustomMailIcon size={16} />
+              )}
+              {emailSendingState === 'sending' ? 'Sending...' : `Send Unsent Emails (${unsentCount})`}
+            </button>
+          )}
           <a 
             href="https://docs.google.com/spreadsheets/d/1Pfh7eZaknrvPEqcTjwgK1ludGjsT_OOA-KUnubzYxMc/edit?usp=sharing"
             target="_blank"
@@ -389,6 +464,17 @@ export default function Registrations() {
         </div>
       )}
 
+      {/* Email sending status feedback banner */}
+      {emailSendingState !== 'idle' && (
+        <div className={`border-4 border-brand-ink rounded-md px-5 py-3 text-sm font-bold shadow-[4px_4px_0px_0px_#030404] ${
+          emailSendingState === 'sending' ? 'bg-blue-100 text-blue-900' :
+          emailSendingState === 'done' ? 'bg-green-100 text-green-900' :
+          'bg-red-100 text-red-900'
+        }`}>
+          {emailSendingMessage}
+        </div>
+      )}
+
       {/* Mobile Filter Toggle Button */}
       <div className="md:hidden mt-4">
         <button 
@@ -420,7 +506,7 @@ export default function Registrations() {
           />
         </div>
         
-        <div className="flex items-center gap-3 min-w-[200px]">
+        <div className="flex items-center gap-3 min-w-[280px]">
           <div className="p-2.5 border-2 border-brand-ink bg-brand-cloud text-brand-ink rounded-md hidden xs:block">
             <CustomFilterIcon size={16} />
           </div>
@@ -433,6 +519,16 @@ export default function Registrations() {
             <option value="entered">Checked-In</option>
             <option value="pending">Pending Check-In</option>
             <option value="declined">Declined / Blocked</option>
+          </select>
+
+          <select
+            value={emailFilter}
+            onChange={(e: any) => setEmailFilter(e.target.value)}
+            className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 text-xs text-brand-ink font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_#030404] focus:outline-none cursor-pointer hover:bg-brand-cloud transition-colors"
+          >
+            <option value="all">Email: All</option>
+            <option value="sent">Email: Sent</option>
+            <option value="unsent">Email: Unsent</option>
           </select>
         </div>
       </div>
@@ -461,6 +557,7 @@ export default function Registrations() {
                     Registration Time {sortField === 'registeredAt' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="p-4">Entry Status</th>
+                  <th className="p-4">Email Status</th>
                   <th className="p-4 text-right">Details</th>
                 </tr>
               </thead>
@@ -485,6 +582,15 @@ export default function Registrations() {
                         {reg.hasEntered ? 'Entered' : (reg.status === 'declined' ? 'Declined' : 'Pending')}
                       </span>
                     </td>
+                    <td className="p-4">
+                      <span className={`inline-block px-2.5 py-1 border-2 border-brand-ink rounded-md text-[9px] font-black uppercase tracking-wider ${
+                        reg.emailSent 
+                          ? 'bg-green-100 text-green-700 border-green-700' 
+                          : 'bg-red-100 text-red-700 border-red-700'
+                      }`}>
+                        {reg.emailSent ? 'Sent' : 'Unsent'}
+                      </span>
+                    </td>
                     <td className="p-4 text-right">
                       <button 
                         onClick={() => setSelectedReg(reg)} 
@@ -497,7 +603,7 @@ export default function Registrations() {
                 ))}
                 {paginatedRegistrations.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
+                    <td colSpan={7} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
                       No matching registration logs found.
                     </td>
                   </tr>
@@ -719,8 +825,35 @@ export default function Registrations() {
                 </div>
               </div>
               
-              {/* Receipt Download Action */}
-              <div className="col-span-2 border-t-2 border-brand-ink pt-6 mt-2 flex justify-end">
+              {/* Receipt & Email Actions */}
+              <div className="col-span-2 border-t-2 border-brand-ink pt-6 mt-2 flex flex-col sm:flex-row justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (confirm(`Resend confirmation email to ${selectedReg.name} (${selectedReg.email})?`)) {
+                      try {
+                        const res = await fetch('/api/admin/resend-emails', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ ids: [selectedReg.id] })
+                        });
+                        const result = await res.json();
+                        if (res.ok) {
+                          alert('Email sent successfully!');
+                          // Update selectedReg to reflect success in Modal UI
+                          setSelectedReg((prev: any) => ({ ...prev, emailSent: true }));
+                        } else {
+                          alert(`Failed to send email: ${result.error}`);
+                        }
+                      } catch (err: any) {
+                        alert(`Network error: ${err.message}`);
+                      }
+                    }
+                  }}
+                  className="comic-btn-blue w-full sm:w-auto"
+                >
+                  <CustomMailIcon size={14} /> Send / Resend Email
+                </button>
                 <a 
                   href={`/api/receipt?id=${selectedReg.id}`}
                   download
