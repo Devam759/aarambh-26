@@ -409,7 +409,20 @@ export async function sendEmail(to: string, name: string, pdfBytes: Uint8Array) 
     mailOptions.attachments.push(jkluAttachment);
   }
 
-  await transporter.sendMail(mailOptions);
+  const maxRetries = 2;
+  for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email sent successfully on attempt ${attempt}. MessageId:`, info?.messageId);
+      return;
+    } catch (err) {
+      console.warn(`SMTP sendMail attempt ${attempt} failed:`, err);
+      if (attempt > maxRetries) {
+        throw err;
+      }
+      await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+    }
+  }
 }
 
 export async function sendSystemErrorEmail(performedBy: string, targetEntity: string, details: string) {

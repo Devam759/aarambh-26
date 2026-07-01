@@ -15,6 +15,10 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      if (sessionStorage.getItem('chunk_load_error_reload')) {
+        sessionStorage.removeItem('chunk_load_error_reload');
+      }
+
       const isLighthouse = navigator.userAgent.includes('Lighthouse') ||
         navigator.userAgent.includes('Chrome-Lighthouse') ||
         navigator.userAgent.includes('SpeedCurve') ||

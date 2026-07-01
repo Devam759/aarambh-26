@@ -13,6 +13,24 @@ export default function GlobalError({
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
+    // Check if the error is a ChunkLoadError
+    const errorStr = (error.message || '') + (error.stack || '') + (error.name || '');
+    const isChunkLoadError = 
+      error.name === 'ChunkLoadError' ||
+      errorStr.includes('ChunkLoadError') ||
+      errorStr.includes('Loading chunk') ||
+      errorStr.includes('failed');
+
+    if (isChunkLoadError && typeof window !== 'undefined') {
+      const hasReloaded = sessionStorage.getItem('chunk_load_error_reload');
+      if (!hasReloaded) {
+        sessionStorage.setItem('chunk_load_error_reload', 'true');
+        console.warn("ChunkLoadError detected. Reloading page to fetch fresh assets...");
+        window.location.reload();
+        return;
+      }
+    }
+
     // We only want to log the error once per mount
     if (logged) return;
     
@@ -72,14 +90,7 @@ export default function GlobalError({
             Go Home
           </Link>
         </div>
-        
-        {/* Technical Details snippet */}
-        <div className="mt-8 pt-4 border-t-2 border-brand-ink/20 w-full text-left">
-          <p className="text-[10px] font-black uppercase tracking-widest text-admin-muted mb-2">Technical Details</p>
-          <div className="bg-brand-cloud p-3 border-2 border-brand-ink/20 rounded-md font-mono text-xs text-brand-ink/70 break-words line-clamp-2">
-            {error.message || 'Unknown exception'}
-          </div>
-        </div>
+
 
       </div>
     </div>

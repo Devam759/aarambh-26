@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
@@ -112,7 +113,7 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: 'Invalid Application Number format (E.g. JKLU/BBA/2025/0310)' }, { status: 400 });
         }
 
-        const orderId = `order_${Date.now()}`;
+        const orderId = `order_${crypto.randomUUID()}`;
         const couponCode = (data.coupon || '').trim().toUpperCase();
         const couponStatus = await checkCoupon(couponCode);
         const orderAmount = couponStatus.valid ? couponStatus.amount : 2500;
