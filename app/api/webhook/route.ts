@@ -3,7 +3,7 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 
-import { verifyCashfreeSignature, cashfreeSecretKey, isProd, isRateLimited } from '@/lib/security';
+import { verifyCashfreeSignature, cashfreeAppId, cashfreeSecretKey, isProd, isRateLimited } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
@@ -114,20 +114,63 @@ export async function POST(req: Request) {
     // Support both older (SETTLEMENT_SUCCESS) and newer (settlement.success) event types
     if (eventType === 'SETTLEMENT_SUCCESS' || eventType === 'settlement.success' || eventType === 'SETTLEMENT_SUCCESS_WEBHOOK') {
       const data = payload.data || {};
-      const settlementId = data.settlement_id || data.settlementId || "N/A";
-      const transactions = data.transactions || [];
+      const settlement = data.settlement || {};
+      const settlementId = settlement.settlement_id || data.settlement_id || data.settlementId || "N/A";
       
-      console.log(`Processing settlement batch ${settlementId} containing ${transactions.length} entries.`);
+      console.log(`Processing settlement success webhook for Settlement ID: ${settlementId}`);
+      
+      if (settlementId === "N/A" || !settlementId) {
+        console.warn("No valid settlement ID found in payload data:", data);
+        return NextResponse.json({ success: false, error: "No settlement ID found" }, { status: 400 });
+      }
+
+      // Fetch all settled transactions for this settlement ID via Cashfree Recon API
+      let transactions: any[] = [];
+      try {
+        const isProduction = isProd || process.env.NODE_ENV === 'production';
+        const baseUrl = isProduction ? 'https://api.cashfree.com/pg' : 'https://sandbox.cashfree.com/pg';
+        
+        console.log(`Fetching recon transactions from Cashfree API for settlement: ${settlementId}`);
+        const reconRes = await fetch(`${baseUrl}/recon`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-client-id': cashfreeAppId || '',
+            'x-client-secret': cashfreeSecretKey || '',
+            'x-api-version': '2023-08-01'
+          },
+          body: JSON.stringify({
+            filters: {
+              cf_settlement_ids: [parseInt(String(settlementId), 10)]
+            }
+          })
+        });
+
+        if (!reconRes.ok) {
+          const errText = await reconRes.text();
+          throw new Error(`Cashfree Recon API returned ${reconRes.status}: ${errText}`);
+        }
+
+        const reconPayload = await reconRes.json();
+        const reconData = reconPayload.data || [];
+        
+        // Filter recon data for events of type PAYMENT
+        transactions = reconData.filter((event: any) => event.event_type === 'PAYMENT');
+        console.log(`Successfully fetched ${transactions.length} payment events for settlement ${settlementId}`);
+      } catch (reconError: any) {
+        console.error("Failed to fetch settlement transactions from Cashfree Recon API:", reconError);
+        throw reconError;
+      }
       
       const excelWebhook = process.env.EXCEL_SYNC_WEBHOOK_URL;
       
       for (const tx of transactions) {
         const orderId = tx.order_id || tx.orderId;
-        const paymentId = tx.payment_id || tx.paymentId || "";
+        const paymentId = tx.cf_payment_id || tx.cfPaymentId || tx.payment_id || tx.paymentId || "";
         
         if (!orderId) continue;
         
-        console.log("Reconciling payment for Order:", orderId, "UTR:", paymentId);
+        console.log("Reconciling payment for Order:", orderId, "Payment ID:", paymentId);
         
         // 1. Update Firestore registration document using Admin SDK
         let docId = "";
@@ -139,7 +182,7 @@ export async function POST(req: Request) {
             const docRef = querySnapshot.docs[0].ref;
             docId = querySnapshot.docs[0].id;
             await docRef.update({
-              settlementId: settlementId
+              settlementId: String(settlementId)
             });
             console.log("Firestore registration updated for order:", orderId, "with Settlement ID:", settlementId);
           } else {
@@ -158,8 +201,8 @@ export async function POST(req: Request) {
               body: JSON.stringify({
                 action: 'UPDATE_SETTLEMENT',
                 orderId: orderId,
-                paymentId: paymentId,
-                settlementId: settlementId
+                paymentId: String(paymentId),
+                settlementId: String(settlementId)
               })
             });
             const sheetResult = await sheetRes.json();
@@ -170,7 +213,7 @@ export async function POST(req: Request) {
         }
       }
       
-      return NextResponse.json({ success: true, message: "Settlement parsed successfully" });
+      return NextResponse.json({ success: true, message: `Settlement ${settlementId} reconciled successfully with ${transactions.length} payments.` });
     }
     
     return NextResponse.json({ success: true, message: "Event ignored" });

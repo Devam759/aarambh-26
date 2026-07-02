@@ -105,8 +105,7 @@ walkthrough.md
 # Raw photos and processing files
 raw_gallery*.html
 compress.cjs
-scripts/*.cjs
-scripts/*.js
+/scripts/
 remove-bg.cjs
 remove-bg.js
 page_history.txt

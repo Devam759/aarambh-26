@@ -72,11 +72,12 @@ export async function POST(req: Request) {
       const reg = docSnap.data();
       const regId = docSnap.id;
 
-      // Compute date fields from registeredAt timestamp
-      const rawDate = reg.registeredAt?.toDate() ?? new Date();
-      const day = rawDate.getDate();
-      const month = months[rawDate.getMonth()];
-      const year = rawDate.getFullYear().toString().slice(-2);
+      // Compute date fields from registeredAt timestamp (converted to IST using UTC methods)
+      const dbDate = reg.registeredAt?.toDate() ?? new Date();
+      const istDate = new Date(dbDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const day = istDate.getUTCDate();
+      const month = months[istDate.getUTCMonth()];
+      const year = istDate.getUTCFullYear().toString().slice(-2);
       const dateOfPayment = reg.dateOfPayment || `${day}-${month}-${year}`;
       const dateGroup = `${day}-${month}`;
 
@@ -89,7 +90,7 @@ export async function POST(req: Request) {
           gender: '', course: '',
           parentName: '', parentPhone: '', parentEmail: '',
           address: '', pincode: '', region: '', city: '', state: '',
-          paymentAmount: 0, receivedAmount: 0,
+          receivedAmount: 0,
           dateOfPayment: '', dateGroup: dateGroup,
           paymentId: '', orderId: '', settlementId: '',
         });
@@ -107,7 +108,7 @@ export async function POST(req: Request) {
         email: reg.email || 'N/A',
         phone: escapeForSheets(reg.phone || reg.mobile || ''),
         rollNumber: reg.rollNumber || reg.registrationNumber || 'N/A',
-        registeredAt: rawDate.toISOString(),
+        registeredAt: dbDate.toISOString(),
         gender: reg.gender || 'N/A',
         course: reg.course || 'N/A',
         parentName,
@@ -124,7 +125,6 @@ export async function POST(req: Request) {
         region: reg.region || 'N/A',
         city: reg.city || 'N/A',
         state: reg.region || 'N/A',
-        paymentAmount: reg.paymentAmount ?? 2500,
         receivedAmount: reg.receivedAmount ?? 2500,
         dateOfPayment,
         dateGroup,

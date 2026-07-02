@@ -138,7 +138,7 @@ export async function generatePDF(data: any, id: string, paymentId: string, orde
   page.drawText(`AARAMBH2026-${rollNumberStr}`, { x: 40, y: 575, size: 10.5, color: darkColor });
 
   // Date of Issue
-  const issueDate = dateOfPayment || data.dateOfPayment || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  const issueDate = dateOfPayment || data.dateOfPayment || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
   page.drawText('Date of Issue'.toUpperCase(), { x: 250, y: 590, size: 7.5, color: greyColor });
   page.drawText(issueDate, { x: 250, y: 575, size: 10.5, color: darkColor });
 
@@ -489,10 +489,11 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
     }
   }
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const rawDate = new Date();
-  const day = rawDate.getDate();
-  const month = months[rawDate.getMonth()];
-  const year = rawDate.getFullYear().toString().slice(-2);
+  // Convert server time to IST (Asia/Kolkata, UTC+5:30) to prevent date mismatch
+  const istDate = new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000));
+  const day = istDate.getUTCDate();
+  const month = months[istDate.getUTCMonth()];
+  const year = istDate.getUTCFullYear().toString().slice(-2);
   
   const dateOfPayment = `${day}-${month}-${year}`; // e.g., "24-May-26"
   const dateGroup = `${day}-${month}`; // e.g., "24-May"
