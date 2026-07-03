@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { SkeletonTable } from '../../../components/admin/SkeletonLoader';
 import { Modal } from '../../../components/admin/Modal';
@@ -153,6 +153,7 @@ export default function Registrations() {
   const [syncMessage, setSyncMessage] = useState('');
   const [emailSendingState, setEmailSendingState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [emailSendingMessage, setEmailSendingMessage] = useState('');
+  const [serviceEnabled, setServiceEnabled] = useState(true);
 
   // 1. Fetch Registrations Data& Sorting
   const [currentPage, setCurrentPage] = useState(1);
@@ -340,6 +341,45 @@ export default function Registrations() {
     }
   };
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'settlementReconciler');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setServiceEnabled(docSnap.data().enabled !== false);
+        } else {
+          await setDoc(docRef, { enabled: true, updatedAt: serverTimestamp() });
+          setServiceEnabled(true);
+        }
+      } catch (err) {
+        console.error('Failed to fetch settlement settings:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleToggleService = async () => {
+    const newValue = !serviceEnabled;
+    setServiceEnabled(newValue);
+    try {
+      const docRef = doc(db, 'settings', 'settlementReconciler');
+      await setDoc(docRef, {
+        enabled: newValue,
+        updatedAt: serverTimestamp(),
+        updatedBy: 'Admin Console'
+      }, { merge: true });
+      await logAdminAction(
+        'SETTLEMENT_TOGGLE',
+        'settings/settlementReconciler',
+        `Daily settlement reconciler service toggled ${newValue ? 'ON' : 'OFF'}`
+      );
+    } catch (err) {
+      console.error('Failed to update service status:', err);
+      setServiceEnabled(!newValue);
+    }
+  };
+
   const unsentCount = useMemo(() => {
     return registrations.filter(reg => !reg.emailSent).length;
   }, [registrations]);
@@ -442,6 +482,14 @@ export default function Registrations() {
               <CustomSheetIcon size={16} />
             )}
             {syncState === 'syncing' ? 'Syncing...' : 'Sync to Sheet'}
+          </button>
+          <button
+            onClick={handleToggleService}
+            className={`flex items-center gap-2 ${
+              serviceEnabled ? 'comic-btn-green' : 'comic-btn-red'
+            }`}
+          >
+            <span>Daily Reconciler: {serviceEnabled ? 'ON' : 'OFF'}</span>
           </button>
           <button 
             onClick={exportCSV}
