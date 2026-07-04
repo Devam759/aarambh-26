@@ -1,6 +1,177 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { finalizeRegistration } from '@/lib/registrationHelper';
+import nodemailer from 'nodemailer';
+
+function getFormattedISTDate(date: Date) {
+  // Add 5.5 hours to convert UTC to IST
+  const istTime = new Date(date.getTime() + (5.5 * 60 * 60 * 1000));
+  const pad = (n: number) => String(n).padStart(2, '0');
+  
+  const yyyy = istTime.getUTCFullYear();
+  const mm = pad(istTime.getUTCMonth() + 1);
+  const dd = pad(istTime.getUTCDate());
+  const hh = pad(istTime.getUTCHours());
+  const min = pad(istTime.getUTCMinutes());
+  const ss = pad(istTime.getUTCSeconds());
+
+  return `${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}+05:30`;
+}
+
+async function sendSummaryEmail(
+  runTime: Date,
+  isManual: boolean,
+  recovered: any[],
+  reconciled: any[],
+  remainingCount: number,
+  checkedCount: number
+) {
+  try {
+    const isProd = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.office365.com',
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
+      },
+      tls: isProd ? {
+        rejectUnauthorized: true
+      } : {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 8000,
+      greetingTimeout: 5000,
+      socketTimeout: 10000,
+    });
+
+    const formattedDate = runTime.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+    let recoveredRows = '';
+    if (recovered.length === 0) {
+      recoveredRows = '<tr><td colspan="5" style="text-align: center; padding: 8px;">No registrations recovered in this run.</td></tr>';
+    } else {
+      for (const item of recovered) {
+        recoveredRows += `
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${item.email}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-family: monospace;">${item.orderId}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">Rs. ${item.amount}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; color: ${item.emailSent ? '#166534' : '#ef4444'}">
+              ${item.emailSent ? 'Sent' : `Failed: ${item.emailError || 'Unknown error'}`}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    let reconciledRows = '';
+    if (reconciled.length === 0) {
+      reconciledRows = '<tr><td colspan="4" style="text-align: center; padding: 8px;">No settlements reconciled in this run.</td></tr>';
+    } else {
+      for (const item of reconciled) {
+        reconciledRows += `
+          <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-family: monospace;">${item.orderId}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-family: monospace;">${item.settlementId}</td>
+            <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; color: ${item.sheetSynced ? '#166534' : '#ef4444'}">
+              ${item.sheetSynced ? 'Synced' : 'Failed'}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    const mailOptions = {
+      from: `"Aarambh Reconciler" <${process.env.SMTP_FROM || ''}>`,
+      to: 'devamgupta@jklu.edu.in',
+      subject: `[Aarambh Reconciler] Daily Run Summary - ${runTime.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' })}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #0d21dd; color: white; padding: 20px; text-align: center;">
+            <h2 style="margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">Aarambh Reconciler Run Summary</h2>
+            <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">Run time: ${formattedDate} IST | Mode: ${isManual ? 'Manual Trigger' : 'Cloud Scheduler (Cron)'}</p>
+          </div>
+          
+          <div style="padding: 25px; background-color: #ffffff; color: #333333; line-height: 1.6;">
+            <h3>Reconciliation Summary</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+              <tr style="background-color: #f8fafc;">
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left; width: 220px;">Metric</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 100px;">Count</th>
+                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Description</th>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold;">Recovered Registrations</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-weight: bold;">${recovered.length}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Stuck Cashfree transactions that were recovered and registered.</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold;">Reconciled Settlements</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-weight: bold;">${reconciled.length}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Settlement IDs reconciled and synced to Google Sheets.</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold;">Pending Checked</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${checkedCount}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Total pending database records checked in this run.</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 10px; font-weight: bold;">Remaining Pending</td>
+                <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">${remainingCount}</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">Unsettled/pending transactions remaining in the database.</td>
+              </tr>
+            </table>
+
+            <h3>Recovered Registrations Detail (${recovered.length})</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px;">
+              <thead>
+                <tr style="background-color: #f8fafc;">
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Student Name</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Email</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Order ID</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Amount</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Ticket Email Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recoveredRows}
+              </tbody>
+            </table>
+
+            <h3>Reconciled Settlements Detail (${reconciled.length})</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px;">
+              <thead>
+                <tr style="background-color: #f8fafc;">
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Student Name</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Order ID</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Settlement ID</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Google Sheet Sync</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${reconciledRows}
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 11px; color: #777777; border-top: 1px solid #e2e8f0;">
+            This is an automated run summary from the Aarambh Event Management Portal.
+          </div>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("[Recon API] Summary email successfully sent to devamgupta@jklu.edu.in");
+  } catch (err: any) {
+    console.error("[Recon API] Failed to send summary email:", err.message);
+  }
+}
 
 async function performReconciliation(isManual: boolean) {
   const isProd = (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').replace(/['"]/g, '').trim().toUpperCase() === 'PRODUCTION';
@@ -28,7 +199,212 @@ async function performReconciliation(isManual: boolean) {
     }
   }
 
-  // 2. Fetch registrations with pending/missing settlement IDs
+  // 2. Query Cashfree Recon API for the last 14 days (rolling window)
+  const now = new Date();
+  const end_date = getFormattedISTDate(now);
+  
+  // 14 days ago
+  const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const istFourteenDaysAgo = new Date(fourteenDaysAgo.getTime() + (5.5 * 60 * 60 * 1000));
+  istFourteenDaysAgo.setUTCHours(0, 0, 0, 0); // Midnight IST
+  const startUTC = new Date(istFourteenDaysAgo.getTime() - (5.5 * 60 * 60 * 1000));
+  const start_date = getFormattedISTDate(startUTC);
+
+  console.log(`[Recon API] Querying Cashfree Recon API from ${start_date} to ${end_date}`);
+
+  let allEvents: any[] = [];
+  let cursor: string | null = null;
+  let hasMore = true;
+  let pageCount = 1;
+
+  while (hasMore) {
+    console.log(`[Recon API] Fetching page ${pageCount}...`);
+    const reqBody: any = {
+      filters: {
+        start_date: start_date,
+        end_date: end_date
+      },
+      pagination: {
+        limit: 100
+      }
+    };
+
+    if (cursor) {
+      reqBody.pagination.cursor = cursor;
+    }
+
+    const res = await fetch(`${baseUrl}/recon`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': cashfreeAppId || '',
+        'x-client-secret': cashfreeSecretKey || '',
+        'x-api-version': '2023-08-01'
+      },
+      body: JSON.stringify(reqBody)
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Cashfree Recon API returned ${res.status}: ${errText}`);
+    }
+
+    const payload = await res.json();
+    const pageData = payload.data || [];
+    console.log(`[Recon API] Page ${pageCount} returned ${pageData.length} events.`);
+    allEvents = allEvents.concat(pageData);
+
+    cursor = payload.cursor || null;
+    if (!cursor || pageData.length < 100 || pageCount >= 10) { // Safety limit of 10 pages
+      hasMore = false;
+    } else {
+      pageCount++;
+      // Small throttle delay between pages
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  }
+
+  // Map settled payment events by order_id
+  const settledMap = new Map<string, { settlementId: string; paymentId: string }>();
+  for (const event of allEvents) {
+    const settlementId = event.cf_settlement_id || event.settlement_id;
+    const orderId = event.order_id;
+    const paymentId = event.cf_payment_id || event.payment_id;
+    const transferUtr = event.transfer_utr || event.settlement_utr || null;
+
+    if (event.event_type === 'PAYMENT' && orderId && settlementId && settlementId !== 'N/A' && settlementId !== 'Pending' && transferUtr) {
+      settledMap.set(orderId, {
+        settlementId: String(settlementId),
+        paymentId: String(paymentId)
+      });
+    }
+  }
+
+  console.log(`[Recon API] Total settled payment records in the 14-day window: ${settledMap.size}`);
+
+  // 3. Scan for successful Cashfree payments that failed to create a registration in Firestore
+  console.log(`[Recon API] Scanning for successful payments with missing registrations...`);
+  const recoveredList: any[] = [];
+  
+  for (const event of allEvents) {
+    if (event.event_type !== 'PAYMENT') continue;
+
+    const orderId = event.order_id;
+    const paymentId = event.cf_payment_id || event.payment_id;
+    if (!orderId || !paymentId) continue;
+
+    // Check if registration exists
+    const regQuery = await adminDb.collection('registrations')
+      .where('orderId', '==', orderId)
+      .get();
+
+    if (regQuery.empty) {
+      // Missing registration! Check if we have pending data to recover from
+      const pendingDoc = await adminDb.collection('pendingRegistrations').doc(orderId).get();
+      if (pendingDoc.exists) {
+        const pendingData = pendingDoc.data();
+        const formData = pendingData?.formData;
+
+        if (formData) {
+          // Skip test/low-amount transactions and transactions by Devam Gupta
+          const name = (formData.name || '').toLowerCase();
+          const email = (formData.email || '').toLowerCase();
+          const phone = formData.mobile || '';
+          const rollNo = formData.registrationNumber || '';
+          const amountVal = parseFloat(formData.receivedAmount || formData.paymentAmount || '0');
+
+          const isTestAmount = amountVal <= 10;
+          const isDevamUser = name.includes('devam') || name.includes('gupta') || email.includes('devamg759') || email.includes('devamgupta');
+          const isTestPhoneOrRoll = phone === '7340015201' || rollNo.includes('9999') || rollNo.includes('0765');
+
+          if (isTestAmount || isDevamUser || isTestPhoneOrRoll) {
+            console.log(`[Recon API] Skipping test registration recovery for Order: ${orderId} (Student: ${formData.name}, Email: ${formData.email})`);
+            continue;
+          }
+
+          console.log(`[Recon API] Found stuck successful payment! Recovering registration for ${formData.name} (Order: ${orderId})`);
+          
+          let paymentDate: Date | undefined = undefined;
+          if (event.event_time) {
+            const parsed = new Date(event.event_time);
+            if (!isNaN(parsed.getTime())) {
+              paymentDate = parsed;
+            }
+          }
+
+          try {
+            const docId = await finalizeRegistration(
+              formData,
+              String(paymentId),
+              orderId,
+              false // Run post-registration tasks (sends ticket email!)
+            );
+
+            if (docId && paymentDate) {
+              const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+              const istDate = new Date(paymentDate.getTime() + (5.5 * 60 * 60 * 1000));
+              const day = istDate.getUTCDate();
+              const month = months[istDate.getUTCMonth()];
+              const year = istDate.getUTCFullYear().toString().slice(-2);
+              
+              const dateOfPayment = `${day}-${month}-${year}`;
+              const dateGroup = `${day}-${month}`;
+
+              await adminDb.collection('registrations').doc(docId).update({
+                registeredAt: paymentDate,
+                dateOfPayment,
+                dateGroup
+              });
+              console.log(`[Recon API] Backdated recovered registration ${docId} to payment time: ${paymentDate.toISOString()}`);
+            }
+
+            // Fetch registration doc to verify if ticket email was successfully sent
+            let emailSent = false;
+            let emailError = null;
+            if (docId) {
+              const regDoc = await adminDb.collection('registrations').doc(docId).get();
+              const regData = regDoc.data();
+              if (regData) {
+                emailSent = regData.emailSent === true;
+                emailError = regData.emailError || null;
+              }
+            }
+
+            await pendingDoc.ref.update({
+              status: 'completed',
+              completedAt: FieldValue.serverTimestamp()
+            });
+
+            await adminDb.collection('auditLogs').add({
+              timestamp: FieldValue.serverTimestamp(),
+              action: 'REGISTRATION_RECOVER',
+              performedBy: isManual ? 'Admin Console (Manual)' : 'Cloud Scheduler (Cron)',
+              targetEntity: `registration/${docId || orderId}`,
+              details: `Automated recovery of missing registration for ${formData.name} after successful Cashfree transaction.`
+            }).catch(() => {});
+
+            recoveredList.push({
+              name: formData.name,
+              email: formData.email,
+              orderId: orderId,
+              amount: amountVal,
+              emailSent,
+              emailError
+            });
+
+          } catch (err: any) {
+            console.error(`[Recon API] Failed to recover registration for order ${orderId}:`, err.message);
+          }
+        }
+      }
+    }
+  }
+
+  if (recoveredList.length > 0) {
+    console.log(`[Recon API] Successfully recovered ${recoveredList.length} registration(s).`);
+  }
+
+  // 4. Fetch registrations with pending/missing settlement IDs
   const regSnap = await adminDb.collection('registrations').get();
   const pendingRegs: any[] = [];
 
@@ -41,115 +417,90 @@ async function performReconciliation(isManual: boolean) {
         docId: doc.id,
         orderId: data.orderId,
         name: data.name,
-        paymentId: data.paymentId || '',
-        registeredAt: data.registeredAt?.toDate() || new Date()
+        paymentId: data.paymentId || ''
       });
     }
   });
 
-  // Sort by registration date ascending (oldest first)
-  pendingRegs.sort((a, b) => a.registeredAt.getTime() - b.registeredAt.getTime());
+  const reconciledList: any[] = [];
 
-  if (pendingRegs.length === 0) {
-    return {
-      success: true,
-      checkedCount: 0,
-      updatedCount: 0,
-      message: 'All registrations are already reconciled with completed settlements.'
-    };
-  }
+  if (pendingRegs.length > 0) {
+    console.log(`[Recon API] Found ${pendingRegs.length} registrations pending settlement reconciliation.`);
 
-  // Limit to 12 records per execution to avoid serverless timeouts (due to 1.5s rate-limit throttle per query)
-  const batchToProcess = pendingRegs.slice(0, 12);
-  let updatedCount = 0;
+    // Match pending registrations with settled map and update
+    for (const reg of pendingRegs) {
+      const match = settledMap.get(reg.orderId);
+      if (match) {
+        console.log(`[Recon API] Reconciled Order: ${reg.orderId} (Student: ${reg.name}) with Settlement ID: ${match.settlementId}`);
+        
+        // 1. Update Firestore
+        await adminDb.collection('registrations').doc(reg.docId).update({
+          settlementId: match.settlementId
+        });
 
-  for (const reg of batchToProcess) {
-    try {
-      const res = await fetch(`${baseUrl}/orders/${reg.orderId}/settlements`, {
-        method: 'GET',
-        headers: {
-          'x-client-id': cashfreeAppId || '',
-          'x-client-secret': cashfreeSecretKey || '',
-          'x-api-version': '2023-08-01'
-        }
-      });
-
-      if (!res.ok) {
-        console.error(`Cashfree API returned error ${res.status} for order ${reg.orderId}`);
-        continue;
-      }
-
-      let settlements = await res.json();
-      
-      // Normalize single object response to array
-      if (settlements && !Array.isArray(settlements)) {
-        if (settlements.cf_settlement_id || settlements.settlementId) {
-          settlements = [settlements];
-        } else {
-          settlements = [];
-        }
-      }
-
-      if (Array.isArray(settlements) && settlements.length > 0) {
-        const settlement = settlements[0];
-        const settlementId = settlement.cf_settlement_id || settlement.settlementId;
-        const transferUtr = settlement.transfer_utr || settlement.settlement_utr || null;
-
-        // Only reconcile if a bank UTR is present (indicates fully settled/transferred)
-        if (settlementId && transferUtr) {
-          console.log(`Reconciled Order: ${reg.orderId} with Settlement ID: ${settlementId}`);
-          
-          // 1. Update Firestore
-          await adminDb.collection('registrations').doc(reg.docId).update({
-            settlementId: String(settlementId)
-          });
-
-          // 2. Sync to Sheets
-          if (excelWebhook) {
-            try {
-              await fetch(excelWebhook, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  action: 'UPDATE_SETTLEMENT',
-                  orderId: reg.orderId,
-                  paymentId: String(reg.paymentId),
-                  settlementId: String(settlementId)
-                })
-              });
-            } catch (sheetError) {
-              console.error(`Failed to update Google Sheets for order ${reg.orderId}:`, sheetError);
+        // 2. Sync to Sheets
+        let sheetSynced = false;
+        if (excelWebhook) {
+          try {
+            const sheetRes = await fetch(excelWebhook, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'UPDATE_SETTLEMENT',
+                orderId: reg.orderId,
+                paymentId: match.paymentId || String(reg.paymentId),
+                settlementId: match.settlementId
+              })
+            });
+            if (sheetRes.ok) {
+              const sheetResult = await sheetRes.json();
+              if (sheetResult.success) {
+                sheetSynced = true;
+              }
             }
+          } catch (sheetError) {
+            console.error(`[Recon API] Failed to update Google Sheets for order ${reg.orderId}:`, sheetError);
           }
-
-          updatedCount++;
         }
-      }
-    } catch (err: any) {
-      console.error(`Failed to query settlements for order ${reg.orderId}:`, err.message);
-    }
 
-    // Throttle to respect rate limits (1.5 seconds)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+        reconciledList.push({
+          name: reg.name,
+          orderId: reg.orderId,
+          settlementId: match.settlementId,
+          sheetSynced
+        });
+      }
+    }
   }
 
   // Log the sync action in auditLogs
-  if (updatedCount > 0) {
+  if (reconciledList.length > 0 || recoveredList.length > 0) {
     await adminDb.collection('auditLogs').add({
       timestamp: FieldValue.serverTimestamp(),
       action: 'SETTLEMENT_RECONCILE',
       performedBy: isManual ? 'Admin Console (Manual)' : 'Cloud Scheduler (Cron)',
       targetEntity: 'registrations',
-      details: `Reconciled settlements: ${updatedCount} registrations marked as settled in this batch.`
+      details: `Automated sync: Recovered ${recoveredList.length} missing registration(s) and reconciled ${reconciledList.length} settlement ID(s) via Cashfree Recon API.`
     }).catch(() => {});
   }
 
+  // Send summary email to Devam Gupta stating everything
+  await sendSummaryEmail(
+    now,
+    isManual,
+    recoveredList,
+    reconciledList,
+    Math.max(0, pendingRegs.length - reconciledList.length),
+    pendingRegs.length
+  );
+
   return {
     success: true,
-    checkedCount: batchToProcess.length,
-    updatedCount,
-    remainingCount: Math.max(0, pendingRegs.length - batchToProcess.length),
-    message: `Checked ${batchToProcess.length} pending records. Successfully finalized ${updatedCount} settled transaction(s).`
+    checkedCount: pendingRegs.length,
+    updatedCount: reconciledList.length,
+    recoveredCount: recoveredList.length,
+    remainingCount: Math.max(0, pendingRegs.length - reconciledList.length),
+    message: `Checked ${pendingRegs.length} pending records. Recovered ${recoveredList.length} missing registration(s) and updated ${reconciledList.length} settled transaction(s) using Recon API.`
   };
 }
 

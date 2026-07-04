@@ -259,6 +259,7 @@ export default function Registrations() {
       'Student Email', 
       'Parent Email', 
       'Pincode', 
+      'State',
       'Course', 
       'Payment  Ammount ', 
       'Recived  Ammount ', 
@@ -281,6 +282,7 @@ export default function Registrations() {
 
     const rows = sortedRegistrations.map((r, index) => {
       const pin = r.pincode || (r.address ? (r.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A');
+      const state = r.region || r.state || 'N/A';
       const formattedDate = r.dateOfPayment || (r.registeredAt ? r.registeredAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' }).replace(/ /g, '-') : 'N/A');
       const payAmount = r.paymentAmount ? `₹ ${r.paymentAmount}` : '₹ 2500';
       const recAmount = r.receivedAmount ? `₹ ${r.receivedAmount}` : '₹ 2500';
@@ -296,6 +298,7 @@ export default function Registrations() {
         `"${r.email || ''}"`,
         `"${r.parentEmail || r.fatherEmail || 'N/A'}"`,
         `"${pin}"`,
+        `"${state}"`,
         `"${r.course || 'N/A'}"`,
         `"${payAmount}"`,
         `"${recAmount}"`,
