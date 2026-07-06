@@ -46,15 +46,20 @@ export async function POST(req: Request) {
       .orderBy('registeredAt', 'asc')
       .get();
 
-    const snap = {
-      empty: false,
-      docs: allSnap.docs.filter(d => d.data().sheetSynced !== true),
-    };
-    snap.empty = snap.docs.length === 0;
+    const unsyncedDocs = allSnap.docs.filter(d => d.data().sheetSynced !== true);
 
-    if (snap.empty) {
-      return NextResponse.json({ synced: 0, failed: 0, message: 'All registrations are already synced.' });
+    if (unsyncedDocs.length === 0) {
+      return NextResponse.json({
+        synced: 0,
+        failed: 0,
+        hasMore: false,
+        message: 'All registrations are already synced.',
+      });
     }
+
+    const BATCH_SIZE = 10;
+    const batchDocs = unsyncedDocs.slice(0, BATCH_SIZE);
+    const hasMore = unsyncedDocs.length > BATCH_SIZE;
 
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     let syncedCount = 0;
@@ -66,9 +71,20 @@ export async function POST(req: Request) {
     const countSnap = await adminDb.collection('registrations').count().get();
     const totalCount = countSnap.data().count;
     // Sequential number starts from (total - unsynced + 1) as a best estimate
-    let rowIndex = totalCount - snap.docs.length + 1;
+    let rowIndex = totalCount - unsyncedDocs.length + 1;
 
-    for (const docSnap of snap.docs) {
+    // Initialize lastDateGroup from the previous document in the sorted allSnap list (if exists)
+    const firstDocIndex = allSnap.docs.findIndex(d => d.id === batchDocs[0].id);
+    if (firstDocIndex > 0) {
+      const prevReg = allSnap.docs[firstDocIndex - 1].data();
+      const prevDbDate = prevReg.registeredAt?.toDate() ?? new Date();
+      const prevIstDate = new Date(prevDbDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const prevDay = prevIstDate.getUTCDate();
+      const prevMonth = months[prevIstDate.getUTCMonth()];
+      lastDateGroup = `${prevDay}-${prevMonth}`;
+    }
+
+    for (const docSnap of batchDocs) {
       const reg = docSnap.data();
       const regId = docSnap.id;
 
@@ -156,14 +172,15 @@ export async function POST(req: Request) {
       action: 'SHEET_SYNC',
       performedBy: 'Admin (Manual Sync)',
       targetEntity: 'registrations',
-      details: `Manual sheet sync: ${syncedCount} synced, ${failedCount} failed.${failures.length ? ' Failures: ' + failures.join('; ') : ''}`,
+      details: `Manual sheet sync batch: ${syncedCount} synced, ${failedCount} failed.${failures.length ? ' Failures: ' + failures.join('; ') : ''}`,
     });
 
     return NextResponse.json({
       synced: syncedCount,
       failed: failedCount,
       failures,
-      message: `${syncedCount} registration(s) synced to sheet.${failedCount > 0 ? ` ${failedCount} failed — check System Errors.` : ''}`,
+      hasMore,
+      message: `${syncedCount} registration(s) synced to sheet.${failedCount > 0 ? ` ${failedCount} failed.` : ''}`,
     });
   } catch (error: any) {
     console.error('Sync sheet error:', error);

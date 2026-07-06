@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    EXCEL_SYNC_WEBHOOK_URL: process.env.EXCEL_SYNC_WEBHOOK_URL,
+    SMTP_PASS: process.env.SMTP_PASS,
+    CRON_SECRET: process.env.CRON_SECRET,
+    CASHFREE_PROD_APP_ID: process.env.CASHFREE_PROD_APP_ID,
+    CASHFREE_PROD_SECRET_KEY: process.env.CASHFREE_PROD_SECRET_KEY,
+  },
   images: {
     remotePatterns: [
       {

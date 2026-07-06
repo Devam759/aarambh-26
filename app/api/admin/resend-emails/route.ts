@@ -10,6 +10,8 @@ export async function POST(req: Request) {
 
     let targetDocs: any[] = [];
 
+    let hasMore = false;
+
     if (ids && Array.isArray(ids) && ids.length > 0) {
       console.log(`Manual email trigger requested for ${ids.length} specific IDs.`);
       for (const id of ids) {
@@ -23,16 +25,19 @@ export async function POST(req: Request) {
       // Fetch all registrations
       const allRegs = await adminDb.collection('registrations').get();
       // Filter in-memory to avoid needing a composite index
-      targetDocs = allRegs.docs.filter(doc => {
+      const unsent = allRegs.docs.filter(doc => {
         const data = doc.data();
         return data.emailSent !== true;
       });
+      const BATCH_SIZE = 5;
+      targetDocs = unsent.slice(0, BATCH_SIZE);
+      hasMore = unsent.length > BATCH_SIZE;
     } else {
       return NextResponse.json({ error: 'Invalid parameters. Please specify ids or sendAllUnsent.' }, { status: 400 });
     }
 
     if (targetDocs.length === 0) {
-      return NextResponse.json({ success: true, sentCount: 0, message: 'No unsent registrations found.' });
+      return NextResponse.json({ success: true, sentCount: 0, hasMore: false, message: 'No unsent registrations found.' });
     }
 
     console.log(`Beginning manual email dispatch for ${targetDocs.length} records.`);
@@ -96,6 +101,7 @@ export async function POST(req: Request) {
       sentCount: successCount,
       failedCount: failCount,
       failures,
+      hasMore,
       message: `Dispatched ${successCount} emails successfully.${failCount > 0 ? ` ${failCount} failed.` : ''}`
     });
 

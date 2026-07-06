@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 
@@ -94,12 +94,22 @@ export async function POST(req: Request) {
             
             // Finalize registration and mark pending as completed
             console.log(`Finalizing registration from webhook for order ${orderId}`);
-            await finalizeRegistration(pendingData.formData, paymentId.toString(), orderId);
+            const paymentIdStr = paymentId.toString();
+            await finalizeRegistration(pendingData.formData, paymentIdStr, orderId, true);
             await pendingRef.update({
               status: 'completed',
               completedAt: FieldValue.serverTimestamp()
             });
             console.log(`Successfully finalized pending registration for order ${orderId} via webhook.`);
+
+            after(async () => {
+              try {
+                const { finalizeRegistration: finalReg } = await import('@/lib/registrationHelper');
+                await finalReg(pendingData.formData, paymentIdStr, orderId, false);
+              } catch (err) {
+                console.error("Error in background task for webhook order:", err);
+              }
+            });
           } else {
             console.warn(`No pending registration details found in Firestore for order ${orderId}`);
           }

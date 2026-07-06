@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import crypto from 'crypto';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
@@ -219,7 +219,14 @@ export async function POST(req: Request) {
       if (!cashfreeAppId || pendingData.amount === 0) {
         console.warn("Cashfree App ID missing or amount is 0, bypassing verification.");
         // For free tickets, there is no webhook, so the frontend MUST run the background tasks.
-        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId, false);
+        const regId = await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId, true);
+        after(async () => {
+          try {
+            await finalizeRegistration(dbFormData, "mock_payment_id", sanitizedOrderId, false);
+          } catch (err) {
+            console.error("Error in background task for mock/free order:", err);
+          }
+        });
         return NextResponse.json({ success: true, id: regId, email: dbFormData.email });
       }
 
@@ -233,9 +240,15 @@ export async function POST(req: Request) {
       }
 
       console.log("Payment verified successfully:", successPayment.cf_payment_id);
-      // Run ALL background tasks (sheet + email). The backgroundTaskLock inside finalizeRegistration
-      // guarantees they will only execute once even if the Cashfree webhook also fires.
-      const regId = await finalizeRegistration(dbFormData, successPayment.cf_payment_id.toString(), sanitizedOrderId, false);
+      const paymentIdStr = successPayment.cf_payment_id.toString();
+      const regId = await finalizeRegistration(dbFormData, paymentIdStr, sanitizedOrderId, true);
+      after(async () => {
+        try {
+          await finalizeRegistration(dbFormData, paymentIdStr, sanitizedOrderId, false);
+        } catch (err) {
+          console.error("Error in background task for order:", err);
+        }
+      });
       return NextResponse.json({ success: true, id: regId, email: dbFormData.email });
     }
 

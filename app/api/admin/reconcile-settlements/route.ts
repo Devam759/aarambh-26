@@ -3,6 +3,7 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { finalizeRegistration } from '@/lib/registrationHelper';
 import nodemailer from 'nodemailer';
+import { Cashfree, CFEnvironment } from 'cashfree-pg';
 
 function getFormattedISTDate(date: Date) {
   // Add 5.5 hours to convert UTC to IST
@@ -199,8 +200,163 @@ async function performReconciliation(isManual: boolean) {
     }
   }
 
-  // 2. Query Cashfree Recon API for the last 14 days (rolling window)
+  const recoveredList: any[] = [];
   const now = new Date();
+  const pendingRegs: any[] = [];
+
+  console.log(`[Recon API] Fetching all registrations to build in-memory index...`);
+  const regSnap = await adminDb.collection('registrations').get();
+  const existingOrderIds = new Set<string>();
+  regSnap.forEach(doc => {
+    const data = doc.data();
+    if (data.orderId) {
+      existingOrderIds.add(data.orderId);
+    }
+  });
+
+  // 1a. Direct Scan of recent pendingRegistrations (past 48 hours)
+  console.log(`[Recon API] Scanning pendingRegistrations from the past 48 hours directly on Cashfree...`);
+  const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+  
+  try {
+    const pendingScanSnap = await adminDb.collection('pendingRegistrations')
+      .where('createdAt', '>=', fortyEightHoursAgo)
+      .get();
+    
+    const pendingDocs = pendingScanSnap.docs.filter(doc => {
+      const data = doc.data();
+      const orderId = doc.id;
+      return data.status !== 'completed' && !existingOrderIds.has(orderId);
+    });
+
+    console.log(`[Recon API] Found ${pendingScanSnap.size} total pending registrations (checking ${pendingDocs.length} unpaid/uncompleted).`);
+
+    if (pendingDocs.length > 0) {
+      const cashfree = new Cashfree(
+        isProd ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+        cashfreeAppId,
+        cashfreeSecretKey
+      );
+      cashfree.XApiVersion = '2023-08-01';
+
+      // Concurrency rate limiting: process 5 checks in parallel at a time
+      const concurrencyLimit = 5;
+      const chunks = [];
+      for (let i = 0; i < pendingDocs.length; i += concurrencyLimit) {
+        chunks.push(pendingDocs.slice(i, i + concurrencyLimit));
+      }
+
+      for (const chunk of chunks) {
+        await Promise.all(chunk.map(async (doc) => {
+          const orderId = doc.id;
+          const pendingData = doc.data();
+          const formData = pendingData?.formData;
+          
+          if (!formData) return;
+
+          // Skip test/low-amount transactions and transactions by Devam Gupta
+          const name = (formData.name || '').toLowerCase();
+          const email = (formData.email || '').toLowerCase();
+          const phone = formData.mobile || '';
+          const rollNo = formData.registrationNumber || '';
+          const amountVal = pendingData?.amount || parseFloat(formData.receivedAmount || formData.paymentAmount || '0');
+
+          const isTestAmount = amountVal <= 10;
+          const isDevamUser = name.includes('devam') || name.includes('gupta') || email.includes('devamg759') || email.includes('devamgupta');
+          const isTestPhoneOrRoll = phone === '7340015201' || rollNo.includes('9999') || rollNo.includes('0765');
+
+          if (isTestAmount || isDevamUser || isTestPhoneOrRoll) {
+            return;
+          }
+
+          console.log(`[Recon API - 48h Scan] Checking order ${orderId} status directly on Cashfree...`);
+          try {
+            const cfResponse = await cashfree.PGOrderFetchPayments(orderId);
+            const payments = cfResponse.data || [];
+            const successPayment = payments.find((p: any) => p.payment_status === 'SUCCESS') as any;
+
+            if (successPayment) {
+              console.log(`[Recon API - 48h Scan] Found successful payment for stuck order ${orderId}. Recovering...`);
+              
+              const paymentId = successPayment.cf_payment_id;
+              let paymentDate = new Date();
+              if (successPayment.payment_time) {
+                const parsed = new Date(successPayment.payment_time);
+                if (!isNaN(parsed.getTime())) {
+                  paymentDate = parsed;
+                }
+              }
+
+              const docId = await finalizeRegistration(
+                formData,
+                String(paymentId),
+                orderId,
+                false // Run background tasks (emails/PDFs)
+              );
+
+              if (docId) {
+                existingOrderIds.add(orderId);
+                
+                // Add to pendingRegs to reconcile immediately if settled
+                pendingRegs.push({
+                  docId: docId,
+                  orderId: orderId,
+                  name: formData.name,
+                  paymentId: String(paymentId)
+                });
+
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const istDate = new Date(paymentDate.getTime() + (5.5 * 60 * 60 * 1000));
+                const day = istDate.getUTCDate();
+                const month = months[istDate.getUTCMonth()];
+                const year = istDate.getUTCFullYear().toString().slice(-2);
+                
+                const dateOfPayment = `${day}-${month}-${year}`;
+                const dateGroup = `${day}-${month}`;
+
+                await adminDb.collection('registrations').doc(docId).update({
+                  registeredAt: paymentDate,
+                  dateOfPayment,
+                  dateGroup
+                });
+                console.log(`[Recon API - 48h Scan] Backdated recovered registration ${docId} to payment time: ${paymentDate.toISOString()}`);
+              }
+
+              // Update pending doc to completed
+              await doc.ref.update({
+                status: 'completed',
+                completedAt: FieldValue.serverTimestamp()
+              });
+
+              // Add to audit logs
+              await adminDb.collection('auditLogs').add({
+                timestamp: FieldValue.serverTimestamp(),
+                action: 'REGISTRATION_RECOVER',
+                performedBy: isManual ? 'Admin Console (48h Direct Scan)' : 'Cloud Scheduler (48h Direct Scan)',
+                targetEntity: `registration/${docId || orderId}`,
+                details: `Automated recovery of missing registration for ${formData.name} after direct 48-hour Cashfree check.`
+              }).catch(() => {});
+
+              recoveredList.push({
+                name: formData.name,
+                email: formData.email,
+                orderId: orderId,
+                amount: amountVal,
+                emailSent: true,
+                emailError: null
+              });
+            }
+          } catch (cfErr: any) {
+            console.error(`[Recon API - 48h Scan] Failed to check status for orderId ${orderId}:`, cfErr.message);
+          }
+        }));
+      }
+    }
+  } catch (scanError: any) {
+    console.error(`[Recon API] Error during 48h direct scan:`, scanError.message);
+  }
+
+  // 2. Query Cashfree Recon API for the last 14 days (rolling window)
   const end_date = getFormattedISTDate(now);
   
   // 14 days ago
@@ -284,63 +440,72 @@ async function performReconciliation(isManual: boolean) {
 
   // 3. Scan for successful Cashfree payments that failed to create a registration in Firestore
   console.log(`[Recon API] Scanning for successful payments with missing registrations...`);
-  const recoveredList: any[] = [];
   
   for (const event of allEvents) {
-    if (event.event_type !== 'PAYMENT') continue;
+    if (event.event_type !== 'PAYMENT' || event.event_status !== 'SUCCESS') continue;
 
     const orderId = event.order_id;
     const paymentId = event.cf_payment_id || event.payment_id;
     if (!orderId || !paymentId) continue;
 
-    // Check if registration exists
-    const regQuery = await adminDb.collection('registrations')
-      .where('orderId', '==', orderId)
-      .get();
+    // Check if registration exists using in-memory Set
+    if (existingOrderIds.has(orderId)) {
+      continue;
+    }
 
-    if (regQuery.empty) {
-      // Missing registration! Check if we have pending data to recover from
-      const pendingDoc = await adminDb.collection('pendingRegistrations').doc(orderId).get();
-      if (pendingDoc.exists) {
-        const pendingData = pendingDoc.data();
-        const formData = pendingData?.formData;
+    // Missing registration! Check if we have pending data to recover from
+    const pendingDoc = await adminDb.collection('pendingRegistrations').doc(orderId).get();
+    if (pendingDoc.exists) {
+      const pendingData = pendingDoc.data();
+      const formData = pendingData?.formData;
 
-        if (formData) {
-          // Skip test/low-amount transactions and transactions by Devam Gupta
-          const name = (formData.name || '').toLowerCase();
-          const email = (formData.email || '').toLowerCase();
-          const phone = formData.mobile || '';
-          const rollNo = formData.registrationNumber || '';
-          const amountVal = parseFloat(formData.receivedAmount || formData.paymentAmount || '0');
+      if (formData) {
+        // Skip test/low-amount transactions and transactions by Devam Gupta
+        const name = (formData.name || '').toLowerCase();
+        const email = (formData.email || '').toLowerCase();
+        const phone = formData.mobile || '';
+        const rollNo = formData.registrationNumber || '';
+        const amountVal = pendingData?.amount || parseFloat(formData.receivedAmount || formData.paymentAmount || '0');
 
-          const isTestAmount = amountVal <= 10;
-          const isDevamUser = name.includes('devam') || name.includes('gupta') || email.includes('devamg759') || email.includes('devamgupta');
-          const isTestPhoneOrRoll = phone === '7340015201' || rollNo.includes('9999') || rollNo.includes('0765');
+        const isTestAmount = amountVal <= 10;
+        const isDevamUser = name.includes('devam') || name.includes('gupta') || email.includes('devamg759') || email.includes('devamgupta');
+        const isTestPhoneOrRoll = phone === '7340015201' || rollNo.includes('9999') || rollNo.includes('0765');
 
-          if (isTestAmount || isDevamUser || isTestPhoneOrRoll) {
-            console.log(`[Recon API] Skipping test registration recovery for Order: ${orderId} (Student: ${formData.name}, Email: ${formData.email})`);
-            continue;
+        if (isTestAmount || isDevamUser || isTestPhoneOrRoll) {
+          console.log(`[Recon API] Skipping test registration recovery for Order: ${orderId} (Student: ${formData.name}, Email: ${formData.email})`);
+          continue;
+        }
+
+        console.log(`[Recon API] Found stuck successful payment! Recovering registration for ${formData.name} (Order: ${orderId})`);
+        
+        let paymentDate: Date | undefined = undefined;
+        if (event.event_time) {
+          const parsed = new Date(event.event_time);
+          if (!isNaN(parsed.getTime())) {
+            paymentDate = parsed;
           }
+        }
 
-          console.log(`[Recon API] Found stuck successful payment! Recovering registration for ${formData.name} (Order: ${orderId})`);
-          
-          let paymentDate: Date | undefined = undefined;
-          if (event.event_time) {
-            const parsed = new Date(event.event_time);
-            if (!isNaN(parsed.getTime())) {
-              paymentDate = parsed;
-            }
-          }
+        try {
+          const docId = await finalizeRegistration(
+            formData,
+            String(paymentId),
+            orderId,
+            false // Run post-registration tasks (sends ticket email!)
+          );
 
-          try {
-            const docId = await finalizeRegistration(
-              formData,
-              String(paymentId),
-              orderId,
-              false // Run post-registration tasks (sends ticket email!)
-            );
+          if (docId) {
+            existingOrderIds.add(orderId);
 
-            if (docId && paymentDate) {
+            // Add to pendingRegs to reconcile immediately if settled
+            pendingRegs.push({
+              docId: docId,
+              orderId: orderId,
+              name: formData.name,
+              paymentId: String(paymentId)
+            });
+
+            if (paymentDate) {
               const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
               const istDate = new Date(paymentDate.getTime() + (5.5 * 60 * 60 * 1000));
               const day = istDate.getUTCDate();
@@ -357,44 +522,44 @@ async function performReconciliation(isManual: boolean) {
               });
               console.log(`[Recon API] Backdated recovered registration ${docId} to payment time: ${paymentDate.toISOString()}`);
             }
-
-            // Fetch registration doc to verify if ticket email was successfully sent
-            let emailSent = false;
-            let emailError = null;
-            if (docId) {
-              const regDoc = await adminDb.collection('registrations').doc(docId).get();
-              const regData = regDoc.data();
-              if (regData) {
-                emailSent = regData.emailSent === true;
-                emailError = regData.emailError || null;
-              }
-            }
-
-            await pendingDoc.ref.update({
-              status: 'completed',
-              completedAt: FieldValue.serverTimestamp()
-            });
-
-            await adminDb.collection('auditLogs').add({
-              timestamp: FieldValue.serverTimestamp(),
-              action: 'REGISTRATION_RECOVER',
-              performedBy: isManual ? 'Admin Console (Manual)' : 'Cloud Scheduler (Cron)',
-              targetEntity: `registration/${docId || orderId}`,
-              details: `Automated recovery of missing registration for ${formData.name} after successful Cashfree transaction.`
-            }).catch(() => {});
-
-            recoveredList.push({
-              name: formData.name,
-              email: formData.email,
-              orderId: orderId,
-              amount: amountVal,
-              emailSent,
-              emailError
-            });
-
-          } catch (err: any) {
-            console.error(`[Recon API] Failed to recover registration for order ${orderId}:`, err.message);
           }
+
+          // Fetch registration doc to verify if ticket email was successfully sent
+          let emailSent = false;
+          let emailError = null;
+          if (docId) {
+            const regDoc = await adminDb.collection('registrations').doc(docId).get();
+            const regData = regDoc.data();
+            if (regData) {
+              emailSent = regData.emailSent === true;
+              emailError = regData.emailError || null;
+            }
+          }
+
+          await pendingDoc.ref.update({
+            status: 'completed',
+            completedAt: FieldValue.serverTimestamp()
+          });
+
+          await adminDb.collection('auditLogs').add({
+            timestamp: FieldValue.serverTimestamp(),
+            action: 'REGISTRATION_RECOVER',
+            performedBy: isManual ? 'Admin Console (Manual)' : 'Cloud Scheduler (Cron)',
+            targetEntity: `registration/${docId || orderId}`,
+            details: `Automated recovery of missing registration for ${formData.name} after successful Cashfree transaction.`
+          }).catch(() => {});
+
+          recoveredList.push({
+            name: formData.name,
+            email: formData.email,
+            orderId: orderId,
+            amount: amountVal,
+            emailSent,
+            emailError
+          });
+
+        } catch (err: any) {
+          console.error(`[Recon API] Failed to recover registration for order ${orderId}:`, err.message);
         }
       }
     }
@@ -404,10 +569,7 @@ async function performReconciliation(isManual: boolean) {
     console.log(`[Recon API] Successfully recovered ${recoveredList.length} registration(s).`);
   }
 
-  // 4. Fetch registrations with pending/missing settlement IDs
-  const regSnap = await adminDb.collection('registrations').get();
-  const pendingRegs: any[] = [];
-
+  // 4. Extract registrations with pending/missing settlement IDs from regSnap
   regSnap.forEach(doc => {
     const data = doc.data();
     const settlementId = data.settlementId;

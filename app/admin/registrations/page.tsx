@@ -325,16 +325,31 @@ export default function Registrations() {
 
   const handleSyncSheet = async () => {
     setSyncState('syncing');
-    setSyncMessage('Syncing to Google Sheet...');
+    setSyncMessage('Starting Google Sheet sync...');
+    
+    let totalSynced = 0;
+    let totalFailed = 0;
+    let hasMore = true;
+
     try {
-      const res = await fetch('/api/admin/sync-sheet', { method: 'POST' });
-      const result = await res.json();
-      if (!res.ok) {
-        setSyncState('error');
-        setSyncMessage(result.error || 'Sync failed');
-      } else {
-        setSyncState('done');
-        setSyncMessage(result.message);
+      while (hasMore) {
+        const res = await fetch('/api/admin/sync-sheet', { method: 'POST' });
+        const result = await res.json();
+        if (!res.ok) {
+          setSyncState('error');
+          setSyncMessage(result.error || 'Sync failed');
+          return;
+        }
+        totalSynced += result.synced || 0;
+        totalFailed += result.failed || 0;
+        hasMore = !!result.hasMore;
+
+        if (hasMore) {
+          setSyncMessage(`Synced ${totalSynced} registrations. Continuing sync...`);
+        } else {
+          setSyncState('done');
+          setSyncMessage(`Sheet sync completed: ${totalSynced} synced successfully${totalFailed > 0 ? `, ${totalFailed} failed` : ''}.`);
+        }
       }
     } catch (err: any) {
       setSyncState('error');
@@ -390,20 +405,35 @@ export default function Registrations() {
   const handleSendUnsentEmails = async () => {
     if (confirm(`Are you sure you want to send confirmation emails to all ${unsentCount} unsent users?`)) {
       setEmailSendingState('sending');
-      setEmailSendingMessage(`Sending emails to ${unsentCount} users...`);
+      setEmailSendingMessage(`Starting email dispatch for ${unsentCount} users...`);
+      
+      let totalSent = 0;
+      let totalFailed = 0;
+      let hasMore = true;
+
       try {
-        const res = await fetch('/api/admin/resend-emails', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sendAllUnsent: true })
-        });
-        const result = await res.json();
-        if (!res.ok) {
-          setEmailSendingState('error');
-          setEmailSendingMessage(result.error || 'Failed to send emails.');
-        } else {
-          setEmailSendingState('done');
-          setEmailSendingMessage(result.message);
+        while (hasMore) {
+          const res = await fetch('/api/admin/resend-emails', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sendAllUnsent: true })
+          });
+          const result = await res.json();
+          if (!res.ok) {
+            setEmailSendingState('error');
+            setEmailSendingMessage(result.error || 'Failed to send emails.');
+            return;
+          }
+          totalSent += result.sentCount || 0;
+          totalFailed += result.failedCount || 0;
+          hasMore = !!result.hasMore;
+
+          if (hasMore) {
+            setEmailSendingMessage(`Sent ${totalSent} emails. Continuing dispatch...`);
+          } else {
+            setEmailSendingState('done');
+            setEmailSendingMessage(`Email dispatch complete: ${totalSent} sent successfully${totalFailed > 0 ? `, ${totalFailed} failed` : ''}.`);
+          }
         }
       } catch (err: any) {
         setEmailSendingState('error');
