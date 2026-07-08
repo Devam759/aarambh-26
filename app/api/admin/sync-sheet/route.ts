@@ -46,7 +46,10 @@ export async function POST(req: Request) {
       .orderBy('registeredAt', 'asc')
       .get();
 
-    const unsyncedDocs = allSnap.docs.filter(d => d.data().sheetSynced !== true);
+    const unsyncedDocs = allSnap.docs.filter(d => {
+      const data = d.data();
+      return data.sheetSynced !== true && data.isTest !== true;
+    });
 
     if (unsyncedDocs.length === 0) {
       return NextResponse.json({

@@ -107,6 +107,17 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("Resend emails endpoint error:", error);
+    try {
+      await adminDb.collection('auditLogs').add({
+        timestamp: FieldValue.serverTimestamp(),
+        action: 'SYSTEM_ERROR',
+        performedBy: 'Resend Emails API',
+        targetEntity: '/api/admin/resend-emails',
+        details: `Error: ${error.message || String(error)}\n\nStack:\n${error.stack || 'N/A'}`
+      });
+    } catch (logErr) {
+      console.error("Failed to log error to database:", logErr);
+    }
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }

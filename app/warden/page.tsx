@@ -20,6 +20,7 @@ export default function WardenDashboard() {
   const [assigningStudent, setAssigningStudent] = useState<any | null>(null);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
   const [roomNumberInput, setRoomNumberInput] = useState('');
+  const [selectedHostel, setSelectedHostel] = useState('');
   const [processingAction, setProcessingAction] = useState(false);
   const [actionError, setActionError] = useState('');
 
@@ -75,7 +76,7 @@ export default function WardenDashboard() {
       }
 
       await updateDoc(doc(db, 'registrations', assigningStudent.id), {
-        hostelAssignment: hostelDisplayName,
+        hostelAssignment: selectedHostel,
         roomNumber: trimmedRoom
       });
 
@@ -84,7 +85,7 @@ export default function WardenDashboard() {
         await logAdminAction(
           'WARDEN_ROOM_ALLOCATE',
           `registrations/${assigningStudent.id}`,
-          `Assigned ${assigningStudent.name} to ${hostelDisplayName} Room ${trimmedRoom}`,
+          `Assigned ${assigningStudent.name} to ${selectedHostel} Room ${trimmedRoom}`,
           wardenAccount.email || wardenHostel
         );
       } catch (logErr) {
@@ -136,12 +137,11 @@ export default function WardenDashboard() {
     const phoneMatch = (student.phone || student.mobile || '').includes(searchQuery);
     const matchesSearch = nameMatch || idMatch || phoneMatch;
 
-    // Room assignment filter
     let matchesRoom = true;
     if (roomFilter === 'assigned') {
-      matchesRoom = student.hostelAssignment === hostelDisplayName && student.roomNumber;
+      matchesRoom = !!(student.hostelAssignment && student.roomNumber);
     } else if (roomFilter === 'unassigned') {
-      matchesRoom = !(student.hostelAssignment === hostelDisplayName && student.roomNumber);
+      matchesRoom = !(student.hostelAssignment && student.roomNumber);
     }
 
     return matchesSearch && matchesRoom;
@@ -149,7 +149,7 @@ export default function WardenDashboard() {
 
   // Stats calculation
   const totalCount = students.length;
-  const assignedCount = students.filter(s => s.hostelAssignment === hostelDisplayName && s.roomNumber).length;
+  const assignedCount = students.filter(s => s.hostelAssignment && s.roomNumber).length;
   const unassignedCount = totalCount - assignedCount;
 
   if (loading) {
@@ -166,8 +166,14 @@ export default function WardenDashboard() {
   }
 
   return (
-    <div className="space-y-8 font-adminBody">
+    <div className="space-y-10 font-adminBody">
       
+      {/* Title Header */}
+      <div>
+        <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Warden Dashboard</h1>
+        <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Manage {hostelDisplayName} Room Allocations</p>
+      </div>
+
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Stat 1 */}
@@ -243,7 +249,7 @@ export default function WardenDashboard() {
             <tbody className="divide-y-2 divide-brand-ink/10 text-brand-ink font-bold text-xs">
               {filteredStudents.length > 0 ? (
                 filteredStudents.map((student) => {
-                  const isAssigned = student.hostelAssignment === wardenHostel && student.roomNumber;
+                  const isAssigned = !!(student.hostelAssignment && student.roomNumber);
                   
                   return (
                     <tr key={student.id} className="hover:bg-brand-cloud/20 transition-colors">
@@ -287,7 +293,7 @@ export default function WardenDashboard() {
                               setSelectedStudent(student);
                               setIsDetailOpen(true);
                             }}
-                            className="bg-white hover:bg-brand-cloud text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-[9px] shadow-[2px_2px_0px_0px_#030404] rounded px-2.5 py-1.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#030404] cursor-pointer"
+                            className="bg-white hover:bg-brand-cloud text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-[9px] shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-2.5 py-1.5 transition-all cursor-pointer"
                           >
                             Details
                           </button>
@@ -297,9 +303,10 @@ export default function WardenDashboard() {
                             onClick={() => {
                               setAssigningStudent(student);
                               setRoomNumberInput(student.roomNumber || '');
+                              setSelectedHostel(student.hostelAssignment || (isBoysHostel ? 'Boys Hostel 1' : 'Girls Hostel 1'));
                               setIsAssignOpen(true);
                             }}
-                            className="bg-brand-orange text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-[9px] shadow-[2px_2px_0px_0px_#030404] rounded px-2.5 py-1.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#030404] cursor-pointer"
+                            className="bg-brand-orange text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-[9px] shadow-[4px_4px_0px_0px_#030404] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-2.5 py-1.5 transition-all cursor-pointer"
                           >
                             {isAssigned ? 'Update Room' : 'Assign Room'}
                           </button>
@@ -308,7 +315,7 @@ export default function WardenDashboard() {
                           {isAssigned && (
                             <button
                               onClick={() => handleRemoveRoom(student)}
-                              className="bg-red-50 text-red-700 hover:bg-red-100 border-2 border-red-700 font-adminHeading uppercase tracking-wider text-[9px] shadow-[2px_2px_0px_0px_#b91c1c] rounded px-2.5 py-1.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#b91c1c] cursor-pointer"
+                              className="bg-red-50 text-red-700 hover:bg-red-100 border-2 border-red-700 font-adminHeading uppercase tracking-wider text-[9px] shadow-[4px_4px_0px_0px_#b91c1c] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#b91c1c] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-2.5 py-1.5 transition-all cursor-pointer"
                             >
                               Deallocate
                             </button>
@@ -448,7 +455,7 @@ export default function WardenDashboard() {
                   setIsDetailOpen(false);
                   setSelectedStudent(null);
                 }}
-                className="bg-brand-ink hover:bg-brand-ink/90 text-white font-adminHeading uppercase tracking-wider text-xs border-2 border-brand-ink shadow-comic-sm rounded px-6 py-2.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#030404]"
+                className="bg-brand-ink hover:bg-brand-ink/90 text-white font-adminHeading uppercase tracking-wider text-xs border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-6 py-2.5 transition-all cursor-pointer"
               >
                 Close View
               </button>
@@ -491,14 +498,25 @@ export default function WardenDashboard() {
             <form onSubmit={handleAssignRoom} className="space-y-4">
               <div>
                 <label className="block text-[10px] font-black uppercase text-brand-ink/65 tracking-wider mb-2">
-                  Hostel Block (Auto)
+                  Hostel Block
                 </label>
-                <input
-                  type="text"
-                  value={hostelDisplayName}
-                  disabled
-                  className="w-full bg-[#f1ebd9] border-2 border-brand-ink rounded-md py-3 px-4 text-sm text-brand-ink/60 font-bold outline-none cursor-not-allowed shadow-inner"
-                />
+                <select
+                  value={selectedHostel}
+                  onChange={(e) => setSelectedHostel(e.target.value)}
+                  className="w-full bg-white border-2 border-brand-ink rounded-md py-3 px-4 text-sm text-brand-ink font-bold outline-none focus:border-brand-orange shadow-inner"
+                >
+                  {isBoysHostel ? (
+                    <>
+                      <option value="Boys Hostel 1">Boys Hostel 1</option>
+                      <option value="Boys Hostel 2">Boys Hostel 2</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="Girls Hostel 1">Girls Hostel 1</option>
+                      <option value="Girls Hostel 2">Girls Hostel 2</option>
+                    </>
+                  )}
+                </select>
               </div>
 
               <div>
@@ -524,14 +542,14 @@ export default function WardenDashboard() {
                     setRoomNumberInput('');
                     setActionError('');
                   }}
-                  className="bg-white hover:bg-brand-cloud text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-xs shadow-comic-sm rounded px-5 py-2.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#030404]"
+                  className="bg-white hover:bg-brand-cloud text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-xs shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-5 py-2.5 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={processingAction}
-                  className="bg-brand-orange text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-xs shadow-comic-sm rounded px-5 py-2.5 transition-all active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#030404] disabled:opacity-40"
+                  className="bg-brand-orange text-brand-ink border-2 border-brand-ink font-adminHeading uppercase tracking-wider text-xs shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none rounded px-5 py-2.5 transition-all cursor-pointer disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-comic-sm disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-comic-sm"
                 >
                   {processingAction ? 'Saving...' : 'Save Allocation'}
                 </button>

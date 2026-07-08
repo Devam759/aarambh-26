@@ -213,6 +213,10 @@ export default function Registrations() {
   // 2. Apply sorting
   const sortedRegistrations = useMemo(() => {
     const sorted = [...filteredRegistrations].sort((a, b) => {
+      // Prioritize test registrations at the top
+      if (a.isTest && !b.isTest) return -1;
+      if (!a.isTest && b.isTest) return 1;
+
       let valA = a[sortField];
       let valB = b[sortField];
 
@@ -280,7 +284,9 @@ export default function Registrations() {
       return phone;
     };
 
-    const rows = sortedRegistrations.map((r, index) => {
+    const rows = sortedRegistrations
+      .filter(r => !r.isTest)
+      .map((r, index) => {
       const pin = r.pincode || (r.address ? (r.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A');
       const state = r.region || r.state || 'N/A';
       const formattedDate = r.dateOfPayment || (r.registeredAt ? r.registeredAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' }).replace(/ /g, '-') : 'N/A');
@@ -622,7 +628,7 @@ export default function Registrations() {
       ) : (
         <div className="bg-white border-4 border-brand-ink rounded-md shadow-[6px_6px_0px_0px_#030404] overflow-hidden flex flex-col">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse whitespace-nowrap">
+            <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
                   <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('name')}>
@@ -645,7 +651,14 @@ export default function Registrations() {
               <tbody className="divide-y divide-brand-ink/10">
                 {paginatedRegistrations.map((reg) => (
                   <tr key={reg.id} className="hover:bg-brand-cloud/45 transition-colors text-xs font-bold text-brand-ink">
-                    <td className="p-4 font-black">{reg.name}</td>
+                    <td className="p-4 font-black">
+                      {reg.name}
+                      {reg.isTest && (
+                        <span className="ml-2 inline-block px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-800 rounded text-[9px] uppercase tracking-wider">
+                          Test
+                        </span>
+                      )}
+                    </td>
                     <td className="p-4 text-brand-ink/90">{reg.rollNumber}</td>
                     <td className="p-4 text-brand-ink/90">
                       <div className="font-semibold text-xs lowercase">{reg.email}</div>

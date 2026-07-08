@@ -10,6 +10,22 @@ async function getEmailTransporter() {
   const isProduction = process.env.NODE_ENV === 'production' || 
                        (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
 
+  // Brevo (Sendinblue) SMTP Configuration
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: false, // STARTTLS
+    auth: {
+      user: process.env.SMTP_USER || '',
+      pass: process.env.SMTP_PASS || '',
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+
+  /*
+  // Office 365 SMTP Configuration (Commented out)
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.office365.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -24,6 +40,7 @@ async function getEmailTransporter() {
       rejectUnauthorized: false
     }
   });
+  */
 }
 
 /**

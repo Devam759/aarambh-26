@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const unsubRegs = onSnapshot(collection(db, 'registrations'), (snap) => {
       const allRegs = snap.docs.map(d => d.data());
-      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
+      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '' && reg.isTest !== true);
       setStats(s => ({ ...s, totalRegistrations: validRegs.length, loading: false }));
     }, (err) => {
       console.warn("Overview regs snapshot listener error:", err);
@@ -33,7 +33,7 @@ export default function AdminDashboard() {
     // Fetch new registrations created today
     const unsubTodayRegs = onSnapshot(query(collection(db, 'registrations'), where('registeredAt', '>=', today)), (snap) => {
       const allRegs = snap.docs.map(d => d.data());
-      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '');
+      const validRegs = allRegs.filter((reg: any) => reg.name && reg.name.trim() !== '' && reg.isTest !== true);
       setStats(s => ({ ...s, todayRegistrations: validRegs.length }));
     }, (err) => {
       console.warn("Overview todayRegs snapshot listener error:", err);

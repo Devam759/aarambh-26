@@ -165,7 +165,7 @@ export default function SystemErrors() {
       ) : (
         <div className="bg-white border-4 border-brand-ink rounded-md shadow-[6px_6px_0px_0px_#030404] overflow-hidden flex flex-col">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse whitespace-nowrap">
+            <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
                   <th className="p-4">Timestamp</th>
