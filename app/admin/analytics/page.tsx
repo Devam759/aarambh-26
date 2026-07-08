@@ -1911,7 +1911,7 @@ function FeedbackAnalyticsContent() {
                         <button
                           type="button"
                           onClick={() => handleRemoveQuestion(q.id)}
-                          className="border-2 border-brand-ink hover:bg-brand-pink/15 text-brand-pink text-[10px] font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-3 py-1.5 rounded cursor-pointer uppercase tracking-wider shrink-0 w-full md:w-auto text-center"
+                          className="border-2 border-brand-ink hover:bg-brand-pink/15 text-brand-pink text-[10px] font-black shadow-[2px_2px_0px_0px_#030404] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_#030404] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 px-3 py-1.5 rounded cursor-pointer uppercase tracking-wider flex-1 md:flex-initial md:w-auto text-center"
                         >
                           Delete
                         </button>
