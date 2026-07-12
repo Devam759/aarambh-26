@@ -267,29 +267,7 @@ async function getTransporter() {
   const isProduction = process.env.NODE_ENV === 'production' || 
                        (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
 
-  // Brevo (Sendinblue) SMTP Configuration
-  cachedTransporter = nodemailer.createTransport({
-    pool: true,             // Enable connection pooling
-    maxConnections: 3,      // Max concurrent connections
-    maxMessages: 100,       // Max messages on a single connection before closing
-    rateLimit: 2,           // Max messages per second
-    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: false,          // true for 465, false for 587 (STARTTLS)
-    auth: {
-      user: process.env.SMTP_USER || '',
-      pass: process.env.SMTP_PASS || '',
-    },
-    tls: {
-      rejectUnauthorized: false
-    },
-    connectionTimeout: 8000, 
-    greetingTimeout: 5000,   
-    socketTimeout: 10000,    
-  });
-
-  /* 
-  // Office 365 SMTP Configuration (Commented out)
+  // Office 365 SMTP Configuration
   cachedTransporter = nodemailer.createTransport({
     pool: true,             // Enable connection pooling
     maxConnections: 3,      // Max concurrent connections
@@ -311,7 +289,6 @@ async function getTransporter() {
     greetingTimeout: 5000,   // Timeout after 5s if greeting hangs
     socketTimeout: 10000,    // Timeout after 10s if socket is idle
   });
-  */
 
   return cachedTransporter;
 }

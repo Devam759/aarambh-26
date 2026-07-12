@@ -2,6 +2,7 @@ import { adminDb } from './firebaseAdmin';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { getStudentCohort, getBatchForCohort, getCohortLeaderDetails } from './cohortData';
 
 // Fallback email transport setup using environment SMTP variables
 async function getEmailTransporter() {
@@ -10,22 +11,7 @@ async function getEmailTransporter() {
   const isProduction = process.env.NODE_ENV === 'production' || 
                        (process.env.NEXT_PUBLIC_CASHFREE_ENV || '').trim().toUpperCase() === 'PRODUCTION';
 
-  // Brevo (Sendinblue) SMTP Configuration
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: false, // STARTTLS
-    auth: {
-      user: process.env.SMTP_USER || '',
-      pass: process.env.SMTP_PASS || '',
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
-
-  /*
-  // Office 365 SMTP Configuration (Commented out)
+  // Office 365 SMTP Configuration
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.office365.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
@@ -40,7 +26,6 @@ async function getEmailTransporter() {
       rejectUnauthorized: false
     }
   });
-  */
 }
 
 /**
@@ -73,40 +58,45 @@ async function generateFallbackSchedulePDF(batchName: string): Promise<Uint8Arra
  * Checks Firestore collection 'studentBatches' first, then falls back to course rules.
  */
 export async function getStudentBatchDetails(studentData: any, regId: string): Promise<{ batchName: string; pdfFileName: string }> {
+  let resolvedBatch = 'Batch 1';
+  
   try {
     // 1. Check if there is a manual override document in Firestore for this registration ID
     const batchDoc = await adminDb.collection('studentBatches').doc(regId).get();
     if (batchDoc.exists) {
       const data = batchDoc.data();
       if (data && data.batchName) {
-        return {
-          batchName: data.batchName,
-          pdfFileName: data.pdfFileName || `${data.batchName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_schedule.pdf`
-        };
+        resolvedBatch = data.batchName;
       }
-    }
-    
-    // 2. Alternatively check by application/registration number
-    const appNum = studentData.registrationNumber || studentData.rollNumber;
-    if (appNum) {
-      const batchQuery = await adminDb.collection('studentBatches')
-        .where('registrationNumber', '==', appNum)
-        .limit(1)
-        .get();
-      if (!batchQuery.empty) {
-        const data = batchQuery.docs[0].data();
-        return {
-          batchName: data.batchName,
-          pdfFileName: data.pdfFileName || `${data.batchName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_schedule.pdf`
-        };
+    } else {
+      // 2. Alternatively check by application/registration number
+      const appNum = studentData.registrationNumber || studentData.rollNumber;
+      if (appNum) {
+        const batchQuery = await adminDb.collection('studentBatches')
+          .where('registrationNumber', '==', appNum)
+          .limit(1)
+          .get();
+        if (!batchQuery.empty) {
+          const data = batchQuery.docs[0].data();
+          resolvedBatch = data.batchName;
+        } else {
+          // 3. Fallback to static cohort data mapping
+          const cohort = getStudentCohort(appNum);
+          if (cohort) {
+            resolvedBatch = getBatchForCohort(cohort).batchName;
+          }
+        }
       }
     }
   } catch (err) {
     console.error("Error querying studentBatches collection:", err);
   }
 
-  // 3. Fallback allocation rules (For now assign everyone to Batch 1. There will be 4 batches in total on July 6th).
-  return { batchName: 'Batch 1', pdfFileName: 'batch_1_schedule.pdf' };
+  // Every student receives the same final schedule PDF
+  return { 
+    batchName: resolvedBatch, 
+    pdfFileName: 'Aarambh_2026_Schedule.pdf' 
+  };
 }
 
 /**
@@ -130,50 +120,16 @@ export async function sendCheckInEmail(
   studentName: string,
   appNumber: string,
   batchName: string,
-  pdfFileName: string
+  pdfFileName?: string,
+  subject: string = "Check-In Confirmation – Batch Details & Schedule"
 ) {
   console.log(`Preparing to send check-in email to ${toEmail} for batch ${batchName}...`);
   const transporter = await getEmailTransporter();
   
-  // 1. Locate/generate the attachment PDF
-  let pdfBytes: Buffer | Uint8Array;
-  const schedulesDir = path.join(process.cwd(), 'public', 'schedules');
-
-  // Sanitize pdfFileName to prevent path traversal: only allow safe basenames (letters, digits, dashes, underscores, dots)
-  const rawBasename = path.basename(pdfFileName);
-  const safeBasename = rawBasename.replace(/[^a-zA-Z0-9_\-\.]/g, '_');
-  const hasValidPdfExtension = safeBasename.endsWith('.pdf');
-  if (!hasValidPdfExtension) {
-    console.error(`Invalid PDF filename rejected (path traversal guard): "${pdfFileName}". Falling back to generated PDF.`);
-  }
-  const filePath = hasValidPdfExtension ? path.join(schedulesDir, safeBasename) : null;
-
-  try {
-    // Ensure public/schedules directory exists
-    await fs.mkdir(schedulesDir, { recursive: true });
-
-    if (filePath) {
-      // Check if the physical PDF schedule has been provided/stored on disk
-      try {
-        pdfBytes = await fs.readFile(filePath);
-        console.log(`Loaded physical schedule PDF from disk: ${filePath}`);
-      } catch {
-        console.log(`Physical schedule PDF not found on disk. Generating fallback on the fly: ${safeBasename}`);
-        pdfBytes = await generateFallbackSchedulePDF(batchName);
-        // Write to disk so next scans can read it directly
-        await fs.writeFile(filePath, pdfBytes);
-      }
-    } else {
-      // Invalid filename was rejected — use a generated fallback directly
-      pdfBytes = await generateFallbackSchedulePDF(batchName);
-    }
-  } catch (err) {
-    console.error("Failed to resolve or save PDF file:", err);
-    // Ultimate fallback buffer to prevent email crash
-    pdfBytes = await generateFallbackSchedulePDF(batchName);
-  }
-
-  // 2. Inline images for branding
+  const cohort = getStudentCohort(appNumber);
+  const leaderDetails = cohort ? getCohortLeaderDetails(cohort) : null;
+  
+  // 1. Inline images for branding
   let logoAttachment: any = null;
   let jkluAttachment: any = null;
   try {
@@ -242,13 +198,22 @@ export async function sendCheckInEmail(
             <li><strong>Assigned Batch:</strong> ${safeBatch}</li>
           </ul>
 
-          <p>Please find attached the schedule PDF for your assigned batch. We recommend reviewing it carefully.</p>
-          <p>If you have any questions or require further assistance, please feel free to contact your cohort leader.</p>
-          
-          <p>
-            <strong>Name:</strong> [Cohort Leader’s Name]<br/>
-            <strong>Phone Number:</strong> [Their Phone Number]
+          <p>We recommend reviewing the event schedule carefully. You can download the complete Aarambh 2026 Event Schedule using the link below:</p>
+          <div style="margin: 15px 0;">
+            <a href="https://storage.googleapis.com/aarambh-26.firebasestorage.app/Aarambh_2026_Schedule.pdf" style="display: inline-block; padding: 10px 20px; background-color: #0D21DD; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 13px;">
+              Download Complete Event Schedule
+            </a>
+          </div>
+
+          ${leaderDetails ? `
+          <p>If you have any questions or require further assistance, please feel free to contact your Cohort Leader (<strong>Cohort ${htmlEscape(cohort || '')}</strong>):</p>
+          <p style="background-color: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e1; display: inline-block; font-size: 14px; line-height: 1.5;">
+            <strong>Name:</strong> ${htmlEscape(leaderDetails.name)}<br/>
+            <strong>Phone Number:</strong> <a href="tel:${htmlEscape(leaderDetails.phone.replace(/\s+/g, ''))}" style="color: #0D21DD; text-decoration: none; font-weight: bold;">+91 ${htmlEscape(leaderDetails.phone)}</a>
           </p>
+          ` : `
+          <p>If you have any questions or require further assistance, please feel free to visit the helpdesk at the venue or contact our Organizing Team.</p>
+          `}
           
           <p>We look forward to seeing you!</p>
           <p>Best regards,<br/><strong>AARAMBH Team</strong></p>
@@ -272,15 +237,9 @@ export async function sendCheckInEmail(
   const mailOptions: any = {
     from: `"Aarambh Team" <${process.env.SMTP_FROM || ''}>`,
     to: toEmail,
-    subject: "Check-In Confirmation – Batch Details & Schedule",
+    subject: subject,
     html: htmlContent,
-    attachments: [
-      {
-        filename: pdfFileName,
-        content: Buffer.from(pdfBytes),
-        contentType: 'application/pdf'
-      }
-    ]
+    attachments: []
   };
 
   if (logoAttachment) {

@@ -136,3 +136,9 @@ $RECYCLE.BIN/
 ~*
 /venv/
 
+# Large PDF Assets
+public/Aarambh_2026_Schedule.pdf
+public/schedules/
+lib/Aarambh 2026 Schedule.pdf
+
+
