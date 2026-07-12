@@ -526,13 +526,20 @@ export const REGISTRATION_TO_COHORT: Record<string, string> = {
   "JKLU/B.TECH/2026/0832": "L3"
 };
 
+// Pre-calculate normalized mapping to support registration formats with/without dots, slashes, or dashes.
+const NORMALIZED_REG_TO_COHORT: Record<string, string> = {};
+for (const [key, val] of Object.entries(REGISTRATION_TO_COHORT)) {
+  const normalizedKey = key.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  NORMALIZED_REG_TO_COHORT[normalizedKey] = val;
+}
+
 /**
  * Returns the cohort name for a given registration number.
  */
 export function getStudentCohort(regNum: string): string | null {
   if (!regNum) return null;
-  const clean = regNum.replace(/\s+/g, '').toUpperCase();
-  return REGISTRATION_TO_COHORT[clean] || REGISTRATION_TO_COHORT[regNum] || null;
+  const clean = regNum.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return NORMALIZED_REG_TO_COHORT[clean] || null;
 }
 
 /**
