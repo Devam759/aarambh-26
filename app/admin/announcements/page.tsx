@@ -119,6 +119,7 @@ export default function Announcements() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-admin-bg/50 border-b border-admin-border text-admin-muted text-sm uppercase tracking-wider">
+                  <th className="p-4 w-16 text-center border-r border-admin-border">S.No</th>
                   <th className="p-4 font-medium">Title</th>
                   <th className="p-4 font-medium">Posted At</th>
                   <th className="p-4 font-medium">Pinned</th>
@@ -127,8 +128,11 @@ export default function Announcements() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-admin-border">
-                {announcements.map((ann) => (
+                {announcements.map((ann, idx) => (
                   <tr key={ann.id} className="hover:bg-white/5 transition-colors group">
+                    <td className="p-4 text-center border-r border-admin-border text-admin-muted font-medium">
+                      {idx + 1}
+                    </td>
                     <td className="p-4 font-medium">
                       {ann.isPinned && <Pin size={14} className="inline mr-2 text-admin-accent" />}
                       {ann.title}
@@ -159,7 +163,7 @@ export default function Announcements() {
                 ))}
                 {announcements.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-admin-muted">
+                    <td colSpan={6} className="p-8 text-center text-admin-muted">
                       No announcements found.
                     </td>
                   </tr>

@@ -155,6 +155,7 @@ export default function ScannerAccounts() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-admin-bg/50 border-b border-admin-border text-admin-muted text-sm uppercase tracking-wider">
+                  <th className="p-4 w-16 text-center border-r border-admin-border">S.No</th>
                   <th className="p-4 font-medium">Scanner ID</th>
                   <th className="p-4 font-medium">Volunteer Name</th>
                   <th className="p-4 font-medium">Status</th>
@@ -163,8 +164,11 @@ export default function ScannerAccounts() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-admin-border">
-                {scanners.map((scanner) => (
+                {scanners.map((scanner, idx) => (
                   <tr key={scanner.id} className="hover:bg-white/5 transition-colors group">
+                    <td className="p-4 text-center border-r border-admin-border text-admin-muted font-medium">
+                      {idx + 1}
+                    </td>
                     <td className="p-4 font-medium">{scanner.scannerId}</td>
                     <td className="p-4">{scanner.volunteerName}</td>
                     <td className="p-4">
@@ -197,7 +201,7 @@ export default function ScannerAccounts() {
                 ))}
                 {scanners.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-admin-muted">
+                    <td colSpan={6} className="p-8 text-center text-admin-muted">
                       No scanner accounts found.
                     </td>
                   </tr>

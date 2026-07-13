@@ -18,6 +18,8 @@ export default function AdminDashboard() {
     loading: true
   });
 
+
+
   useEffect(() => {
     const unsubRegs = onSnapshot(collection(db, 'registrations'), (snap) => {
       const allRegs = snap.docs.map(d => d.data());

@@ -144,6 +144,7 @@ export default function CouponsPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
+                  <th className="p-4 w-16 text-center border-r-2 border-brand-ink/15">S.No</th>
                   <th className="p-4">Coupon Code</th>
                   <th className="p-4">Fixed Amount (Rs.)</th>
                   <th className="p-4">Status</th>
@@ -151,8 +152,11 @@ export default function CouponsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-ink/10">
-                {coupons.map((coupon) => (
+                {coupons.map((coupon, idx) => (
                   <tr key={coupon.id} className="hover:bg-brand-cloud/45 transition-colors text-xs font-bold text-brand-ink">
+                    <td className="p-4 text-center border-r-2 border-brand-ink/15 text-admin-muted font-black">
+                      {idx + 1}
+                    </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         <CustomTagIcon size={14} className="text-brand-orange" />
@@ -187,7 +191,7 @@ export default function CouponsPage() {
                 ))}
                 {coupons.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
+                    <td colSpan={5} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
                       No dynamic coupons found. (Environment variable coupons may still be active).
                     </td>
                   </tr>

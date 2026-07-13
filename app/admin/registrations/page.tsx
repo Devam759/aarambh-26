@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../../lib/firebase';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, serverTimestamp, getDoc, setDoc, addDoc } from 'firebase/firestore';
+import { db, auth } from '../../../lib/firebase';
 import { SkeletonTable } from '../../../components/admin/SkeletonLoader';
 import { Modal } from '../../../components/admin/Modal';
 import { logAdminAction } from '../../../lib/audit';
@@ -154,6 +154,41 @@ export default function Registrations() {
   const [emailSendingState, setEmailSendingState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [emailSendingMessage, setEmailSendingMessage] = useState('');
   const [serviceEnabled, setServiceEnabled] = useState(true);
+
+  const [reconciling, setReconciling] = useState(false);
+  const [reconMessage, setReconMessage] = useState('');
+  const [reconState, setReconState] = useState<'idle' | 'running' | 'done' | 'error'>('idle');
+
+  const handleTriggerReconcile = async () => {
+    if (!confirm('Are you sure you want to run the 9 PM reconciliation sync now?')) return;
+    setReconState('running');
+    setReconMessage('Starting reconciliation...');
+    setReconciling(true);
+    try {
+      const res = await fetch('/api/admin/reconcile-settlements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ manual: true })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setReconState('done');
+        setReconMessage(data.message || 'Reconciliation completed successfully!');
+      } else {
+        setReconState('error');
+        setReconMessage(data.error || data.message || 'Reconciliation failed.');
+      }
+    } catch (err: any) {
+      setReconState('error');
+      setReconMessage(err.message || 'An error occurred.');
+    } finally {
+      setReconciling(false);
+      setTimeout(() => {
+        setReconState('idle');
+        setReconMessage('');
+      }, 6000);
+    }
+  };
 
   // 1. Fetch Registrations Data& Sorting
   const [currentPage, setCurrentPage] = useState(1);
@@ -530,6 +565,20 @@ export default function Registrations() {
           >
             <span>Daily Reconciler: {serviceEnabled ? 'ON' : 'OFF'}</span>
           </button>
+          <button
+            onClick={handleTriggerReconcile}
+            disabled={loading || reconciling}
+            className={`comic-btn-orange flex items-center gap-2 ${
+              reconciling ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
+          >
+            {reconciling ? (
+              <svg className="animate-spin" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            ) : (
+              <CustomUsersIcon size={16} />
+            )}
+            {reconciling ? 'Reconciling...' : 'Run 9PM Automation'}
+          </button>
           <button 
             onClick={exportCSV}
             disabled={loading || registrations.length === 0}
@@ -559,6 +608,17 @@ export default function Registrations() {
           'bg-red-100 text-red-900'
         }`}>
           {emailSendingMessage}
+        </div>
+      )}
+
+      {/* Reconciliation status feedback banner */}
+      {reconState !== 'idle' && (
+        <div className={`border-4 border-brand-ink rounded-md px-5 py-3 text-sm font-bold shadow-[4px_4px_0px_0px_#030404] ${
+          reconState === 'running' ? 'bg-blue-100 text-blue-900' :
+          reconState === 'done' ? 'bg-green-100 text-green-900' :
+          'bg-red-100 text-red-900'
+        }`}>
+          {reconMessage}
         </div>
       )}
 
@@ -631,6 +691,7 @@ export default function Registrations() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
+                  <th className="p-4 w-16 text-center border-r-2 border-brand-ink/15">S.No</th>
                   <th className="p-4 cursor-pointer hover:text-brand-orange " onClick={() => handleSort('name')}>
                     Name {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
@@ -649,8 +710,11 @@ export default function Registrations() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-ink/10">
-                {paginatedRegistrations.map((reg) => (
+                {paginatedRegistrations.map((reg, idx) => (
                   <tr key={reg.id} className="hover:bg-brand-cloud/45 transition-colors text-xs font-bold text-brand-ink">
+                    <td className="p-4 text-center border-r-2 border-brand-ink/15 text-admin-muted font-black">
+                      {(currentPage - 1) * itemsPerPage + idx + 1}
+                    </td>
                     <td className="p-4 font-black">
                       {reg.name}
                       {reg.isTest && (
@@ -697,7 +761,7 @@ export default function Registrations() {
                 ))}
                 {paginatedRegistrations.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
+                    <td colSpan={8} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
                       No matching registration logs found.
                     </td>
                   </tr>
@@ -858,9 +922,11 @@ export default function Registrations() {
                     <p className="text-[10px] font-black text-admin-muted mb-1.5 uppercase tracking-wider font-adminBody">Entry Status</p>
                     <select
                       value={selectedReg.hasEntered ? 'approved' : (selectedReg.status === 'declined' ? 'declined' : 'not entered')}
-                      onChange={async (e) => {
+                       onChange={async (e) => {
                         const newStatus = e.target.value;
                         const regRef = doc(db, 'registrations', selectedReg.id);
+                        const user = auth?.currentUser;
+                        const adminIdentifier = user?.email || user?.uid || 'ADMIN_MANUAL';
                         
                         try {
                           if (newStatus === 'approved') {
@@ -870,6 +936,14 @@ export default function Registrations() {
                               enteredAt: serverTimestamp(),
                               enteredBy: 'ADMIN_MANUAL'
                             });
+                            await addDoc(collection(db, 'scanLogs'), {
+                              scannerId: 'ADMIN_MANUAL',
+                              volunteerName: adminIdentifier,
+                              registrationID: selectedReg.id,
+                              attendeeName: selectedReg.name || 'N/A',
+                              timestamp: serverTimestamp(),
+                              result: 'accepted'
+                            });
                             await logAdminAction('MANUAL_ENTRY_APPROVE', `registrations/${selectedReg.id}`, `Manually approved check-in for ${selectedReg.name}`);
                           } else if (newStatus === 'declined') {
                             await updateDoc(regRef, {
@@ -877,6 +951,14 @@ export default function Registrations() {
                               status: 'declined',
                               enteredAt: null,
                               enteredBy: null
+                            });
+                            await addDoc(collection(db, 'scanLogs'), {
+                              scannerId: 'ADMIN_MANUAL',
+                              volunteerName: adminIdentifier,
+                              registrationID: selectedReg.id,
+                              attendeeName: selectedReg.name || 'N/A',
+                              timestamp: serverTimestamp(),
+                              result: 'declined'
                             });
                             await logAdminAction('MANUAL_ENTRY_DECLINE', `registrations/${selectedReg.id}`, `Manually declined check-in for ${selectedReg.name}`);
                           } else {

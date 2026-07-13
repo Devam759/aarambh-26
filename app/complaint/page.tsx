@@ -792,6 +792,7 @@ export default function ComplaintPortalPage() {
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
                         <tr className="bg-brand-ink text-brand-cloud border-b-2 border-brand-ink uppercase font-display font-black tracking-wider">
+                          <th className="py-2.5 px-4 w-12 text-center border-r border-brand-cloud/10">S.No</th>
                           <th className="py-2.5 px-4">Department</th>
                           <th className="py-2.5 px-4">Examples of Complaints</th>
                           <th className="py-2.5 px-4">Handled By</th>
@@ -806,6 +807,7 @@ export default function ComplaintPortalPage() {
                           { dept: "Other", ex: "Anything that doesn't fit above categories", by: "Feedback Team Decides" }
                         ].map((row, rIdx) => (
                           <tr key={rIdx} className={rIdx % 2 === 1 ? 'bg-brand-cloud/30' : 'bg-white'}>
+                            <td className="py-2.5 px-4 text-center border-r border-brand-ink/10">{rIdx + 1}</td>
                             <td className="py-2.5 px-4 font-black uppercase text-brand-pink">{row.dept}</td>
                             <td className="py-2.5 px-4">{row.ex}</td>
                             <td className="py-2.5 px-4 text-brand-blue">{row.by}</td>

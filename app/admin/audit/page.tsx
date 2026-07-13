@@ -186,6 +186,7 @@ export default function AuditLogs() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
+                  <th className="p-4 w-16 text-center border-r-2 border-brand-ink/15">S.No</th>
                   <th className="p-4">Timestamp</th>
                   <th className="p-4">Performed By</th>
                   <th className="p-4">Action</th>
@@ -194,10 +195,20 @@ export default function AuditLogs() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-ink/10">
-                {paginatedLogs.map((log) => (
+                {paginatedLogs.map((log, idx) => (
                   <tr key={log.id} className="hover:bg-brand-cloud/45 transition-colors text-xs font-bold text-brand-ink">
-                    <td className="p-4 text-admin-muted font-semibold">
-                      {log.timestamp ? log.timestamp.toDate().toLocaleString() : ''}
+                    <td className="p-4 text-center border-r-2 border-brand-ink/15 text-admin-muted font-black">
+                      {(currentPage - 1) * itemsPerPage + idx + 1}
+                    </td>
+                    <td className="p-4 text-admin-muted font-semibold whitespace-nowrap">
+                      {log.timestamp ? (
+                        <div>
+                          <div>{log.timestamp.toDate().toLocaleDateString()}</div>
+                          <div className="text-[10px] font-normal text-admin-muted/80 mt-0.5">
+                            {log.timestamp.toDate().toLocaleTimeString()}
+                          </div>
+                        </div>
+                      ) : ''}
                     </td>
                     <td className="p-4 font-black">{log.performedBy}</td>
                     <td className="p-4">
@@ -213,7 +224,7 @@ export default function AuditLogs() {
                 ))}
                 {paginatedLogs.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
+                    <td colSpan={6} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
                       No matching audit logs found.
                     </td>
                   </tr>

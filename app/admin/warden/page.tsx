@@ -180,6 +180,7 @@ export default function AdminWardenPortal() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-brand-ink text-white font-adminHeading text-[10px] tracking-wider uppercase border-b-2 border-brand-ink">
+                    <th className="py-4 px-4 w-16 text-center border-r-2 border-brand-ink/20">S.No</th>
                     <th className="py-4 px-4 font-black">Student Details</th>
                     <th className="py-4 px-4 font-black">Application No.</th>
                     <th className="py-4 px-4 font-black">Course</th>
@@ -189,11 +190,14 @@ export default function AdminWardenPortal() {
                 </thead>
                 <tbody className="divide-y-2 divide-brand-ink/10 text-brand-ink font-bold text-xs">
                   {filteredStudents.length > 0 ? (
-                    filteredStudents.map((student) => {
+                    filteredStudents.map((student, idx) => {
                       const isAssigned = student.hostelAssignment === hostelDisplayName && student.roomNumber;
                       
                       return (
                         <tr key={student.id} className="hover:bg-brand-cloud/20 transition-colors">
+                          <td className="py-4 px-4 text-center border-r-2 border-brand-ink/10 text-admin-muted font-black">
+                            {idx + 1}
+                          </td>
                           {/* Name Details */}
                           <td className="py-4 px-4">
                             <div className="font-extrabold text-sm uppercase">{student.name}</div>
@@ -244,7 +248,7 @@ export default function AdminWardenPortal() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-admin-muted uppercase tracking-widest">
+                      <td colSpan={6} className="py-8 text-center text-admin-muted uppercase tracking-widest">
                         No matching student records found.
                       </td>
                     </tr>

@@ -120,6 +120,7 @@ export default function ScanRecordsView() {
           <table className="w-full border-collapse text-left text-xs font-bold">
             <thead>
               <tr className="border-b-2 border-brand-ink uppercase text-[10px] text-admin-muted tracking-wider">
+                <th className="pb-3 w-12 text-center border-r-2 border-brand-ink/10">S.No</th>
                 <th className="pb-3 pr-4 font-black">Attendee Info</th>
                 <th className="pb-3 px-4 font-black">Registration ID</th>
                 <th className="pb-3 px-4 font-black">Result</th>
@@ -128,11 +129,14 @@ export default function ScanRecordsView() {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-ink/5">
-              {filteredLogs.map((log) => {
+              {filteredLogs.map((log, idx) => {
                 const isAccepted = log.result === 'accepted';
                 
                 return (
                   <tr key={log.id} className="group hover:bg-brand-cloud/20 transition-colors">
+                    <td className="py-3.5 text-center border-r-2 border-brand-ink/10 text-admin-muted font-black">
+                      {idx + 1}
+                    </td>
                     <td className="py-3.5 pr-4">
                       <div className="font-black text-brand-ink text-sm uppercase">{log.attendeeName}</div>
                     </td>
@@ -158,7 +162,7 @@ export default function ScanRecordsView() {
 
               {filteredLogs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-admin-muted">
+                  <td colSpan={6} className="py-12 text-center text-admin-muted">
                     <AlertCircle className="mx-auto mb-2 text-admin-muted/30" size={32} />
                     <span className="text-[10px] font-black uppercase tracking-wider block text-brand-ink/50">No verification records found</span>
                     <span className="text-[8px] font-bold uppercase tracking-wider block text-admin-muted/60 mt-1">

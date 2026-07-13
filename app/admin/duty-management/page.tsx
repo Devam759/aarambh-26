@@ -1126,6 +1126,7 @@ export default function DutyManagement() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-brand-cloud border-b-2 border-brand-ink text-brand-ink text-[10px] font-black uppercase tracking-widest">
+                  <th className="p-4 w-16 text-center border-r-2 border-brand-ink/15">S.No</th>
                   <th className="p-4 max-w-[140px] whitespace-normal">Volunteer Name</th>
                   <th className="p-4 max-w-[130px] whitespace-normal">Team</th>
                   <th className="p-4 whitespace-normal">Date</th>
@@ -1137,8 +1138,11 @@ export default function DutyManagement() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand-ink/10">
-                {filteredDuties.map((duty) => (
+                {filteredDuties.map((duty, idx) => (
                   <tr key={duty.id} className="hover:bg-brand-cloud/45 transition-colors text-xs font-bold text-brand-ink">
+                    <td className="p-4 text-center border-r-2 border-brand-ink/15 text-admin-muted font-black">
+                      {idx + 1}
+                    </td>
                     <td className="p-4 font-black max-w-[140px] whitespace-normal break-words">{duty.volunteerName}</td>
                     <td className="p-4 text-brand-ink/90 font-semibold max-w-[130px] whitespace-normal break-words">{duty.team}</td>
                     <td className="p-4 text-admin-muted font-bold whitespace-normal">
@@ -1207,7 +1211,7 @@ export default function DutyManagement() {
                 ))}
                 {filteredDuties.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
+                    <td colSpan={9} className="p-8 text-center text-admin-muted font-black text-xs uppercase tracking-wider">
                       No duty assignments found matching the criteria.
                     </td>
                   </tr>

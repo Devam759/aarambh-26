@@ -119,6 +119,7 @@ export default function EventManagement() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-admin-bg/50 border-b border-admin-border text-admin-muted text-sm uppercase tracking-wider">
+                  <th className="p-4 w-16 text-center border-r border-admin-border">S.No</th>
                   <th className="p-4 font-medium">Title</th>
                   <th className="p-4 font-medium">Category</th>
                   <th className="p-4 font-medium">Date & Time</th>
@@ -128,8 +129,11 @@ export default function EventManagement() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-admin-border">
-                {events.map((evt) => (
+                {events.map((evt, idx) => (
                   <tr key={evt.id} className="hover:bg-white/5 transition-colors group">
+                    <td className="p-4 text-center border-r border-admin-border text-admin-muted font-medium">
+                      {idx + 1}
+                    </td>
                     <td className="p-4 font-medium">{evt.title}</td>
                     <td className="p-4 capitalize">{evt.category}</td>
                     <td className="p-4 text-sm">
