@@ -443,6 +443,10 @@ export default function Registrations() {
     return registrations.filter(reg => !reg.emailSent).length;
   }, [registrations]);
 
+  const unsyncedCount = useMemo(() => {
+    return registrations.filter(reg => !reg.sheetSynced).length;
+  }, [registrations]);
+
   const handleSendUnsentEmails = async () => {
     if (confirm(`Are you sure you want to send confirmation emails to all ${unsentCount} unsent users?`)) {
       setEmailSendingState('sending');
@@ -543,20 +547,22 @@ export default function Registrations() {
           >
             <CustomSheetIcon size={16} /> Google Sheet
           </a>
-          <button
-            onClick={handleSyncSheet}
-            disabled={loading || syncState === 'syncing'}
-            className={`comic-btn-blue flex items-center gap-2 ${
-              syncState === 'syncing' ? 'opacity-70 cursor-not-allowed' : ''
-            }`}
-          >
-            {syncState === 'syncing' ? (
-              <svg className="animate-spin" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-            ) : (
-              <CustomSheetIcon size={16} />
-            )}
-            {syncState === 'syncing' ? 'Syncing...' : 'Sync to Sheet'}
-          </button>
+          {unsyncedCount > 0 && (
+            <button
+              onClick={handleSyncSheet}
+              disabled={loading || syncState === 'syncing'}
+              className={`comic-btn-blue flex items-center gap-2 ${
+                syncState === 'syncing' ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
+            >
+              {syncState === 'syncing' ? (
+                <svg className="animate-spin" width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              ) : (
+                <CustomSheetIcon size={16} />
+              )}
+              {syncState === 'syncing' ? 'Syncing...' : `Sync to Sheet (${unsyncedCount})`}
+            </button>
+          )}
           <button
             onClick={handleToggleService}
             className={`flex items-center gap-2 ${

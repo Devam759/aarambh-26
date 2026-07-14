@@ -19,13 +19,27 @@ cashfree.XApiVersion = '2023-08-01';
 // Server-side in-memory cache for resolved pincodes to ensure 0ms latency on repeated queries
 const pincodeCache = new Map<string, any>();
 
+/** Decode HTML entities introduced by sanitizeInput back to plain text for fields
+ * that go to Cashfree (name, email). Cashfree rejects HTML-encoded strings. */
+function decodeHtmlEntities(str: string): string {
+  if (!str || typeof str !== 'string') return str;
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
 export async function POST(req: Request) {
   try {
     const rawIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
     const ip = rawIp.split(',')[0].trim(); // Take only the first (leftmost) IP — prevent x-forwarded-for spoofing
-    
-    // Use unified security rate limiting: max 5 requests per minute
-    if (isRateLimited(ip, 5, 60 * 1000)) {
+
+    // Rate limit is applied AFTER we know the action, so lightweight lookups
+    // (pincode/coupon) don't exhaust the quota that CREATE_ORDER needs.
+    // We still apply a broad guard here to reject obvious floods before parsing body.
+    if (isRateLimited(ip, 30, 60 * 1000)) {
       return NextResponse.json({ error: 'Too many attempts. Please try again in a minute.' }, { status: 429 });
     }
 
@@ -65,6 +79,10 @@ export async function POST(req: Request) {
     };
 
     if (action === 'VERIFY_COUPON') {
+      // Coupon checks: max 10 per minute per IP (generous for legitimate users)
+      if (isRateLimited(`${ip}:coupon`, 10, 60 * 1000)) {
+        return NextResponse.json({ error: 'Too many coupon attempts. Please wait a moment.' }, { status: 429 });
+      }
       const code = (data.coupon || '').trim().toUpperCase();
       const couponStatus = await checkCoupon(code);
       return NextResponse.json(couponStatus);
@@ -107,6 +125,10 @@ export async function POST(req: Request) {
 
 
     if (action === 'CREATE_ORDER') {
+      // CREATE_ORDER: strict — max 3 per minute per IP to prevent order spam
+      if (isRateLimited(`${ip}:order`, 3, 60 * 1000)) {
+        return NextResponse.json({ error: 'Too many payment attempts. Please wait a minute and try again.' }, { status: 429 });
+      }
       try {
         if (!data.registrationNumber || !validateRegistrationNumber(data.registrationNumber)) {
           console.warn("Invalid registration number received:", data.registrationNumber);
@@ -166,18 +188,24 @@ export async function POST(req: Request) {
           ? ((isProd) ? `https://${host}` : `http://${host}`)
           : (process.env.NEXT_PUBLIC_SITE_URL || 'https://aarambh.jklu.edu.in');
 
+        // Decode HTML entities that sanitizeInput may have introduced — Cashfree
+        // rejects encoded strings like &amp; or &#039; in customer name/email.
+        const cashfreeName = decodeHtmlEntities(data.name || '');
+        const cashfreeEmail = decodeHtmlEntities(data.email || '');
+
         const response = await cashfree.PGCreateOrder({
           order_id: orderId,
           order_amount: orderAmount,
           order_currency: 'INR',
           customer_details: {
             customer_id: (data.registrationNumber || `cust_${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
-            customer_name: data.name,
-            customer_email: data.email,
+            customer_name: cashfreeName,
+            customer_email: cashfreeEmail,
             customer_phone: cleanPhone,
           },
           order_meta: {
             return_url: `${origin}/register?order_id={order_id}`,
+            notify_url: `https://aarambh.jklu.edu.in/api/webhook`
           }
         });
         console.log("Cashfree order created successfully.");
@@ -187,8 +215,9 @@ export async function POST(req: Request) {
           payment_session_id: response.data.payment_session_id 
         });
       } catch (err: any) {
+        // Log full Cashfree error server-side only — never expose API response bodies to the client
         console.error("CREATE_ORDER error detail:", err.response?.data || err);
-        return NextResponse.json({ error: `CREATE_ORDER failed: ${err.response?.data ? JSON.stringify(err.response.data) : err.message || err}` }, { status: 500 });
+        return NextResponse.json({ error: 'Payment session could not be created. Please try again.' }, { status: 500 });
       }
     }
 
@@ -255,6 +284,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error: any) {
     console.error('Registration API Error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to process registration' }, { status: 500 });
+    try {
+      const errorDetails = `Registration API Error: ${error.message}\n\nStack:\n${error.stack || 'No stack trace available'}`;
+      await adminDb.collection('auditLogs').add({
+        timestamp: FieldValue.serverTimestamp(),  
+        action: 'SYSTEM_ERROR',
+        performedBy: 'System (Register API)',
+        targetEntity: 'api/register',
+        details: errorDetails
+      });
+    } catch (logErr) {
+      console.error("Failed to log registration system error:", logErr);
+    }
+    return NextResponse.json({ error: 'An unexpected error occurred. Please try again.' }, { status: 500 });
   }
 }

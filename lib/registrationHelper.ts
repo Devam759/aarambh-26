@@ -552,7 +552,36 @@ export async function finalizeRegistration(formData: any, paymentId: string, ord
       if (!existingRegQuery.empty) {
         docId = existingRegQuery.docs[0].id;
       } else {
-        console.warn("Database lock existed but registration not found? Proceeding with empty ID...");
+        console.warn("Database lock existed but registration not found. Creating fallback registration document...");
+        const docRef = await adminDb.collection('registrations').add({
+          ...formData,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.mobile,
+          rollNumber: formData.registrationNumber,
+          gender: formData.gender || 'N/A',
+          course: formData.course || 'N/A',
+          pincode: formData.pincode || (formData.address ? (formData.address.match(/\b\d{6}\b/)?.[0] || 'N/A') : 'N/A'),
+          region: formData.region || 'N/A',
+          city: formData.city || 'N/A',
+          parentName: parentName,
+          parentPhone: parentPhone,
+          parentEmail: parentEmail,
+          paymentAmount: paymentAmount,
+          receivedAmount: paymentAmount,
+          dateOfPayment: dateOfPayment,
+          dateGroup: dateGroup,
+          hasEntered: false,
+          paymentId: paymentId,
+          orderId: orderId,
+          sheetSynced: false,
+          emailSent: false,
+          emailSentAt: null,
+          emailError: null,
+          registeredAt: FieldValue.serverTimestamp(),
+        });
+        docId = docRef.id;
+        console.log("Registration saved via lock fallback. Firestore ID:", docId);
       }
     } else {
       throw err;

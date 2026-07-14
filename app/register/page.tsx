@@ -320,7 +320,11 @@ function RegisterContent() {
       }
 
       if (!res.ok) {
-        throw new Error(order?.error || `Server returned ${res.status}`);
+        // Attach the HTTP status to the error so the catch block can classify it
+        // without leaking any response body content to users.
+        const err = new Error(order?.error || `Server returned ${res.status}`) as any;
+        err.httpStatus = res.status;
+        throw err;
       }
       if (!order.payment_session_id) throw new Error('Failed to create payment session');
 
@@ -349,12 +353,30 @@ function RegisterContent() {
         }
       });
 
-    } catch (error) {
-      console.error("Payment error:", error);
-      alert('Failed to initiate payment. Please try again.');
+    } catch (error: any) {
+      // Log full details for debugging — NEVER expose raw error messages to the user
+      // as they can reveal internal API structure, Cashfree payloads, or server logic.
+      console.error("Payment error (internal):", error);
+
+      // Use the explicitly attached httpStatus — plain Error objects have no .status property
+      const httpStatus = error?.httpStatus || 0;
+      const msg = (error?.message || '').toLowerCase();
+
+      if (httpStatus === 429 || msg.includes('too many')) {
+        alert('Too many attempts. Please wait a minute before trying again.');
+      } else if (httpStatus === 400 && msg.includes('application number')) {
+        alert('Your Application Number format is incorrect. Please use the format: JKLU/BBA/2025/0310');
+      } else {
+        // Generic safe message — reveals nothing about internals
+        alert('We were unable to initiate your payment. Please check your details and try again. If the problem persists, contact support.');
+      }
     } finally {
       setIsProcessing(false);
     }
+
+
+
+
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {

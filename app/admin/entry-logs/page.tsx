@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { SkeletonTable } from '../../../components/admin/SkeletonLoader';
 
@@ -64,6 +64,7 @@ const CustomClockIcon = ({ className = '', size = 14 }: { className?: string; si
 
 export default function EntryLogs() {
   const [logs, setLogs] = useState<any[]>([]);
+  const [enteredRegs, setEnteredRegs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filters State
@@ -85,6 +86,25 @@ export default function EntryLogs() {
     });
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    // Fetch all entered registrations for gender/course breakdown stats
+    const unsub = onSnapshot(
+      query(collection(db, 'registrations'), where('hasEntered', '==', true)),
+      (snap) => {
+        setEnteredRegs(snap.docs.map(d => d.data()));
+      }
+    );
+    return () => unsub();
+  }, []);
+
+  // Compute breakdown stats from entered registrations
+  const stats = useMemo(() => {
+    const total = enteredRegs.length;
+    const male = enteredRegs.filter(r => (r.gender || '').toLowerCase() === 'male').length;
+    const female = enteredRegs.filter(r => (r.gender || '').toLowerCase() === 'female').length;
+    return { total, male, female };
+  }, [enteredRegs]);
 
   // Filter logs dynamically
   const filteredLogs = useMemo(() => {
@@ -126,12 +146,35 @@ export default function EntryLogs() {
   const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
 
   return (
-    <div className="space-y-8 ">
+    <div className="space-y-8">
       {/* Title Header */}
       <div>
         <h1 className="font-adminHeading text-3xl font-black uppercase tracking-tight text-brand-ink mb-1.5">Entry Logs</h1>
-        <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Real-time attendance & gate verification logs</p>
+        <p className="text-admin-muted font-bold text-xs uppercase tracking-wider">Real-time attendance &amp; gate verification logs</p>
       </div>
+
+      {/* Stats Bar */}
+      {!loading && stats.total > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          {/* Total */}
+          <div className="bg-brand-ink text-white border-4 border-brand-ink rounded-md shadow-[4px_4px_0px_0px_#030404] p-4 flex flex-col items-center justify-center text-center col-span-2 sm:col-span-1">
+            <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">Total Checked In</p>
+            <p className="font-adminHeading text-4xl font-black">{stats.total}</p>
+          </div>
+
+          {/* Male */}
+          <div className="bg-blue-50 border-4 border-brand-ink rounded-md shadow-[4px_4px_0px_0px_#030404] p-4 flex flex-col items-center justify-center text-center">
+            <p className="text-[9px] font-black uppercase tracking-widest text-brand-ink/60 mb-1">Male</p>
+            <p className="font-adminHeading text-3xl font-black text-blue-700">{stats.male}</p>
+          </div>
+
+          {/* Female */}
+          <div className="bg-pink-50 border-4 border-brand-ink rounded-md shadow-[4px_4px_0px_0px_#030404] p-4 flex flex-col items-center justify-center text-center">
+            <p className="text-[9px] font-black uppercase tracking-widest text-brand-ink/60 mb-1">Female</p>
+            <p className="font-adminHeading text-3xl font-black text-pink-600">{stats.female}</p>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Filter Toggle Button */}
       <div className="md:hidden mt-4">
@@ -141,7 +184,7 @@ export default function EntryLogs() {
         >
           <div className="flex items-center gap-2">
             <CustomFilterIcon size={16} />
-            <span className="font-adminHeading text-sm font-black uppercase tracking-widest mt-1">Search & Filters</span>
+            <span className="font-adminHeading text-sm font-black uppercase tracking-widest mt-1">Search &amp; Filters</span>
           </div>
           <span className="text-xs font-bold uppercase tracking-widest text-brand-orange">
             {isMobileFiltersOpen ? 'Hide' : 'Show'}

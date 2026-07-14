@@ -36,6 +36,17 @@ export async function POST(req: Request) {
       const isValid = verifyCashfreeSignature(signature, rawBody, timestamp);
       if (!isValid) {
         console.error("CRITICAL SECURITY DANGER: Fake Cashfree Webhook signature mismatch detected in production!");
+        // Log details to Firestore for diagnostic purposes
+        await adminDb.collection('webhookLogs').add({
+          timestamp: FieldValue.serverTimestamp(),
+          ip,
+          signature,
+          timestampHeader: timestamp,
+          rawBodyLength: rawBody.length,
+          success: false,
+          error: 'Signature verification failed',
+          rawBodyPreview: rawBody.slice(0, 300)
+        }).catch(err => console.error("Failed to log signature mismatch to Firestore:", err));
         return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
       }
       console.log("Cashfree Webhook signature successfully verified.");
@@ -61,18 +72,40 @@ export async function POST(req: Request) {
       payload = JSON.parse(rawBody);
     } catch (err) {
       console.warn("Invalid or empty webhook JSON payload received:", rawBody);
+      await adminDb.collection('webhookLogs').add({
+        timestamp: FieldValue.serverTimestamp(),
+        ip,
+        signature,
+        timestampHeader: timestamp,
+        rawBodyLength: rawBody.length,
+        success: false,
+        error: 'Invalid JSON payload',
+        rawBodyPreview: rawBody.slice(0, 300)
+      }).catch(logErr => console.error("Failed to log JSON error to Firestore:", logErr));
       return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
     }
-    
+
     const eventType = payload.event || payload.type || '';
+    const data = payload.data || {};
+    const order = data.order || {};
+    const orderId = order.order_id || order.orderId || '';
+
+    // Log the incoming verified webhook to Firestore for tracking
+    await adminDb.collection('webhookLogs').add({
+      timestamp: FieldValue.serverTimestamp(),
+      ip,
+      signature,
+      timestampHeader: timestamp,
+      rawBodyLength: rawBody.length,
+      success: true,
+      eventType,
+      orderId
+    }).catch(err => console.error("Failed to log success to Firestore:", err));
     console.log("Cashfree Webhook Received:", eventType);
 
     // 1. Check if it is a payment success event (Fail-safe for closed tabs)
     if (eventType === 'payment.success' || eventType === 'PAYMENT_SUCCESS' || eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
-      const data = payload.data || {};
-      const order = data.order || {};
       const payment = data.payment || {};
-      const orderId = order.order_id || order.orderId;
       const paymentId = payment.cf_payment_id || payment.cfPaymentId || "";
       
       console.log(`Processing payment success webhook for Order: ${orderId}, Payment ID: ${paymentId}`);
