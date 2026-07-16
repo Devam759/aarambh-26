@@ -1,9 +1,12 @@
 "use client";
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
+import { X } from 'lucide-react';
 
 export default function WhatIsAarambh() {
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   return (
     <section id="what-is-aarambh" className="py-16 md:py-24 px-4 md:px-8 relative overflow-hidden bg-brand-cloud">
       {/* Aurora Mesh Fluid Background */}
@@ -64,7 +67,7 @@ export default function WhatIsAarambh() {
               </h2>
             </div>
 
-            <div className="space-y-3 sm:space-y-4 border-comic bg-brand-cloud text-brand-ink p-4 sm:p-6 rounded-lg shadow-comic rotate-0 sm:rotate-1 bg-halftone-black">
+            <div className="space-y-3 sm:space-y-4 border-comic bg-brand-cloud text-brand-ink p-4 sm:p-6 rounded-lg bg-halftone-black">
               <p className="font-bold text-base sm:text-lg leading-relaxed">
                 Aarambh is JKLU&apos;s orientation program, designed to help new students connect, explore, and confidently begin their university journey.
               </p>
@@ -80,40 +83,82 @@ export default function WhatIsAarambh() {
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
                 href="/rules"
-                className="inline-block border-comic bg-brand-orange text-brand-ink px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-blue hover:text-brand-cloud transition-colors active:scale-[0.98]"
+                className="inline-block border-comic bg-brand-orange text-brand-ink px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider hover:bg-brand-blue hover:text-brand-cloud transition-colors active:scale-[0.98]"
               >
                 Rules & Regulations
               </Link>
               <Link
                 href="/faq"
-                className="inline-block border-comic bg-brand-blue text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
+                className="inline-block border-comic bg-brand-blue text-brand-cloud px-6 py-2.5 font-display text-sm font-black uppercase tracking-wider hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
               >
                 FAQ
               </Link>
             </div>
           </motion.div>
  
-          {/* Comic Frame Graphic (The Poster Image Placeholder) */}
+          {/* Comic Frame Graphic (The Poster Image) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative"
+            className="relative cursor-zoom-in"
+            onClick={() => setIsLightboxOpen(true)}
           >
-            <div className="relative border-comic bg-brand-ink p-2 rounded-xl transition-all hover:scale-[1.01] hover:-rotate-1 duration-300">
-              {/* Halftone graphic frame border overlay */}
-              <div className="w-full aspect-[3/4] rounded-lg border-2 border-brand-ink bg-brand-cloud flex flex-col items-center justify-center p-6 text-center select-none">
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-brand-ink/40 font-bold mb-2">Aarambh 2026</span>
-                <h3 className="font-display font-black text-2xl sm:text-3xl text-brand-blue uppercase tracking-tight leading-none">
-                  POSTER<br />COMING SOON
-                </h3>
-                <div className="w-12 h-1 bg-brand-orange mt-4 rounded-sm" />
-              </div>
+            {/* Image Container with exact 2:3 aspect ratio matching the image dimensions */}
+            <div className="relative w-full aspect-[2/3] rounded-xl border-2 border-brand-ink overflow-hidden bg-brand-cloud shadow-[4px_4px_0px_0px_#030404] transition-all hover:scale-[1.02] hover:-rotate-1 duration-300">
+              <Image
+                src="/poster.webp"
+                alt="Aarambh 2026 Poster"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 500px"
+                priority
+              />
             </div>
           </motion.div>
         </div>
       </div>
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-ink/90 p-4 backdrop-blur-sm cursor-zoom-out"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-6 right-6 border-2 border-brand-ink p-2 rounded-md bg-brand-orange text-brand-ink active:scale-95 transition-all hover:bg-brand-orange/90 z-[110]"
+              aria-label="Close poster view"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Poster Card in Modal */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="relative max-w-lg w-full max-h-[85vh] aspect-[2/3] border-2 border-brand-ink bg-brand-cloud rounded-xl overflow-hidden shadow-[8px_8px_0px_0px_rgba(3,4,4,0.3)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src="/poster.webp"
+                alt="Aarambh 2026 Poster"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 800px"
+                priority
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

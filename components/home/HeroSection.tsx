@@ -57,16 +57,17 @@ export default function HeroSection(_props: HeroSectionProps) {
               Where strangers become friends and dreams find direction.
             </p>
 
-            <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row md:mt-8 landscape:md:items-start">
+            <span className="mt-4 block font-display text-xs font-black uppercase tracking-[0.2em] text-brand-ink/60 sm:text-sm md:mt-6">
+              July 14, 2026
+            </span>
+
+            <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row md:mt-6 landscape:md:items-start">
               <Link
                 href="/register"
                 className="bg-brand-orange hover:bg-accent-dark text-brand-ink font-black py-3 px-7 border-2 border-brand-ink shadow-comic-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#030404] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 rounded-md uppercase tracking-wider text-sm"
               >
                 Register Now
               </Link>
-              <span className="font-display text-xs font-black uppercase tracking-[0.2em] text-brand-ink/60">
-                July 14, 2026
-              </span>
             </div>
           </div>
         </div>

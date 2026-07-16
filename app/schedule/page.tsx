@@ -184,8 +184,9 @@ export default function SchedulePage() {
             SCHEDULE
           </h1>
           <a
-            href="/schedule.pdf"
-            download
+            href="https://storage.googleapis.com/aarambh-26.firebasestorage.app/Aarambh_2026_Schedule.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 border-comic bg-white text-brand-ink px-8 py-3.5 font-display text-sm font-black uppercase tracking-wider shadow-comic hover:bg-brand-orange hover:text-brand-ink transition-colors active:scale-[0.98]"
           >
             <Download size={18} />

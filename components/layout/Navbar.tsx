@@ -197,7 +197,7 @@ export default function Navbar() {
 
           {/* Mobile menu toggle */}
           <button
-            className="lg:hidden border-2 border-brand-ink p-1.5 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_0px_#030404] rounded-md bg-brand-orange text-brand-ink"
+            className="lg:hidden border-2 border-brand-ink p-1.5 active:scale-95 transition-all rounded-md bg-brand-orange text-brand-ink"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -213,7 +213,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 shadow-[8px_8px_0px_0px_#030404] rounded-xl z-50 text-brand-ink"
+              className="lg:hidden absolute top-[calc(100%+0.75rem)] left-0 w-full bg-brand-cloud border-4 border-brand-ink p-6 flex flex-col gap-3 rounded-xl z-50 text-brand-ink"
             >
               {navLinks.map((link) => (
                 <Link
@@ -230,6 +230,24 @@ export default function Navbar() {
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity text-brand-ink font-mono text-xs">→</span>
                 </Link>
               ))}
+
+              <div className="h-[2px] bg-brand-ink/10 my-1 shrink-0" />
+              <div className="grid grid-cols-2 gap-3 mt-1 shrink-0">
+                <Link
+                  href="/feedback"
+                  onClick={(e) => handleNavClick(e, '/feedback')}
+                  className="flex items-center justify-center text-center text-xs font-display font-black tracking-wider uppercase py-2.5 px-3 border-2 border-brand-ink bg-brand-orange text-brand-ink hover:bg-brand-orange/90 active:scale-[0.98] transition-all rounded-lg"
+                >
+                  <span>Feedback</span>
+                </Link>
+                <Link
+                  href="/complaint"
+                  onClick={(e) => handleNavClick(e, '/complaint')}
+                  className="flex items-center justify-center text-center text-xs font-display font-black tracking-wider uppercase py-2.5 px-3 border-2 border-brand-ink bg-brand-blue text-brand-cloud hover:bg-brand-blue/90 active:scale-[0.98] transition-all rounded-lg"
+                >
+                  <span>Complaint</span>
+                </Link>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

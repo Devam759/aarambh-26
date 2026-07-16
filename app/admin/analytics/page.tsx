@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { collection, onSnapshot, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db, isFirebaseConfigured } from '@/lib/firebase';
@@ -360,10 +360,11 @@ function FeedbackAnalyticsContent() {
   const [configActiveBatch, setConfigActiveBatch] = useState<string>("Batch 1");
   const [batchForms, setBatchForms] = useState<Record<string, any[]>>({});
   const [isFormOpen, setIsFormOpen] = useState(true);
-  const [savingSettings, setSavingSettings] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [liveActiveDayId, setLiveActiveDayId] = useState<string>('Day 01');
   const [liveFormOpen, setLiveFormOpen] = useState<boolean>(true);
+
+  const isInitialMount = useRef(true);
 
   // Deep Dive Active Rating Question State
   const [selectedRatingQId, setSelectedRatingQId] = useState<string>('');
@@ -414,6 +415,7 @@ function FeedbackAnalyticsContent() {
       console.warn("Suggestions snapshot connection error / permission denied:", err);
     });
 
+    let isFirstLoad = true;
     const unsubSettings = onSnapshot(doc(db, 'settings', 'feedback'), (settingsDoc) => {
       try {
         let activeDayIdx = 0;
@@ -440,10 +442,13 @@ function FeedbackAnalyticsContent() {
         setLiveActiveDayId(dbActiveDayId);
         setLiveFormOpen(dbFormOpen);
 
-        // Sync local builder options on DB updates (only when first loading or saved)
-        setAccessActiveDayIdx(activeDayIdx);
-        setBatchForms(seededBatches);
-        setIsFormOpen(dbFormOpen);
+        // Sync local builder options on DB updates (only when first loading)
+        if (isFirstLoad) {
+          setAccessActiveDayIdx(activeDayIdx);
+          setBatchForms(seededBatches);
+          setIsFormOpen(dbFormOpen);
+          isFirstLoad = false;
+        }
       } catch (err) {
         console.error('Error loading settings:', err);
       }
@@ -820,13 +825,15 @@ function FeedbackAnalyticsContent() {
   const configQuestionsList = batchForms[builderActiveKey] || batchForms[configActiveBatch] || [];
 
   const handleAddQuestion = (type: 'rating' | 'text' | 'mcq' | 'date') => {
-    const newQuestion = {
+    const newQuestion: any = {
       id: `q_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       type,
       label: type === 'rating' ? 'New Star Rating Question' : type === 'text' ? 'New Written Question' : type === 'mcq' ? 'New Multiple Choice Question' : 'New Date Question',
-      options: type === 'mcq' ? ['Option 1', 'Option 2'] : undefined,
       required: false
     };
+    if (type === 'mcq') {
+      newQuestion.options = ['Option 1', 'Option 2'];
+    }
     setBatchForms((prev) => {
       const current = prev[builderActiveKey] || prev[configActiveBatch] || [...DEFAULT_GLOBAL_QUESTIONS];
       return { ...prev, [builderActiveKey]: [...current, newQuestion] };
@@ -913,36 +920,49 @@ function FeedbackAnalyticsContent() {
     });
   };
 
-  const handleSaveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSavingSettings(true);
-    setSaveSuccess(false);
+  // Auto-save settings and questions whenever they change, with debouncing for text input changes
+  useEffect(() => {
+    if (loading) return;
 
-    try {
-      const activeDayId = SCHEDULE_DATA[accessActiveDayIdx].day;
-      await setDoc(doc(db, 'settings', 'feedback'), {
-        activeDayId: activeDayId,
-        batchForms: batchForms,
-        isFormOpen: isFormOpen,
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
-
-      const performer = auth?.currentUser?.email || auth?.currentUser?.uid || 'Admin';
-      try {
-        const { logAdminAction } = await import('@/lib/audit');
-        await logAdminAction('FEEDBACK_SAVE_SETTINGS', 'settings/feedback', `Saved feedback settings: set active day to ${activeDayId}, form open: ${isFormOpen}`, performer);
-      } catch (err) {
-        console.error("Failed to log save settings action:", err);
-      }
-
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (err) {
-      console.error('Error saving settings:', err);
-    } finally {
-      setSavingSettings(false);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
     }
-  };
+
+    setSaveStatus('saving');
+
+    const delayDebounceFn = setTimeout(async () => {
+      if (!db) return;
+      try {
+        const activeDayId = SCHEDULE_DATA[accessActiveDayIdx]?.day || 'Day 01';
+        const sanitizedForms = JSON.parse(JSON.stringify(batchForms || {}));
+        
+        await setDoc(doc(db, 'settings', 'feedback'), {
+          activeDayId: activeDayId,
+          batchForms: sanitizedForms,
+          isFormOpen: isFormOpen ?? true,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+
+        const performer = auth?.currentUser?.email || auth?.currentUser?.uid || 'Admin';
+        try {
+          const { logAdminAction } = await import('@/lib/audit');
+          await logAdminAction('FEEDBACK_SAVE_SETTINGS', 'settings/feedback', `Auto-saved feedback settings: set active day to ${activeDayId}, form open: ${isFormOpen}`, performer);
+        } catch (err) {
+          console.error("Failed to log auto-save settings action:", err);
+        }
+
+        setSaveStatus('saved');
+      } catch (err) {
+        console.error('Error auto-saving settings:', err);
+        setSaveStatus('idle');
+      }
+    }, 1000); // Debounce for 1 second
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+    };
+  }, [batchForms, isFormOpen, accessActiveDayIdx, db, loading]);
 
   if (loading) {
     return (
@@ -1674,7 +1694,7 @@ function FeedbackAnalyticsContent() {
             </div>
           </div>
 
-          <form onSubmit={handleSaveSettings} className="space-y-8">
+          <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Active Day Selection */}
               <div className="bg-brand-cloud/40 border-2 border-brand-ink p-6 rounded-md shadow-comic-sm space-y-4 flex flex-col justify-between">
@@ -1740,22 +1760,27 @@ function FeedbackAnalyticsContent() {
               </div>
             </div>
 
-            {/* Save Button */}
-            <div className="flex items-center gap-4 border-t-2 border-brand-ink/10 pt-6">
-              <button
-                type="submit"
-                disabled={savingSettings}
-                className="comic-btn-primary border-4 shadow-[4px_4px_0px_0px_#030404]"
-              >
-                {savingSettings ? 'Saving Settings...' : 'Save Settings'}
-              </button>
-              {saveSuccess && (
-                <span className="text-xs font-black uppercase text-brand-pink tracking-wider animate-bounce">
-                  Settings Saved Successfully!
-                </span>
-              )}
+            {/* Auto-save Status Indicator */}
+            <div className="flex items-center justify-between gap-4 pt-6 border-t-2 border-brand-ink/10 text-xs font-black uppercase tracking-wider">
+              <div className="flex items-center gap-2">
+                {saveStatus === 'saving' && (
+                  <>
+                    <CustomLoaderIcon size={16} className="text-brand-pink shrink-0 animate-spin" />
+                    <span className="text-brand-pink">Saving changes to database...</span>
+                  </>
+                )}
+                {saveStatus === 'saved' && (
+                  <>
+                    <CustomCheckIcon size={16} className="text-green-600 shrink-0" />
+                    <span className="text-green-600">All changes saved live!</span>
+                  </>
+                )}
+                {saveStatus === 'idle' && (
+                  <span className="text-brand-ink/40">Ready</span>
+                )}
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       )}
 
@@ -1794,7 +1819,7 @@ function FeedbackAnalyticsContent() {
             </div>
           </div>
 
-          <form onSubmit={handleSaveSettings} className="space-y-8">
+          <div className="space-y-8">
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
               {/* Day Selection */}
@@ -2022,37 +2047,28 @@ function FeedbackAnalyticsContent() {
               </div>
             </div>
 
-            {/* Save controls */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-brand-ink">
-              <div className="shrink-0 text-center md:text-left">
-                {saveSuccess && (
-                  <span className="text-xs font-black uppercase text-green-600 tracking-wider flex items-center gap-1.5 justify-center md:justify-start font-mono">
-                    <CustomCheckIcon size={14} className="text-green-600 shrink-0" />
-                    <span>Form Builder settings saved live in database!</span>
-                  </span>
+            {/* Auto-save Status Indicator */}
+            <div className="flex items-center justify-between gap-4 pt-6 border-t-2 border-brand-ink text-xs font-black uppercase tracking-wider">
+              <div className="flex items-center gap-2">
+                {saveStatus === 'saving' && (
+                  <>
+                    <CustomLoaderIcon size={16} className="text-brand-pink shrink-0 animate-spin" />
+                    <span className="text-brand-pink">Saving changes to database...</span>
+                  </>
+                )}
+                {saveStatus === 'saved' && (
+                  <>
+                    <CustomCheckIcon size={16} className="text-green-600 shrink-0" />
+                    <span className="text-green-600">All changes saved live!</span>
+                  </>
+                )}
+                {saveStatus === 'idle' && (
+                  <span className="text-brand-ink/40">Ready</span>
                 )}
               </div>
-
-              <button
-                type="submit"
-                disabled={savingSettings}
-                className="comic-btn-primary px-12 py-4 border-4 shadow-[6px_6px_0px_0px_#030404] hover:shadow-[4px_4px_0px_0px_#030404] active:translate-x-[6px] active:translate-y-[6px] tracking-widest w-full md:w-auto font-black"
-              >
-                {savingSettings ? (
-                  <>
-                    <CustomLoaderIcon size={16} className="text-white animate-spin" />
-                    <span>Saving Configuration...</span>
-                  </>
-                ) : (
-                  <>
-                    <CustomCheckIcon size={16} className="text-white" />
-                    <span>Save Configuration Settings</span>
-                  </>
-                )}
-              </button>
             </div>
 
-          </form>
+          </div>
         </div>
       )}
 
