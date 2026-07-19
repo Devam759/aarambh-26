@@ -437,6 +437,34 @@ function RegisterContent() {
     formData.city.trim() !== '' &&
     formData.region.trim() !== '';
 
+  // Early return if registrations are closed
+  const REGISTRATIONS_CLOSED = true;
+  if (REGISTRATIONS_CLOSED && !isSuccess) {
+    return (
+      <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-28 pb-12 sm:p-6 sm:pt-32 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden animate-fade-in">
+        <ComicBackground />
+
+        <div className="max-w-md w-full bg-brand-cloud border-comic p-6 sm:p-8 md:p-12 text-center flex flex-col items-center rounded-2xl relative z-10">
+          <div className="w-16 h-16 rounded-full bg-brand-orange/10 border-2 border-brand-orange flex items-center justify-center mb-6">
+            <Lock size={32} className="text-brand-orange stroke-[3]" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bricks text-brand-ink mb-4 uppercase">
+            Registrations Closed
+          </h1>
+          <p className="font-sans font-medium text-sm text-brand-ink/70 mb-8 leading-relaxed">
+            Registrations for Aarambh &apos;26 are now officially closed. If you have any queries or require assistance, please contact the Aarambh organizing committee.
+          </p>
+          <button 
+            onClick={() => router.push('/contact')} 
+            className="w-full py-4 bg-brand-orange hover:bg-brand-orange/90 text-brand-cloud border-comic font-sans font-black text-sm uppercase tracking-wider rounded-xl comic-interactive cursor-pointer"
+          >
+            Contact Us
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isSuccess) {
     return (
       <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-28 pb-12 sm:p-6 sm:pt-32 selection:bg-brand-ink selection:text-brand-cloud text-brand-ink overflow-hidden">

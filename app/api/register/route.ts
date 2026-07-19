@@ -125,6 +125,9 @@ export async function POST(req: Request) {
 
 
     if (action === 'CREATE_ORDER') {
+      // Registrations are closed
+      return NextResponse.json({ error: 'Registrations for Aarambh 2026 are closed.' }, { status: 400 });
+
       // CREATE_ORDER: strict — max 3 per minute per IP to prevent order spam
       if (isRateLimited(`${ip}:order`, 3, 60 * 1000)) {
         return NextResponse.json({ error: 'Too many payment attempts. Please wait a minute and try again.' }, { status: 429 });
