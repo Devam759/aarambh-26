@@ -417,7 +417,9 @@ export default function FeedbackPortalManagementPage() {
   const [liveActiveDayId, setLiveActiveDayId] = useState<string>('Day 01');
   const [liveFormOpen, setLiveFormOpen] = useState<boolean>(true);
 
-  const isInitialMount = useRef(true);
+  // Only allow auto-save after Firebase has hydrated state for the first time.
+  // Without this, setState calls from the snapshot trigger the auto-save effects.
+  const hasLoadedFromDB = useRef(false);
 
   // Deep Dive Active Rating Question State
   const [selectedRatingQId, setSelectedRatingQId] = useState<string>('');
@@ -529,6 +531,9 @@ export default function FeedbackPortalManagementPage() {
           setBatchForms(seededBatches);
           setIsFormOpen(dbFormOpen);
           isFirstLoad = false;
+          // Mark DB as loaded AFTER state is set, so auto-save effects
+          // won't fire until the user makes a real change.
+          setTimeout(() => { hasLoadedFromDB.current = true; }, 0);
         }
       } catch (err) {
         console.error('Error loading settings:', err);
@@ -646,17 +651,47 @@ export default function FeedbackPortalManagementPage() {
   const activeQuestionsForFilter = useMemo(() => {
     const all: any[] = [];
     const addedLabels = new Set<string>();
-    Object.values(batchForms).forEach((questions) => {
-      (questions || []).forEach((q) => {
-        const normLabel = q.label.trim().toLowerCase();
-        if (!addedLabels.has(normLabel)) {
-          all.push(q);
-          addedLabels.add(normLabel);
+    
+    // 1. Gather questions from batchForms matching the selected day
+    Object.keys(batchForms).forEach((key) => {
+      if (selectedDayFilter === 'all' || key.startsWith(`${selectedDayFilter}_`)) {
+        const questions = batchForms[key] || [];
+        questions.forEach((q) => {
+          const normLabel = q.label.trim().toLowerCase();
+          if (!addedLabels.has(normLabel)) {
+            all.push(q);
+            addedLabels.add(normLabel);
+          }
+        });
+      }
+    });
+
+    // 2. Also gather questions from actual answers in filteredSubmissions (robust fallback for fallback form queries)
+    filteredSubmissions.forEach((f) => {
+      const answers = f.answers || {};
+      Object.keys(answers).forEach((qId) => {
+        const ans = answers[qId];
+        if (ans && ans.label) {
+          const normLabel = ans.label.trim().toLowerCase();
+          if (!addedLabels.has(normLabel)) {
+            all.push({
+              id: qId,
+              type: ans.type,
+              label: ans.label,
+              required: false
+            });
+            addedLabels.add(normLabel);
+          }
         }
       });
     });
-    return all.length > 0 ? all : DEFAULT_GLOBAL_QUESTIONS;
-  }, [batchForms]);
+
+    if (all.length === 0) {
+      return DEFAULT_GLOBAL_QUESTIONS;
+    }
+
+    return all;
+  }, [batchForms, selectedDayFilter, filteredSubmissions]);
 
   const ratingQuestionsList = useMemo(() => {
     return activeQuestionsForFilter.filter(q => q.type === 'rating');
@@ -822,7 +857,8 @@ export default function FeedbackPortalManagementPage() {
           total,
           distributions
         };
-      });
+      })
+      .filter((mcq) => mcq.distributions.length > 0);
   }, [activeQuestionsForFilter, questionStats]);
 
   const handleExportExcel = async () => {
@@ -1002,14 +1038,11 @@ export default function FeedbackPortalManagementPage() {
     });
   };
 
-  // Auto-save settings and questions whenever they change, with debouncing for text input changes
+  // Auto-save #1: Save active day + form open/close status (Access Control settings)
+  // Only fires when the admin explicitly changes the day or form visibility.
   useEffect(() => {
-    if (loading) return;
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
+    // Guard: do not save until DB has hydrated state for the first time.
+    if (!hasLoadedFromDB.current) return;
 
     setSaveStatus('saving');
 
@@ -1017,11 +1050,9 @@ export default function FeedbackPortalManagementPage() {
       if (!db) return;
       try {
         const activeDayId = SCHEDULE_DATA[accessActiveDayIdx]?.day || 'Day 01';
-        const sanitizedForms = JSON.parse(JSON.stringify(batchForms || {}));
-        
+
         await setDoc(doc(db, 'settings', 'feedback'), {
           activeDayId: activeDayId,
-          batchForms: sanitizedForms,
           isFormOpen: isFormOpen ?? true,
           updatedAt: serverTimestamp(),
         }, { merge: true });
@@ -1029,22 +1060,60 @@ export default function FeedbackPortalManagementPage() {
         const performer = user?.email || user?.uid || 'Feedback Operator';
         try {
           const { logAdminAction } = await import('../../lib/audit');
-          await logAdminAction('FEEDBACK_SAVE_SETTINGS', 'settings/feedback', `Auto-saved feedback settings: set active day to ${activeDayId}, form open: ${isFormOpen}`, performer);
+          await logAdminAction('FEEDBACK_SAVE_SETTINGS', 'settings/feedback', `Set active day to ${activeDayId}, form open: ${isFormOpen}`, performer);
         } catch (err) {
-          console.error("Failed to log auto-save settings action:", err);
+          console.error("Failed to log access settings save:", err);
         }
 
         setSaveStatus('saved');
       } catch (err) {
-        console.error('Error auto-saving settings:', err);
+        console.error('Error saving access settings:', err);
         setSaveStatus('idle');
       }
-    }, 1000); // Debounce for 1 second
+    }, 500);
 
     return () => {
       clearTimeout(delayDebounceFn);
     };
-  }, [batchForms, isFormOpen, accessActiveDayIdx, db, loading]);
+  }, [isFormOpen, accessActiveDayIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-save #2: Save batch form questions (Form Builder changes only)
+  // Does NOT touch activeDayId — prevents builder edits from overwriting the live day.
+  useEffect(() => {
+    // Guard: do not save until DB has hydrated state for the first time.
+    if (!hasLoadedFromDB.current) return;
+
+    setSaveStatus('saving');
+
+    const delayDebounceFn = setTimeout(async () => {
+      if (!db) return;
+      try {
+        const sanitizedForms = JSON.parse(JSON.stringify(batchForms || {}));
+
+        await setDoc(doc(db, 'settings', 'feedback'), {
+          batchForms: sanitizedForms,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+
+        const performer = user?.email || user?.uid || 'Feedback Operator';
+        try {
+          const { logAdminAction } = await import('../../lib/audit');
+          await logAdminAction('FEEDBACK_SAVE_FORMS', 'settings/feedback', `Auto-saved batch form questions`, performer);
+        } catch (err) {
+          console.error("Failed to log forms save:", err);
+        }
+
+        setSaveStatus('saved');
+      } catch (err) {
+        console.error('Error saving batch forms:', err);
+        setSaveStatus('idle');
+      }
+    }, 1000); // Longer debounce for text input
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+    };
+  }, [batchForms]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogout = async () => {
     let performer = 'Feedback Operator';
@@ -1397,8 +1466,8 @@ export default function FeedbackPortalManagementPage() {
                   <div className="flex-1 overflow-y-auto pr-1 space-y-6">
                     {dynamicTextAnswers.map((group, idx) => (
                       <div key={idx} className="space-y-3">
-                        <h4 className="text-[10px] font-black uppercase text-brand-pink tracking-wider border-b border-brand-pink/20 pb-1 leading-relaxed">
-                          Q: {group.label}
+                        <h4 className="text-[10px] font-black text-brand-pink tracking-wider border-b border-brand-pink/20 pb-1 leading-relaxed">
+                          <span className="uppercase">Q:</span> {group.label}
                         </h4>
                         
                         <div className="space-y-2">
@@ -1429,7 +1498,7 @@ export default function FeedbackPortalManagementPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {mcqStatsList.map((mcq) => (
                         <div key={mcq.id} className="space-y-4 border-2 border-brand-ink/10 p-4 rounded-md">
-                          <h3 className="text-xs font-black uppercase text-brand-pink tracking-wider leading-relaxed">
+                          <h3 className="text-xs font-black text-brand-pink tracking-wider leading-relaxed">
                             {mcq.label} <span className="text-[10px] font-bold text-brand-ink/40">({mcq.total} responses)</span>
                           </h3>
                           <div className="space-y-3">
@@ -1468,13 +1537,13 @@ export default function FeedbackPortalManagementPage() {
                       className="border-2 border-brand-ink p-5 shadow-[4px_4px_0px_0px_#030404] rounded-lg bg-white space-y-4"
                     >
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
-                        <div>
-                          <h3 className="text-sm font-black uppercase tracking-tight text-brand-ink">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm font-black tracking-tight text-brand-ink break-words">
                             {evt.title}
                           </h3>
                         </div>
 
-                        <div className="flex gap-6 items-center">
+                        <div className="flex gap-6 items-center shrink-0">
                           <div className="text-center shrink-0">
                             <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider">
                               Answers

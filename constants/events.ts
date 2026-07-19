@@ -132,8 +132,6 @@ export const SCHEDULE_DATA: DaySchedule[] = [
       { time: '1:30 PM - 2:30 PM', title: 'Lunch', batches: [4] },
       { time: '2:30 PM - 4:30 PM', title: 'Mind Hacks: The Hidden Psychology Behind Every Decision', speaker: 'Mr. Manan Pahwa', location: 'IET Amphitheater', batches: [4] },
       { time: '4:30 PM - 6:00 PM', title: 'Cyber Security for All', speaker: 'Mr. Mukesh Choudhary', location: 'IET Amphitheater', batches: [4] },
-      // Common TV9 Director Session
-      { time: '11:00 AM - 12:00 PM', title: 'TV9 Director Session', location: 'Sabrang Ground – Main Stage', batches: [1, 2, 3, 4] },
       // Common Evening
       { time: '5:30 PM - 6:30 PM', title: 'High-Tea', batches: [1, 2, 3, 4] },
       { time: '6:30 PM - 8:30 PM', title: 'The Culture Walk', location: 'Sabrang Ground – Main Stage', batches: [1, 2, 3, 4] },

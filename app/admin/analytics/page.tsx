@@ -364,7 +364,8 @@ function FeedbackAnalyticsContent() {
   const [liveActiveDayId, setLiveActiveDayId] = useState<string>('Day 01');
   const [liveFormOpen, setLiveFormOpen] = useState<boolean>(true);
 
-  const isInitialMount = useRef(true);
+  // Only allow auto-save after Firebase has hydrated state for the first time.
+  const hasLoadedFromDB = useRef(false);
 
   // Deep Dive Active Rating Question State
   const [selectedRatingQId, setSelectedRatingQId] = useState<string>('');
@@ -448,6 +449,9 @@ function FeedbackAnalyticsContent() {
           setBatchForms(seededBatches);
           setIsFormOpen(dbFormOpen);
           isFirstLoad = false;
+          // Mark DB as loaded AFTER state is set, so auto-save effects
+          // won't fire until the user makes a real change.
+          setTimeout(() => { hasLoadedFromDB.current = true; }, 0);
         }
       } catch (err) {
         console.error('Error loading settings:', err);
@@ -564,17 +568,47 @@ function FeedbackAnalyticsContent() {
   const activeQuestionsForFilter = useMemo(() => {
     const all: any[] = [];
     const addedLabels = new Set<string>();
-    Object.values(batchForms).forEach((questions) => {
-      (questions || []).forEach((q) => {
-        const normLabel = q.label.trim().toLowerCase();
-        if (!addedLabels.has(normLabel)) {
-          all.push(q);
-          addedLabels.add(normLabel);
+    
+    // 1. Gather questions from batchForms matching the selected day
+    Object.keys(batchForms).forEach((key) => {
+      if (selectedDayFilter === 'all' || key.startsWith(`${selectedDayFilter}_`)) {
+        const questions = batchForms[key] || [];
+        questions.forEach((q) => {
+          const normLabel = q.label.trim().toLowerCase();
+          if (!addedLabels.has(normLabel)) {
+            all.push(q);
+            addedLabels.add(normLabel);
+          }
+        });
+      }
+    });
+
+    // 2. Also gather questions from actual answers in filteredSubmissions (robust fallback for fallback form queries)
+    filteredSubmissions.forEach((f) => {
+      const answers = f.answers || {};
+      Object.keys(answers).forEach((qId) => {
+        const ans = answers[qId];
+        if (ans && ans.label) {
+          const normLabel = ans.label.trim().toLowerCase();
+          if (!addedLabels.has(normLabel)) {
+            all.push({
+              id: qId,
+              type: ans.type,
+              label: ans.label,
+              required: false
+            });
+            addedLabels.add(normLabel);
+          }
         }
       });
     });
-    return all.length > 0 ? all : DEFAULT_GLOBAL_QUESTIONS;
-  }, [batchForms]);
+
+    if (all.length === 0) {
+      return DEFAULT_GLOBAL_QUESTIONS;
+    }
+
+    return all;
+  }, [batchForms, selectedDayFilter, filteredSubmissions]);
 
   const ratingQuestionsList = useMemo(() => {
     return activeQuestionsForFilter.filter(q => q.type === 'rating');
@@ -740,7 +774,8 @@ function FeedbackAnalyticsContent() {
           total,
           distributions
         };
-      });
+      })
+      .filter((mcq) => mcq.distributions.length > 0);
   }, [activeQuestionsForFilter, questionStats]);
 
   const handleExportExcel = async () => {
@@ -922,12 +957,8 @@ function FeedbackAnalyticsContent() {
 
   // Auto-save settings and questions whenever they change, with debouncing for text input changes
   useEffect(() => {
-    if (loading) return;
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
+    // Guard: do not save until DB has hydrated state for the first time.
+    if (!hasLoadedFromDB.current) return;
 
     setSaveStatus('saving');
 
@@ -962,7 +993,7 @@ function FeedbackAnalyticsContent() {
     return () => {
       clearTimeout(delayDebounceFn);
     };
-  }, [batchForms, isFormOpen, accessActiveDayIdx, db, loading]);
+  }, [batchForms, isFormOpen, accessActiveDayIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -1166,9 +1197,6 @@ function FeedbackAnalyticsContent() {
                 <h2 className="text-sm font-display font-black uppercase text-brand-ink">
                   Written Feedback Stream
                 </h2>
-                <p className="text-brand-ink/40 text-[9px] uppercase tracking-wider font-black font-mono">
-                  Continuous stream of dynamic open questions
-                </p>
               </div>
 
               {dynamicTextAnswers.length === 0 ? (
@@ -1179,8 +1207,8 @@ function FeedbackAnalyticsContent() {
                 <div className="flex-1 overflow-y-auto space-y-6 pr-2 scrollbar-thin">
                   {dynamicTextAnswers.map((stream) => (
                     <div key={stream.qId} className="space-y-3">
-                      <span className="block text-[10px] font-black uppercase text-brand-orange tracking-wider border-b border-brand-ink/10 pb-1 font-mono">
-                        Topic: {stream.label}
+                      <span className="block text-[10px] font-black text-brand-orange tracking-wider border-b border-brand-ink/10 pb-1 font-mono">
+                        <span className="uppercase">Topic:</span> {stream.label}
                       </span>
                       <div className="space-y-3">
                         {stream.answers.map((ans: any, idx: number) => (
@@ -1214,7 +1242,7 @@ function FeedbackAnalyticsContent() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {mcqStatsList.map((mcq) => (
                   <div key={mcq.id} className="space-y-4 border-2 border-brand-ink/10 p-4 rounded-md">
-                    <h3 className="text-xs font-black uppercase text-brand-pink tracking-wider leading-relaxed">
+                    <h3 className="text-xs font-black text-brand-pink tracking-wider leading-relaxed">
                       {mcq.label} <span className="text-[10px] font-bold text-brand-ink/40">({mcq.total} responses)</span>
                     </h3>
                     <div className="space-y-3">
@@ -1259,13 +1287,13 @@ function FeedbackAnalyticsContent() {
                     className="border-2 border-brand-ink p-5 shadow-[4px_4px_0px_0px_#030404] rounded-lg bg-white space-y-4"
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-brand-ink/10 pb-4">
-                      <div>
-                        <h3 className="text-sm font-black uppercase tracking-tight text-brand-ink">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black tracking-tight text-brand-ink break-words">
                           {evt.title}
                         </h3>
                       </div>
 
-                      <div className="flex gap-6 items-center">
+                      <div className="flex gap-6 items-center shrink-0">
                         <div className="text-center shrink-0">
                           <span className="block text-[8px] font-black uppercase text-brand-ink/40 tracking-wider font-mono">Answers</span>
                           <strong className="text-lg font-black text-brand-ink tabular-nums">{evt.totalAnswers}</strong>
